@@ -1,3 +1,4 @@
+(function hysacamMapController() {
 "use strict";
 
 /*
@@ -426,6 +427,8 @@ function initializeMapControls() {
   window.addEventListener("hysacam:map-reset", resetMap);
 
   window.addEventListener("hysacam:map-request", async () => {
+    addMapStyles();
+    if (!map && !ensureMap()) return;
     // The map section starts hidden. Leaflet must recalculate its dimensions
     // after navigation reveals the section, otherwise the canvas can appear blank.
     await loadDustbinsOnMap();
@@ -504,11 +507,10 @@ function addMapStyles() {
 
 function initialize() {
   addMapStyles();
-
-  if (!ensureMap()) return;
-
+  // Bind controls even if Leaflet is temporarily blocked, so opening the map
+  // can retry initialization and show a useful status instead of a dead panel.
   initializeMapControls();
-  loadDustbinsOnMap();
+  if (ensureMap()) loadDustbinsOnMap();
 }
 
 if (document.readyState === "loading") {
@@ -518,3 +520,4 @@ if (document.readyState === "loading") {
 } else {
   initialize();
 }
+})();

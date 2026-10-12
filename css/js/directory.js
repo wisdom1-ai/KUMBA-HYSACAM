@@ -1,4 +1,11 @@
-const { getDustbins, addDustbin, updateDustbin, deleteDustbin } = window.HysacamDB;
+const db = window.HysacamDB;
+if (!db) {
+  console.error("HYSACAM database did not load. Check css/js/database.js.");
+}
+const getDustbins = (...args) => db?.getDustbins(...args) ?? [];
+const addDustbin = (...args) => { if (!db) throw new Error("Database is unavailable. Reload the tracker and try again."); return db.addDustbin(...args); };
+const updateDustbin = (...args) => { if (!db) throw new Error("Database is unavailable. Reload the tracker and try again."); return db.updateDustbin(...args); };
+const deleteDustbin = (...args) => { if (!db) throw new Error("Database is unavailable. Reload the tracker and try again."); return db.deleteDustbin(...args); };
 
 const $ = selector => document.querySelector(selector);
 let bins = [];
@@ -39,7 +46,7 @@ function renderDirectory() {
   });
 }
 function resetForm() {
-  editingId = null; $("#binForm")?.reset(); $("#binRecordId").value = "";
+  editingId = null; $("#binForm")?.reset(); if ($("#binRecordId")) $("#binRecordId").value = "";
   $("#binFormTitle").textContent = "Add Collection Point"; $("#saveBinButton").textContent = "Save Collection Point";
 }
 function openForm(bin = null) {
@@ -65,7 +72,7 @@ function init() {
   $("#directorySearch")?.addEventListener("input", renderDirectory);
   $("#sortBins")?.addEventListener("change", renderDirectory);
   $("#clearFiltersButton")?.addEventListener("click", () => { $("#directorySearch").value = ""; $("#sortBins").value = "name"; renderDirectory(); });
-  $("#toggleBinFormButton")?.addEventListener("click", () => { if (!$("#binForm").hidden && !editingId) { $("#binForm").hidden = true; return; } openForm(); });
+  $("#toggleBinFormButton")?.addEventListener("click", () => { const form = $("#binForm"); if (!form) { notify("The collection-point form is missing from this page.", true); return; } if (!form.hidden && !editingId) { form.hidden = true; return; } openForm(); });
   $("#cancelBinEditButton")?.addEventListener("click", () => { $("#binForm").hidden = true; resetForm(); });
   $("#binForm")?.addEventListener("submit", event => {
     event.preventDefault();

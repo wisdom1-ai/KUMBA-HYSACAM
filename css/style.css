@@ -2114,3 +2114,17 @@ button, .btn, .nav-link, .settings-tab { min-height: 42px; }
 .profile-settings-summary { margin-top: 1rem; padding: 1rem; border: 1px solid var(--border, #e2e8f0); border-radius: 12px; background: var(--surface-soft, rgba(148,163,184,.08)); font-size: .98rem; }
 #reportFeedback { margin-top: 1rem; line-height: 1.55; }
 #reportTable td, #reportTable th { padding: .85rem .8rem; }
+
+
+/* Accessibility pass: larger, more legible text without changing the visual theme. */
+body { font-size: 16px; }
+.sidebar-label, .sidebar-footer small, .brand-text small, .user-menu-text small,
+.stat-card small, .section-heading p, .panel-heading p, .page-intro p,
+.directory-manage-heading p, .bin-editor-note, .bin-card-top small,
+.map-footer, .eyebrow, .form-hint, .helper-text { font-size: 13px !important; }
+label, .form-group label, .directory-summary, .status-badge, .map-legend,
+.search-box input, .directory-toolbar select { font-size: 14px; }
+.bin-card-actions .btn { font-size: 13px; min-height: 38px; }
+.bin-editor .form-group input, .bin-editor .form-group select { min-height: 44px; font-size: 15px; }
+#map { min-height: 430px; height: 430px; }
+.leaflet-popup-content { font-size: 14px; }
