@@ -2143,3 +2143,17 @@ input, select, textarea { min-height: 3rem; }
 .photo-upload-panel input[type="file"] { width: 100%; padding: 12px; min-height: auto; border: 1px dashed #9db5a5; border-radius: 10px; background: white; }
 .report-photo-preview { display: grid; gap: 12px; justify-items: start; margin-top: 14px; }
 .report-photo-preview img { display: block; max-width: min(100%, 480px); max-height: 360px; object-fit: contain; border-radius: 12px; border: 1px solid #dce5df; }
+
+
+/* Larger, accessible typography across the existing design. */
+html { font-size: 20px; }
+body { font-size: 1rem; line-height: 1.55; }
+button, input, select, textarea { font-size: 1rem; }
+button, .btn { min-height: 3.2rem; }
+input, select, textarea { min-height: 3.2rem; padding: .75rem; }
+label, .form-group label, .panel-heading h2, .section-heading h1 { font-size: 1.05rem; }
+small, .helper-text, .form-hint, .eyebrow { font-size: .82rem; }
+#map { min-height: 520px; height: 520px; }
+.leaflet-popup-content { font-size: 1rem; line-height: 1.55; }
+.report-photo-preview img { max-width: min(100%, 600px); max-height: 440px; }
+@media (max-width: 600px) { html { font-size: 18px; } #map { min-height: 440px; height: 440px; } }
