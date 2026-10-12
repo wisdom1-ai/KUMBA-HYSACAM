@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="#147d4a" name="theme-color"/>
+<title>HYSACAM Kumba Tracker</title>
+<meta content="HYSACAM Kumba Tracker helps residents explore waste collection locations and submit waste collection reports." name="description"/>
+<!-- Main stylesheet -->
+<link href="css/style.css" rel="stylesheet"/>
+<!-- Leaflet map stylesheet -->
+<link href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" rel="stylesheet"/>
+</head>
+<body>
+<div class="app-shell">
+<!-- Sidebar -->
+<aside class="sidebar" id="sidebar">
+<a class="brand" data-go="overview" href="#overview">
+<span class="brand-logo">H</span>
+<span class="brand-text">
+<strong>HYSACAM</strong>
+<small>Kumba Tracker</small>
+</span>
+</a>
+<div class="sidebar-label">MAIN MENU</div>
+<nav aria-label="Main navigation" class="main-nav">
+<a class="nav-link active" data-page="overview" href="#overview">
+<span class="nav-icon">▦</span>
+<span>Dashboard</span>
+</a>
+<a class="nav-link" data-page="map-section" href="#map-section">
+<span class="nav-icon">⌖</span>
+<span>Collection Map</span>
+</a>
+<a class="nav-link" data-page="directory-section" href="#directory-section">
+<span class="nav-icon">▤</span>
+<span>Dustbin Directory</span>
+</a>
+<a class="nav-link" data-page="report-section" href="#report-section">
+<span class="nav-icon">＋</span>
+<span>Report an Issue</span>
+</a>
+<a class="nav-link" data-page="reports-section" href="#reports-section">
+<span class="nav-icon">▧</span>
+<span>Report History</span>
+</a>
+<a class="nav-link" data-page="notifications-section" href="#notifications-section">
+<span class="nav-icon">♧</span>
+<span>Notifications</span>
+<span class="nav-count" hidden="" id="notificationBadge">0</span>
+</a>
+</nav>
+<div class="sidebar-label">ACCOUNT</div>
+<nav aria-label="Account navigation" class="main-nav">
+
+<a class="nav-link" data-page="settings-section" href="#settings-section">
+<span class="nav-icon">⚙</span>
+<span>Settings</span>
+</a>
+<a class="nav-link" data-page="support-section" href="#support-section">
+<span class="nav-icon">?</span>
+<span>Help &amp; Support</span>
+</a>
+</nav>
+<div class="sidebar-footer">
+<div class="connection-indicator"></div>
+<div>
+<strong>HYSACAM Kumba</strong>
+<small>Community Tracker</small>
+</div>
+</div>
+</aside>
+<!-- Main application -->
+<main class="main-content">
+<!-- Top bar -->
+<header class="topbar">
+<div class="topbar-left">
+<button aria-expanded="true" aria-label="Toggle sidebar" class="icon-button" id="menuToggle" type="button">☰</button>
+<div class="breadcrumb">
+<span>HYSACAM</span>
+<span class="breadcrumb-divider">/</span>
+<strong id="pageTitle">Dashboard</strong>
+</div>
+</div>
+<div class="topbar-right">
+<span class="location-label">
+<span class="location-dot"></span>
+            Kumba, Cameroon
+          </span>
+<button aria-label="Open notifications" class="icon-button" data-go="notifications-section" id="topNotificationButton" type="button">♧</button>
+<button aria-label="Open my profile" class="user-menu" data-go="settings-section" type="button">
+<span class="avatar" id="topAvatar">W</span>
+<span class="user-menu-text">
+<strong id="topUserName">Resident</strong>
+<small>Community member</small>
+</span>
+</button>
+</div>
+</header>
+<!-- Page content -->
+<div class="page-container">
+<!-- Dashboard -->
+<section class="page-section" id="overview">
+<div class="welcome-banner">
+<div>
+<p class="eyebrow">COMMUNITY WASTE MANAGEMENT</p>
+<h1>Welcome to HYSACAM Kumba Tracker</h1>
+<p>
+                Find collection points, explore the map, and help keep
+                Kumba clean by reporting waste collection problems.
+              </p>
+<div class="welcome-actions">
+<button class="btn btn-primary" data-go="map-section" type="button">
+                  Explore Collection Map
+                </button>
+<button class="btn btn-light" data-go="report-section" type="button">
+                  Report an Issue
+                </button>
+</div>
+</div>
+<div aria-hidden="true" class="welcome-illustration">♻</div>
+</div>
+<div class="section-heading">
+<div>
+<h2>Community Overview</h2>
+<p>Summary of the available tracker information.</p>
+</div>
+<button class="btn btn-outline" id="refreshDashboard" type="button">
+              ↻ Refresh
+            </button>
+</div>
+<div class="stats-grid">
+<article class="stat-card">
+<div class="stat-icon green">♻</div>
+<div>
+<p>Collection Points</p>
+<h3 id="totalBins">0</h3>
+<small>Points in the directory</small>
+</div>
+</article>
+<article class="stat-card">
+<div class="stat-icon blue">✓</div>
+<div>
+<p>Available Bins</p>
+<h3 id="availableBins">0</h3>
+<small>Marked as available</small>
+</div>
+</article>
+<article class="stat-card">
+<div class="stat-icon orange">!</div>
+<div>
+<p>Full or Damaged</p>
+<h3 id="problemBins">0</h3>
+<small>Points needing attention</small>
+</div>
+</article>
+<article class="stat-card">
+<div class="stat-icon purple">▤</div>
+<div>
+<p>My Reports</p>
+<h3 id="totalReports">0</h3>
+<small>Reports saved on this device</small>
+</div>
+</article>
+</div>
+<div class="dashboard-grid">
+<article class="panel">
+<div class="panel-heading">
+<div>
+<h2>Explore Kumba</h2>
+<p>View collection points on the interactive map.</p>
+</div>
+<button class="text-button" data-go="map-section" type="button">
+                  Open map →
+                </button>
+</div>
+<div class="map-preview" id="dashboardMapPreview">
+<div class="map-preview-content">
+<span class="map-preview-icon">⌖</span>
+<h3>Collection Map</h3>
+<p>Open the map to explore recorded collection points.</p>
+<button class="btn btn-primary" data-go="map-section" type="button">
+                    View Map
+                  </button>
+</div>
+</div>
+</article>
+<article class="panel">
+<div class="panel-heading">
+<div>
+<h2>Quick Actions</h2>
+<p>What would you like to do?</p>
+</div>
+</div>
+<div class="quick-actions">
+<button class="quick-action" data-go="directory-section" type="button">
+<span class="quick-action-icon green">▤</span>
+<span>
+<strong>Find a Collection Point</strong>
+<small>Browse the dustbin directory</small>
+</span>
+<span class="action-arrow">→</span>
+</button>
+<button class="quick-action" data-go="report-section" type="button">
+<span class="quick-action-icon orange">＋</span>
+<span>
+<strong>Report Waste Problems</strong>
+<small>Record a collection issue</small>
+</span>
+<span class="action-arrow">→</span>
+</button>
+<button class="quick-action" data-go="reports-section" type="button">
+<span class="quick-action-icon blue">▧</span>
+<span>
+<strong>View Report History</strong>
+<small>Review reports on this device</small>
+</span>
+<span class="action-arrow">→</span>
+</button>
+</div>
+</article>
+</div>
+<article class="panel">
+<div class="panel-heading">
+<div>
+<h2>Recent Reports</h2>
+<p>Recently saved reports from this browser.</p>
+</div>
+<button class="text-button" data-go="reports-section" type="button">
+                View all →
+              </button>
+</div>
+<div class="recent-reports" id="recentReports">
+<div class="empty-state">
+<span>▤</span>
+<p>No reports have been saved yet.</p>
+</div>
+</div>
+</article>
+</section>
+<!-- Collection map -->
+<section class="page-section" hidden="" id="map-section">
+<div class="page-intro">
+<div>
+<p class="eyebrow">EXPLORE LOCATIONS</p>
+<h1>Collection Map</h1>
+<p>Explore recorded collection points around Kumba.</p>
+</div>
+<button class="btn btn-outline" id="resetMapButton" type="button">
+              Reset Map View
+            </button>
+</div>
+<article class="panel map-panel">
+<div class="map-toolbar">
+<div class="search-box">
+<span aria-hidden="true">⌕</span>
+<input aria-label="Search map collection points" id="mapSearch" placeholder="Search by name or area..." type="search"/>
+</div>
+<button class="btn btn-outline" id="showAllBinsButton" type="button">
+                Show All Points
+              </button>
+</div>
+<div class="map-legend">
+<span><i class="legend-dot available"></i> Available</span>
+<span><i class="legend-dot full"></i> Full</span>
+<span><i class="legend-dot damaged"></i> Damaged</span>
+<span><i class="legend-dot unknown"></i> Unknown</span>
+</div>
+<div aria-label="Interactive collection point map" class="map-canvas" id="map" role="application"></div>
+<div class="map-footer">
+<span id="mapStatus" role="status">Preparing map...</span>
+<span id="mapResultCount">0 collection points</span>
+</div>
+</article>
+<div class="feedback-message" hidden="" id="mapMessage" role="status"></div>
+</section>
+<!-- Dustbin directory -->
+<section class="page-section" hidden="" id="directory-section">
+<div class="page-intro">
+<div>
+<p class="eyebrow">COLLECTION LOCATIONS</p>
+<h1>Dustbin Directory</h1>
+<p>Search and browse the collection points recorded in the tracker.</p>
+</div>
+<button class="btn btn-primary" data-go="report-section" type="button">
+              + Report an Issue
+            </button>
+</div>
+<article class="panel">
+<div class="directory-toolbar">
+<div class="search-box">
+<span aria-hidden="true">⌕</span>
+<input aria-label="Search collection directory" id="directorySearch" placeholder="Search name, area or address..." type="search"/>
+</div>
+<select aria-label="Sort collection points" id="sortBins">
+<option value="name">Sort by name</option>
+<option value="area">Sort by area</option>
+<option value="status">Sort by status</option>
+</select>
+<button class="btn btn-outline" id="clearFiltersButton" type="button">
+                Clear Search
+              </button>
+</div>
+<div class="directory-manage-heading">
+<div>
+<h2>Manage Collection Points</h2>
+<p>Add a point or update its recorded location and status.</p>
+</div>
+<button class="btn btn-primary" id="toggleBinFormButton" type="button">+ Add Collection Point</button>
+</div>
+<form class="panel bin-editor" hidden="" id="binForm">
+<div class="panel-heading">
+<div><h2 id="binFormTitle">Add Collection Point</h2><p>Use verified GPS coordinates where possible.</p></div>
+</div>
+<input id="binRecordId" type="hidden"/>
+<div class="form-grid">
+<div class="form-group"><label for="binNameInput">Point name <span class="required-label">Required</span></label><input id="binNameInput" maxlength="100" placeholder="e.g. Kumba Town Bin 2" required=""/></div>
+<div class="form-group"><label for="binAreaInput">Area <span class="required-label">Required</span></label><input id="binAreaInput" maxlength="100" placeholder="e.g. Fiango" required=""/></div>
+<div class="form-group"><label for="binStatusInput">Status <span class="required-label">Required</span></label><select id="binStatusInput" required=""><option value="available">Available</option><option value="full">Full</option><option value="damaged">Damaged</option><option value="unknown">Unknown</option></select></div>
+<div class="form-group"><label for="binAddressInput">Address / landmark</label><input id="binAddressInput" maxlength="180" placeholder="Nearby junction or landmark"/></div>
+<div class="form-group"><label for="binLatitudeInput">Latitude <span class="required-label">Required</span></label><input id="binLatitudeInput" max="90" min="-90" placeholder="4.636" required="" step="any" type="number"/></div>
+<div class="form-group"><label for="binLongitudeInput">Longitude <span class="required-label">Required</span></label><input id="binLongitudeInput" max="180" min="-180" placeholder="9.446" required="" step="any" type="number"/></div>
+</div>
+<div class="bin-editor-actions"><button class="btn btn-primary" id="saveBinButton" type="submit">Save Collection Point</button><button class="btn btn-outline" id="cancelBinEditButton" type="button">Cancel</button></div>
+<p class="bin-editor-note">Collection points are saved in this browser on this device. They are not shared online until a server database is connected.</p>
+</form>
+<div class="directory-summary">
+<p id="directoryStatus" role="status">Loading collection points...</p>
+<span id="directoryCount">0 points</span>
+</div>
+<div class="bin-grid" id="binGrid">
+<div class="empty-state">
+<span>♻</span>
+<p>Collection points will appear here.</p>
+</div>
+</div>
+</article>
+</section>
+<!-- Report an issue -->
+<section class="page-section" hidden="" id="report-section">
+<div class="page-intro">
+<div>
+<p class="eyebrow">COMMUNITY FEEDBACK</p>
+<h1>Report a Waste Issue</h1>
+<p>Provide accurate information about a collection problem.</p>
+</div>
+</div>
+<div class="form-layout">
+<article class="panel form-panel">
+<div class="panel-heading">
+<div>
+<h2>Issue Details</h2>
+<p>Complete the required fields below. Required fields are clearly labelled.</p>
+</div>
+</div>
+<form id="reportForm">
+<div class="form-grid">
+<div class="form-group">
+<label for="issueType">Issue Type <span class="required-label">Required</span></label>
+<select id="issueType" name="issueType" required="">
+<option value="">Select issue type</option>
+<option value="Full dustbin">Full dustbin</option>
+<option value="Missed collection">Missed collection</option>
+<option value="Damaged dustbin">Damaged dustbin</option>
+<option value="Illegal dumping">Illegal dumping</option>
+<option value="Waste accumulation">Waste accumulation</option>
+<option value="Other">Other</option>
+</select>
+</div>
+<div class="form-group">
+<label for="issuePriority">Priority <span class="required-label">Required</span></label>
+<select id="issuePriority" name="priority" required="">
+<option value="Normal">Normal</option>
+<option value="High">High</option>
+<option value="Urgent">Urgent</option>
+</select>
+</div>
+<div class="form-group">
+<label for="issueArea">Area in Kumba <span class="required-label">Required</span></label>
+<input id="issueArea" maxlength="100" name="area" placeholder="e.g. Fiango, Kumba Town" required="" type="text"/>
+</div>
+<div class="form-group">
+<label for="issueLandmark">Nearby Landmark</label>
+<input id="issueLandmark" maxlength="150" name="landmark" placeholder="Street, junction or nearby building" type="text"/>
+</div>
+<div class="form-group full-width">
+<label for="issueDescription">Description <span class="required-label">Required</span></label>
+<textarea id="issueDescription" maxlength="1000" name="description" placeholder="Describe the problem and its location..." required="" rows="5"></textarea>
+<div class="field-footer">
+<small>Do not include passwords or other private information.</small>
+<span id="descriptionCount">0/1000</span>
+</div>
+</div>
+<div class="form-group">
+<label for="reporterName">Your Name <span class="required-label">Required</span></label>
+<input id="reporterName" maxlength="100" name="reporterName" placeholder="Enter your full name" required="" type="text"/>
+</div>
+<div class="form-group">
+<label for="reporterEmail">Email Address <span class="required-label">Required</span></label>
+<input id="reporterEmail" maxlength="150" name="reporterEmail" placeholder="name@example.com" required="" type="email"/>
+</div>
+<div class="form-group full-width">
+<label class="checkbox-label" for="confirmReport">
+<input id="confirmReport" required="" type="checkbox"/>
+<span>I confirm that the information I provided is accurate.</span>
+</label>
+</div>
+</div>
+<div class="form-actions">
+<button class="btn btn-outline" id="resetReportForm" type="reset">
+                    Clear Form
+                  </button>
+<button class="btn btn-primary" type="submit">
+                    Submit Report
+                  </button>
+</div>
+<div class="feedback-message" hidden="" id="reportFeedback" role="status"></div>
+</form>
+</article>
+<aside class="panel info-panel">
+<div class="info-icon">ⓘ</div>
+<h2>Before You Submit</h2>
+<ul>
+<li>Choose the correct issue type.</li>
+<li>Describe the location as clearly as possible.</li>
+<li>Give enough detail to help identify the problem.</li>
+<li>Provide your name and a valid email address so the report has a clear contact reference.</li>
+</ul>
+<div class="notice-box">
+<strong>Important</strong>
+<p>Reports are saved on this device. Email delivery must be connected to a secure reporting service before reports can arrive automatically in an inbox.</p>
+</div>
+</aside>
+</div>
+</section>
+<!-- Report history -->
+<section class="page-section" hidden="" id="reports-section">
+<div class="page-intro">
+<div>
+<p class="eyebrow">TRACK YOUR SUBMISSIONS</p>
+<h1>Report History</h1>
+<p>Search, filter, export and review your recent and previous reports saved on this device.</p>
+</div>
+<div class="intro-actions">
+<button class="btn btn-outline" id="printHistoryButton" type="button">
+                Print
+              </button>
+<button class="btn btn-primary" id="exportHistoryButton" type="button">
+                Export CSV
+              </button>
+</div>
+</div>
+<article class="panel">
+<div class="history-toolbar">
+<div class="search-box">
+<span aria-hidden="true">⌕</span>
+<input aria-label="Search report history" id="reportSearch" placeholder="Search reports..." type="search"/>
+</div>
+<select aria-label="Filter reports by status" id="reportStatusFilter">
+<option value="all">All statuses</option>
+<option value="Submitted">Submitted</option>
+<option value="Pending">Pending</option>
+<option value="In progress">In progress</option>
+<option value="Resolved">Resolved</option>
+</select>
+</div>
+<div class="table-responsive">
+<table id="reportTable">
+<thead>
+<tr>
+<th>Reference</th>
+<th>Issue</th>
+<th>Area</th>
+<th>Status</th>
+<th>Date</th>
+</tr>
+</thead>
+<tbody id="reportTableBody">
+<tr>
+<td class="table-empty" colspan="5">No reports saved yet.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="table-footer">
+<span id="reportStatus" role="status">No reports to display.</span>
+<span id="reportTableCount">0 reports</span>
+</div>
+</article>
+</section>
+<!-- Notifications -->
+<section class="page-section" hidden="" id="notifications-section">
+<div class="page-intro">
+<div>
+<p class="eyebrow">YOUR UPDATES</p>
+<h1>Notifications</h1>
+<p>View notices created by this tracker.</p>
+</div>
+<button class="btn btn-outline" id="markAllReadButton" type="button">
+              Mark All as Read
+            </button>
+</div>
+<article class="panel">
+<div class="notification-list" id="notificationList">
+<div class="empty-state">
+<span>♧</span>
+<p>You have no notifications yet.</p>
+</div>
+</div>
+</article>
+</section>
+<!-- Profile -->
+
+<!-- Settings -->
+<section class="page-section" hidden="" id="settings-section">
+<div class="page-intro">
+<div>
+<p class="eyebrow">PERSONALIZE YOUR EXPERIENCE</p>
+<h1>Settings</h1>
+<p>Configure your preferences for this tracker.</p>
+</div>
+</div>
+<div class="settings-layout">
+<nav aria-label="Settings sections" class="settings-nav">
+<button class="settings-tab active" data-settings-tab="profile-settings" type="button">
+                My Profile
+              </button>
+<button class="settings-tab" data-settings-tab="appearance" type="button">
+                Appearance
+              </button>
+<button class="settings-tab" data-settings-tab="preferences" type="button">
+                Preferences
+              </button>
+<button class="settings-tab" data-settings-tab="notifications-settings" type="button">
+                Notifications
+              </button>
+<button class="settings-tab" data-settings-tab="privacy" type="button">
+                Privacy &amp; Data
+              </button>
+<button class="settings-tab" data-settings-tab="security" type="button">
+                Security
+              </button>
+<button class="settings-tab" data-settings-tab="about" type="button">
+                About
+              </button>
+</nav>
+<div class="settings-content panel">
+<div data-settings-pane="profile-settings"><article class="panel profile-card">
+<div class="profile-header">
+<div class="profile-avatar-large" id="profileAvatarLarge">R</div>
+<div>
+<h2 id="profileNameDisplay">Resident</h2>
+<p>Community member</p>
+<small>Local profile</small>
+</div>
+</div>
+<form id="profileForm">
+<div class="form-grid">
+<div class="form-group full-width">
+<label for="profilePhotoInput">Profile Photo</label>
+<div class="photo-picker-row">
+<button class="btn btn-outline" id="chooseProfilePhotoButton" type="button">Select or change photo</button>
+<span class="photo-file-name" id="profilePhotoFileName">JPG, PNG or WebP · Maximum 1.5 MB</span>
+<input accept="image/png,image/jpeg,image/webp" hidden="" id="profilePhotoInput" type="file"/>
+</div>
+<small>Your photo is stored locally in this browser on this device.</small>
+</div>
+<div class="form-group">
+<label for="displayName">Display Name</label>
+<input id="displayName" maxlength="100" placeholder="Your name" type="text"/>
+</div>
+<div class="form-group">
+<label for="profileEmail">Email Address</label>
+<input id="profileEmail" maxlength="150" placeholder="Your email" type="email"/>
+</div>
+<div class="form-group">
+<label for="profilePhone">Phone Number</label>
+<input id="profilePhone" maxlength="30" placeholder="Your phone number" type="tel"/>
+</div>
+<div class="form-group">
+<label for="preferredArea">Preferred Area</label>
+<input id="preferredArea" maxlength="100" placeholder="Your area in Kumba" type="text"/>
+</div>
+</div>
+<div class="form-actions">
+<button class="btn btn-outline" id="resetProfileButton" type="button">
+                  Reset Changes
+                </button>
+<button class="btn btn-primary" type="submit">
+                  Save Profile
+                </button>
+</div>
+<div class="feedback-message" hidden="" id="profileFeedback" role="status"></div>
+</form>
+</article></div>
+<div data-settings-pane="appearance" hidden="">
+<h2>Appearance</h2>
+<p>Change the way the tracker looks.</p>
+<div class="setting-row">
+<div>
+<strong>Color Theme</strong>
+<small>Choose light or dark mode.</small>
+</div>
+<select id="appearanceMode">
+<option value="light">Light</option>
+<option value="dark">Dark</option>
+<option value="system">System Default</option>
+</select>
+</div>
+<button class="btn btn-primary" id="saveAppearance" type="button">
+                  Save Appearance
+                </button>
+</div>
+<div data-settings-pane="preferences" hidden="">
+<h2>Preferences</h2>
+<p>Choose your preferred display options.</p>
+<div class="setting-row">
+<div>
+<strong>Language</strong>
+<small>Interface language preference.</small>
+</div>
+<select id="languagePreference">
+<option value="en">English</option>
+<option value="fr">Français</option>
+</select>
+</div>
+
+<button class="btn btn-primary" id="savePreferences" type="button">
+                  Save Preferences
+                </button>
+</div>
+<div data-settings-pane="notifications-settings" hidden="">
+<h2>Notification Preferences</h2>
+<p>Choose which local tracker notices you want to see.</p>
+<label class="setting-toggle">
+<span>
+<strong>Tracker Updates</strong>
+<small>General notices about this application.</small>
+</span>
+<input checked="" id="notifyUpdates" type="checkbox"/>
+</label>
+<label class="setting-toggle">
+<span>
+<strong>Report Updates</strong>
+<small>Notices generated by locally saved reports.</small>
+</span>
+<input checked="" id="notifyReports" type="checkbox"/>
+</label>
+<label class="setting-toggle">
+<span>
+<strong>Helpful Tips</strong>
+<small>Helpful reminders about using the tracker.</small>
+</span>
+<input id="notifyTips" type="checkbox"/>
+</label>
+<button class="btn btn-primary" id="saveNotifications" type="button">
+                  Save Notifications
+                </button>
+</div>
+<div data-settings-pane="privacy" hidden="">
+<h2>Privacy &amp; Data</h2>
+<p>Manage data stored by this browser.</p>
+<div class="notice-box">
+<strong>Local storage notice</strong>
+<p>
+                    In local mode, reports, profile details, and preferences
+                    may be stored in your browser. This is not a cloud backup.
+                  </p>
+</div>
+<div class="setting-action">
+<div>
+<strong>Export Profile Data</strong>
+<small>Save a copy of your profile and preferences.</small>
+</div>
+<button class="btn btn-outline" id="exportProfileData" type="button">
+                    Export
+                  </button>
+</div>
+<div class="setting-action">
+<div>
+<strong>Clear Local Reports</strong>
+<small>Remove reports saved in this browser.</small>
+</div>
+<button class="btn btn-outline" id="clearLocalReports" type="button">
+                    Clear Reports
+                  </button>
+</div>
+<div class="setting-action">
+<div>
+<strong>Clear All Local Data</strong>
+<small>Remove locally stored tracker information.</small>
+</div>
+<button class="btn btn-danger" id="clearAllLocalData" type="button">
+                    Clear Data
+                  </button>
+</div>
+</div>
+<div data-settings-pane="security" hidden="">
+<h2>Security</h2>
+<p>Security information for the current version.</p>
+<div class="notice-box">
+<strong>No account authentication is enabled here.</strong>
+<p>
+                    This page does not create user accounts or verify identities.
+                    Do not store passwords or sensitive personal information.
+                  </p>
+</div>
+</div>
+<div data-settings-pane="about" hidden="">
+<h2>About HYSACAM Kumba Tracker</h2>
+<p>
+                  A community-focused interface for exploring waste collection
+                  locations and recording waste management issues in Kumba,
+                  Cameroon.
+                </p>
+<div class="about-details">
+<div><span>Application</span><strong>HYSACAM Kumba Tracker</strong></div>
+<div><span>Version</span><strong>1.0.0</strong></div>
+<div><span>Map provider</span><strong>OpenStreetMap</strong></div>
+<div><span>Map library</span><strong>Leaflet</strong></div>
+</div>
+</div>
+<div class="feedback-message" hidden="" id="settingsFeedback" role="status"></div>
+</div>
+</div>
+</section>
+<!-- Help and support -->
+<section class="page-section" hidden="" id="support-section">
+<div class="page-intro">
+<div>
+<p class="eyebrow">WE ARE HERE TO HELP</p>
+<h1>Help &amp; Support</h1>
+<p>Learn how to use the tracker and understand its current limitations.</p>
+</div>
+</div>
+<div class="help-grid">
+<article class="panel help-card">
+<div class="help-icon">⌖</div>
+<h2>Using the Map</h2>
+<p>
+                Open Collection Map to view recorded locations. Select a marker
+                to view the information available for that point.
+              </p>
+<button class="text-button" data-go="map-section" type="button">
+                Open Map →
+              </button>
+</article>
+<article class="panel help-card">
+<div class="help-icon">＋</div>
+<h2>Submitting Reports</h2>
+<p>
+                Select an issue type, provide the area and description, and
+                submit the form to save a local report.
+              </p>
+<button class="text-button" data-go="report-section" type="button">
+                Create Report →
+              </button>
+</article>
+<article class="panel help-card">
+<div class="help-icon">▤</div>
+<h2>Finding Collection Points</h2>
+<p>
+                Search the directory by name or area. Location information
+                should be verified before travelling to a collection point.
+              </p>
+<button class="text-button" data-go="directory-section" type="button">
+                Open Directory →
+              </button>
+</article>
+</div>
+</section>
+<!-- Global message area -->
+<div class="app-message" hidden="" id="appMessage" role="status"></div>
+</div>
+<footer class="app-footer">
+<span>HYSACAM Kumba Tracker</span>
+<span>Community waste management</span>
+</footer>
+</main>
+</div>
+<!--
+    Load app.js as a normal deferred script.
+    map.js is an ES module and imports database.js and Leaflet itself.
+    Do not load database.js or Leaflet's JavaScript separately.
+  -->
+<script defer="" src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script defer="" src="css/js/database.js"></script>
+<script defer="" src="css/js/app.js"></script>
+<script defer="" src="css/js/directory.js"></script>
+<script defer="" src="css/js/map.js"></script>
+</body>
+</html>
