@@ -13,6 +13,26 @@
 <link href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" rel="stylesheet"/>
 </head>
 <body>
+
+<section id="loginScreen" style="max-width:400px;margin:40px auto;padding:24px;background:white;border-radius:12px;color:#222;">
+  <h2>HYSACAM Kumba Tracker</h2>
+  <p>Sign in to continue</p>
+
+  <form id="loginForm">
+    <label for="loginEmail">Email address</label>
+    <input id="loginEmail" type="email" autocomplete="username" required
+      style="display:block;width:100%;padding:12px;margin:8px 0 16px;box-sizing:border-box;">
+
+    <label for="loginPassword">Password</label>
+    <input id="loginPassword" type="password" autocomplete="current-password" required
+      style="display:block;width:100%;padding:12px;margin:8px 0 16px;box-sizing:border-box;">
+
+    <button type="submit" style="width:100%;padding:12px;background:#147d4a;color:white;border:0;border-radius:6px;">
+      Log In
+    </button>
+    <p id="loginMessage" role="status"></p>
+  </form>
+</section>         
 <div class="app-shell">
 <!-- Sidebar -->
 <aside class="sidebar" id="sidebar">
