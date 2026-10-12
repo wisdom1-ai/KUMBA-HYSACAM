@@ -62,7 +62,7 @@
   let photoInput;
   let reportPhotoData = "";
   // Reports are delivered by the local Python backend when SMTP is configured.
-  const REPORTS_EMAIL = "the configured recipient inbox";
+  const REPORTS_EMAIL = "kelechiwisdom19950@gmail.com";
 
   function readJSON(key, fallback) {
     try {
