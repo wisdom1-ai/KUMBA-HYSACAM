@@ -1,7 +1,7 @@
-
 "use strict";
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
+
 import {
   getAuth,
   onAuthStateChanged,
@@ -10,20 +10,69 @@ import {
 } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
 
 const firebaseConfig = {
-  apiKey: "PASTE_YOUR_API_KEY_HERE",
+  apiKey: "AIzaSyB3B5vPcdEeMyGR66HykE6T2yKmXKEAe6g",
   authDomain: "hysacam-kumba-tracker.firebaseapp.com",
   projectId: "hysacam-kumba-tracker",
   storageBucket: "hysacam-kumba-tracker.firebasestorage.app",
   messagingSenderId: "1000510691567",
-  appId: "1:1000510691567:web:c5e0384f0e56f72892631a"
+  appId: "1:1000510691567:web:c5e0384f0e56f72892631a",
+  measurementId: "G-KSHKWPQ88V"
 };
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
-export {
-  auth,
-  onAuthStateChanged,
-  signInWithEmailAndPassword,
-  signOut
-};
+const loginScreen = document.getElementById("loginScreen");
+const appShell = document.querySelector(".app-shell");
+const loginForm = document.getElementById("loginForm");
+const loginMessage = document.getElementById("loginMessage");
+
+if (appShell) {
+  appShell.style.display = "none";
+}
+
+if (loginForm) {
+  loginForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const email = document.getElementById("loginEmail").value.trim();
+    const password = document.getElementById("loginPassword").value;
+
+    loginMessage.textContent = "Signing in...";
+
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      loginMessage.textContent = "";
+    } catch (error) {
+      loginMessage.textContent =
+        "Login failed. Check your email and password.";
+    }
+  });
+}
+
+if (appShell) {
+  const logoutButton = document.createElement("button");
+  logoutButton.textContent = "Log Out";
+  logoutButton.style.cssText =
+    "margin:12px;padding:10px 18px;background:#147d4a;color:white;border:0;border-radius:6px;";
+
+  appShell.insertBefore(logoutButton, appShell.firstChild);
+
+  logoutButton.addEventListener("click", async () => {
+    try {
+      await signOut(auth);
+    } catch (error) {
+      alert("Could not log out. Please try again.");
+    }
+  });
+}
+
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    if (loginScreen) loginScreen.style.display = "none";
+    if (appShell) appShell.style.display = "";
+  } else {
+    if (loginScreen) loginScreen.style.display = "block";
+    if (appShell) appShell.style.display = "none";
+  }
+});
