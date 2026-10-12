@@ -2221,3 +2221,87 @@ small, .helper-text, .form-hint, .eyebrow { font-size: .82rem; }
   #overview .stat-card small { font-size:11px; }
   #overview .panel { padding:18px 16px; }
 }
+
+/* Professional landscape workspace upgrade (presentation-only; preserves existing IDs, forms and data logic). */
+@media (min-width: 1100px) {
+  :root {
+    --page: #f2f5f3;
+    --surface: #ffffff;
+    --surface-soft: #f7faf8;
+    --border: #dfe7e2;
+    --radius: 16px;
+  }
+  html { scroll-padding-top: 108px; }
+  .app-shell { min-height: 100vh; }
+  .sidebar {
+    position: sticky;
+    inset: auto;
+    top: 0;
+    width: 100%;
+    height: auto;
+    max-height: none;
+    overflow: visible;
+    padding: 12px clamp(20px, 2.4vw, 42px);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: clamp(14px, 1.8vw, 30px);
+    background: rgba(255,255,255,.97);
+    border-right: 0;
+    border-bottom: 1px solid var(--border);
+    box-shadow: 0 4px 18px rgba(25, 55, 37, .035);
+    backdrop-filter: blur(14px);
+  }
+  .brand { flex: 0 0 auto; padding: 0; gap: 10px; }
+  .brand-logo { width: 40px; height: 40px; flex-basis: 40px; border-radius: 12px; }
+  .brand-text strong { font-size: 15px; }
+  .brand-text small { font-size: 10px; margin-top: 2px; }
+  .sidebar-label, .sidebar-footer { display: none !important; }
+  .sidebar > .main-nav { display: flex; flex: 1 1 auto; align-items: center; gap: 5px; min-width: 0; }
+  .sidebar > .main-nav + .sidebar-label { display: none !important; }
+  .sidebar > .main-nav:last-of-type { flex: 0 0 auto; margin-left: auto; }
+  .nav-link { min-height: 42px; padding: 9px 12px; gap: 8px; border-radius: 10px; white-space: nowrap; font-size: 12px; }
+  .nav-icon { width: auto; flex-basis: auto; font-size: 16px; }
+  .main-content { margin-left: 0; min-width: 0; }
+  .topbar { min-height: 66px; top: 64px; padding: 10px clamp(24px, 3vw, 52px); }
+  .page-container { width: 100%; max-width: 1840px; margin: 0 auto; padding: 28px clamp(24px, 3vw, 52px) 44px; }
+  .page-section { width: 100%; }
+  .welcome-banner { display: flex; align-items: center; justify-content: space-between; gap: 36px; }
+  #overview .welcome-banner { min-height: 220px; padding: clamp(28px, 3vw, 46px); }
+  #overview .welcome-banner > div:first-child { max-width: 76%; }
+  #overview .welcome-illustration { flex-shrink: 0; margin-right: clamp(12px, 3vw, 54px); }
+  #overview .stats-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  #overview .dashboard-grid { grid-template-columns: minmax(0, 1.35fr) minmax(340px, .85fr); align-items: stretch; }
+  #overview .map-preview { min-height: 340px; }
+  #overview .panel { min-width: 0; }
+  .panel, .stat-card, .settings-card, .directory-card, .report-card { box-shadow: 0 6px 22px rgba(25, 55, 37, .045); }
+  .section-heading { align-items: center; }
+  .section-heading h2 { letter-spacing: -.35px; }
+  /* Landscape workspace grids: make existing sections use horizontal room instead of tall narrow stacks. */
+  #directory-section .directory-grid, #directory-section .bins-grid, #directory-section .collection-points-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  #report-section .report-layout, #report-section .report-grid { grid-template-columns: minmax(0, 1.15fr) minmax(320px, .85fr); align-items: start; }
+  #reports-section .reports-toolbar, #reports-section .report-filters, #directory-section .directory-toolbar { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; }
+  #reports-section .reports-list { width: 100%; }
+  #map-section #map, #map-section .map-canvas { width: 100%; height: min(68vh, 760px); min-height: 520px; border-radius: 16px; }
+  input, select, textarea { max-width: 100%; }
+  .form-grid, .report-form-grid, #report-section .form-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .form-group.full-width, .form-group.full-span, .form-actions, .photo-upload-panel { grid-column: 1 / -1; }
+}
+
+@media (min-width: 1100px) and (max-width: 1450px) {
+  .sidebar { gap: 14px; padding-left: 18px; padding-right: 18px; }
+  .sidebar > .main-nav { gap: 2px; }
+  .nav-link { padding-left: 9px; padding-right: 9px; font-size: 11px; }
+  .nav-icon { display: none; }
+}
+
+@media (min-width: 1100px) and (max-width: 1180px) {
+  .sidebar { flex-wrap: wrap; }
+  .sidebar > .main-nav { order: 2; flex-basis: 100%; overflow-x: auto; }
+  .sidebar > .main-nav:last-of-type { margin-left: 0; }
+}
+
+@media (max-width: 1099px) {
+  /* Keep the original responsive sidebar and navigation on tablets and phones. */
+  .sidebar { position: fixed; }
+}
