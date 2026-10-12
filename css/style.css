@@ -2157,3 +2157,67 @@ small, .helper-text, .form-hint, .eyebrow { font-size: .82rem; }
 .leaflet-popup-content { font-size: 1rem; line-height: 1.55; }
 .report-photo-preview img { max-width: min(100%, 600px); max-height: 440px; }
 @media (max-width: 600px) { html { font-size: 18px; } #map { min-height: 440px; height: 440px; } }
+
+
+/* Dashboard refinement: clearer hierarchy, larger readable type, responsive cards. */
+#overview .welcome-banner {
+  position: relative;
+  min-height: 245px;
+  padding: clamp(26px, 4vw, 42px);
+  border-radius: 22px;
+  background: linear-gradient(118deg, #154f35 0%, #1c7548 58%, #2a9258 100%);
+  box-shadow: 0 14px 32px rgba(20, 86, 52, .16);
+}
+#overview .welcome-banner:after {
+  content: ""; position:absolute; width:240px; height:240px; right:45px; top:-110px;
+  border:1px solid rgba(255,255,255,.15); border-radius:50%; pointer-events:none;
+}
+#overview .welcome-banner h1 { max-width: 760px; font-size: clamp(30px, 3.2vw, 42px); line-height:1.18; letter-spacing:-.7px; }
+#overview .welcome-banner p:not(.eyebrow) { font-size: clamp(15px, 1.25vw, 18px); line-height:1.65; max-width:690px; }
+#overview .welcome-banner .eyebrow { font-size:12px; letter-spacing:1.5px; font-weight:800; }
+#overview .welcome-illustration { width:126px; height:126px; flex-basis:126px; font-size:74px; border-radius:34px; }
+#overview .welcome-actions { gap:12px; margin-top:26px; }
+#overview .section-heading { margin: 30px 0 17px; }
+#overview .section-heading h2, #overview .panel-heading h2 { font-size: clamp(21px, 1.8vw, 26px); letter-spacing:-.25px; }
+#overview .section-heading p, #overview .panel-heading p { font-size:15px; line-height:1.55; }
+#overview .stats-grid { gap:18px; margin-bottom:26px; }
+#overview .stat-card { min-height:132px; padding:22px; gap:16px; border-radius:17px; transition:transform .18s ease, box-shadow .18s ease; }
+#overview .stat-card:hover { transform:translateY(-2px); box-shadow:0 12px 28px rgba(22,44,31,.09); }
+#overview .stat-icon { width:48px; height:48px; flex-basis:48px; font-size:23px; border-radius:14px; }
+#overview .stat-card p { font-size:14px; line-height:1.4; }
+#overview .stat-card h3 { font-size:clamp(30px, 2.6vw, 38px); margin:3px 0 7px; }
+#overview .stat-card small { font-size:12px; line-height:1.5; }
+#overview .dashboard-grid { gap:22px; margin-bottom:25px; }
+#overview .panel { padding:clamp(20px, 2.4vw, 28px); border-radius:19px; }
+#overview .map-preview { min-height:300px; border-radius:15px; background-color:#edf4ee; }
+#overview .map-preview-content { max-width:360px; }
+#overview .map-preview-icon { width:58px; height:58px; font-size:30px; }
+#overview .map-preview h3 { font-size:22px; }
+#overview .map-preview p { font-size:15px; line-height:1.6; }
+#overview .quick-action { padding:18px 0; gap:15px; }
+#overview .quick-action-icon { width:48px; height:48px; flex-basis:48px; font-size:22px; border-radius:14px; }
+#overview .quick-action strong { display:block; font-size:16px; line-height:1.45; }
+#overview .quick-action small { display:block; margin-top:3px; font-size:13px; line-height:1.5; }
+#overview .action-arrow { font-size:22px; }
+#overview .recent-reports { font-size:15px; }
+#overview .empty-state { padding:28px 16px; }
+#overview .empty-state p { font-size:15px; line-height:1.6; }
+#overview .btn, #overview .text-button { font-size:15px; min-height:46px; }
+#overview .text-button { padding:8px 10px; }
+@media (max-width: 1050px) {
+  #overview .stats-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  #overview .dashboard-grid { grid-template-columns:minmax(0,1fr); }
+  #overview .map-preview { min-height:260px; }
+}
+@media (max-width: 620px) {
+  #overview .welcome-banner { padding:24px 20px; min-height:0; }
+  #overview .welcome-banner h1 { font-size:30px; }
+  #overview .welcome-illustration { width:64px; height:64px; flex-basis:64px; font-size:38px; border-radius:20px; }
+  #overview .stats-grid { gap:12px; }
+  #overview .stat-card { padding:16px 13px; min-height:120px; gap:10px; }
+  #overview .stat-icon { width:40px; height:40px; flex-basis:40px; font-size:19px; }
+  #overview .stat-card p { font-size:13px; }
+  #overview .stat-card h3 { font-size:29px; }
+  #overview .stat-card small { font-size:11px; }
+  #overview .panel { padding:18px 16px; }
+}
