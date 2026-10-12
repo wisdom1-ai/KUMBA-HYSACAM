@@ -1,0 +1,8 @@
+{
+  "recipient": "kelechiwisdom19950@gmail.com",
+  "smtp_host": "smtp.gmail.com",
+  "smtp_port": 587,
+  "smtp_user": "",
+  "smtp_app_password": "",
+  "sender_name": "HYSACAM Kumba Tracker"
+}

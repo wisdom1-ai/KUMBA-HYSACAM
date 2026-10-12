@@ -61,9 +61,8 @@
   let toastTimer;
   let photoInput;
   let reportPhotoData = "";
-  // Set this to the project owner's inbox to open a pre-filled email draft.
-  // Automatic delivery requires a secure server-side email service.
-  const REPORTS_EMAIL = "YOUR_EMAIL_HERE";
+  // Reports are delivered by the local Python backend when SMTP is configured.
+  const REPORTS_EMAIL = "the configured recipient inbox";
 
   function readJSON(key, fallback) {
     try {
@@ -1001,16 +1000,17 @@
       if (photoPreview) photoPreview.hidden = true;
     });
 
-    bindForm("#reportForm", event => {
+    bindForm("#reportForm", async event => {
       event.preventDefault();
       const form = event.target;
       if (!form.reportValidity()) return;
 
       const existing = readReports();
       const now = new Date().toISOString();
+      const reference = `HK-${Date.now().toString(36).toUpperCase()}`;
       const report = {
-        id: `HK-${Date.now().toString(36).toUpperCase()}`,
-        reference: `HK-${Date.now().toString(36).toUpperCase()}`,
+        id: reference,
+        reference,
         issueType: $("#issueType")?.value || "Other",
         type: $("#issueType")?.value || "Other",
         priority: $("#issuePriority")?.value || "Normal",
@@ -1024,33 +1024,51 @@
         status: "Pending",
         createdAt: now,
         updatedAt: now,
-        storage: "local"
+        storage: "local-and-server"
       };
 
       existing.unshift(report);
       if (!saveJSON(KEYS.reports, existing)) return;
       renderReportHistory();
       renderDashboardSummary();
+      const feedback = $("#reportFeedback");
+      if (feedback) {
+        feedback.hidden = false;
+        feedback.textContent = preferences.language === "fr"
+          ? `Signalement ${report.reference} enregistré. Connexion au service de transmission…`
+          : `Report ${report.reference} saved. Connecting to the email delivery service…`;
+      }
+      const submitButton = form.querySelector('button[type="submit"]');
+      if (submitButton) submitButton.disabled = true;
+      try {
+        const response = await fetch('/api/reports', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(report)
+        });
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.message || 'The reporting service could not accept this report.');
+        report.emailStatus = result.emailSent ? 'sent' : 'pending-configuration';
+        if (feedback) feedback.textContent = result.emailSent
+          ? `Report ${report.reference} submitted successfully. Email notification sent to ${REPORTS_EMAIL}.`
+          : `Report ${report.reference} is saved, but email has NOT been sent yet. Configure SMTP in email_config.json to enable delivery to ${REPORTS_EMAIL}.`;
+        const latest = readReports();
+        const savedIndex = latest.findIndex(item => item.reference === report.reference);
+        if (savedIndex >= 0) { latest[savedIndex] = { ...latest[savedIndex], emailStatus: report.emailStatus }; saveJSON(KEYS.reports, latest); }
+        notify(result.emailSent ? 'Report submitted and email sent.' : 'Report saved; email delivery needs setup.');
+      } catch (error) {
+        if (feedback) feedback.textContent = `Report ${report.reference} is saved in this browser, but the server/email service is unavailable. It has NOT been emailed to ${REPORTS_EMAIL}. Start the website with START_HYSACAM_TRACKER.bat and configure email_config.json.`;
+        notify('Report saved locally, but server delivery failed.');
+        console.error('Report submission failed:', error);
+      } finally {
+        if (submitButton) submitButton.disabled = false;
+      }
       form.reset();
       reportPhotoData = "";
       if (photoPreviewImage) photoPreviewImage.removeAttribute("src");
       if (photoPreview) photoPreview.hidden = true;
       const counter = $("#descriptionCount");
       if (counter) counter.textContent = "0/1000";
-      const feedback = $("#reportFeedback");
-      if (feedback) {
-        feedback.hidden = false;
-        feedback.textContent = preferences.language === "fr"
-          ? `Signalement ${report.reference} enregistré sur cet appareil. L’envoi automatique par e-mail nécessite un service sécurisé connecté.`
-          : `Report ${report.reference} saved on this device. Automatic email delivery requires a connected secure email service.`;
-      }
-      // Browser-only fallback: prepare an email draft, never claim it was sent.
-      if (REPORTS_EMAIL && REPORTS_EMAIL !== "YOUR_EMAIL_HERE") {
-        const subject = encodeURIComponent(`HYSACAM Kumba Tracker report ${report.reference}`);
-        const body = encodeURIComponent(`Reference: ${report.reference}\nIssue: ${report.issueType}\nPriority: ${report.priority}\nArea: ${report.area}\nLandmark: ${report.landmark}\nDescription: ${report.description}\nReporter: ${report.reporterName}\nContact: ${report.reporterEmail}\nSubmitted: ${new Date(report.createdAt).toLocaleString()}`);
-        window.location.href = `mailto:${REPORTS_EMAIL}?subject=${subject}&body=${body}`;
-      }
-      notify(preferences.language === "fr" ? `Signalement ${report.reference} enregistré localement.` : `Report ${report.reference} saved locally.`);
     });
   }
 

@@ -11,16 +11,15 @@ const sampleBins = [
 function announceChange() {
   window.dispatchEvent(new CustomEvent(CHANGE_EVENT));
 }
-function cloneSamples() { return sampleBins.map(bin => ({ ...bin })); }
 function getDustbins() {
   try {
     const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved === null) return cloneSamples();
+    if (saved === null) return [];
     const bins = JSON.parse(saved);
-    return Array.isArray(bins) ? bins.filter(bin => bin && typeof bin === "object") : cloneSamples();
+    return Array.isArray(bins) ? bins.filter(bin => bin && typeof bin === "object") : [];
   } catch (error) {
     console.error("Could not load dustbins:", error);
-    return cloneSamples();
+    return [];
   }
 }
 function saveDustbins(bins) {
@@ -33,8 +32,13 @@ function saveDustbins(bins) {
 function normalizeBin(input, existing = {}) {
   const name = String(input.name ?? existing.name ?? "").trim();
   const area = String(input.area ?? existing.area ?? "").trim();
-  const latitude = Number(input.latitude ?? existing.latitude);
-  const longitude = Number(input.longitude ?? existing.longitude);
+  const rawLatitude = input.latitude ?? existing.latitude;
+  const rawLongitude = input.longitude ?? existing.longitude;
+  if (rawLatitude === "" || rawLatitude === null || rawLatitude === undefined || rawLongitude === "" || rawLongitude === null || rawLongitude === undefined) {
+    throw new Error("Enter both latitude and longitude. Blank coordinates cannot be saved.");
+  }
+  const latitude = Number(rawLatitude);
+  const longitude = Number(rawLongitude);
   const status = String(input.status ?? existing.status ?? "unknown").toLowerCase();
   const address = String(input.address ?? existing.address ?? "").trim();
   if (!name || !area) throw new Error("Enter a collection point name and area.");

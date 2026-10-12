@@ -41,7 +41,7 @@ function renderDirectory() {
   }
   filtered.forEach(bin => {
     const card = document.createElement("article"); card.className = "bin-card";
-    card.innerHTML = `<div class="bin-card-top"><span class="status-badge ${statusClass(bin.status)}">${safe(statusLabel(bin.status))}</span><small>#${safe(bin.id)}</small></div><h3>${safe(bin.name || "Unnamed collection point")}</h3><p><strong>Area:</strong> ${safe(bin.area || "Not specified")}</p><p><strong>Address:</strong> ${safe(bin.address || "Not specified")}</p><p><strong>Coordinates:</strong> ${Number(bin.latitude).toFixed(5)}, ${Number(bin.longitude).toFixed(5)}</p><p><strong>Updated:</strong> ${safe(bin.lastUpdated ? new Date(bin.lastUpdated).toLocaleString() : "Not recorded")}</p><div class="bin-card-actions"><button type="button" class="btn btn-outline" data-bin-action="map" data-bin-id="${safe(bin.id)}">View on Map</button><button type="button" class="btn btn-outline" data-bin-action="edit" data-bin-id="${safe(bin.id)}">Edit</button><button type="button" class="btn btn-outline" data-bin-action="delete" data-bin-id="${safe(bin.id)}">Delete</button></div>`;
+    card.innerHTML = `<div class="bin-card-top"><span class="status-badge ${statusClass(bin.status)}">${safe(statusLabel(bin.status))}</span><small>#${safe(bin.id)}</small></div><h3>${safe(bin.name || "Unnamed collection point")}</h3><p><strong>Area:</strong> ${safe(bin.area || "Not specified")}</p><p><strong>Address:</strong> ${safe(bin.address || "Not specified")}</p><p><strong>Coordinates:</strong> ${Number(bin.latitude).toFixed(5)}, ${Number(bin.longitude).toFixed(5)}</p><p><strong>Updated:</strong> ${safe(bin.lastUpdated ? new Date(bin.lastUpdated).toLocaleString() : "Not recorded")}</p><div class="bin-card-actions"><button type="button" class="btn btn-outline" data-bin-action="map" data-bin-id="${safe(bin.id)}">View on Map</button><button type="button" class="btn btn-outline" data-bin-action="directions" data-bin-id="${safe(bin.id)}">Get Directions</button><button type="button" class="btn btn-outline" data-bin-action="edit" data-bin-id="${safe(bin.id)}">Edit</button><button type="button" class="btn btn-outline" data-bin-action="delete" data-bin-id="${safe(bin.id)}">Delete</button></div>`;
     grid.appendChild(card);
   });
 }
@@ -87,6 +87,15 @@ function init() {
     const button = event.target.closest("[data-bin-action]"); if (!button) return;
     const bin = getDustbins().find(item => String(item.id) === String(button.dataset.binId)); if (!bin) { notify("That collection point no longer exists.", true); renderDirectory(); return; }
     if (button.dataset.binAction === "map") goToMap(bin);
+    if (button.dataset.binAction === "directions") {
+      const lat = Number(bin.latitude), lon = Number(bin.longitude);
+      if (!Number.isFinite(lat) || lat < -90 || lat > 90 || !Number.isFinite(lon) || lon < -180 || lon > 180) {
+        notify("This collection point has no valid coordinates for directions.", true);
+      } else {
+        const url = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(`${lat},${lon}`)}`;
+        window.open(url, "_blank", "noopener,noreferrer");
+      }
+    }
     if (button.dataset.binAction === "edit") openForm(bin);
     if (button.dataset.binAction === "delete") {
       if (!window.confirm(`Delete "${bin.name}" from this device? This cannot be undone unless you have an export.`)) return;

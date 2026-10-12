@@ -1,24 +1,22 @@
 # HYSACAM Kumba Tracker
 
-## Run
-Extract the ZIP and open `index.html` in a modern browser. The map requires an internet connection to load the Leaflet module and OpenStreetMap tiles.
+## Start
+1. Extract this ZIP.
+2. Double-click `START_HYSACAM_TRACKER.bat`.
+3. Keep the black server window open.
+4. Use `http://127.0.0.1:8000/index.html`; do not open `index.html` directly.
 
-## Included functionality
-- Dashboard, navigation, collection map, dustbin directory, reports, report history, profile, settings, notifications, and help/support.
-- Collection points are stored locally under the existing `hysacam_kumba_bins` localStorage key.
-- Profile, preferences, notifications and reports use the existing HYSACAM tracker storage keys. Existing data is not automatically cleared or migrated.
-- Reports are saved to this browser/device only; they are not submitted to HYSACAM without a connected backend.
-- Sample collection points are not verified; confirm coordinates in the field before relying on them.
+## Functionality and data
+- The existing HTML/CSS design is retained. Existing browser storage keys are retained and are not cleared.
+- Collection points remain in browser storage under `hysacam_kumba_bins`; existing saved points are preserved. New collection points require a name, area, and valid latitude/longitude.
+- Fresh browsers no longer get two unverified sample collection points automatically. Add locations only after checking their coordinates in Kumba.
+- Reports are saved to local browser history and posted to the Python server, which stores report metadata in `data/reports.json`. This local installation is not yet a hosted, multi-user database.
+- The map requires internet access for Leaflet and OpenStreetMap tiles.
 
-## Troubleshooting
-If the map is blank, check that the device is online and that the browser allows the Leaflet CDN and OpenStreetMap tile requests. When opened as a local file, some browsers may restrict JavaScript modules; if so, serve this folder using a local static web server.
+## Enable real email notifications
+1. Replace `YOUR_EMAIL_HERE` in `email_config.json` with the inbox that should receive reports.
+2. For Gmail, enable 2-Step Verification and create an App Password.
+3. Set `smtp_user` to the sending Gmail account and `smtp_app_password` to the App Password. Do not use your normal Gmail password.
+4. Save and restart the BAT file, then submit a test report and check the server window and recipient inbox.
 
-
-IMPORTANT — HOW TO OPEN THE WEBSITE
-Do not double-click index.html. The map and directory use JavaScript ES modules, which browsers commonly block when opened directly as file://.
-1. Extract the ZIP to a normal folder.
-2. Double-click START_HYSACAM_TRACKER.bat.
-3. Keep the black server window open while using the website.
-4. The website opens at http://127.0.0.1:8000/index.html.
-5. Internet access is needed for the Leaflet/OpenStreetMap map tiles and Leaflet module CDN.
-If port 8000 is already in use, close the other local server or ask for help changing the port.
+Until SMTP is configured, the server can save reports but cannot send email. Keep `email_config.json` private and never publish it to GitHub.
