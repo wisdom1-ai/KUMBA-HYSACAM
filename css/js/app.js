@@ -60,6 +60,7 @@
 
   let toastTimer;
   let photoInput;
+  let reportPhotoData = "";
   // Set this to the project owner's inbox to open a pre-filled email draft.
   // Automatic delivery requires a secure server-side email service.
   const REPORTS_EMAIL = "YOUR_EMAIL_HERE";
@@ -944,6 +945,62 @@
     description?.addEventListener("input", updateCounter);
     updateCounter();
 
+    const reportPhotoInput = $("#reportPhoto");
+    const photoPreview = $("#reportPhotoPreview");
+    const photoPreviewImage = $("#reportPhotoPreviewImage");
+    const removePhotoButton = $("#removeReportPhoto");
+
+    function compressImage(file) {
+      return new Promise((resolve, reject) => {
+        if (!file || !file.type.startsWith("image/")) {
+          reject(new Error("Please select an image file."));
+          return;
+        }
+        const reader = new FileReader();
+        reader.onerror = () => reject(new Error("Could not read the selected image."));
+        reader.onload = () => {
+          const image = new Image();
+          image.onerror = () => reject(new Error("This image could not be opened."));
+          image.onload = () => {
+            const maxSide = 1200;
+            const scale = Math.min(1, maxSide / Math.max(image.width, image.height));
+            const canvas = document.createElement("canvas");
+            canvas.width = Math.max(1, Math.round(image.width * scale));
+            canvas.height = Math.max(1, Math.round(image.height * scale));
+            const context = canvas.getContext("2d");
+            context.drawImage(image, 0, 0, canvas.width, canvas.height);
+            resolve(canvas.toDataURL("image/jpeg", 0.72));
+          };
+          image.src = String(reader.result);
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    reportPhotoInput?.addEventListener("change", async () => {
+      const file = reportPhotoInput.files?.[0];
+      if (!file) return;
+      if (file.size > 12 * 1024 * 1024) {
+        reportPhotoInput.value = "";
+        notify(preferences.language === "fr" ? "Choisissez une image de moins de 12 Mo." : "Please choose an image smaller than 12 MB.");
+        return;
+      }
+      try {
+        reportPhotoData = await compressImage(file);
+        if (photoPreviewImage) photoPreviewImage.src = reportPhotoData;
+        if (photoPreview) photoPreview.hidden = false;
+      } catch (error) {
+        reportPhotoData = "";
+        notify(error.message || "Could not load photo.");
+      }
+    });
+    removePhotoButton?.addEventListener("click", () => {
+      reportPhotoData = "";
+      if (reportPhotoInput) reportPhotoInput.value = "";
+      if (photoPreviewImage) photoPreviewImage.removeAttribute("src");
+      if (photoPreview) photoPreview.hidden = true;
+    });
+
     bindForm("#reportForm", event => {
       event.preventDefault();
       const form = event.target;
@@ -960,6 +1017,8 @@
         area: $("#issueArea")?.value.trim() || "",
         landmark: $("#issueLandmark")?.value.trim() || "",
         description: $("#issueDescription")?.value.trim() || "",
+        photoData: reportPhotoData,
+        photoName: reportPhotoInput?.files?.[0]?.name || "",
         reporterName: $("#reporterName")?.value.trim() || profile.name || "",
         reporterEmail: $("#reporterEmail")?.value.trim() || profile.email || "",
         status: "Pending",
@@ -973,6 +1032,9 @@
       renderReportHistory();
       renderDashboardSummary();
       form.reset();
+      reportPhotoData = "";
+      if (photoPreviewImage) photoPreviewImage.removeAttribute("src");
+      if (photoPreview) photoPreview.hidden = true;
       const counter = $("#descriptionCount");
       if (counter) counter.textContent = "0/1000";
       const feedback = $("#reportFeedback");
