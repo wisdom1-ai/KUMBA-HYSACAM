@@ -31,6 +31,40 @@ if (appShell) {
   appShell.style.display = "none";
 }
 
+const registerForm = document.getElementById("registerForm");
+const registerMessage = document.getElementById("registerMessage");
+const loginLinkMessage = document.getElementById("loginMessage");
+
+if (registerForm) {
+  registerForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const name = document.getElementById("registerName").value.trim();
+    const email = document.getElementById("registerEmail").value.trim();
+    const password = document.getElementById("registerPassword").value;
+
+    registerMessage.textContent = "Creating your account...";
+
+    try {
+      const credential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+   
+      registerMessage.textContent =
+        "Account created successfully. You can now use the tracker.";
+    } catch (error) {
+      registerMessage.textContent =
+        error.code === "auth/email-already-in-use"
+          ? "This email already has an account. Please log in."
+          : error.code === "auth/weak-password"
+          ? "Please choose a stronger password."
+          : "Account creation failed. Please check your details and try again.";
+    }
+  });
+}
+
 if (loginForm) {
   loginForm.addEventListener("submit", async (event) => {
     event.preventDefault();
