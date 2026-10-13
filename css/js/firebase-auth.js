@@ -23,6 +23,23 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
 const loginScreen = document.getElementById("loginScreen");
+const registerScreen = document.getElementById("registerScreen");
+const showRegisterButton = document.getElementById("showRegister");
+const backToLoginButton = document.getElementById("backToLogin");
+
+if (showRegisterButton) {
+  showRegisterButton.addEventListener("click", () => {
+    loginScreen.style.display = "none";
+    registerScreen.style.display = "block";
+  });
+}
+
+if (backToLoginButton) {
+  backToLoginButton.addEventListener("click", () => {
+    registerScreen.style.display = "none";
+    loginScreen.style.display = "block";
+  });
+}
 const appShell = document.querySelector(".app-shell");
 const loginForm = document.getElementById("loginForm");
 const loginMessage = document.getElementById("loginMessage");
