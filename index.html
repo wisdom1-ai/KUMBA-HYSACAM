@@ -32,7 +32,25 @@
     </button>
     <p id="loginMessage" role="status"></p>
   </form>
-</section>         
+</section>
+<section id="registerScreen" style="display:none;max-width:400px;margin:40px auto;padding:24px;background:white;border-radius:12px;color:#222;">
+  <h2>Create Patient Account</h2>
+  <p>Register to use HYSACAM Kumba Tracker</p>
+  <form id="registerForm">
+    <label for="registerName">Full name</label>
+    <input id="registerName" type="text" autocomplete="name" required style="display:block;width:100%;padding:12px;margin:8px 0 16px;box-sizing:border-box;">
+
+    <label for="registerEmail">Email address</label>
+    <input id="registerEmail" type="email" autocomplete="email" required style="display:block;width:100%;padding:12px;margin:8px 0 16px;box-sizing:border-box;">
+
+    <label for="registerPassword">Password (at least 6 characters)</label>
+    <input id="registerPassword" type="password" autocomplete="new-password" minlength="6" required style="display:block;width:100%;padding:12px;margin:8px 0 16px;box-sizing:border-box;">
+
+    <button type="submit" style="width:100%;padding:12px;background:#147d4a;color:white;border:0;border-radius:6px;">Create Account</button>
+    <p id="registerMessage" role="status"></p>
+  </form>
+  <button id="backToLogin" type="button" style="padding:10px;">Back to Login</button>
+</section>
 <div class="app-shell">
 <!-- Sidebar -->
 <aside class="sidebar" id="sidebar">
