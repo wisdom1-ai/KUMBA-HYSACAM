@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HYSACAM Tracker - Create Account</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f4f3;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+    .box {
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 380px;
+      box-sizing: border-box;
+      box-shadow: 0 4px 15px #0002;
+    }
+    h2 { text-align: center; color: #147d4b; }
+    input, button {
+      box-sizing: border-box;
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0;
+      border-radius: 6px;
+    }
+    input { border: 1px solid #ccc; }
+    button {
+      background: #147d4b;
+      color: white;
+      border: none;
+      font-weight: bold;
+    }
+    #message { font-size: 14px; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h2>HYSACAM Tracker</h2>
+    <p>Create your account to continue.</p>
+
+    <form id="signupForm">
+      <input id="email" type="email"
+        placeholder="Your Gmail address" required>
+      <input id="password" type="password"
+        placeholder="Create a password" minlength="6" required>
+      <button type="submit">Create Account</button>
+    </form>
+
+    <p id="message" role="status"></p>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from
+      "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
+    import {
+      getAuth,
+      createUserWithEmailAndPassword,
+      sendEmailVerification
+    } from
+      "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "PASTE_YOUR_API_KEY",
+      authDomain: "PASTE_YOUR_AUTH_DOMAIN",
+      projectId: "PASTE_YOUR_PROJECT_ID",
+      appId: "PASTE_YOUR_APP_ID"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const form = document.getElementById("signupForm");
+    const message = document.getElementById("message");
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      message.textContent = "Creating your account...";
+
+      try {
+        const credential = await createUserWithEmailAndPassword(
+          auth,
+          document.getElementById("email").value.trim(),
+          document.getElementById("password").value
+        );
+
+        await sendEmailVerification(credential.user);
+
+        message.textContent =
+          "Account created! Check your email and tap the verification link. Then return here to sign in.";
+        form.reset();
+      } catch (error) {
+        message.textContent = error.message;
+      }
+    });
+  </script>
+</body>
+</html>
