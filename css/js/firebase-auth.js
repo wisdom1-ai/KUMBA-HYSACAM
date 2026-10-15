@@ -121,9 +121,12 @@ if (appShell) {
 onAuthStateChanged(auth, (user) => {
   if (user) {
     if (loginScreen) loginScreen.style.display = "none";
+    if (registerScreen) registerScreen.style.display = "none";
     if (appShell) appShell.style.display = "";
   } else {
+    if (registerScreen) registerScreen.style.display = "none";
     if (loginScreen) loginScreen.style.display = "block";
     if (appShell) appShell.style.display = "none";
   }
 });
+
