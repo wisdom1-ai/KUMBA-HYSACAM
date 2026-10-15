@@ -52,18 +52,35 @@
       <input id="password" type="password"
         placeholder="Create a password" minlength="6" required>
       <button type="submit">Create Account</button>
-    </form>
+  </form>
 
-    <p id="message" role="status"></p>
+<hr>
+
+<h3>Already have an account? Log In</h3>
+
+<form id="loginForm">
+  <input id="loginEmail" type="email"
+    placeholder="Your Gmail address" required>
+
+  <input id="loginPassword" type="password"
+    placeholder="Your password" required>
+
+  <button type="submit">Log In</button>
+</form>
+
+<p id="loginMessage" role="status"></p>
+<p id="message" role="status"></p>
   </div>
 
   <script type="module">
     import { initializeApp } from
       "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
     import {
-      getAuth,
-      createUserWithEmailAndPassword,
-      sendEmailVerification
+     getAuth,
+createUserWithEmailAndPassword,
+signInWithEmailAndPassword,
+sendEmailVerification,
+signOut
     } from
       "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
 
@@ -80,25 +97,57 @@
     const message = document.getElementById("message");
 
     form.addEventListener("submit", async (event) => {
-      event.preventDefault();
-      message.textContent = "Creating your account...";
+      
+form.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  message.textContent = "Creating your account...";
 
-      try {
-        const credential = await createUserWithEmailAndPassword(
-          auth,
-          document.getElementById("email").value.trim(),
-          document.getElementById("password").value
-        );
+  try {
+    const credential = await createUserWithEmailAndPassword(
+      auth,
+      document.getElementById("email").value.trim(),
+      document.getElementById("password").value
+    );
 
-        await sendEmailVerification(credential.user);
+    await sendEmailVerification(credential.user);
+    await signOut(auth);
 
-        message.textContent =
-          "Account created! Check your email and tap the verification link. Then return here to sign in.";
-        form.reset();
-      } catch (error) {
-        message.textContent = error.message;
-      }
-    });
+    message.textContent =
+      "Account created! Check your Gmail and tap the verification link, then log in.";
+    form.reset();
+  } catch (error) {
+    message.textContent = error.message;
+  }
+});
+
+const loginForm = document.getElementById("loginForm");
+const loginMessage = document.getElementById("loginMessage");
+
+loginForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  loginMessage.textContent = "Signing in...";
+
+  try {
+    const credential = await signInWithEmailAndPassword(
+      auth,
+      document.getElementById("loginEmail").value.trim(),
+      document.getElementById("loginPassword").value
+    );
+
+    if (!credential.user.emailVerified) {
+      await sendEmailVerification(credential.user);
+      await signOut(auth);
+      loginMessage.textContent =
+        "Check your Gmail and tap the verification link before logging in.";
+      return;
+    }
+
+    window.location.href = "index.html";
+  } catch (error) {
+    loginMessage.textContent = error.message;
+  }
+});
+
   </script>
 </body>
 </html>
