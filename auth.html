@@ -49,8 +49,17 @@
     <form id="signupForm">
       <input id="email" type="email"
         placeholder="Your Gmail address" required>
-      <input id="password" type="password"
-        placeholder="Create a password" minlength="6" required>
+    
+<div style="position:relative;">
+  <input id="password" type="password"
+    placeholder="Create a password" minlength="6" required
+    style="padding-right:50px;">
+  <button type="button" onclick="togglePassword('password', this)"
+    style="position:absolute; right:4px; top:8px; width:44px; padding:8px; margin:0; background:#eee; color:#147d4b;">
+    👁️
+  </button>
+</div>
+
       <button type="submit">Create Account</button>
   </form>
 
@@ -62,8 +71,16 @@
   <input id="loginEmail" type="email"
     placeholder="Your Gmail address" required>
 
+ 
+<div style="position:relative;">
   <input id="loginPassword" type="password"
-    placeholder="Your password" required>
+    placeholder="Your password" required
+    style="padding-right:50px;">
+  <button type="button" onclick="togglePassword('loginPassword', this)"
+    style="position:absolute; right:4px; top:8px; width:44px; padding:8px; margin:0; background:#eee; color:#147d4b;">
+    👁️
+  </button>
+</div>
 
   <button type="submit">Log In</button>
 </form>
@@ -145,7 +162,16 @@ loginForm.addEventListener("submit", async (event) => {
     loginMessage.textContent = error.message;
   }
 });
-
+window.togglePassword = function (id, button) {
+  const input = document.getElementById(id);
+  if (input.type === "password") {
+    input.type = "text";
+    button.textContent = "🙈";
+  } else {
+    input.type = "password";
+    button.textContent = "👁️";
+  }
+};
   </script>
 </body>
 </html>
