@@ -104,14 +104,20 @@ if (registerForm) {
     registerMessage.textContent = "Creating your account...";
 
     try {
-      const credential = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-   
-      registerMessage.textContent =
-        "Account created successfully. You can now use the tracker.";
+    
+const credential = await createUserWithEmailAndPassword(
+  auth,
+  email,
+  password
+);
+
+await sendEmailVerification(credential.user);
+
+registerMessage.textContent =
+  "Account created! Check your email inbox or spam folder for the verification link before logging in.";
+
+await signOut(auth);
+      
     } catch (error) {
       registerMessage.textContent =
         error.code === "auth/email-already-in-use"
@@ -132,12 +138,26 @@ if (loginForm) {
 
     loginMessage.textContent = "Signing in...";
 
-    try {
-      await signInWithEmailAndPassword(auth, email, password);
-      loginMessage.textContent = "";
-    } catch (error) {
-      loginMessage.textContent =
-        "Login failed. Check your email and password.";
+try {
+  const credential = await signInWithEmailAndPassword(
+    auth,
+    email,
+    password
+  );
+
+  if (!credential.user.emailVerified) {
+    await signOut(auth);
+    loginMessage.textContent =
+      "Please verify your email first. Check your inbox or spam folder for the verification link.";
+    return;
+  }
+
+  loginMessage.textContent = "";
+} catch (error) {
+  loginMessage.textContent =
+    "Login failed. Check your email and password.";
+}
+    
     }
   });
 }
@@ -159,15 +179,21 @@ if (appShell) {
   });
 }
 
-onAuthStateChanged(auth, (user) => {
-  if (user) {
+
+onAuthStateChanged(auth, async (user) => {
+  if (user && user.emailVerified) {
     if (loginScreen) loginScreen.style.display = "none";
     if (registerScreen) registerScreen.style.display = "none";
     if (appShell) appShell.style.display = "";
   } else {
+    if (user) {
+      await signOut(auth);
+    }
+
     if (registerScreen) registerScreen.style.display = "none";
     if (loginScreen) loginScreen.style.display = "block";
     if (appShell) appShell.style.display = "none";
   }
 });
+
 
