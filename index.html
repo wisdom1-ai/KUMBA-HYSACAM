@@ -17,11 +17,15 @@
 <section id="loginScreen" style="max-width:400px;margin:40px auto;padding:24px;background:white;border-radius:12px;color:#222;">
   <h2>HYSACAM Kumba Tracker</h2>
   <p>Sign in to continue</p>
-
-  <form id="loginForm">
+  
+<form id="loginForm">
     <label for="loginEmail">Email address</label>
-    
-<label for="loginPassword">Password</label>
+    <input id="loginEmail" type="email"
+      autocomplete="email" required
+      style="display:block;width:100%;padding:12px;margin:8px 0 16px;box-sizing:border-box;">
+
+    <label for="loginPassword">Password</label>
+  
 <div style="position:relative;width:100%;margin:8px 0 16px;">
   <input id="loginPassword" type="password"
     autocomplete="current-password" required
