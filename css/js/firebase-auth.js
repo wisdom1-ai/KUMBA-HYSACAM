@@ -138,26 +138,24 @@ if (loginForm) {
 
     loginMessage.textContent = "Signing in...";
 
-try {
-  const credential = await signInWithEmailAndPassword(
-    auth,
-    email,
-    password
-  );
+    try {
+      const credential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
 
-  if (!credential.user.emailVerified) {
-    await signOut(auth);
-    loginMessage.textContent =
-      "Please verify your email first. Check your inbox or spam folder for the verification link.";
-    return;
-  }
+      if (!credential.user.emailVerified) {
+        await signOut(auth);
+        loginMessage.textContent =
+          "Please verify your email first. Check your inbox or spam folder.";
+        return;
+      }
 
-  loginMessage.textContent = "";
-} catch (error) {
-  loginMessage.textContent =
-    "Login failed. Check your email and password.";
-}
-    
+      loginMessage.textContent = "";
+    } catch (error) {
+      loginMessage.textContent =
+        "Login failed. Check your email and password.";
     }
   });
 }
