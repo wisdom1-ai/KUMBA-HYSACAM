@@ -87,6 +87,7 @@
     return "Needs attention";
   }
 
+  // Load real bin records from Supabase.
   async function loadBins() {
     if (typeof supabaseClient === "undefined") {
       console.error("Supabase client is not available.");
@@ -155,14 +156,17 @@
 
     if (name === "map") {
       ensureMap("main");
+
       setTimeout(() => {
         if (mainMap) mainMap.invalidateSize();
       }, 120);
+
       renderMainMarkers();
     }
 
     if (name === "home") {
       ensureMap("mini");
+
       setTimeout(() => {
         if (miniMap) miniMap.invalidateSize();
       }, 120);
@@ -206,7 +210,7 @@
               <button
                 class="text-button locate-button"
                 data-location="${escapeHTML(location.id)}">
-                View on map ↗
+                View on map ↗️
               </button>
             </td>
           </tr>
@@ -504,6 +508,7 @@
     toast("Your report history was exported.");
   }
 
+  // Navigation and directory controls.
   $$("[data-page]").forEach(button => {
     button.addEventListener("click", () => setPage(button.dataset.page));
   });
@@ -527,46 +532,207 @@
     mainMap.fitBounds(group.getBounds().pad(0.15));
   });
 
-  $("#report-form")?.addEventListener("submit", event => {
+  // GPS: requires the user to grant location permission.
+  $("#get-current-location")?.addEventListener("click", () => {
+    const status = $("#location-status");
+
+    if (!navigator.geolocation) {
+      if (status) {
+        status.textContent = "GPS is not supported by this browser.";
+      }
+      return;
+    }
+
+    if (status) status.textContent = "Getting your location...";
+
+    navigator.geolocation.getCurrentPosition(
+      position => {
+        const latInput = $("#report-latitude");
+        const lngInput = $("#report-longitude");
+
+        if (!latInput || !lngInput) {
+          if (status) {
+            status.textContent = "GPS input fields are missing from the page.";
+          }
+          return;
+        }
+
+        latInput.value = position.coords.latitude;
+        lngInput.value = position.coords.longitude;
+
+        if (status) {
+          status.textContent = "Location captured successfully.";
+        }
+
+        toast("GPS location captured.");
+      },
+      error => {
+        console.error("GPS error:", error.message);
+
+        if (status) {
+          status.textContent =
+            "Location unavailable. Check permission and try again.";
+        }
+
+        toast("Could not get your location. You can submit without GPS.");
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 15000,
+        maximumAge: 0
+      }
+    );
+  });
+
+  // Submit the report to Supabase.
+  $("#report-form")?.addEventListener("submit", async event => {
     event.preventDefault();
 
-    const type = $("#issue-type").value;
-    const location = $("#issue-location").value.trim();
-    const area = $("#issue-area").value;
-    const details = $("#issue-details").value.trim();
+    const form = $("#report-form");
+    const submitButton = form.querySelector('[type="submit"]');
 
-    if (!type || !location || !area) {
+    const reporterName = $("#reporter-name")?.value.trim() || "";
+    const reporterEmail = $("#reporter-email")?.value.trim() || "";
+    const reporterPhone = $("#reporter-phone")?.value.trim() || "";
+    const type = $("#issue-type")?.value.trim() || "";
+    const location = $("#issue-location")?.value.trim() || "";
+    const area = $("#issue-area")?.value.trim() || "";
+    const details = $("#issue-details")?.value.trim() || "";
+
+    const latitudeValue = $("#report-latitude")?.value ?? "";
+    const longitudeValue = $("#report-longitude")?.value ?? "";
+
+    const latitude = latitudeValue === ""
+      ? null
+      : Number(latitudeValue);
+
+    const longitude = longitudeValue === ""
+      ? null
+      : Number(longitudeValue);
+
+    if (
+      !reporterName ||
+      !reporterEmail ||
+      !type ||
+      !location ||
+      !area ||
+      !details
+    ) {
       toast("Please complete all required fields.");
+      return;
+    }
+
+    if (
+      reporterName.length < 2 ||
+      reporterName.length > 100 ||
+      reporterEmail.length > 254 ||
+      type.length < 3 ||
+      type.length > 100 ||
+      location.length > 150 ||
+      area.length > 100 ||
+      details.length < 3 ||
+      details.length > 800
+    ) {
+      toast("Please check your entries and their lengths.");
+      return;
+    }
+
+    // Browser validation usually checks email format too.
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailPattern.test(reporterEmail)) {
+      toast("Please enter a valid email address.");
+      return;
+    }
+
+    if (
+      (latitude !== null && !Number.isFinite(latitude)) ||
+      (longitude !== null && !Number.isFinite(longitude)) ||
+      ((latitude === null) !== (longitude === null)) ||
+      (latitude !== null &&
+        (latitude < -90 || latitude > 90 ||
+         longitude < -180 || longitude > 180))
+    ) {
+      toast("The GPS coordinates are invalid. Capture your location again.");
+      return;
+    }
+
+    if (typeof supabaseClient === "undefined") {
+      toast("Database connection is unavailable. Please try again.");
       return;
     }
 
     const now = new Date();
 
-    const report = {
-      id: "HK-" +
-        now.getFullYear().toString().slice(-2) +
-        Math.random().toString(36).slice(2, 7).toUpperCase(),
-      type,
-      location,
-      area,
-      details,
-      date: now.toLocaleString()
+    const reference = "HKT-" +
+      now.getFullYear().toString().slice(-2) +
+      Math.random().toString(36).slice(2, 7).toUpperCase();
+
+    const databaseReport = {
+      reference_code: reference,
+      reporter_name: reporterName,
+      reporter_email: reporterEmail,
+      reporter_phone: reporterPhone || null,
+      title: type,
+      location_description: location,
+      area: area,
+      description: details,
+      latitude: latitude,
+      longitude: longitude,
+      status: "submitted"
     };
 
-    reports.push(report);
+    if (submitButton) submitButton.disabled = true;
 
-    if (!write(storage.reports, reports)) {
-      reports.pop();
-      return;
+    try {
+      const { error } = await supabaseClient
+        .from("reports")
+        .insert(databaseReport);
+
+      if (error) {
+        console.error("Supabase report submission failed:", error);
+        toast("Report could not be submitted. Please check the database setup.");
+        return;
+      }
+
+      // Preserve the existing local report history.
+      const localReport = {
+        id: reference,
+        type,
+        location,
+        area,
+        details,
+        date: now.toLocaleString(),
+        status: "submitted"
+      };
+
+      reports.push(localReport);
+
+      if (!write(storage.reports, reports)) {
+        reports.pop();
+        toast("Report reached the database, but local history could not be saved.");
+      }
+
+      form.reset();
+
+      if ($("#location-status")) {
+        $("#location-status").textContent = "";
+      }
+
+      updateStats();
+      renderReports();
+
+      toast("Report submitted successfully!");
+      setPage("reports");
+    } catch (error) {
+      console.error("Unexpected report submission error:", error);
+      toast("Something went wrong. Check your connection and try again.");
+    } finally {
+      if (submitButton) submitButton.disabled = false;
     }
-
-    $("#report-form").reset();
-    updateStats();
-    renderReports();
-    toast("Report saved on this device.");
-    setPage("reports");
   });
 
+  // Save the existing profile locally.
   $("#profile-form")?.addEventListener("submit", event => {
     event.preventDefault();
 
@@ -587,7 +753,7 @@
 
   $("#clear-local-data")?.addEventListener("click", () => {
     if (!confirm(
-      "Clear locally saved reports and profile settings on this browser? This cannot be undone."
+      "Clear locally saved reports and profile settings on this browser? This will not delete reports from Supabase."
     )) return;
 
     reports = [];
@@ -604,7 +770,7 @@
     updateStats();
     renderProfile();
     renderReports();
-    toast("Local demo data cleared.");
+    toast("Local browser data cleared.");
   });
 
   window.addEventListener("resize", () => {
@@ -612,6 +778,7 @@
     if (miniMap) miniMap.invalidateSize();
   });
 
+  // Initial page setup.
   renderDirectory();
   updateStats();
   renderProfile();

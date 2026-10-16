@@ -4,83 +4,643 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#176b4d">
+  <meta name="description" content="Community cleanliness portal for reporting sanitation issues and exploring waste-bin locations in Kumba, Cameroon.">
   <title>HYSACAM Kumba | Community Cleanliness</title>
   <link rel="preconnect" href="https://unpkg.com">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+  <link rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+        crossorigin="">
   <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
   <div class="app-shell">
     <aside class="sidebar">
       <a class="brand" href="#" data-page="home">
-        <span class="brand-mark"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M8 13h24l-2 21H10L8 13Zm6 0V8h12v5M5 13h30M16 19v10m8-10v10" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-        <span><strong>HYSACAM</strong><small>KUMBA COMMUNITY</small></span>
+        <span class="brand-mark">
+          <svg viewBox="0 0 40 40" aria-hidden="true">
+            <path d="M8 13h24l-2 21H10L8 13Zm6 0V8h12v5M5 13h30M16 19v10m8-10v10"
+                  fill="none" stroke="currentColor" stroke-width="2.5"
+                  stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+        <span>
+          <strong>HYSACAM</strong>
+          <small>KUMBA COMMUNITY</small>
+        </span>
       </a>
+
       <div class="workspace-label">WORKSPACE</div>
+
       <nav class="side-nav" aria-label="Main navigation">
-        <button class="nav-item active" data-page="home"><span class="nav-icon">⌂</span><span>Overview</span></button>
-        <button class="nav-item" data-page="map"><span class="nav-icon">◎</span><span>Live map</span></button>
-        <button class="nav-item" data-page="directory"><span class="nav-icon">▤</span><span>Dustbin directory</span></button>
-        <button class="nav-item" data-page="report"><span class="nav-icon">＋</span><span>Submit a report</span></button>
-        <button class="nav-item" data-page="reports"><span class="nav-icon">☷</span><span>My reports</span><span class="nav-count" id="report-count">0</span></button>
-        <button class="nav-item" data-page="profile"><span class="nav-icon">♙</span><span>My profile</span></button>
+        <button class="nav-item active" data-page="home">
+          <span class="nav-icon">⌂</span><span>Overview</span>
+        </button>
+        <button class="nav-item" data-page="map">
+          <span class="nav-icon">◎</span><span>Live map</span>
+        </button>
+        <button class="nav-item" data-page="directory">
+          <span class="nav-icon">▤</span><span>Dustbin directory</span>
+        </button>
+        <button class="nav-item" data-page="report">
+          <span class="nav-icon">＋</span><span>Submit a report</span>
+        </button>
+        <button class="nav-item" data-page="reports">
+          <span class="nav-icon">☷</span><span>My reports</span>
+          <span class="nav-count" id="report-count">0</span>
+        </button>
+        <button class="nav-item" data-page="profile">
+          <span class="nav-icon">♙</span><span>My profile</span>
+        </button>
       </nav>
+
       <div class="sidebar-bottom">
-        <div class="help-card"><span class="help-dot"></span><div><strong>Community support</strong><small>Help keep Kumba clean</small></div></div>
-        <button class="nav-item" data-page="help"><span class="nav-icon">?</span><span>Help & support</span></button>
-        <div class="sidebar-foot">COMMUNITY CLEANLINESS PORTAL<br><span>Demo edition · Local device storage</span></div>
+        <div class="help-card">
+          <span class="help-dot"></span>
+          <div>
+            <strong>Community support</strong>
+            <small>Help keep Kumba clean</small>
+          </div>
+        </div>
+
+        <button class="nav-item" data-page="help">
+          <span class="nav-icon">?</span><span>Help &amp; support</span>
+        </button>
+
+        <div class="sidebar-foot">
+          COMMUNITY CLEANLINESS PORTAL<br>
+          <span>Community reporting portal</span>
+        </div>
       </div>
     </aside>
 
     <main class="main-area">
       <header class="topbar">
-        <div class="mobile-brand"><span class="brand-mark small">H</span><strong>HYSACAM <span>KUMBA</span></strong></div>
-        <div class="crumb"><span>Community portal</span><span class="crumb-sep">/</span><strong id="page-crumb">Overview</strong></div>
-        <div class="top-actions"><span class="status-pill"><i></i> Community portal</span><button class="avatar" id="top-avatar" aria-label="Open profile">W</button></div>
+        <div class="mobile-brand">
+          <span class="brand-mark small">H</span>
+          <strong>HYSACAM <span>KUMBA</span></strong>
+        </div>
+
+        <div class="crumb">
+          <span>Community portal</span>
+          <span class="crumb-sep">/</span>
+          <strong id="page-crumb">Overview</strong>
+        </div>
+
+        <div class="top-actions">
+          <span class="status-pill"><i></i> Community portal</span>
+          <button class="avatar" id="top-avatar" aria-label="Open profile">W</button>
+        </div>
       </header>
 
+      <!-- OVERVIEW -->
       <section class="page active" id="page-home">
-        <div class="welcome-row"><div><p class="eyebrow">KUMBA · SOUTH-WEST REGION</p><h1>A cleaner Kumba starts <span>with us</span></h1><p class="subhead">Track public dustbins, report sanitation issues, and help your community stay clean</p></div><button class="button primary" data-go="report"><span>＋</span> Report an issue</button></div>
-        <div class="hero-panel"><div class="hero-copy"><span class="hero-tag"><i></i> COMMUNITY ACTION</span><h2>Small actions.<br>Cleaner streets</h2><p>Help the community identify full bins, missed collections and sanitation concerns in your area</p><button class="button light" data-go="map">Explore community map <span>↗</span></button></div><div class="hero-art" aria-hidden="true"><div class="art-sun"></div><div class="art-hill hill-one"></div><div class="art-hill hill-two"></div><div class="art-bin"><div class="bin-lid"></div><div class="bin-body"><span>♻</span></div><div class="bin-wheel left"></div><div class="bin-wheel right"></div></div><div class="art-leaf leaf-one">✦</div><div class="art-leaf leaf-two">✦</div></div></div>
-        <div class="section-heading"><div><p class="eyebrow">AT A GLANCE</p><h2>Community overview</h2></div><span class="muted tiny">Illustrative sample data</span></div>
-        <div class="stats-grid">
-          <article class="stat-card"><div class="stat-top"><span class="stat-icon green">▤</span><span class="stat-trend">Directory</span></div><div class="stat-number" id="stat-bins">12</div><div class="stat-label">Listed dustbin locations</div><div class="stat-foot">Across selected Kumba areas</div></article>
-          <article class="stat-card"><div class="stat-top"><span class="stat-icon amber">◷</span><span class="stat-trend">Needs attention</span></div><div class="stat-number" id="stat-attention">3</div><div class="stat-label">Locations to check</div><div class="stat-foot">Sample status indicators</div></article>
-          <article class="stat-card"><div class="stat-top"><span class="stat-icon blue">♧</span><span class="stat-trend">Your activity</span></div><div class="stat-number" id="stat-reports">0</div><div class="stat-label">Reports submitted by you</div><div class="stat-foot">Saved on this device</div></article>
-          <article class="stat-card"><div class="stat-top"><span class="stat-icon purple">✓</span><span class="stat-trend">Community</span></div><div class="stat-number">24/7</div><div class="stat-label">Make a difference</div><div class="stat-foot">Report issues whenever you notice them</div></article>
+        <div class="welcome-row">
+          <div>
+            <p class="eyebrow">KUMBA · SOUTH-WEST REGION</p>
+            <h1>A cleaner Kumba starts <span>with us</span></h1>
+            <p class="subhead">
+              Explore listed waste-bin locations, report sanitation issues,
+              and help your community stay clean.
+            </p>
+          </div>
+          <button class="button primary" data-go="report">
+            <span>＋</span> Report an issue
+          </button>
         </div>
+
+        <div class="hero-panel">
+          <div class="hero-copy">
+            <span class="hero-tag"><i></i> COMMUNITY ACTION</span>
+            <h2>Small actions.<br>Cleaner streets</h2>
+            <p>
+              Help the community identify full bins, missed collections
+              and sanitation concerns in your area.
+            </p>
+            <button class="button light" data-go="map">
+              Explore community map <span>↗</span>
+            </button>
+          </div>
+
+          <div class="hero-art" aria-hidden="true">
+            <div class="art-sun"></div>
+            <div class="art-hill hill-one"></div>
+            <div class="art-hill hill-two"></div>
+            <div class="art-bin">
+              <div class="bin-lid"></div>
+              <div class="bin-body"><span>♻</span></div>
+              <div class="bin-wheel left"></div>
+              <div class="bin-wheel right"></div>
+            </div>
+            <div class="art-leaf leaf-one">✦</div>
+            <div class="art-leaf leaf-two">✦</div>
+          </div>
+        </div>
+
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">AT A GLANCE</p>
+            <h2>Community overview</h2>
+          </div>
+          <span class="muted tiny">Live figures depend on available records</span>
+        </div>
+
+        <div class="stats-grid">
+          <article class="stat-card">
+            <div class="stat-top">
+              <span class="stat-icon green">▤</span>
+              <span class="stat-trend">Directory</span>
+            </div>
+            <div class="stat-number" id="stat-bins">0</div>
+            <div class="stat-label">Listed dustbin locations</div>
+            <div class="stat-foot">Locations recorded in the database</div>
+          </article>
+
+          <article class="stat-card">
+            <div class="stat-top">
+              <span class="stat-icon amber">◷</span>
+              <span class="stat-trend">Needs attention</span>
+            </div>
+            <div class="stat-number" id="stat-attention">0</div>
+            <div class="stat-label">Locations needing attention</div>
+            <div class="stat-foot">Based on recorded status</div>
+          </article>
+
+          <article class="stat-card">
+            <div class="stat-top">
+              <span class="stat-icon blue">♧</span>
+              <span class="stat-trend">Your activity</span>
+            </div>
+            <div class="stat-number" id="stat-reports">0</div>
+            <div class="stat-label">Reports submitted by you</div>
+            <div class="stat-foot">See My Reports for submission history</div>
+          </article>
+
+          <article class="stat-card">
+            <div class="stat-top">
+              <span class="stat-icon purple">✓</span>
+              <span class="stat-trend">Community</span>
+            </div>
+            <div class="stat-number">24/7</div>
+            <div class="stat-label">Help identify sanitation issues</div>
+            <div class="stat-foot">Report concerns when you notice them</div>
+          </article>
+        </div>
+
         <div class="content-grid">
-          <article class="panel map-preview"><div class="panel-heading"><div><h3>Nearby locations</h3><p>Explore the sample directory on the map</p></div><button class="text-button" data-go="map">Open map ↗</button></div><div id="mini-map" class="mini-map"></div><div class="map-legend"><span><i class="legend-dot green-dot"></i> Available</span><span><i class="legend-dot amber-dot"></i> Needs attention</span><span class="muted tiny">Illustrative locations</span></div></article>
-          <article class="panel quick-panel"><div class="panel-heading"><div><h3>Quick actions</h3><p>What would you like to do?</p></div></div><button class="quick-action" data-go="directory"><span class="quick-icon green">▤</span><span><strong>Find a dustbin</strong><small>Browse listed locations</small></span><b>→</b></button><button class="quick-action" data-go="report"><span class="quick-icon amber">＋</span><span><strong>Report a problem</strong><small>Full bin, missed pickup or litter</small></span><b>→</b></button><button class="quick-action" data-go="reports"><span class="quick-icon blue">☷</span><span><strong>View my reports</strong><small>Check reports saved on this device</small></span><b>→</b></button><div class="notice"><span>i</span><p><strong>Demo data notice</strong><br>Locations and statuses are examples, not verified live HYSACAM records</p></div></article>
+          <article class="panel map-preview">
+            <div class="panel-heading">
+              <div>
+                <h3>Listed locations</h3>
+                <p>Explore locations recorded in the database</p>
+              </div>
+              <button class="text-button" data-go="map">Open map ↗</button>
+            </div>
+
+            <div id="mini-map" class="mini-map"></div>
+
+            <div class="map-legend">
+              <span><i class="legend-dot green-dot"></i> Available</span>
+              <span><i class="legend-dot amber-dot"></i> Needs attention</span>
+              <span class="muted tiny">Check location details before visiting</span>
+            </div>
+          </article>
+
+          <article class="panel quick-panel">
+            <div class="panel-heading">
+              <div>
+                <h3>Quick actions</h3>
+                <p>What would you like to do?</p>
+              </div>
+            </div>
+
+            <button class="quick-action" data-go="directory">
+              <span class="quick-icon green">▤</span>
+              <span><strong>Find a dustbin</strong><small>Browse recorded locations</small></span>
+              <b>→</b>
+            </button>
+
+            <button class="quick-action" data-go="report">
+              <span class="quick-icon amber">＋</span>
+              <span><strong>Report a problem</strong><small>Full bin, missed pickup or litter</small></span>
+              <b>→</b>
+            </button>
+
+            <button class="quick-action" data-go="reports">
+              <span class="quick-icon blue">☷</span>
+              <span><strong>View my reports</strong><small>Review your submission history</small></span>
+              <b>→</b>
+            </button>
+
+            <div class="notice">
+              <span>i</span>
+              <p>
+                <strong>Location accuracy</strong><br>
+                Only add locations that have been collected or verified.
+                Database entries are not automatically official HYSACAM records.
+              </p>
+            </div>
+          </article>
         </div>
       </section>
 
-      <section class="page" id="page-map"><div class="page-title-row"><div><p class="eyebrow">EXPLORE KUMBA</p><h1>Community map</h1><p class="subhead">Browse sample dustbin locations and their reported status</p></div><button class="button secondary" id="map-fit">Fit all locations</button></div><div class="panel full-map-panel"><div class="map-toolbar"><div><strong>Location explorer</strong><small>Markers are illustrative and may not reflect real installations</small></div><select id="map-filter" aria-label="Filter map locations"><option value="all">All statuses</option><option value="Available">Available</option><option value="Needs attention">Needs attention</option><option value="Maintenance">Maintenance</option></select></div><div id="main-map" class="main-map"></div></div></section>
+      <!-- MAP -->
+      <section class="page" id="page-map">
+        <div class="page-title-row">
+          <div>
+            <p class="eyebrow">EXPLORE KUMBA</p>
+            <h1>Community map</h1>
+            <p class="subhead">Browse recorded waste-bin locations and their status</p>
+          </div>
+          <button class="button secondary" id="map-fit">Fit all locations</button>
+        </div>
 
-      <section class="page" id="page-directory"><div class="page-title-row"><div><p class="eyebrow">LOCATION DIRECTORY</p><h1>Dustbin directory</h1><p class="subhead">Search and filter sample public waste-bin locations</p></div><button class="button primary" data-go="report">＋ Report an issue</button></div><div class="panel directory-panel"><div class="directory-tools"><label class="searchbox"><span>⌕</span><input id="directory-search" type="search" placeholder="Search by location or area…"></label><select id="status-filter" aria-label="Filter by status"><option value="all">All statuses</option><option>Available</option><option>Needs attention</option><option>Maintenance</option></select></div><div class="table-wrap"><table><thead><tr><th>LOCATION</th><th>AREA</th><th>STATUS</th><th>LAST CHECK</th><th></th></tr></thead><tbody id="directory-body"></tbody></table></div><div class="table-footer"><span id="directory-result-count">12 locations</span><span class="muted tiny">Sample directory · verify on site</span></div></div></section>
+        <div class="panel full-map-panel">
+          <div class="map-toolbar">
+            <div>
+              <strong>Location explorer</strong>
+              <small>Map markers appear when location coordinates are available</small>
+            </div>
+            <select id="map-filter" aria-label="Filter map locations">
+              <option value="all">All statuses</option>
+              <option value="Available">Available</option>
+              <option value="Needs attention">Needs attention</option>
+              <option value="Maintenance">Maintenance</option>
+            </select>
+          </div>
+          <div id="main-map" class="main-map"></div>
+        </div>
+      </section>
 
-      <section class="page" id="page-report"><div class="page-title-row"><div><p class="eyebrow">COMMUNITY FEEDBACK</p><h1>Submit a report</h1><p class="subhead">Tell us what needs attention Be specific so the right team can understand the issue</p></div></div><div class="report-layout"><form id="report-form" class="panel form-panel"><div class="form-section-title"><span class="step-number">01</span><div><h3>Issue details</h3><p>Describe what you noticed</p></div></div><label class="field-label" for="issue-type">Type of issue <span>*</span></label><select id="issue-type" required><option value="">Choose an issue type</option><option>Dustbin is full</option><option>Missed collection</option><option>Damaged dustbin</option><option>Illegal dumping / litter</option><option>Other sanitation concern</option></select><label class="field-label" for="issue-location">Location or landmark <span>*</span></label><input id="issue-location" required maxlength="100" placeholder="e.g near a market, junction or landmark"><label class="field-label" for="issue-area">Area of Kumba <span>*</span></label><select id="issue-area" required><option value="">Choose an area</option><option>Kumba I</option><option>Kumba II</option><option>Kumba III</option><option>Other / not sure</option></select><label class="field-label" for="issue-details">Additional details</label><textarea id="issue-details" rows="4" maxlength="800" placeholder="Add helpful details (optional)"></textarea><div class="form-hint"><span>i</span> Do not include sensitive personal information</div><div class="form-actions"><button class="button primary" type="submit">Submit report <span>→</span></button><button class="button secondary" type="reset">Clear form</button></div></form><aside class="panel report-aside"><div class="aside-icon">✦</div><h3>Your report matters</h3><p>Clear, respectful reports can help the community understand where sanitation attention may be needed</p><div class="aside-divider"></div><div class="aside-point"><span>1</span><div><strong>Describe the issue</strong><small>Choose the closest matching category</small></div></div><div class="aside-point"><span>2</span><div><strong>Add a landmark</strong><small>Make the location easier to identify</small></div></div><div class="aside-point"><span>3</span><div><strong>Keep your reference</strong><small>Your submission will appear in My Reports on this device</small></div></div><div class="notice"><span>!</span><p>This demo saves reports locally It does not send them to HYSACAM</p></div></aside></div></section>
+      <!-- DIRECTORY -->
+      <section class="page" id="page-directory">
+        <div class="page-title-row">
+          <div>
+            <p class="eyebrow">LOCATION DIRECTORY</p>
+            <h1>Dustbin directory</h1>
+            <p class="subhead">Search and filter recorded public waste-bin locations</p>
+          </div>
+          <button class="button primary" data-go="report">＋ Report an issue</button>
+        </div>
 
-      <section class="page" id="page-reports"><div class="page-title-row"><div><p class="eyebrow">YOUR ACTIVITY</p><h1>My reports</h1><p class="subhead">Review reports you have submitted from this browser</p></div><button class="button primary" data-go="report">＋ New report</button></div><div class="panel reports-panel"><div class="panel-heading"><div><h3>Submission history</h3><p id="reports-subtitle">Your locally saved reports will appear here</p></div><button class="button secondary small-button" id="export-reports">Export CSV</button></div><div id="reports-list" class="reports-list"></div></div></section>
+        <div class="panel directory-panel">
+          <div class="directory-tools">
+            <label class="searchbox">
+              <span>⌕</span>
+              <input id="directory-search" type="search"
+                     placeholder="Search by location or area…">
+            </label>
 
-      <section class="page" id="page-profile"><div class="page-title-row"><div><p class="eyebrow">PERSONAL SETTINGS</p><h1>My profile</h1><p class="subhead">Personalise your community portal experience on this device</p></div></div><div class="profile-layout"><form id="profile-form" class="panel form-panel"><div class="profile-banner"><div class="profile-avatar" id="profile-avatar">W</div><div><h3 id="profile-display-name">Community member</h3><p>Community portal user</p></div></div><label class="field-label" for="profile-name">Display name</label><input id="profile-name" maxlength="50" placeholder="Enter a display name"><label class="field-label" for="profile-area">Preferred area</label><select id="profile-area"><option value="">Select your area (optional)</option><option>Kumba I</option><option>Kumba II</option><option>Kumba III</option><option>Other</option></select><label class="check-row"><input id="profile-notifications" type="checkbox"><span><strong>Community updates reminder</strong><small>Remember that you prefer to check for updates</small></span></label><div class="form-actions"><button class="button primary" type="submit">Save profile</button></div></form><aside class="panel privacy-panel"><span class="stat-icon green">♧</span><h3>Your information</h3><p>This standalone demo stores profile settings and reports in your browser's local storage</p><p>Clearing browser data may remove locally saved information No online account or shared database is connected</p><button class="button secondary" id="clear-local-data">Clear local demo data</button></aside></div></section>
+            <select id="status-filter" aria-label="Filter by status">
+              <option value="all">All statuses</option>
+              <option>Available</option>
+              <option>Needs attention</option>
+              <option>Maintenance</option>
+            </select>
+          </div>
 
-      <section class="page" id="page-help"><div class="page-title-row"><div><p class="eyebrow">WE'RE HERE TO HELP</p><h1>Help & support</h1><p class="subhead">Learn how to use the community cleanliness portal</p></div></div><div class="help-grid"><article class="panel help-tile"><span class="help-tile-icon">◎</span><h3>Find a location</h3><p>Open the map or directory and use the search and status filters to explore the illustrative sample locations</p><button class="text-button" data-go="directory">Browse directory →</button></article><article class="panel help-tile"><span class="help-tile-icon">＋</span><h3>Report an issue</h3><p>Select an issue type, provide a landmark and area, then submit Your report is saved on this device only</p><button class="text-button" data-go="report">Create a report →</button></article><article class="panel help-tile"><span class="help-tile-icon">☷</span><h3>Review your activity</h3><p>View your saved submissions in My Reports and export them to a CSV file</p><button class="text-button" data-go="reports">View my reports →</button></article><article class="panel help-tile"><span class="help-tile-icon">!</span><h3>Important limitation</h3><p>This is a prototype Map points are approximate examples; no live fleet tracking, official database or dispatch service is connected</p><a class="text-button" href="mailto:kelechiwisdom19950@gmail.com?subject=HYSACAM%20Kumba%20Tracker%20support">Email project support ↗</a></article></div></section>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>LOCATION</th>
+                  <th>AREA</th>
+                  <th>STATUS</th>
+                  <th>LAST CHECK</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="directory-body"></tbody>
+            </table>
+          </div>
 
-      <footer class="app-footer"><span>HYSACAM KUMBA COMMUNITY PORTAL</span><span>Built to support a cleaner community · Demo prototype</span></footer>
+          <div class="table-footer">
+            <span id="directory-result-count">0 locations</span>
+            <span class="muted tiny">Confirm conditions on site</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- REPORT FORM -->
+      <section class="page" id="page-report">
+        <div class="page-title-row">
+          <div>
+            <p class="eyebrow">COMMUNITY FEEDBACK</p>
+            <h1>Submit a report</h1>
+            <p class="subhead">
+              Tell us what needs attention and provide enough detail to identify the location.
+            </p>
+          </div>
+        </div>
+
+        <div class="report-layout">
+          <form id="report-form" class="panel form-panel">
+            <div class="form-section-title">
+              <span class="step-number">01</span>
+              <div>
+                <h3>Reporter information</h3>
+                <p>Provide contact details for possible follow-up</p>
+              </div>
+            </div>
+
+            <label class="field-label" for="reporter-name">Full name <span>*</span></label>
+            <input id="reporter-name" name="reporter_name" required
+                   maxlength="100" autocomplete="name"
+                   placeholder="Enter your full name">
+
+            <label class="field-label" for="reporter-email">Email address <span>*</span></label>
+            <input id="reporter-email" name="reporter_email" type="email"
+                   required maxlength="254" autocomplete="email"
+                   placeholder="you@example.com">
+
+            <label class="field-label" for="reporter-phone">Phone number</label>
+            <input id="reporter-phone" name="reporter_phone" type="tel"
+                   maxlength="30" autocomplete="tel"
+                   placeholder="Optional contact number">
+
+            <div class="form-section-title">
+              <span class="step-number">02</span>
+              <div>
+                <h3>Issue details</h3>
+                <p>Describe the sanitation problem</p>
+              </div>
+            </div>
+
+            <label class="field-label" for="issue-type">Type of issue <span>*</span></label>
+            <select id="issue-type" name="title" required>
+              <option value="">Choose an issue type</option>
+              <option>Dustbin is full</option>
+              <option>Missed collection</option>
+              <option>Damaged dustbin</option>
+              <option>Illegal dumping / litter</option>
+              <option>Other sanitation concern</option>
+            </select>
+
+            <label class="field-label" for="issue-location">Location or landmark <span>*</span></label>
+            <input id="issue-location" name="location_description"
+                   required maxlength="150"
+                   placeholder="Market, junction, street or nearby landmark">
+
+            <label class="field-label" for="issue-area">Area of Kumba <span>*</span></label>
+            <select id="issue-area" name="area" required>
+              <option value="">Choose an area</option>
+              <option>Kumba I</option>
+              <option>Kumba II</option>
+              <option>Kumba III</option>
+              <option>Other / not sure</option>
+            </select>
+
+            <label class="field-label" for="issue-details">Additional details <span>*</span></label>
+            <textarea id="issue-details" name="description" rows="4"
+                      required maxlength="800"
+                      placeholder="Describe what happened and when you noticed it"></textarea>
+
+            <div class="form-section-title">
+              <span class="step-number">03</span>
+              <div>
+                <h3>Current location</h3>
+                <p>GPS coordinates are optional and require your permission</p>
+              </div>
+            </div>
+
+            <button class="button secondary" type="button" id="get-current-location">
+              Use my current location
+            </button>
+
+            <p id="location-status" role="status" aria-live="polite">
+              GPS location has not been added. You can enter a landmark instead.
+            </p>
+
+            <input type="hidden" id="report-latitude" name="latitude">
+            <input type="hidden" id="report-longitude" name="longitude">
+
+            <div class="form-hint">
+              <span>i</span>
+              Your contact information and precise location should only be accessible
+              to authorised report handlers. Only share details you are comfortable providing.
+            </div>
+
+            <div class="form-actions">
+              <button class="button primary" type="submit">
+                Submit report <span>→</span>
+              </button>
+              <button class="button secondary" type="reset">Clear form</button>
+            </div>
+          </form>
+
+          <aside class="panel report-aside">
+            <div class="aside-icon">✦</div>
+            <h3>Your report matters</h3>
+            <p>
+              Clear and respectful reports can help the community understand
+              where sanitation attention may be needed.
+            </p>
+
+            <div class="aside-divider"></div>
+
+            <div class="aside-point">
+              <span>1</span>
+              <div>
+                <strong>Describe the issue</strong>
+                <small>Choose the closest matching category</small>
+              </div>
+            </div>
+
+            <div class="aside-point">
+              <span>2</span>
+              <div>
+                <strong>Add a landmark</strong>
+                <small>Help others identify the location</small>
+              </div>
+            </div>
+
+            <div class="aside-point">
+              <span>3</span>
+              <div>
+                <strong>Keep your reference</strong>
+                <small>Save the reference number after submission</small>
+              </div>
+            </div>
+
+            <div class="notice">
+              <span>!</span>
+              <p>
+                Submissions will only be online after the database connection
+                and secure report-submission service have been configured.
+              </p>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <!-- MY REPORTS -->
+      <section class="page" id="page-reports">
+        <div class="page-title-row">
+          <div>
+            <p class="eyebrow">YOUR ACTIVITY</p>
+            <h1>My reports</h1>
+            <p class="subhead">Review your report submission history</p>
+          </div>
+          <button class="button primary" data-go="report">＋ New report</button>
+        </div>
+
+        <div class="panel reports-panel">
+          <div class="panel-heading">
+            <div>
+              <h3>Submission history</h3>
+              <p id="reports-subtitle">Your submitted reports will appear here when connected.</p>
+            </div>
+            <button class="button secondary small-button" id="export-reports">
+              Export CSV
+            </button>
+          </div>
+          <div id="reports-list" class="reports-list"></div>
+        </div>
+      </section>
+
+      <!-- PROFILE -->
+      <section class="page" id="page-profile">
+        <div class="page-title-row">
+          <div>
+            <p class="eyebrow">PERSONAL SETTINGS</p>
+            <h1>My profile</h1>
+            <p class="subhead">Personalise your community portal experience</p>
+          </div>
+        </div>
+
+        <div class="profile-layout">
+          <form id="profile-form" class="panel form-panel">
+            <div class="profile-banner">
+              <div class="profile-avatar" id="profile-avatar">W</div>
+              <div>
+                <h3 id="profile-display-name">Community member</h3>
+                <p>Community portal user</p>
+              </div>
+            </div>
+
+            <label class="field-label" for="profile-name">Display name</label>
+            <input id="profile-name" maxlength="50" placeholder="Enter a display name">
+
+            <label class="field-label" for="profile-area">Preferred area</label>
+            <select id="profile-area">
+              <option value="">Select your area (optional)</option>
+              <option>Kumba I</option>
+              <option>Kumba II</option>
+              <option>Kumba III</option>
+              <option>Other</option>
+            </select>
+
+            <label class="check-row">
+              <input id="profile-notifications" type="checkbox">
+              <span>
+                <strong>Community updates reminder</strong>
+                <small>Remember that you prefer to check for updates</small>
+              </span>
+            </label>
+
+            <div class="form-actions">
+              <button class="button primary" type="submit">Save profile</button>
+            </div>
+          </form>
+
+          <aside class="panel privacy-panel">
+            <span class="stat-icon green">♧</span>
+            <h3>Your information</h3>
+            <p>Profile preferences may be saved in your browser.</p>
+            <p>
+              Do not use a shared device to store private information.
+              Clearing browser data may remove locally saved settings.
+            </p>
+            <button class="button secondary" id="clear-local-data">
+              Clear local data
+            </button>
+          </aside>
+        </div>
+      </section>
+
+      <!-- HELP -->
+      <section class="page" id="page-help">
+        <div class="page-title-row">
+          <div>
+            <p class="eyebrow">WE'RE HERE TO HELP</p>
+            <h1>Help &amp; support</h1>
+            <p class="subhead">Learn how to use the community cleanliness portal</p>
+          </div>
+        </div>
+
+        <div class="help-grid">
+          <article class="panel help-tile">
+            <span class="help-tile-icon">◎</span>
+            <h3>Find a location</h3>
+            <p>Open the map or directory and search recorded locations.</p>
+            <button class="text-button" data-go="directory">Browse directory →</button>
+          </article>
+
+          <article class="panel help-tile">
+            <span class="help-tile-icon">＋</span>
+            <h3>Report an issue</h3>
+            <p>Provide the issue type, landmark, area and contact details.</p>
+            <button class="text-button" data-go="report">Create a report →</button>
+          </article>
+
+          <article class="panel help-tile">
+            <span class="help-tile-icon">☷</span>
+            <h3>Review your activity</h3>
+            <p>Check your submission history and export available report records.</p>
+            <button class="text-button" data-go="reports">View my reports →</button>
+          </article>
+
+          <article class="panel help-tile">
+            <span class="help-tile-icon">!</span>
+            <h3>Project support</h3>
+            <p>
+              Contact the project developer about website problems.
+              This address is project support, not an official HYSACAM address.
+            </p>
+            <a class="text-button"
+               href="mailto:kelechiwisdom19950@gmail.com?subject=HYSACAM%20Kumba%20Tracker%20support">
+              Email project support ↗
+            </a>
+          </article>
+        </div>
+      </section>
+
+      <footer class="app-footer">
+        <span>HYSACAM KUMBA COMMUNITY PORTAL</span>
+        <span>Community cleanliness reporting project</span>
+      </footer>
     </main>
   </div>
+
+  <!-- MOBILE NAVIGATION -->
   <nav class="bottom-nav" aria-label="Mobile navigation">
-    <button class="bottom-item active" data-page="home"><span class="bottom-icon">⌂</span><span>Home</span></button>
-    <button class="bottom-item" data-page="map"><span class="bottom-icon">◎</span><span>Map</span></button>
-    <button class="bottom-item" data-page="report"><span class="bottom-icon">＋</span><span>Report</span></button>
-    <button class="bottom-item" data-page="reports"><span class="bottom-icon">☷</span><span>Reports</span></button>
-    <button class="bottom-item" data-page="profile"><span class="bottom-icon">♙</span><span>Profile</span></button>
+    <button class="bottom-item active" data-page="home">
+      <span class="bottom-icon">⌂</span><span>Home</span>
+    </button>
+    <button class="bottom-item" data-page="map">
+      <span class="bottom-icon">◎</span><span>Map</span>
+    </button>
+    <button class="bottom-item" data-page="report">
+      <span class="bottom-icon">＋</span><span>Report</span>
+    </button>
+    <button class="bottom-item" data-page="reports">
+      <span class="bottom-icon">☷</span><span>Reports</span>
+    </button>
+    <button class="bottom-item" data-page="profile">
+      <span class="bottom-icon">♙</span><span>Profile</span>
+    </button>
   </nav>
+
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="js/supabase.js"></script>
-<script src="js/app.js"></script>
+
+  <!-- Libraries must load before your own JavaScript files -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+          integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+          crossorigin=""></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase.js"></script>
+  <script src="js/app.js"></script>
 </body>
 </html>
