@@ -47,9 +47,12 @@
 
     <label for="registerEmail">Email address</label>
     <input id="registerEmail" type="email" autocomplete="email" required style="display:block;width:100%;padding:12px;margin:8px 0 16px;box-sizing:border-box;">
-
-    <label for="registerPassword">Password (at least 6 characters)</label>
-    <input id="registerPassword" type="password" autocomplete="new-password" minlength="6" required style="display:block;width:100%;padding:12px;margin:8px 0 16px;box-sizing:border-box;">
+   
+<label for="registerPassword">Password (at least 6 characters)</label>
+<div style="position:relative;width:100%;margin:8px 0 16px;">
+  <input id="registerPassword" type="password" autocomplete="new-password" minlength="6" required style="display:block;width:100%;padding:12px 55px 12px 12px;box-sizing:border-box;">
+  <button type="button" id="toggleRegisterPassword" aria-label="Show password" aria-pressed="false" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);border:0;background:transparent;cursor:pointer;font-size:20px;padding:6px;">👁️</button>
+</div>
 
     <button type="submit" style="width:100%;padding:12px;background:#147d4a;color:white;border:0;border-radius:6px;">Create Account</button>
     <p id="registerMessage" role="status"></p>
