@@ -5,7 +5,9 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/13.0.0/firebas
 import {
   getAuth,
   onAuthStateChanged,
-  signInWithEmailAndPassword,  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
   signOut
 } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
 
