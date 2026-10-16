@@ -20,10 +20,16 @@
 
   <form id="loginForm">
     <label for="loginEmail">Email address</label>
-    <input id="loginEmail" type="email" autocomplete="username" required
-      style="display:block;width:100%;padding:12px;margin:8px 0 16px;box-sizing:border-box;">
-    <input id="loginPassword" type="password" autocomplete="current-password" required
-      style="display:block;width:100%;padding:12px;margin:8px 0 16px;box-sizing:border-box;">
+    
+<label for="loginPassword">Password</label>
+<div style="position:relative;width:100%;margin:8px 0 16px;">
+  <input id="loginPassword" type="password"
+    autocomplete="current-password" required
+    style="display:block;width:100%;padding:12px 55px 12px 12px;box-sizing:border-box;">
+  <button type="button" id="toggleLoginPassword"
+    aria-label="Show password" aria-pressed="false"
+    style="position:absolute;right:8px;top:50%;transform:translateY(-50%);border:0;background:transparent;cursor:pointer;font-size:20px;padding:6px;">👁️</button>
+</div>
 
     <button type="submit" style="width:100%;padding:12px;background:#147d4a;color:white;border:0;border-radius:6px;">
       Log In
