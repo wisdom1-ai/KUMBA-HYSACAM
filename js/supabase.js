@@ -16,3 +16,18 @@ supabaseClient
       console.log("Supabase connected successfully!");
     }
   });
+  async function testSupabaseBins() {
+  const { data, error } = await supabaseClient
+    .from("bins")
+    .select("id, name, area, latitude, longitude, status")
+    .limit(5);
+
+  if (error) {
+    console.error("Could not read bins:", error.message);
+    return;
+  }
+
+  console.log("Supabase bins loaded:", data);
+}
+
+testSupabaseBins();
