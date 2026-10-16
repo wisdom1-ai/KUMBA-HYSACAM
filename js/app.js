@@ -3,7 +3,7 @@
   const $ = (s, root=document) => root.querySelector(s);
   const $$ = (s, root=document) => [...root.querySelectorAll(s)];
   const storage = { reports: "hysac_kumba_reports_v1", profile: "hysac_kumba_profile_v1" };
-  const locations = [
+  let locations = [];
     {id:1,name:"Kumba Main Market",area:"Kumba I",status:"Needs attention",lat:4.6367,lng:9.4469,checked:"Sample entry"},
     {id:2,name:"Buea Road Junction",area:"Kumba I",status:"Available",lat:4.6386,lng:9.4510,checked:"Sample entry"},
     {id:3,name:"Fiango Community Point",area:"Kumba II",status:"Available",lat:4.6418,lng:9.4384,checked:"Sample entry"},
@@ -20,7 +20,41 @@
   let reports = read(storage.reports, []);
   let profile = read(storage.profile, {name:"",area:"",notifications:false});
   let mainMap = null, miniMap = null, mainMarkers = [], miniMarkers = [], toastTimeout;
+async function loadBins() {
+  const { data, error } = await supabaseClient
+    .from("bins")
+    .select("id, name, area, latitude, longitude, status, notes")
+    .order("name");
 
+  if (error) {
+    console.error("Failed to load bins:", error.message);
+    toast("Could not load bins from the database.");
+    return;
+  }
+
+  locations = data.map(bin => ({
+    id: bin.id,
+    name: bin.name,
+    area: bin.area,
+    lat: bin.latitude,
+    lng: bin.longitude,
+    status: bin.status === "available"
+      ? "Available"
+      : bin.status === "maintenance"
+        ? "Maintenance"
+        : "Needs attention",
+    checked: bin.notes || "Database record"
+  }));
+
+renderDirectory();
+updateStats();
+renderProfile();
+ensureMap("mini");
+loadBins();
+})();
+
+  console.log("Website bins loaded:", locations);
+}
   function read(key, fallback){ try { const value=localStorage.getItem(key); return value ? JSON.parse(value) : fallback; } catch { return fallback; } }
   function write(key, value){ try { localStorage.setItem(key, JSON.stringify(value)); return true; } catch { toast("Could not save: browser storage may be disabled."); return false; } }
   function escapeHTML(value){ return String(value ?? "").replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
