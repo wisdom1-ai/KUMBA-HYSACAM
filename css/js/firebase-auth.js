@@ -40,6 +40,27 @@ if (registerPasswordInput && toggleRegisterPassword) {
     );
   });
 }
+
+const loginPasswordInput = document.getElementById("loginPassword");
+const toggleLoginPassword = document.getElementById("toggleLoginPassword");
+
+if (loginPasswordInput && toggleLoginPassword) {
+  toggleLoginPassword.addEventListener("click", () => {
+    const isHidden = loginPasswordInput.type === "password";
+
+    loginPasswordInput.type = isHidden ? "text" : "password";
+    toggleLoginPassword.textContent = isHidden ? "🙈" : "👁️";
+    toggleLoginPassword.setAttribute(
+      "aria-label",
+      isHidden ? "Hide password" : "Show password"
+    );
+    toggleLoginPassword.setAttribute(
+      "aria-pressed",
+      String(isHidden)
+    );
+  });
+}
+
 const loginScreen = document.getElementById("loginScreen");
 const registerScreen = document.getElementById("registerScreen");
 const showRegisterButton = document.getElementById("showRegister");
