@@ -1,23 +1,23 @@
-# HYSACAM Kumba Tracker
+# HYSACAM Kumba Community Tracker — New Build
 
-## Start
-1. Extract this ZIP.
-2. Double-click `START_HYSACAM_TRACKER.bat`.
-3. Keep the black server window open.
-4. Use `http://127.0.0.1:8000/index.html`; do not open `index.html` directly.
+A fresh responsive front-end prototype for exploring illustrative waste-bin locations, submitting local reports, viewing report history, and editing a local profile
 
-## Functionality and data
-- The existing HTML/CSS design is retained. Existing browser storage keys are retained and are not cleared.
-- Collection points remain in browser storage under `hysacam_kumba_bins`; existing saved points are preserved. New collection points require a name, area, and valid latitude/longitude.
-- Fresh browsers no longer get two unverified sample collection points automatically. Add locations only after checking their coordinates in Kumba.
-- Reports are saved to local browser history and posted to the Python server, which stores report metadata in `data/reports.json`. This local installation is not yet a hosted, multi-user database.
-- The map requires internet access for Leaflet and OpenStreetMap tiles.
-- The Dustbin Directory includes a Get Directions action that opens Google Maps for a collection point with valid coordinates.
+## Run it
+1 Extract the ZIP file
+2 Open `index.html` in a modern browser, or use VS Code with the Live Server extension
+3 Internet access is required for Leaflet and OpenStreetMap tiles
 
-## Enable real email notifications
-1. The recipient is already set to `kelechiwisdom19950@gmail.com` in `email_config.json`.
-2. For Gmail, enable 2-Step Verification and create an App Password.
-3. Set `smtp_user` to the sending Gmail account and `smtp_app_password` to the App Password. Do not use your normal Gmail password.
-4. Save and restart the BAT file, then submit a test report and check the server window and recipient inbox.
+## Included features
+- Responsive desktop sidebar and fixed five-item mobile bottom navigation
+- Overview dashboard and sample stats
+- Interactive Leaflet maps with sample location markers and status filters
+- Searchable dustbin directory
+- Report submission form with browser-local persistence
+- My Reports list and CSV export
+- Editable local profile and clear-local-data control
+- Help and support page
 
-Until SMTP is configured, the server can save reports but cannot send email. The recipient address is set, but this ZIP does not contain or invent sender credentials. Do not send your Gmail password to anyone. Keep `email_config.json` private and never publish it to GitHub.
+## Important limitations
+This is a standalone prototype Sample locations and status values are illustrative, not verified official HYSACAM data Reports and profile settings are stored in the current browser's `localStorage` only No shared database, user authentication, live HYSACAM feed, GPS tracking, or official report delivery is connected
+
+To make this production-ready for multiple users, connect a backend/database (for example Supabase) with appropriate authentication, access policies, and an official reporting workflow Keep database keys and privileged credentials out of browser JavaScript
