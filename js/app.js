@@ -36,8 +36,9 @@
     try {
       localStorage.setItem(key, JSON.stringify(value));
       return true;
-    } catch {
-      toast("Could not save: browser storage may be disabled.");
+    } catch (error) {
+      console.error("Browser storage error:", error);
+      toast("Could not save data on this device.");
       return false;
     }
   }
@@ -54,7 +55,10 @@
 
   function toast(message) {
     const el = $("#toast");
-    if (!el) return;
+    if (!el) {
+      console.log(message);
+      return;
+    }
 
     el.textContent = message;
     el.classList.add("show");
@@ -62,7 +66,7 @@
 
     toastTimeout = setTimeout(
       () => el.classList.remove("show"),
-      2800
+      3500
     );
   }
 
@@ -87,7 +91,10 @@
     return "Needs attention";
   }
 
-  // Load real bin records from Supabase.
+  // ------------------------------
+  // SUPABASE: LOAD BIN LOCATIONS
+  // ------------------------------
+
   async function loadBins() {
     if (typeof supabaseClient === "undefined") {
       console.error("Supabase client is not available.");
@@ -101,7 +108,7 @@
       .order("name");
 
     if (error) {
-      console.error("Failed to load bins:", error.message);
+      console.error("Failed to load bins:", error);
       toast("Could not load bins from the database.");
       return;
     }
@@ -123,6 +130,10 @@
 
     console.log("Website bins loaded:", locations);
   }
+
+  // ------------------------------
+  // NAVIGATION
+  // ------------------------------
 
   function setPage(name) {
     const valid = [
@@ -178,6 +189,10 @@
 
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
+
+  // ------------------------------
+  // BIN DIRECTORY
+  // ------------------------------
 
   function renderDirectory() {
     const body = $("#directory-body");
@@ -237,8 +252,7 @@
           item => String(item.id) === button.dataset.location
         );
 
-        if (!location || !Number.isFinite(location.lat) ||
-            !Number.isFinite(location.lng)) {
+        if (!location || !validCoordinates(location)) {
           toast("This bin has no valid map coordinates.");
           return;
         }
@@ -254,8 +268,15 @@
     });
   }
 
+  // ------------------------------
+  // MAPS
+  // ------------------------------
+
   function ensureMap(which) {
-    if (!window.L) return;
+    if (!window.L) {
+      console.warn("Leaflet is not loaded.");
+      return;
+    }
 
     if (which === "main" && !mainMap && $("#main-map")) {
       mainMap = L.map("main-map", {
@@ -320,7 +341,7 @@
       <div class="map-popup-status">
         ${statusBadge(location.status)}
       </div>
-      <small>Database record. Status has not been independently verified.</small>
+      <small>Status has not been independently verified.</small>
     `;
   }
 
@@ -377,6 +398,10 @@
       });
   }
 
+  // ------------------------------
+  // DASHBOARD STATISTICS
+  // ------------------------------
+
   function updateStats() {
     if ($("#stat-bins")) {
       $("#stat-bins").textContent = locations.length;
@@ -398,6 +423,10 @@
     }
   }
 
+  // ------------------------------
+  // REPORT HISTORY
+  // ------------------------------
+
   function renderReports() {
     const subtitle = $("#reports-subtitle");
     const host = $("#reports-list");
@@ -414,7 +443,7 @@
         <div class="empty-state">
           <div class="empty-icon">☷</div>
           <h3>No reports yet</h3>
-          <p>When you submit a report, it will appear here.</p>
+          <p>Submit a report to see it in your history.</p>
           <button class="button primary" data-go="report">
             Submit your first report
           </button>
@@ -446,6 +475,10 @@
     `).join("");
   }
 
+  // ------------------------------
+  // PROFILE
+  // ------------------------------
+
   function renderProfile() {
     if ($("#profile-name")) {
       $("#profile-name").value = profile.name || "";
@@ -470,6 +503,10 @@
     if ($("#profile-avatar")) $("#profile-avatar").textContent = initial;
     if ($("#top-avatar")) $("#top-avatar").textContent = initial;
   }
+
+  // ------------------------------
+  // CSV EXPORT
+  // ------------------------------
 
   function exportCSV() {
     if (!reports.length) {
@@ -508,38 +545,23 @@
     toast("Your report history was exported.");
   }
 
-  // Navigation and directory controls.
-  $$("[data-page]").forEach(button => {
-    button.addEventListener("click", () => setPage(button.dataset.page));
-  });
+  // ------------------------------
+  // GPS LOCATION
+  // ------------------------------
 
-  $$("[data-go]").forEach(button => {
-    button.addEventListener("click", () => setPage(button.dataset.go));
-  });
+  $("#get-current-location")?.addEventListener("click", () => {
+    const status = $("#location-status");
+    const latInput = $("#report-latitude");
+    const lngInput = $("#report-longitude");
 
-  $("#top-avatar")?.addEventListener("click", () => setPage("profile"));
-  $("#directory-search")?.addEventListener("input", renderDirectory);
-  $("#status-filter")?.addEventListener("change", renderDirectory);
-  $("#map-filter")?.addEventListener("change", renderMainMarkers);
-
-  $("#map-fit")?.addEventListener("click", () => {
-    if (!mainMap || !mainMarkers.length) {
-      toast("No mapped bins are available.");
+    if (!latInput || !lngInput) {
+      console.error("GPS latitude/longitude inputs are missing.");
+      if (status) status.textContent = "GPS fields are missing from the page.";
       return;
     }
 
-    const group = L.featureGroup(mainMarkers);
-    mainMap.fitBounds(group.getBounds().pad(0.15));
-  });
-
-  // GPS: requires the user to grant location permission.
-  $("#get-current-location")?.addEventListener("click", () => {
-    const status = $("#location-status");
-
     if (!navigator.geolocation) {
-      if (status) {
-        status.textContent = "GPS is not supported by this browser.";
-      }
+      if (status) status.textContent = "GPS is not supported by this browser.";
       return;
     }
 
@@ -547,34 +569,23 @@
 
     navigator.geolocation.getCurrentPosition(
       position => {
-        const latInput = $("#report-latitude");
-        const lngInput = $("#report-longitude");
-
-        if (!latInput || !lngInput) {
-          if (status) {
-            status.textContent = "GPS input fields are missing from the page.";
-          }
-          return;
-        }
-
         latInput.value = position.coords.latitude;
         lngInput.value = position.coords.longitude;
 
-        if (status) {
-          status.textContent = "Location captured successfully.";
-        }
+        if (status) status.textContent = "Location captured successfully.";
 
+        console.log("GPS coordinates captured.");
         toast("GPS location captured.");
       },
       error => {
-        console.error("GPS error:", error.message);
+        console.error("GPS error:", error.code, error.message);
 
         if (status) {
           status.textContent =
-            "Location unavailable. Check permission and try again.";
+            "Location unavailable. Check permissions and try again.";
         }
 
-        toast("Could not get your location. You can submit without GPS.");
+        toast("Could not get GPS location. You can submit without it.");
       },
       {
         enableHighAccuracy: true,
@@ -584,9 +595,14 @@
     );
   });
 
-  // Submit the report to Supabase.
+  // ------------------------------
+  // SUPABASE REPORT SUBMISSION
+  // ------------------------------
+
   $("#report-form")?.addEventListener("submit", async event => {
     event.preventDefault();
+
+    console.log("REPORT FORM HANDLER RUNNING");
 
     const form = $("#report-form");
     const submitButton = form.querySelector('[type="submit"]');
@@ -602,13 +618,8 @@
     const latitudeValue = $("#report-latitude")?.value ?? "";
     const longitudeValue = $("#report-longitude")?.value ?? "";
 
-    const latitude = latitudeValue === ""
-      ? null
-      : Number(latitudeValue);
-
-    const longitude = longitudeValue === ""
-      ? null
-      : Number(longitudeValue);
+    const latitude = latitudeValue === "" ? null : Number(latitudeValue);
+    const longitude = longitudeValue === "" ? null : Number(longitudeValue);
 
     if (
       !reporterName ||
@@ -637,10 +648,7 @@
       return;
     }
 
-    // Browser validation usually checks email format too.
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-    if (!emailPattern.test(reporterEmail)) {
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(reporterEmail)) {
       toast("Please enter a valid email address.");
       return;
     }
@@ -653,12 +661,13 @@
         (latitude < -90 || latitude > 90 ||
          longitude < -180 || longitude > 180))
     ) {
-      toast("The GPS coordinates are invalid. Capture your location again.");
+      toast("GPS coordinates are invalid. Capture your location again.");
       return;
     }
 
     if (typeof supabaseClient === "undefined") {
-      toast("Database connection is unavailable. Please try again.");
+      console.error("Report submission stopped: supabaseClient is undefined.");
+      toast("Database connection is not initialized.");
       return;
     }
 
@@ -675,14 +684,16 @@
       reporter_phone: reporterPhone || null,
       title: type,
       location_description: location,
-      area: area,
+      area,
       description: details,
-      latitude: latitude,
-      longitude: longitude,
+      latitude,
+      longitude,
       status: "submitted"
     };
 
     if (submitButton) submitButton.disabled = true;
+
+    console.log("Sending report to Supabase.");
 
     try {
       const { error } = await supabaseClient
@@ -690,12 +701,20 @@
         .insert(databaseReport);
 
       if (error) {
-        console.error("Supabase report submission failed:", error);
-        toast("Report could not be submitted. Please check the database setup.");
+        // Show the exact database error in the developer console.
+        console.error("SUPABASE REPORT INSERT FAILED:", {
+          message: error.message,
+          code: error.code,
+          details: error.details,
+          hint: error.hint
+        });
+
+        toast("Report not saved to the database. Check the Console.");
         return;
       }
 
-      // Preserve the existing local report history.
+      console.log("SUPABASE REPORT INSERT SUCCEEDED:", reference);
+
       const localReport = {
         id: reference,
         type,
@@ -706,11 +725,11 @@
         status: "submitted"
       };
 
+      const previousReports = [...reports];
       reports.push(localReport);
 
       if (!write(storage.reports, reports)) {
-        reports.pop();
-        toast("Report reached the database, but local history could not be saved.");
+        reports = previousReports;
       }
 
       form.reset();
@@ -722,17 +741,20 @@
       updateStats();
       renderReports();
 
-      toast("Report submitted successfully!");
+      toast(`Report submitted successfully! Reference: ${reference}`);
       setPage("reports");
     } catch (error) {
-      console.error("Unexpected report submission error:", error);
-      toast("Something went wrong. Check your connection and try again.");
+      console.error("UNEXPECTED REPORT SUBMISSION ERROR:", error);
+      toast("Submission failed. Check the Console for details.");
     } finally {
       if (submitButton) submitButton.disabled = false;
     }
   });
 
-  // Save the existing profile locally.
+  // ------------------------------
+  // SAVE PROFILE
+  // ------------------------------
+
   $("#profile-form")?.addEventListener("submit", event => {
     event.preventDefault();
 
@@ -749,12 +771,43 @@
     toast("Profile saved on this device.");
   });
 
+  // ------------------------------
+  // NAVIGATION AND BUTTONS
+  // ------------------------------
+
+  $$("[data-page]").forEach(button => {
+    button.addEventListener("click", () => setPage(button.dataset.page));
+  });
+
+  $$("[data-go]").forEach(button => {
+    button.addEventListener("click", () => setPage(button.dataset.go));
+  });
+
+  $("#top-avatar")?.addEventListener("click", () => setPage("profile"));
+  $("#directory-search")?.addEventListener("input", renderDirectory);
+  $("#status-filter")?.addEventListener("change", renderDirectory);
+  $("#map-filter")?.addEventListener("change", renderMainMarkers);
+
+  $("#map-fit")?.addEventListener("click", () => {
+    if (!mainMap || !mainMarkers.length) {
+      toast("No mapped bins are available.");
+      return;
+    }
+
+    const group = L.featureGroup(mainMarkers);
+    mainMap.fitBounds(group.getBounds().pad(0.15));
+  });
+
   $("#export-reports")?.addEventListener("click", exportCSV);
 
   $("#clear-local-data")?.addEventListener("click", () => {
     if (!confirm(
-      "Clear locally saved reports and profile settings on this browser? This will not delete reports from Supabase."
+      "Clear locally saved reports and profile settings on this browser? " +
+      "This will NOT delete reports stored in Supabase."
     )) return;
+
+    const oldReports = reports;
+    const oldProfile = profile;
 
     reports = [];
     profile = { name: "", area: "", notifications: false };
@@ -762,7 +815,10 @@
     try {
       localStorage.removeItem(storage.reports);
       localStorage.removeItem(storage.profile);
-    } catch {
+    } catch (error) {
+      reports = oldReports;
+      profile = oldProfile;
+      console.error("Could not clear local storage:", error);
       toast("Could not clear browser storage.");
       return;
     }
@@ -778,10 +834,16 @@
     if (miniMap) miniMap.invalidateSize();
   });
 
-  // Initial page setup.
+  // ------------------------------
+  // START THE WEBSITE
+  // ------------------------------
+
   renderDirectory();
   updateStats();
   renderProfile();
+  renderReports();
   ensureMap("mini");
   loadBins();
+
+  console.log("HYSACAM Kumba Tracker initialized.");
 })();
