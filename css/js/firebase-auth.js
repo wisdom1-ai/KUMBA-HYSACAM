@@ -21,7 +21,25 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+const registerPasswordInput = document.getElementById("registerPassword");
+const toggleRegisterPassword = document.getElementById("toggleRegisterPassword");
 
+if (registerPasswordInput && toggleRegisterPassword) {
+  toggleRegisterPassword.addEventListener("click", () => {
+    const isHidden = registerPasswordInput.type === "password";
+
+    registerPasswordInput.type = isHidden ? "text" : "password";
+    toggleRegisterPassword.textContent = isHidden ? "🙈" : "👁️";
+    toggleRegisterPassword.setAttribute(
+      "aria-label",
+      isHidden ? "Hide password" : "Show password"
+    );
+    toggleRegisterPassword.setAttribute(
+      "aria-pressed",
+      String(isHidden)
+    );
+  });
+}
 const loginScreen = document.getElementById("loginScreen");
 const registerScreen = document.getElementById("registerScreen");
 const showRegisterButton = document.getElementById("showRegister");
