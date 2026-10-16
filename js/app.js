@@ -55,6 +55,7 @@
 
   function toast(message) {
     const el = $("#toast");
+
     if (!el) {
       console.log(message);
       return;
@@ -225,7 +226,7 @@
               <button
                 class="text-button locate-button"
                 data-location="${escapeHTML(location.id)}">
-                View on map ↗️
+                View on map ↗
               </button>
             </td>
           </tr>
@@ -574,7 +575,6 @@
 
         if (status) status.textContent = "Location captured successfully.";
 
-        console.log("GPS coordinates captured.");
         toast("GPS location captured.");
       },
       error => {
@@ -596,13 +596,11 @@
   });
 
   // ------------------------------
-  // SUPABASE REPORT SUBMISSION
+  // SUPABASE EDGE FUNCTION REPORT SUBMISSION
   // ------------------------------
 
   $("#report-form")?.addEventListener("submit", async event => {
     event.preventDefault();
-
-    console.log("REPORT FORM HANDLER RUNNING");
 
     const form = $("#report-form");
     const submitButton = form.querySelector('[type="submit"]');
@@ -615,105 +613,76 @@
     const area = $("#issue-area")?.value.trim() || "";
     const details = $("#issue-details")?.value.trim() || "";
 
-    const latitudeValue = $("#report-latitude")?.value ?? "";
-    const longitudeValue = $("#report-longitude")?.value ?? "";
+    const latValue = $("#report-latitude")?.value ?? "";
+    const lngValue = $("#report-longitude")?.value ?? "";
 
-    const latitude = latitudeValue === "" ? null : Number(latitudeValue);
-    const longitude = longitudeValue === "" ? null : Number(longitudeValue);
-
-    if (
-      !reporterName ||
-      !reporterEmail ||
-      !type ||
-      !location ||
-      !area ||
-      !details
-    ) {
-      toast("Please complete all required fields.");
-      return;
-    }
+    const latitude = latValue === "" ? null : Number(latValue);
+    const longitude = lngValue === "" ? null : Number(lngValue);
 
     if (
-      reporterName.length < 2 ||
-      reporterName.length > 100 ||
+      reporterName.length < 2 || reporterName.length > 100 ||
+      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(reporterEmail) ||
       reporterEmail.length > 254 ||
-      type.length < 3 ||
-      type.length > 100 ||
-      location.length > 150 ||
-      area.length > 100 ||
-      details.length < 3 ||
-      details.length > 800
+      type.length < 3 || type.length > 100 ||
+      location.length < 1 || location.length > 150 ||
+      area.length < 1 || area.length > 100 ||
+      details.length < 3 || details.length > 800 ||
+      reporterPhone.length > 40
     ) {
-      toast("Please check your entries and their lengths.");
-      return;
-    }
-
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(reporterEmail)) {
-      toast("Please enter a valid email address.");
+      toast("Please check all required fields and try again.");
       return;
     }
 
     if (
-      (latitude !== null && !Number.isFinite(latitude)) ||
-      (longitude !== null && !Number.isFinite(longitude)) ||
-      ((latitude === null) !== (longitude === null)) ||
+      (latitude === null) !== (longitude === null) ||
       (latitude !== null &&
-        (latitude < -90 || latitude > 90 ||
-         longitude < -180 || longitude > 180))
+        (!Number.isFinite(latitude) || latitude < -90 || latitude > 90)) ||
+      (longitude !== null &&
+        (!Number.isFinite(longitude) || longitude < -180 || longitude > 180))
     ) {
-      toast("GPS coordinates are invalid. Capture your location again.");
+      toast("Your GPS coordinates are invalid. Try capturing them again.");
       return;
     }
 
     if (typeof supabaseClient === "undefined") {
-      console.error("Report submission stopped: supabaseClient is undefined.");
+      console.error("Supabase client is unavailable.");
       toast("Database connection is not initialized.");
       return;
     }
 
-    const now = new Date();
-
-    const reference = "HKT-" +
-      now.getFullYear().toString().slice(-2) +
-      Math.random().toString(36).slice(2, 7).toUpperCase();
-
-    const databaseReport = {
-      reference_code: reference,
-      reporter_name: reporterName,
-      reporter_email: reporterEmail,
-      reporter_phone: reporterPhone || null,
-      title: type,
-      location_description: location,
-      area,
-      description: details,
-      latitude,
-      longitude,
-      status: "submitted"
-    };
-
     if (submitButton) submitButton.disabled = true;
 
-    console.log("Sending report to Supabase.");
-
     try {
-      const { error } = await supabaseClient
-        .from("reports")
-        .insert(databaseReport);
+      const { data, error } = await supabaseClient.functions.invoke(
+        "report-email-notification",
+        {
+          body: {
+            reporter_name: reporterName,
+            reporter_email: reporterEmail,
+            reporter_phone: reporterPhone,
+            title: type,
+            location_description: location,
+            area,
+            description: details,
+            latitude,
+            longitude
+          }
+        }
+      );
 
       if (error) {
-        // Show the exact database error in the developer console.
-        console.error("SUPABASE REPORT INSERT FAILED:", {
-          message: error.message,
-          code: error.code,
-          details: error.details,
-          hint: error.hint
-        });
-
-        toast("Report not saved to the database. Check the Console.");
+        console.error("Report function failed:", error);
+        toast("Submission failed. Check the browser Console.");
         return;
       }
 
-      console.log("SUPABASE REPORT INSERT SUCCEEDED:", reference);
+      if (!data?.success || !data?.report?.reference_code) {
+        console.error("Unexpected report response:", data);
+        toast(data?.error || "The report could not be confirmed.");
+        return;
+      }
+
+      const reference = data.report.reference_code;
 
       const localReport = {
         id: reference,
@@ -721,7 +690,7 @@
         location,
         area,
         details,
-        date: now.toLocaleString(),
+        date: new Date().toLocaleString(),
         status: "submitted"
       };
 
@@ -741,11 +710,17 @@
       updateStats();
       renderReports();
 
-      toast(`Report submitted successfully! Reference: ${reference}`);
+      if (data.notification_sent === true) {
+        toast(`Report saved and email accepted. Reference: ${reference}`);
+      } else {
+        toast(`Report saved. Email notification needs checking. Reference: ${reference}`);
+        console.warn("Notification status:", data);
+      }
+
       setPage("reports");
     } catch (error) {
-      console.error("UNEXPECTED REPORT SUBMISSION ERROR:", error);
-      toast("Submission failed. Check the Console for details.");
+      console.error("Report submission error:", error);
+      toast("Could not submit the report. Please try again.");
     } finally {
       if (submitButton) submitButton.disabled = false;
     }
