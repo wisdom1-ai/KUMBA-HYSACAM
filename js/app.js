@@ -10,6 +10,7 @@
   };
 
   let locations = [];
+  let pendingLocations = [];
   let reports = read(storage.reports, []);
   let profile = read(storage.profile, {
     name: "",
@@ -93,7 +94,7 @@
   }
 
   // ------------------------------
-  // SUPABASE: LOAD BIN LOCATIONS
+  // SUPABASE: LOAD VERIFIED BIN RECORDS
   // ------------------------------
 
   async function loadBins() {
@@ -118,8 +119,8 @@
       id: bin.id,
       name: bin.name,
       area: bin.area,
-      lat: bin.latitude,
-      lng: bin.longitude,
+      lat: bin.latitude == null ? NaN : Number(bin.latitude),
+      lng: bin.longitude == null ? NaN : Number(bin.longitude),
       status: normalizeStatus(bin.status),
       checked: bin.notes || "Database record"
     }));
@@ -130,6 +131,113 @@
     renderMiniMarkers();
 
     console.log("Website bins loaded:", locations);
+  }
+
+  // ------------------------------
+  // SUPABASE: LOAD PENDING LOCATIONS
+  // ------------------------------
+
+  async function loadPendingLocations() {
+    if (typeof supabaseClient === "undefined") return;
+
+    const { data, error } = await supabaseClient
+      .from("unverified_bin_locations")
+      .select(
+        "id, name, area, location_description, status, latitude, longitude, notes, created_at"
+      )
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error("Could not load pending locations:", error);
+      pendingLocations = [];
+      renderPendingLocations();
+      return;
+    }
+
+    pendingLocations = data || [];
+    renderPendingLocations();
+
+    console.log("Pending locations loaded:", pendingLocations);
+  }
+
+  function renderPendingLocations() {
+    const map = $("#main-map");
+    if (!map) return;
+
+    let panel = $("#pending-locations-panel");
+
+    if (!panel) {
+      panel = document.createElement("section");
+      panel.id = "pending-locations-panel";
+
+      panel.style.cssText = [
+        "margin-top:18px",
+        "padding:18px",
+        "border:1px solid var(--border-color,#ddd)",
+        "border-radius:12px",
+        "background:var(--card-bg,#fff)",
+        "color:var(--text-color,#222)"
+      ].join(";");
+
+      map.insertAdjacentElement("afterend", panel);
+    }
+
+    panel.innerHTML = `
+      <h3 style="margin:0 0 6px;">
+        Community locations awaiting GPS verification
+      </h3>
+
+      <p style="margin:0 0 14px;font-size:13px;opacity:.8;">
+        These locations have been reported by the community.
+        Their exact dustbin coordinates have not been verified,
+        so they are not displayed as map pins.
+      </p>
+
+      ${
+        pendingLocations.length
+          ? pendingLocations.map(location => `
+              <article style="
+                padding:12px 0;
+                border-top:1px solid var(--border-color,#ddd);
+              ">
+                <strong>${escapeHTML(location.name)}</strong>
+
+                <p style="margin:5px 0;">
+                  ${escapeHTML(location.area)}
+                </p>
+
+                <p style="margin:5px 0;font-size:14px;">
+                  ${escapeHTML(location.location_description)}
+                </p>
+
+                <span style="
+                  font-size:12px;
+                  color:#a66b00;
+                  font-weight:600;
+                ">
+                  GPS verification pending
+                </span>
+
+                <p style="margin:8px 0 0;">
+                  <a
+                    href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                      location.area + ", Kumba, Cameroon"
+                    )}"
+                    target="_blank"
+                    rel="noopener noreferrer">
+                    Search this area on Google Maps ↗
+                  </a>
+                </p>
+              </article>
+            `).join("")
+          : `
+              <p>
+                No pending locations found. Check the Supabase table
+                and read permissions.
+              </p>
+            `
+      }
+    `;
   }
 
   // ------------------------------
@@ -168,6 +276,7 @@
 
     if (name === "map") {
       ensureMap("main");
+      renderPendingLocations();
 
       setTimeout(() => {
         if (mainMap) mainMap.invalidateSize();
@@ -226,7 +335,7 @@
               <button
                 class="text-button locate-button"
                 data-location="${escapeHTML(location.id)}">
-                View on map ↗
+                View on map ↗️
               </button>
             </td>
           </tr>
@@ -596,7 +705,7 @@
   });
 
   // ------------------------------
-  // SUPABASE EDGE FUNCTION REPORT SUBMISSION
+  // REPORT SUBMISSION
   // ------------------------------
 
   $("#report-form")?.addEventListener("submit", async event => {
@@ -818,7 +927,9 @@
   renderProfile();
   renderReports();
   ensureMap("mini");
+
   loadBins();
+  loadPendingLocations();
 
   console.log("HYSACAM Kumba Tracker initialized.");
 })();
