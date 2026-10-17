@@ -13,6 +13,50 @@
         crossorigin="">
   <link rel="stylesheet" href="css/style.css">
 </head>
+  
+<section id="loginScreen" style="max-width:420px;margin:40px auto;padding:24px;background:white;border-radius:12px;">
+  <h1>HYSACAM Kumba Tracker</h1>
+  <h2>Log In</h2>
+  <form id="loginForm">
+    <label for="loginEmail">Email address</label>
+    <input id="loginEmail" type="email" autocomplete="email" required style="display:block;width:100%;padding:12px;margin:8px 0 16px;box-sizing:border-box;">
+
+    <label for="loginPassword">Password</label>
+    <div style="display:flex;gap:6px;margin:8px 0 16px;">
+      <input id="loginPassword" type="password" autocomplete="current-password" required style="flex:1;min-width:0;padding:12px;box-sizing:border-box;">
+      <button type="button" id="toggleLoginPassword">👁️</button>
+    </div>
+
+    <button type="submit" style="width:100%;padding:12px;background:#147d4a;color:white;border:0;border-radius:6px;">Log In</button>
+    <p id="loginMessage" role="status"></p>
+  </form>
+
+  <p>Don't have an account?
+    <button type="button" id="showRegister">Create Account</button>
+  </p>
+</section>
+
+<section id="registerScreen" style="display:none;max-width:420px;margin:40px auto;padding:24px;background:white;border-radius:12px;">
+  <h2>Create Account</h2>
+  <form id="registerForm">
+    <label for="registerName">Full name</label>
+    <input id="registerName" type="text" autocomplete="name" required style="display:block;width:100%;padding:12px;margin:8px 0 16px;box-sizing:border-box;">
+
+    <label for="registerEmail">Email address</label>
+    <input id="registerEmail" type="email" autocomplete="email" required style="display:block;width:100%;padding:12px;margin:8px 0 16px;box-sizing:border-box;">
+
+    <label for="registerPassword">Password</label>
+    <div style="display:flex;gap:6px;margin:8px 0 16px;">
+      <input id="registerPassword" type="password" autocomplete="new-password" required minlength="6" style="flex:1;min-width:0;padding:12px;box-sizing:border-box;">
+      <button type="button" id="toggleRegisterPassword">👁️</button>
+    </div>
+
+    <button type="submit" style="width:100%;padding:12px;background:#147d4a;color:white;border:0;border-radius:6px;">Create Account</button>
+    <p id="registerMessage" role="status"></p>
+  </form>
+
+  <button type="button" id="backToLogin">Back to Log In</button>
+</section>
 
 <body>
   <div class="app-shell">
