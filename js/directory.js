@@ -1,401 +1,174 @@
-const db = window.HysacamDB;
+"use strict";
 
-if (!db) {
-  console.error("HYSACAM database did not load. Check css/js/database.js.");
-}
+document.addEventListener("DOMContentLoaded", async () => {
+  const directory = document.getElementById("binGrid");
+  const searchInput = document.getElementById("directorySearch");
+  const message = document.getElementById("directory-message");
 
-const getDustbins = (...args) => db?.getDustbins(...args) ?? [];
-
-const addDustbin = (...args) => {
-  if (!db) throw new Error("Database is unavailable. Reload the tracker and try again.");
-  return db.addDustbin(...args);
-};
-
-const updateDustbin = (...args) => {
-  if (!db) throw new Error("Database is unavailable. Reload the tracker and try again.");
-  return db.updateDustbin(...args);
-};
-
-const deleteDustbin = (...args) => {
-  if (!db) throw new Error("Database is unavailable. Reload the tracker and try again.");
-  return db.deleteDustbin(...args);
-};
-
-const $ = selector => document.querySelector(selector);
-
-let bins = [];
-let editingId = null;
-
-function notify(message, isError = false) {
-  let toast = $("#toast") || $("#toastContainer");
-
-  if (!toast) {
-    toast = document.createElement("div");
-    toast.id = "toast";
-    toast.className = "toast";
-    toast.setAttribute("role", "status");
-    toast.setAttribute("aria-live", "polite");
-    document.body.appendChild(toast);
-  }
-
-  toast.textContent = message;
-  toast.hidden = false;
-  toast.classList.add("visible");
-  toast.classList.toggle("error", isError);
-
-  clearTimeout(notify.timer);
-
-  notify.timer = setTimeout(() => {
-    toast.classList.remove("visible", "error");
-    if (toast.id === "toast") toast.hidden = true;
-  }, 3000);
-}
-
-function safe(value) {
-  return String(value ?? "").replace(/[&<>"']/g, c => ({
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    '"': "&quot;",
-    "'": "&#39;"
-  })[c]);
-}
-
-function statusLabel(status) {
-  return ({
-    available: "Available",
-    full: "Full",
-    damaged: "Damaged",
-    unknown: "Unknown"
-  })[String(status || "unknown").toLowerCase()] || String(status);
-}
-
-function statusClass(status) {
-  return ["available", "full", "damaged", "unknown"].includes(
-    String(status).toLowerCase()
-  )
-    ? String(status).toLowerCase()
-    : "unknown";
-}
-
-function filteredBins() {
-  const query = ($("#directorySearch")?.value || "").trim().toLowerCase();
-  const sort = $("#sortBins")?.value || "name";
-
-  return bins
-    .filter(bin =>
-      [
-        bin.name,
-        bin.area,
-        bin.address,
-        bin.status,
-        bin.id
-      ].join(" ").toLowerCase().includes(query)
-    )
-    .sort((a, b) =>
-      String(a[sort] ?? a.name).localeCompare(
-        String(b[sort] ?? b.name)
-      )
-    );
-}
-
-function renderDirectory() {
-  bins = getDustbins();
-
-  const grid = $("#binGrid");
-  if (!grid) return;
-
-  const filtered = filteredBins();
-  grid.replaceChildren();
-
-  $("#directoryStatus").textContent = filtered.length
-    ? "Collection points saved on this device."
-    : "No matching collection points found.";
-
-  $("#directoryCount").textContent =
-    `${filtered.length} point${filtered.length === 1 ? "" : "s"}`;
-
-  if (!filtered.length) {
-    const empty = document.createElement("div");
-    empty.className = "empty-state";
-    empty.innerHTML =
-      '<span>♻</span><p>No collection points match your search. Add a point or clear the search.</p>';
-    grid.appendChild(empty);
+  if (!directory || !searchInput) {
+    console.error("Directory elements were not found in index.html.");
     return;
   }
 
-  filtered.forEach(bin => {
-    const card = document.createElement("article");
-    card.className = "bin-card";
-
-    card.innerHTML = `
-      <div class="bin-card-top">
-        <span class="status-badge ${statusClass(bin.status)}">
-          ${safe(statusLabel(bin.status))}
-        </span>
-        <small>#${safe(bin.id)}</small>
-      </div>
-
-      <h3>${safe(bin.name || "Unnamed collection point")}</h3>
-
-      <p><strong>Area:</strong> ${safe(bin.area || "Not specified")}</p>
-      <p><strong>Address:</strong> ${safe(bin.address || "Not specified")}</p>
-      <p><strong>Coordinates:</strong>
-        ${Number(bin.latitude).toFixed(5)},
-        ${Number(bin.longitude).toFixed(5)}
-      </p>
-      <p><strong>Updated:</strong>
-        ${safe(
-          bin.lastUpdated
-            ? new Date(bin.lastUpdated).toLocaleString()
-            : "Not recorded"
-        )}
-      </p>
-
-      <div class="bin-card-actions">
-        <button type="button" class="btn btn-outline"
-          data-bin-action="map" data-bin-id="${safe(bin.id)}">
-          View on Map
-        </button>
-
-        <button type="button" class="btn btn-outline"
-          data-bin-action="directions" data-bin-id="${safe(bin.id)}">
-          Get Directions
-        </button>
-
-        <button type="button" class="btn btn-outline"
-          data-bin-action="edit" data-bin-id="${safe(bin.id)}">
-          Edit
-        </button>
-
-        <button type="button" class="btn btn-outline"
-          data-bin-action="delete" data-bin-id="${safe(bin.id)}">
-          Delete
-        </button>
-      </div>
-    `;
-
-    grid.appendChild(card);
-  });
-}
-
-function resetForm() {
-  editingId = null;
-  $("#binForm")?.reset();
-
-  if ($("#binRecordId")) {
-    $("#binRecordId").value = "";
+  function escapeHTML(value) {
+    return String(value ?? "").replace(/[&<>"']/g, character => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#039;"
+    })[character]);
   }
 
-  $("#binFormTitle").textContent = "Add Collection Point";
-  $("#saveBinButton").textContent = "Save Collection Point";
-}
-
-function openForm(bin = null) {
-  resetForm();
-
-  if (bin) {
-    editingId = bin.id;
-    $("#binRecordId").value = bin.id;
-    $("#binNameInput").value = bin.name || "";
-    $("#binAreaInput").value = bin.area || "";
-
-    $("#binStatusInput").value = [
-      "available",
-      "full",
-      "damaged",
-      "unknown"
-    ].includes(String(bin.status).toLowerCase())
-      ? String(bin.status).toLowerCase()
-      : "unknown";
-
-    $("#binAddressInput").value = bin.address || "";
-    $("#binLatitudeInput").value = bin.latitude ?? "";
-    $("#binLongitudeInput").value = bin.longitude ?? "";
-
-    $("#binFormTitle").textContent = "Edit Collection Point";
-    $("#saveBinButton").textContent = "Update Collection Point";
+  function setMessage(text) {
+    if (message) message.textContent = text;
   }
 
-  $("#binForm").hidden = false;
-  $("#binForm").scrollIntoView({
-    behavior: "smooth",
-    block: "nearest"
-  });
+  function getStatusClass(status) {
+    const value = String(status || "").toLowerCase();
 
-  $("#binNameInput").focus();
-}
+    if (value.includes("full") || value.includes("overflow")) {
+      return "full";
+    }
 
-function goToMap(bin) {
-  window.dispatchEvent(
-    new CustomEvent("hysacam:focus-bin", {
-      detail: { bin }
-    })
-  );
+    if (
+      value.includes("maintenance") ||
+      value.includes("broken") ||
+      value.includes("damage")
+    ) {
+      return "maintenance";
+    }
 
-  const nav = document.querySelector('[data-go="map-section"]');
-
-  if (nav) {
-    nav.click();
-  } else {
-    window.dispatchEvent(
-      new CustomEvent("hysacam:map-request")
-    );
+    return "available";
   }
 
-  setTimeout(() => {
-    window.dispatchEvent(
-      new CustomEvent("hysacam:focus-bin", {
-        detail: { bin }
-      })
-    );
-  }, 350);
-}
+  let bins = [];
 
-function init() {
-  renderDirectory();
+  function renderBins(searchTerm = "") {
+    const query = searchTerm.trim().toLowerCase();
 
-  $("#directorySearch")?.addEventListener("input", renderDirectory);
-  $("#sortBins")?.addEventListener("change", renderDirectory);
+    const filteredBins = bins.filter(bin => {
+      const name = String(bin.name || "").toLowerCase();
+      const area = String(bin.area || "").toLowerCase();
+      const status = String(bin.status || "").toLowerCase();
 
-  $("#clearFiltersButton")?.addEventListener("click", () => {
-    $("#directorySearch").value = "";
-    $("#sortBins").value = "name";
-    renderDirectory();
-  });
+      return (
+        name.includes(query) ||
+        area.includes(query) ||
+        status.includes(query)
+      );
+    });
 
-  $("#toggleBinFormButton")?.addEventListener("click", () => {
-    const form = $("#binForm");
+    if (filteredBins.length === 0) {
+      directory.innerHTML = `
+        <p class="placeholder-note">
+          ${
+            bins.length === 0
+              ? "No registered dustbins are available yet."
+              : "No dustbins match your search. Try another name or area."
+          }
+        </p>
+      `;
 
-    if (!form) {
-      notify("The collection-point form is missing from this page.", true);
+      setMessage("0 collection points found.");
       return;
     }
 
-    if (!form.hidden && !editingId) {
-      form.hidden = true;
-      return;
-    }
+    directory.innerHTML = filteredBins.map(bin => {
+      const name = escapeHTML(bin.name || "Unnamed collection point");
+      const area = escapeHTML(bin.area || "Area not specified");
+      const status = escapeHTML(bin.status || "Status unknown");
+      const statusClass = getStatusClass(bin.status);
 
-    openForm();
+      return `
+        <article class="service-card bin-card">
+          <h3>${name}</h3>
+          <p><strong>Area:</strong> ${area}</p>
+          <p>
+            <strong>Status:</strong>
+            <span class="bin-status ${statusClass}">
+              ${status}
+            </span>
+          </p>
+          ${
+            Number.isFinite(Number(bin.latitude)) &&
+            Number.isFinite(Number(bin.longitude)) &&
+            bin.latitude !== null &&
+            bin.longitude !== null
+              ? `<button
+                  type="button"
+                  class="bin-map-button"
+                  data-lat="${escapeHTML(bin.latitude)}"
+                  data-lng="${escapeHTML(bin.longitude)}"
+                >View on map</button>`
+              : ""
+          }
+        </article>
+      `;
+    }).join("");
+
+    setMessage(
+      `Showing ${filteredBins.length} of ${bins.length} collection point(s).`
+    );
+  }
+
+  searchInput.addEventListener("input", () => {
+    renderBins(searchInput.value);
   });
 
-  $("#cancelBinEditButton")?.addEventListener("click", () => {
-    $("#binForm").hidden = true;
-    resetForm();
-  });
-
-  $("#binForm")?.addEventListener("submit", event => {
-    event.preventDefault();
-
-    const record = {
-      name: $("#binNameInput").value,
-      area: $("#binAreaInput").value,
-      status: $("#binStatusInput").value,
-      address: $("#binAddressInput").value,
-      latitude: $("#binLatitudeInput").value,
-      longitude: $("#binLongitudeInput").value
-    };
-
-    try {
-      const wasEditing = editingId !== null;
-
-      if (wasEditing) {
-        updateDustbin(editingId, record);
-      } else {
-        addDustbin(record);
-      }
-
-      $("#binForm").hidden = true;
-      resetForm();
-      renderDirectory();
-
-      notify(
-        wasEditing
-          ? "Collection point updated."
-          : "Collection point saved."
-      );
-    } catch (error) {
-      notify(
-        error.message || "Could not save collection point.",
-        true
-      );
-    }
-  });
-
-  $("#binGrid")?.addEventListener("click", event => {
-    const button = event.target.closest("[data-bin-action]");
+  // Clicking "View on map" takes the user to the map section.
+  directory.addEventListener("click", event => {
+    const button = event.target.closest(".bin-map-button");
     if (!button) return;
 
-    const bin = getDustbins().find(
-      item => String(item.id) === String(button.dataset.binId)
-    );
+    const lat = Number(button.dataset.lat);
+    const lng = Number(button.dataset.lng);
 
-    if (!bin) {
-      notify("That collection point no longer exists.", true);
-      renderDirectory();
-      return;
+    const mapSection = document.getElementById("map");
+    if (mapSection) {
+      mapSection.scrollIntoView({ behavior: "smooth" });
     }
 
-    if (button.dataset.binAction === "map") {
-      goToMap(bin);
-    }
-
-    if (button.dataset.binAction === "directions") {
-      const lat = Number(bin.latitude);
-      const lon = Number(bin.longitude);
-
-      if (
-        !Number.isFinite(lat) ||
-        lat < -90 ||
-        lat > 90 ||
-        !Number.isFinite(lon) ||
-        lon < -180 ||
-        lon > 180
-      ) {
-        notify(
-          "This collection point has no valid coordinates for directions.",
-          true
-        );
-      } else {
-        const url =
-          `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(`${lat},${lon}`)}`;
-
-        window.open(url, "_blank", "noopener,noreferrer");
-      }
-    }
-
-    if (button.dataset.binAction === "edit") {
-      openForm(bin);
-    }
-
-    if (button.dataset.binAction === "delete") {
-      if (
-        !window.confirm(
-          `Delete "${bin.name}" from this device? This cannot be undone unless you have an export.`
-        )
-      ) return;
-
-      if (deleteDustbin(bin.id)) {
-        renderDirectory();
-        notify("Collection point deleted.");
-      } else {
-        notify("Could not find that collection point.", true);
-      }
-    }
+    // Notify map.js if it exposes the map-view event.
+    document.dispatchEvent(new CustomEvent("hysacam:show-bin", {
+      detail: { latitude: lat, longitude: lng }
+    }));
   });
 
-  window.addEventListener("hysacam:dustbins-changed", renderDirectory);
+  if (typeof supabaseClient === "undefined") {
+    directory.innerHTML = `
+      <p class="placeholder-note">
+        The database connection is not available. Please check supabase.js.
+      </p>
+    `;
+    setMessage("Database connection unavailable.");
+    console.error("supabaseClient is not defined.");
+    return;
+  }
 
-  window.addEventListener("storage", event => {
-    if (event.key === "hysacam_kumba_bins") {
-      renderDirectory();
-    }
-  });
-}
+  directory.innerHTML = "<p>Loading dustbin locations...</p>";
+  setMessage("");
 
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", init, { once: true });
-} else {
-  init();
-}
+  try {
+    const { data, error } = await supabaseClient
+      .from("bins")
+      .select("id, name, area, latitude, longitude, status")
+      .order("name", { ascending: true });
+
+    if (error) throw error;
+
+    bins = data || [];
+    renderBins(searchInput.value);
+
+  } catch (error) {
+    console.error("Could not load the dustbin directory:", error);
+
+    directory.innerHTML = `
+      <p class="placeholder-note">
+        Could not load dustbin locations. Please try again later.
+      </p>
+    `;
+
+    setMessage("Database error. Check the browser console and Supabase permissions.");
+  }
+});
