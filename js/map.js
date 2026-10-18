@@ -140,12 +140,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 
     if (validBins.length > 0) {
-      const bounds = markerLayer.getBounds();
+    const bounds = L.featureGroup(markerLayer.getLayers()).getBounds();
 
-      if (bounds.isValid()) {
-        map.fitBounds(bounds, { padding: [30, 30], maxZoom: 15 });
-      }
-
+if (bounds.isValid()) {
+  map.fitBounds(bounds, {
+    padding: [30, 30],
+    maxZoom: 15
+  });
+}
       showMessage(
         `Showing ${validBins.length} collection point(s) on the map.`
       );
