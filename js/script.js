@@ -48,3 +48,17 @@ if (locationSearch && locationInput && searchMessage) {
     }
   });
 }
+async function loadCleaningRecords() {
+  const { data, error } = await supabaseClient
+    .from("cleaning_records")
+    .select("id, bin_id, area, cleaned_at, activity, status, notes")
+    .eq("verified", true)
+    .order("cleaned_at", { ascending: false });
+
+  if (error) {
+    console.error("Could not load cleaning records:", error.message);
+    return [];
+  }
+
+  return data || [];
+}
