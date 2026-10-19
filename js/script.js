@@ -95,3 +95,13 @@ try {
   button.disabled = false;
 }
 }); }
+const passwordInput = document.getElementById("staff-password"); const togglePassword = document.getElementById("toggle-password");
+if (passwordInput && togglePassword) { togglePassword.addEventListener("click", () => { const showing = passwordInput.type === "password";
+passwordInput.type = showing ? "text" : "password";
+togglePassword.textContent = showing ? "🙈" : "👁";
+togglePassword.setAttribute(
+  "aria-label",
+  showing ? "Hide password" : "Show password"
+);
+togglePassword.setAttribute("aria-pressed", String(showing));
+}); }

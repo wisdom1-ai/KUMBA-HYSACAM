@@ -2022,3 +2022,29 @@ footer hr,
     transition: none;
   }
 }
+.password-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.password-wrapper input {
+  flex: 1;
+  min-width: 0;
+}
+
+#toggle-password {
+  flex-shrink: 0;
+  cursor: pointer;
+  padding: 10px;
+  border: 1px solid #dce5df;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #064b35;
+  font-size: 18px;
+}
+
+#staff-login-message {
+  margin-top: 12px;
+}
