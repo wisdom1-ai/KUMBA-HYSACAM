@@ -40,8 +40,7 @@ if (locationSearch && locationInput && searchMessage) {
 
     const directory = document.getElementById("directory");
 
-    searchMessage.textContent =
-      `Location entered: ${query} — directory search will be connected next`;
+    Location entered: ${query} — directory search will be connected next
 
     if (directory) {
       directory.scrollIntoView({ behavior: "smooth" });
@@ -61,4 +60,38 @@ async function loadCleaningRecords() {
   }
 
   return data || [];
+}const staffLoginForm = document.getElementById("staff-login-form"); const staffLoginMessage = document.getElementById("staff-login-message"); const staffAccountDetails = document.getElementById("staff-account-details");
+async function checkStaffAccess(user) { const { data, error } = await supabaseClient .from("approved_staff") .select("active") .eq("user_id", user.id) .maybeSingle();
+if (error) { console.error("Staff approval check failed:", error.message); staffLoginMessage.textContent = "Could not verify staff approval. Please try again."; return false; }
+if (!data || data.active !== true) { staffLoginMessage.textContent = "Your account is not approved for staff access."; await supabaseClient.auth.signOut(); return false; }
+staffLoginMessage.textContent = "Staff access verified."; staffAccountDetails.textContent = Signed in as ${user.email || "staff"}.; return true; }
+if (staffLoginForm && staffLoginMessage && staffAccountDetails) { staffLoginForm.addEventListener("submit", async (event) => { event.preventDefault();
+const email = document.getElementById("staff-email").value.trim();
+const password = document.getElementById("staff-password").value;
+const button = document.getElementById("staff-login-button");
+
+button.disabled = true;
+staffLoginMessage.textContent = "Signing in...";
+staffAccountDetails.textContent = "";
+
+try {
+  const { data, error } = await supabaseClient.auth.signInWithPassword({
+    email,
+    password
+  });
+
+  if (error) {
+    staffLoginMessage.textContent =
+      "Sign-in failed. Check your email and password.";
+    return;
+  }
+
+  await checkStaffAccess(data.user);
+} catch (error) {
+  console.error("Staff login error:", error);
+  staffLoginMessage.textContent =
+    "Something went wrong. Please try again.";
+} finally {
+  button.disabled = false;
 }
+}); }

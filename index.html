@@ -178,12 +178,21 @@
           <h2>Account Access</h2>
         </div>
       </div>
-      <div id="login-content">
-        <p class="placeholder-note">
-          Sign-in and sign-out will be integrated with the authentication
-          teammate's work.
-        </p>
-      </div>
+  <label for="staff-password">Password</label>
+<input
+  type="password"
+  id="staff-password"
+  placeholder="Enter your password"
+  autocomplete="current-password"
+  required
+>
+
+<button type="submit" id="staff-login-button">
+  Sign in
+</button>
+
+<p id="staff-login-message" role="status" aria-live="polite"></p>
+<div id="staff-account-details"></div>
     </section>
   </main>
   <!-- FOOTER -->
