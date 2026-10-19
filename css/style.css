@@ -2048,3 +2048,47 @@ footer hr,
 #staff-login-message {
   margin-top: 12px;
 }
+/* Password field with eye icon inside the box */
+.password-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.password-wrapper input {
+  width: 100%;
+  box-sizing: border-box;
+  padding-right: 48px;
+}
+
+.password-wrapper .password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #64748b;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.password-wrapper .password-toggle:hover {
+  color: #087747;
+  background: rgba(8, 119, 71, 0.08);
+}
+
+.password-wrapper .password-toggle:focus-visible {
+  outline: 2px solid #087747;
+  outline-offset: 2px;
+}
+
+.password-wrapper .password-toggle svg {
+  display: block;
+  pointer-events: none;
+}
