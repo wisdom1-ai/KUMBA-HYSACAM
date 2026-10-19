@@ -121,6 +121,7 @@ if (passwordInput && passwordToggle) {
       "aria-pressed",
       String(showPassword)
     );
+  
 
     passwordToggle.innerHTML = showPassword
       ? `<svg class="eye-icon" xmlns="http://www.w3.org/2000/svg"
@@ -145,3 +146,70 @@ if (passwordInput && passwordToggle) {
         </svg>`;
   });
 }
+const passwordInput = document.getElementById("staff-password");
+const passwordToggle = document.getElementById("toggle-password");
+
+if (passwordInput && passwordToggle) {
+  passwordToggle.addEventListener("click", () => {
+    const isHidden = passwordInput.type === "password";
+
+    passwordInput.type = isHidden ? "text" : "password";
+
+    passwordToggle.setAttribute(
+      "aria-label",
+      isHidden ? "Hide password" : "Show password"
+    );
+
+    passwordToggle.setAttribute(
+      "aria-pressed",
+      String(isHidden)
+    );
+
+    passwordToggle.innerHTML = isHidden
+      ? `<svg xmlns="http://www.w3.org/2000/svg"
+          width="21" height="21" viewBox="0 0 24 24"
+          fill="none" stroke="currentColor" stroke-width="1.8"
+          stroke-linecap="round" stroke-linejoin="round"
+          aria-hidden="true">
+          <path d="M3 3l18 18"/>
+          <path d="M10.6 10.6a2 2 0 002.8 2.8"/>
+          <path d="M9.9 5.2A10.8 10.8 0 0112 5
+            c6.4 0 10 7 10 7a16 16 0 01-3.1 3.8"/>
+          <path d="M6.2 6.2C3.5 8 2 12 2 12s3.6 7 10 7
+            a10.5 10.5 0 004.1-.8"/>
+        </svg>`
+      : `<svg xmlns="http://www.w3.org/2000/svg"
+          width="21" height="21" viewBox="0 0 24 24"
+          fill="none" stroke="currentColor" stroke-width="1.8"
+          stroke-linecap="round" stroke-linejoin="round"
+          aria-hidden="true">
+          <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7Z"/>
+          <circle cx="12" cy="12" r="3"/>
+        </svg>`;
+
+    passwordInput.focus();
+  });
+}
+document.addEventListener("DOMContentLoaded", function () {
+  const passwordInput = document.getElementById("staff-password");
+  const eyeButton = document.getElementById("toggle-password");
+
+  if (!passwordInput || !eyeButton) {
+    console.error("Password input or eye button was not found.");
+    return;
+  }
+
+  eyeButton.onclick = function (event) {
+    event.preventDefault();
+
+    if (passwordInput.type === "password") {
+      passwordInput.type = "text";
+      eyeButton.setAttribute("aria-label", "Hide password");
+      eyeButton.setAttribute("aria-pressed", "true");
+    } else {
+      passwordInput.type = "password";
+      eyeButton.setAttribute("aria-label", "Show password");
+      eyeButton.setAttribute("aria-pressed", "false");
+    }
+  };
+});
