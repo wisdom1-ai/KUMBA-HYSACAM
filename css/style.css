@@ -2543,3 +2543,70 @@ footer hr,
     margin-left: 0;
   }
 }
+/* Mobile Dustbin Map refinements */
+@media (max-width: 600px) {
+  #map {
+    padding: 20px 14px 26px;
+  }
+
+  #map .section-heading {
+    margin-bottom: 16px;
+  }
+
+  #map .section-heading .eyebrow {
+    font-size: 12px;
+    letter-spacing: 0.5px;
+  }
+
+  #map .section-heading h2 {
+    margin-top: 6px;
+    margin-bottom: 0;
+    font-size: 29px;
+    line-height: 1.2;
+    letter-spacing: -0.8px;
+  }
+
+  #map .map-toolbar {
+    margin-bottom: 12px;
+  }
+
+  #map .map-search input {
+    height: 46px;
+    border-radius: 10px;
+    font-size: 14px;
+  }
+
+  #map #map-filter-button {
+    height: 46px;
+    border-radius: 10px;
+  }
+
+  #map #dustbin-map {
+    height: 350px !important;
+    min-height: 350px;
+    border-radius: 12px;
+  }
+
+  #map .map-legend {
+    padding: 13px;
+    gap: 14px;
+    border-radius: 12px;
+  }
+
+  #map .map-legend > span {
+    font-size: 12px;
+  }
+
+  #map #map-my-location {
+    width: 100%;
+    min-height: 42px;
+    margin-top: 2px;
+    margin-left: 0;
+  }
+
+  #map-message {
+    margin-top: 8px;
+    overflow-wrap: anywhere;
+    font-size: 12px;
+  }
+}
