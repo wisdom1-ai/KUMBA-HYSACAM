@@ -7,12 +7,14 @@
   <meta name="description" content="Find waste collection points around Kumba">
   <title>HYSACAM Kumba | Find a Dustbin</title>
   <link rel="stylesheet" href="css/style.css">
+
   <!-- Leaflet map styles -->
   <link
     rel="stylesheet"
     href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
   >
 </head>
+
 <body>
   <header class="site-header">
     <a href="#home" class="brand" aria-label="HYSACAM Kumba home">
@@ -46,7 +48,9 @@
     <section class="hero" id="home">
       <div class="hero-content">
         <span class="eyebrow">A cleaner Kumba starts with us</span>
+
         <h1>Find a Dustbin<br>Near You in <span>Kumba</span></h1>
+
         <p>
           Find registered waste collection points around Kumba
           and help keep our communities clean
@@ -56,13 +60,16 @@
           <label class="sr-only" for="location-input">
             Search location
           </label>
+
           <span aria-hidden="true">⌕</span>
+
           <input
             id="location-input"
             type="search"
             placeholder="Search location, e.g. Kumba, Mile 2"
             autocomplete="off"
           >
+
           <button type="submit">Search</button>
         </form>
 
@@ -89,6 +96,7 @@
           <span class="eyebrow">Explore the platform</span>
           <h2 id="services-title">Our Services</h2>
         </div>
+
         <p>Everything you need to find waste collection information</p>
       </div>
 
@@ -125,6 +133,7 @@
           Better waste information helps communities make informed decisions
         </p>
       </div>
+
       <a class="nav-cta" href="#directory">Explore locations →</a>
     </section>
 
@@ -162,6 +171,7 @@
       <label class="sr-only" for="directorySearch">
         Search registered dustbins
       </label>
+
       <input
         type="search"
         id="directorySearch"
@@ -202,9 +212,11 @@
       </div>
 
       <div id="login-content">
+
         <!-- STAFF SIGN IN -->
         <form id="staff-login-form">
           <label for="staff-email">Staff Email</label>
+
           <input
             type="email"
             id="staff-email"
@@ -230,15 +242,9 @@
               class="password-toggle"
               aria-label="Show password"
               aria-pressed="false"
-              onclick="
-                const field = document.getElementById('staff-password');
-                const show = field.type === 'password';
-                field.type = show ? 'text' : 'password';
-                this.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
-                this.setAttribute('aria-pressed', String(show));
-              "
             >
               <svg
+                class="eye-icon"
                 xmlns="http://www.w3.org/2000/svg"
                 width="21"
                 height="21"
@@ -291,6 +297,7 @@
 
             <form id="cleaning-record-form">
               <label for="cleaning-bin-id">Collection Point ID</label>
+
               <input
                 type="text"
                 id="cleaning-bin-id"
@@ -299,6 +306,7 @@
               >
 
               <label for="cleaning-area">Area</label>
+
               <input
                 type="text"
                 id="cleaning-area"
@@ -307,6 +315,7 @@
               >
 
               <label for="cleaning-date">Cleaning Date and Time</label>
+
               <input
                 type="datetime-local"
                 id="cleaning-date"
@@ -314,6 +323,7 @@
               >
 
               <label for="cleaning-activity">Cleaning Activity</label>
+
               <input
                 type="text"
                 id="cleaning-activity"
@@ -322,6 +332,7 @@
               >
 
               <label for="cleaning-status">Status</label>
+
               <select id="cleaning-status" required>
                 <option value="scheduled">Scheduled</option>
                 <option value="completed">Completed</option>
@@ -329,6 +340,7 @@
               </select>
 
               <label for="cleaning-notes">Notes</label>
+
               <textarea
                 id="cleaning-notes"
                 placeholder="Additional information"
@@ -362,6 +374,7 @@
         <small>Kumba Community Portal</small>
       </span>
     </a>
+
     <p>Cleaner communities. Better waste management.</p>
   </footer>
 
@@ -375,4 +388,4 @@
   <script src="js/map.js"></script>
   <script src="js/directory.js"></script>
 </body>
-</html>
+</html>s
