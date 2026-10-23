@@ -2205,3 +2205,341 @@ footer hr,
     font-size: 16px;
   }
 }
+/* =========================================
+   HYSACAM — DUSTBIN MAP PAGE DESIGN
+   ========================================= */
+
+#map {
+  padding: 28px 20px 24px;
+  background: #f5f8f6;
+  color: #17251e;
+}
+
+#map .section-heading {
+  margin: 0 auto 18px;
+  max-width: 1180px;
+}
+
+#map .section-heading .eyebrow {
+  color: #087747;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.7px;
+  text-transform: uppercase;
+}
+
+#map .section-heading h2 {
+  margin: 5px 0 4px;
+  color: #17251e;
+  font-size: clamp(25px, 3vw, 32px);
+  font-weight: 750;
+  letter-spacing: -0.7px;
+}
+
+#map .section-heading p {
+  margin: 0;
+  color: #69776e;
+  font-size: 14px;
+}
+
+/* Search bar and filter */
+
+#map .map-toolbar {
+  max-width: 1180px;
+  margin: 0 auto 14px;
+}
+
+#map .map-search {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#map .map-search input {
+  flex: 1;
+  width: 100%;
+  height: 46px;
+  min-width: 0;
+  padding: 0 15px;
+  color: #24352b;
+  background: #fff;
+  border: 1px solid #dce5df;
+  border-radius: 9px;
+  outline: none;
+  font-size: 14px;
+  box-sizing: border-box;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+#map .map-search input:focus {
+  border-color: #087747;
+  box-shadow: 0 0 0 3px rgb(8 119 71 / 10%);
+}
+
+#map #map-filter-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  height: 46px;
+  padding: 0 19px;
+  flex-shrink: 0;
+  color: #fff;
+  background: #087747;
+  border: 1px solid #087747;
+  border-radius: 9px;
+  font-size: 14px;
+  font-weight: 650;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+#map #map-filter-button:hover {
+  background: #065d38;
+}
+
+#map .map-filter-panel {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 10px;
+  padding: 13px 15px;
+  background: #fff;
+  border: 1px solid #e0e8e3;
+  border-radius: 9px;
+}
+
+#map .map-filter-panel[hidden] {
+  display: none;
+}
+
+#map .map-filter-panel label {
+  color: #35483d;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+#map .map-filter-panel select {
+  min-height: 38px;
+  padding: 0 12px;
+  color: #26392e;
+  background: #fff;
+  border: 1px solid #dce5df;
+  border-radius: 7px;
+  font-size: 14px;
+}
+
+/* Main interactive map */
+
+#map #dustbin-map {
+  position: relative;
+  z-index: 0;
+  width: 100%;
+  max-width: 1180px;
+  height: 430px !important;
+  margin: 0 auto;
+  overflow: hidden;
+  background: #e8efea;
+  border: 1px solid #dfe8e2;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgb(20 50 32 / 7%);
+}
+
+/* Leaflet zoom buttons */
+
+#map .leaflet-control-zoom {
+  overflow: hidden;
+  border: 1px solid #e1e7e3 !important;
+  border-radius: 9px !important;
+  box-shadow: 0 2px 9px rgb(0 0 0 / 12%) !important;
+}
+
+#map .leaflet-control-zoom a {
+  width: 36px !important;
+  height: 36px !important;
+  line-height: 36px !important;
+  color: #21382a !important;
+  background: #fff !important;
+  border-bottom: 1px solid #e8ede9 !important;
+  font-size: 22px !important;
+}
+
+#map .leaflet-control-zoom a:hover {
+  background: #f0f7f2 !important;
+}
+
+/* Green dustbin markers */
+
+#map .hysacam-pin {
+  width: 29px;
+  height: 29px;
+  border: 3px solid #fff;
+  border-radius: 50% 50% 50% 0;
+  background: var(--pin-color, #168653);
+  box-shadow: 0 2px 7px rgb(0 0 0 / 25%);
+  color: #fff;
+  transform: rotate(-45deg);
+}
+
+#map .hysacam-pin span {
+  font-size: 14px;
+  transform: rotate(45deg);
+}
+
+/* Popup styling */
+
+#map .leaflet-popup-content-wrapper {
+  padding: 3px;
+  border-radius: 11px;
+  box-shadow: 0 5px 22px rgb(0 0 0 / 15%);
+}
+
+#map .leaflet-popup-content {
+  margin: 13px 15px;
+  font-family: inherit;
+  font-size: 13px;
+}
+
+#map .bin-popup > strong {
+  display: block;
+  margin-bottom: 7px;
+  color: #183a29;
+  font-size: 15px;
+}
+
+#map .bin-popup p {
+  margin: 5px 0;
+  color: #59685f;
+  overflow-wrap: anywhere;
+}
+
+#map .bin-details-button {
+  width: 100%;
+  margin-top: 10px;
+  padding: 10px 13px;
+  color: #fff;
+  background: #087747;
+  border: none;
+  border-radius: 7px;
+  font: inherit;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+#map .bin-details-button:hover {
+  background: #065d38;
+}
+
+/* Legend below the map */
+
+#map .map-legend {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: 12px 22px;
+  max-width: 1180px;
+  margin: 12px auto 0;
+  padding: 12px 15px;
+  background: #fff;
+  border: 1px solid #e2e9e4;
+  border-radius: 9px;
+}
+
+#map .map-legend > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #4c5d52;
+  font-size: 13px;
+}
+
+#map .legend-dot {
+  width: 11px;
+  height: 11px;
+  display: inline-block;
+  border-radius: 50%;
+}
+
+#map .bin-dot {
+  background: #168653;
+}
+
+#map .selected-dot {
+  background: #2475e8;
+}
+
+#map #map-my-location {
+  min-height: 36px;
+  margin-left: auto;
+  padding: 0 13px;
+  color: #087747;
+  background: #f0f8f3;
+  border: 1px solid #d4e9dc;
+  border-radius: 7px;
+  font-size: 13px;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+#map #map-my-location:hover {
+  background: #e3f3e9;
+}
+
+/* Map status message */
+
+#map-message {
+  max-width: 1180px;
+  margin: 10px auto 0;
+  color: #64736a;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* Mobile layout */
+
+@media (max-width: 600px) {
+  #map {
+    padding: 23px 13px;
+  }
+
+  #map .section-heading {
+    margin-bottom: 15px;
+  }
+
+  #map .section-heading h2 {
+    font-size: 27px;
+  }
+
+  #map .map-search {
+    gap: 7px;
+  }
+
+  #map .map-search input {
+    height: 43px;
+    padding: 0 10px;
+    font-size: 13px;
+  }
+
+  #map #map-filter-button {
+    height: 43px;
+    padding: 0 11px;
+    font-size: 13px;
+  }
+
+  #map #dustbin-map {
+    height: 420px !important;
+    border-radius: 10px;
+  }
+
+  #map .map-legend {
+    gap: 12px;
+    padding: 12px;
+  }
+
+  #map #map-my-location {
+    width: 100%;
+    margin-left: 0;
+  }
+}
