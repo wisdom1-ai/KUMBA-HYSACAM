@@ -8,59 +8,110 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (mapMessage) mapMessage.textContent = message;
   };
 
-  if (!mapElement || !window.L || typeof supabaseClient === "undefined") {
-    showMessage("The map or database connection is unavailable.");
+  if (!mapElement) {
+    console.error("Map container #dustbin-map was not found.");
     return;
   }
 
-  // Build the map toolbar without replacing your existing HTML.
+  if (!window.L) {
+    showMessage("The map library did not load. Check your internet connection.");
+    return;
+  }
+
+  if (typeof supabaseClient === "undefined") {
+    showMessage("Database connection is not configured.");
+    return;
+  }
+
+  /* -------------------------------
+     MAP TOOLBAR
+  -------------------------------- */
+
   const section = mapElement.parentElement;
 
-  const toolbar = document.createElement("div");
-  toolbar.className = "map-toolbar";
+  let toolbar = document.getElementById("map-toolbar");
 
-  toolbar.innerHTML = `
-    <div class="map-search">
-      <input
-        id="map-location-search"
-        type="search"
-        placeholder="⌕  Search location..."
-        aria-label="Search dustbin locations"
-      >
+  if (!toolbar) {
+    toolbar = document.createElement("div");
+    toolbar.id = "map-toolbar";
+    toolbar.className = "map-toolbar";
 
-      <button id="map-filter-button" type="button">
-        ☷ Filter
+    toolbar.innerHTML = `
+      <div class="map-search">
+        <input
+          id="map-location-search"
+          type="search"
+          placeholder="⌕  Search location..."
+          aria-label="Search dustbin locations"
+          autocomplete="off"
+        >
+
+        <button id="map-filter-button" type="button">
+          ☷ Filter
+        </button>
+      </div>
+
+      <div id="map-filter-panel" class="map-filter-panel" hidden>
+        <label for="map-status-filter">Dustbin status</label>
+
+        <select id="map-status-filter">
+          <option value="all">All statuses</option>
+          <option value="available">Available</option>
+          <option value="full">Full</option>
+          <option value="maintenance">Maintenance</option>
+          <option value="pending">Pending collection</option>
+        </select>
+      </div>
+    `;
+
+    section.insertBefore(toolbar, mapElement);
+  }
+
+  /* -------------------------------
+     MAP LEGEND
+  -------------------------------- */
+
+  let legend = document.getElementById("map-legend");
+
+  if (!legend) {
+    legend = document.createElement("div");
+    legend.id = "map-legend";
+    legend.className = "map-legend";
+
+    legend.innerHTML = `
+      <span>
+        <i class="legend-dot bin-dot"></i>
+        Dustbin Location
+      </span>
+
+      <span>
+        <i class="legend-dot selected-dot"></i>
+        Selected Location
+      </span>
+
+      <button id="map-my-location" type="button">
+        ◎ My Location
       </button>
-    </div>
+    `;
 
-    <div id="map-filter-panel" class="map-filter-panel" hidden>
-      <label for="map-status-filter">Dustbin status</label>
-      <select id="map-status-filter">
-        <option value="all">All statuses</option>
-        <option value="available">Available</option>
-        <option value="full">Full</option>
-        <option value="maintenance">Maintenance</option>
-        <option value="pending">Pending collection</option>
-      </select>
-    </div>
-  `;
+    mapElement.insertAdjacentElement("afterend", legend);
+  }
 
-  section.insertBefore(toolbar, mapElement);
+  const searchInput = document.getElementById("map-location-search");
+  const filterButton = document.getElementById("map-filter-button");
+  const filterPanel = document.getElementById("map-filter-panel");
+  const statusFilter = document.getElementById("map-status-filter");
+  const myLocationButton = document.getElementById("map-my-location");
 
-  const legend = document.createElement("div");
-  legend.className = "map-legend";
-  legend.innerHTML = `
-    <span><i class="legend-dot bin-dot"></i> Dustbin Location</span>
-    <span><i class="legend-dot selected-dot"></i> Selected Location</span>
-    <button id="map-my-location" type="button">
-      ◎ My Location
-    </button>
-  `;
+  /* -------------------------------
+     CREATE MAP
+  -------------------------------- */
 
-  mapElement.insertAdjacentElement("afterend", legend);
+  const map = L.map(mapElement, {
+    zoomControl: true
+  }).setView([4.636, 9.446], 13);
 
-  // Map setup
-  const map = L.map(mapElement).setView([4.636, 9.446], 13);
+  map.zoomControl.setPosition("topleft");
 
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     maxZoom: 19,
@@ -69,7 +120,13 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const markerLayer = L.layerGroup().addTo(map);
   const markers = [];
+
   let selectedMarker = null;
+  let currentLocationMarker = null;
+
+  /* -------------------------------
+     SAFE TEXT OUTPUT
+  -------------------------------- */
 
   function escapeHTML(value) {
     return String(value ?? "").replace(/[&<>"']/g, (character) => ({
@@ -81,7 +138,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     })[character]);
   }
 
-  function statusColor(status) {
+  /* -------------------------------
+     MARKER COLORS
+  -------------------------------- */
+
+  function markerColor(status) {
     const value = String(status || "").toLowerCase();
 
     if (value.includes("full") || value.includes("overflow")) {
@@ -96,7 +157,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       return "#8e44ad";
     }
 
-    if (value.includes("pending") || value.includes("collect")) {
+    if (value.includes("collect") || value.includes("pending")) {
       return "#f39c12";
     }
 
@@ -104,7 +165,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   function createMarkerIcon(status, selected = false) {
-    const color = selected ? "#2475e8" : statusColor(status);
+    const color = selected ? "#2475e8" : markerColor(status);
 
     return L.divIcon({
       className: "hysacam-marker",
@@ -117,6 +178,35 @@ document.addEventListener("DOMContentLoaded", async () => {
       iconAnchor: [17, 40],
       popupAnchor: [0, -38]
     });
+  }
+
+  /* -------------------------------
+     DUSTBIN POPUPS
+  -------------------------------- */
+
+  function createPopup(bin) {
+    const id = escapeHTML(bin.id);
+    const name = escapeHTML(bin.name || "Unnamed collection point");
+    const area = escapeHTML(bin.area || "Not specified");
+    const status = escapeHTML(bin.status || "Available");
+
+    return `
+      <div class="bin-popup">
+        <strong>${name}</strong>
+
+        <p class="bin-popup-id">${id}</p>
+        <p>📍 ${area}</p>
+        <p>Status: <strong>${status}</strong></p>
+
+        <button
+          type="button"
+          class="bin-details-button"
+          data-bin-id="${id}"
+        >
+          View Details
+        </button>
+      </div>
+    `;
   }
 
   function selectMarker(item) {
@@ -133,58 +223,41 @@ document.addEventListener("DOMContentLoaded", async () => {
     );
   }
 
-  function makePopup(bin) {
-    const id = escapeHTML(bin.id);
-    const name = escapeHTML(bin.name || "Unnamed collection point");
-    const area = escapeHTML(bin.area || "Not specified");
-    const status = escapeHTML(bin.status || "Available");
-
-    return `
-      <div class="bin-popup">
-        <strong>${name}</strong>
-        <p>${id}</p>
-        <p>📍 ${area}</p>
-        <p>Status: <strong>${status}</strong></p>
-        <button
-          type="button"
-          class="bin-details-button"
-          data-bin-id="${id}"
-        >
-          View Details
-        </button>
-      </div>
-    `;
-  }
-
   function addBinMarker(bin) {
     const marker = L.marker(
       [Number(bin.latitude), Number(bin.longitude)],
-      { icon: createMarkerIcon(bin.status) }
+      {
+        icon: createMarkerIcon(bin.status),
+        title: bin.name || "Dustbin location",
+        alt: bin.name || "Dustbin location"
+      }
     );
 
     const item = { bin, marker };
 
-    marker.bindPopup(makePopup(bin));
+    marker.bindPopup(createPopup(bin));
 
-    marker.on("click", () => selectMarker(item));
+    marker.on("click", () => {
+      selectMarker(item);
+    });
 
     marker.addTo(markerLayer);
     markers.push(item);
   }
 
+  /* -------------------------------
+     SEARCH AND FILTER
+  -------------------------------- */
+
   function applyFilters() {
-    const query = document
-      .getElementById("map-location-search")
-      .value.trim().toLowerCase();
+    const query = (searchInput.value || "").trim().toLowerCase();
+    const chosenStatus = (statusFilter.value || "all").toLowerCase();
 
-    const statusFilter = document
-      .getElementById("map-status-filter")
-      .value.toLowerCase();
-
-    const visibleItems = [];
+    const visibleMarkers = [];
 
     markers.forEach((item) => {
       const bin = item.bin;
+
       const searchableText = [
         bin.id,
         bin.name,
@@ -193,28 +266,34 @@ document.addEventListener("DOMContentLoaded", async () => {
       ].join(" ").toLowerCase();
 
       const matchesSearch = searchableText.includes(query);
-      const binStatus = String(bin.status || "available").toLowerCase();
-      const matchesStatus =
-        statusFilter === "all" || binStatus.includes(statusFilter);
 
-      if (matchesSearch && matchesStatus) {
-        if (!map.hasLayer(item.marker)) item.marker.addTo(markerLayer);
-        visibleItems.push(item);
+      const status = String(bin.status || "available").toLowerCase();
+
+      const matchesStatus =
+        chosenStatus === "all" || status.includes(chosenStatus);
+
+      const visible = matchesSearch && matchesStatus;
+
+      if (visible) {
+        if (!markerLayer.hasLayer(item.marker)) {
+          item.marker.addTo(markerLayer);
+        }
+
+        visibleMarkers.push(item);
       } else {
-        if (map.hasLayer(item.marker)) markerLayer.removeLayer(item.marker);
+        if (markerLayer.hasLayer(item.marker)) {
+          markerLayer.removeLayer(item.marker);
+        }
+
+        if (selectedMarker === item) {
+          selectedMarker = null;
+        }
       }
     });
 
-    if (
-      selectedMarker &&
-      !visibleItems.includes(selectedMarker)
-    ) {
-      selectedMarker = null;
-    }
-
-    if (visibleItems.length > 0) {
+    if (visibleMarkers.length > 0) {
       const bounds = L.featureGroup(
-        visibleItems.map((item) => item.marker)
+        visibleMarkers.map((item) => item.marker)
       ).getBounds();
 
       if (bounds.isValid()) {
@@ -225,69 +304,129 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
 
       showMessage(
-        `Showing ${visibleItems.length} matching dustbin location(s).`
+        `Showing ${visibleMarkers.length} matching dustbin location(s).`
       );
     } else {
       showMessage("No dustbin locations match your search and filter.");
     }
   }
 
-  // Search and filter controls
-  document
-    .getElementById("map-location-search")
-    .addEventListener("input", applyFilters);
+  searchInput.addEventListener("input", applyFilters);
 
-  document
-    .getElementById("map-status-filter")
-    .addEventListener("change", applyFilters);
+  filterButton.addEventListener("click", () => {
+    filterPanel.hidden = !filterPanel.hidden;
+  });
 
-  document
-    .getElementById("map-filter-button")
-    .addEventListener("click", () => {
-      const panel = document.getElementById("map-filter-panel");
-      panel.hidden = !panel.hidden;
+  statusFilter.addEventListener("change", applyFilters);
+
+  /* -------------------------------
+     FLOATING CURRENT-LOCATION BUTTON
+  -------------------------------- */
+
+  const locationControl = L.control({
+    position: "topright"
+  });
+
+  locationControl.onAdd = function () {
+    const button = L.DomUtil.create(
+      "button",
+      "map-floating-location"
+    );
+
+    button.type = "button";
+    button.title = "Find my location";
+    button.setAttribute("aria-label", "Find my location");
+    button.innerHTML = "◎";
+
+    L.DomEvent.disableClickPropagation(button);
+    L.DomEvent.disableScrollPropagation(button);
+
+    button.addEventListener("click", () => {
+      myLocationButton.click();
     });
 
-  // Browser location control
-  document
-    .getElementById("map-my-location")
-    .addEventListener("click", () => {
-      if (!navigator.geolocation) {
-        showMessage("Your browser does not support location services.");
-        return;
-      }
+    return button;
+  };
 
-      showMessage("Finding your location...");
+  locationControl.addTo(map);
 
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const lat = position.coords.latitude;
-          const lng = position.coords.longitude;
+  function findMyLocation() {
+    if (!navigator.geolocation) {
+      showMessage("Your browser does not support location services.");
+      return;
+    }
 
-          L.circleMarker([lat, lng], {
-            radius: 8,
-            color: "#ffffff",
-            weight: 3,
-            fillColor: "#2475e8",
-            fillOpacity: 1
-          })
-            .bindPopup("Your current location")
-            .addTo(map)
-            .openPopup();
+    showMessage("Finding your current location...");
 
-          map.setView([lat, lng], 16);
-          showMessage("Your current location is shown on the map.");
-        },
-        () => {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
+
+        if (currentLocationMarker) {
+          map.removeLayer(currentLocationMarker);
+        }
+
+        currentLocationMarker = L.circleMarker([lat, lng], {
+          radius: 8,
+          color: "#ffffff",
+          weight: 3,
+          fillColor: "#2475e8",
+          fillOpacity: 1
+        })
+          .bindPopup("Your current location")
+          .addTo(map);
+
+        map.setView([lat, lng], 16);
+        currentLocationMarker.openPopup();
+
+        showMessage("Your current location is shown on the map.");
+      },
+      (error) => {
+        console.warn("Location unavailable:", error.message);
+
+        if (error.code === 1) {
           showMessage(
-            "Unable to get your location. Check browser location permissions."
+            "Location permission was denied. Allow location access in your browser settings."
           );
-        },
-        { enableHighAccuracy: true, timeout: 10000 }
-      );
-    });
+        } else if (error.code === 3) {
+          showMessage("Location request timed out. Please try again.");
+        } else {
+          showMessage("Unable to determine your location. Please try again.");
+        }
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 60000
+      }
+    );
+  }
 
-  // Load registered dustbins from Supabase
+  myLocationButton.addEventListener("click", findMyLocation);
+
+  /* -------------------------------
+     VIEW DETAILS EVENT
+  -------------------------------- */
+
+  mapElement.addEventListener("click", (event) => {
+    const button = event.target.closest(".bin-details-button");
+
+    if (!button) return;
+
+    document.dispatchEvent(
+      new CustomEvent("hysacam:bin-details", {
+        detail: {
+          binId: button.dataset.binId
+        }
+      })
+    );
+  });
+
+  /* -------------------------------
+     LOAD DUSTBINS FROM SUPABASE
+  -------------------------------- */
+
   showMessage("Loading registered dustbin locations...");
 
   try {
@@ -302,10 +441,16 @@ document.addEventListener("DOMContentLoaded", async () => {
       const lng = Number(bin.longitude);
 
       return (
+        bin.latitude !== null &&
+        bin.longitude !== null &&
+        bin.latitude !== "" &&
+        bin.longitude !== "" &&
         Number.isFinite(lat) &&
         Number.isFinite(lng) &&
-        lat >= -90 && lat <= 90 &&
-        lng >= -180 && lng <= 180
+        lat >= -90 &&
+        lat <= 90 &&
+        lng >= -180 &&
+        lng <= 180
       );
     });
 
@@ -323,10 +468,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
       }
 
-      showMessage(`Loaded ${markers.length} registered dustbin location(s).`);
+      showMessage(
+        `Showing ${markers.length} registered dustbin location(s).`
+      );
     } else {
       showMessage(
-        "No dustbins with valid coordinates were found in the database."
+        "No registered dustbins with valid coordinates were found."
       );
     }
 
@@ -336,24 +483,19 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.error("Could not load dustbin locations:", error);
 
     showMessage(
-      "Could not load dustbins. Check your Supabase connection and table permissions."
+      "Could not load dustbins. Check your Supabase connection, bins table and access policies."
     );
   }
 
-  // Handle the View Details button inside map popups.
-  mapElement.addEventListener("click", (event) => {
-    const button = event.target.closest(".bin-details-button");
-    if (!button) return;
+  /* -------------------------------
+     MAP SIZE FIX
+  -------------------------------- */
 
-    const binId = button.dataset.binId;
+  setTimeout(() => {
+    map.invalidateSize();
+  }, 250);
 
-    // Dispatch an event for the details page or directory script to handle.
-    document.dispatchEvent(
-      new CustomEvent("hysacam:bin-details", {
-        detail: { binId }
-      })
-    );
+  window.addEventListener("resize", () => {
+    map.invalidateSize();
   });
-
-  setTimeout(() => map.invalidateSize(), 250);
 });

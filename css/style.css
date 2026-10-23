@@ -2610,3 +2610,40 @@ footer hr,
     font-size: 12px;
   }
 }
+/* Floating current-location button */
+#map .map-floating-location {
+  width: 38px;
+  height: 38px;
+  border: 1px solid #e0e7e2;
+  border-radius: 9px;
+  background: #fff;
+  color: #087747;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 14%);
+  font-size: 23px;
+  cursor: pointer;
+}
+
+#map .map-floating-location:hover {
+  background: #eff8f2;
+}
+
+/* Keep the next section close to the map */
+#map {
+  margin-bottom: 0;
+}
+
+#map + .simple-section {
+  padding-top: 28px;
+}
+
+@media (max-width: 600px) {
+  #map .leaflet-top.leaflet-right {
+    top: 10px;
+    right: 10px;
+  }
+
+  #map .map-floating-location {
+    width: 36px;
+    height: 36px;
+  }
+}
