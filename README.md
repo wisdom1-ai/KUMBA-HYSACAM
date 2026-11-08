@@ -67,3 +67,12 @@ This package now includes Vercel serverless API routes under `api/auth/`. The pa
 - Keep the admin portal separate. These endpoints authenticate public users only; they do not implement administrator authorization.
 - Email delivery will not work until the provider and sender are configured. Do not claim the flow is live until it has been tested on the deployed HTTPS site.
 - The backend endpoints require Node.js 20+ and the Vercel Functions runtime. Local Live Server alone cannot run the API routes.
+
+
+## Forgot password and password visibility
+
+The sign-in page links to `forgot-password.html`. The recovery flow sends a six-digit, 10-minute one-time code to an existing account email, verifies the code on the server, updates the Supabase Auth password, revokes existing application sessions, and returns the user to sign-in. Unknown email addresses receive the same generic success response to reduce account enumeration. Reset requests and code attempts are rate-limited.
+
+The Supabase SQL setup now permits `password_reset` challenges and adds the signup-password column if it is missing. If the database setup was already run, run the updated `supabase/auth-setup.sql` again in Supabase SQL Editor; it uses safe `IF NOT EXISTS` / constraint replacement statements and does not delete user records. Keep the existing Vercel email, Supabase, and session-encryption environment variables configured. Test email delivery on the deployed HTTPS site.
+
+Password fields on the sign-in, sign-up, and reset pages use accessible eye controls to show or hide the entered password.

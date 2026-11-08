@@ -3,7 +3,7 @@
 create table if not exists public.hysacam_auth_challenges (
   id uuid primary key default gen_random_uuid(),
   email text not null,
-  purpose text not null check (purpose in ('signup','login')),
+  purpose text not null check (purpose in ('signup','login','password_reset')),
   user_id uuid not null references auth.users(id) on delete cascade,
   code_hash text not null,
   expires_at timestamptz not null,
@@ -13,7 +13,7 @@ create table if not exists public.hysacam_auth_challenges (
   unique(email,purpose)
 );
 
-create table if not exists public.hysacam_auth_sessions (
+alter table public.hysacam_auth_challenges add column if not exists encrypted_signup_password text;\n\ncreate table if not exists public.hysacam_auth_sessions (
   id uuid primary key default gen_random_uuid(),
   session_hash text not null unique,
   user_id uuid not null references auth.users(id) on delete cascade,
@@ -59,3 +59,12 @@ grant execute on function public.hysacam_consume_rate_limit(text,integer,integer
 revoke all on public.hysacam_auth_challenges from anon, authenticated;
 revoke all on public.hysacam_auth_sessions from anon, authenticated;
 revoke all on public.hysacam_auth_rate_limits from anon, authenticated;
+
+
+-- If this setup was previously run, extend the existing purpose constraint
+-- so password-reset challenges can be stored.
+alter table public.hysacam_auth_challenges
+  drop constraint if exists hysacam_auth_challenges_purpose_check;
+alter table public.hysacam_auth_challenges
+  add constraint hysacam_auth_challenges_purpose_check
+  check (purpose in ('signup','login','password_reset'));

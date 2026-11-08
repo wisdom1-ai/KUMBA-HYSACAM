@@ -110,3 +110,16 @@
 .auth-resend-row a.is-loading{opacity:.55;pointer-events:none}
 @media(max-width:900px){.auth-page-modern{grid-template-columns:minmax(260px,.85fr) minmax(390px,1.15fr)}.auth-brand-modern{padding:30px}.auth-brand-modern .auth-brand-content h1{font-size:42px}}
 @media(max-width:700px){.auth-page-modern{display:flex;flex-direction:column;min-height:100vh}.auth-brand-modern{min-height:auto;padding:18px 22px 24px}.auth-home-link img{width:38px;height:38px}.auth-brand-content{margin:24px 0 0}.auth-brand-modern .auth-brand-content h1{font-size:31px;letter-spacing:-1px;margin:12px 0 8px}.auth-brand-content p{font-size:12px;line-height:1.6;margin:0}.auth-brand-points,.auth-brand-modern .auth-brand-foot,.auth-brand-orb{display:none}.auth-main-modern{padding:24px 16px 32px;gap:14px;flex:1}.auth-card-modern{padding:25px 21px;border-radius:18px}.auth-card-modern h2{font-size:27px}.auth-card-modern .auth-subtitle{font-size:13px;margin-bottom:22px}.auth-mobile-brand{display:flex;align-items:center;gap:9px;margin-bottom:20px;color:#087747;font-size:9px;font-weight:800;letter-spacing:1.1px}.auth-mobile-brand img{width:29px;height:29px;object-fit:contain}.auth-step-label{margin-bottom:13px}.auth-card-signup .auth-form-modern{gap:12px}.auth-card-signup .auth-form-modern input{height:46px}.auth-return-home{font-size:10px}}
+
+/* Password recovery and accessible password visibility controls */
+.auth-label-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.auth-forgot-link{font-size:11px;font-weight:800;color:#087747;text-decoration:none}
+.auth-forgot-link:hover{text-decoration:underline}
+.password-toggle-icon{width:34px;height:34px;right:9px;padding:7px;display:grid;place-items:center;color:#087747}
+.password-toggle-icon svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.auth-password-wrap input{padding-right:52px}
+.auth-card-reset .auth-message{margin-top:14px}
+.auth-card-reset form[hidden]{display:none}
+.auth-card-reset .auth-divider{margin-top:24px}
+.auth-card-reset .otp-input{letter-spacing:10px}
+@media(max-width:700px){.auth-card-reset .auth-divider{margin-top:20px}}

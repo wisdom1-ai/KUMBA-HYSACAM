@@ -82,8 +82,9 @@ export async function sendCode(email, purpose, userId, encryptedRefreshToken = n
     encrypted_signup_password: encryptedSignupPassword
   }, { onConflict: 'email,purpose' });
   if (error) throw new Error('Could not prepare verification. Please try again.');
-  const subject = purpose === 'signup' ? 'Verify your HYSACAM account' : 'Your HYSACAM sign-in code';
-  const html = `<div style="font-family:Arial,sans-serif;max-width:520px;margin:auto;color:#18352a"><h2>HYSACAM Kumba Tracker</h2><p>Your verification code is:</p><p style="font-size:32px;font-weight:bold;letter-spacing:8px">${code}</p><p>This code expires in 10 minutes. Do not share it with anyone.</p></div>`;
+  const subject = purpose === 'signup' ? 'Verify your HYSACAM account' : purpose === 'password_reset' ? 'Reset your HYSACAM password' : 'Your HYSACAM sign-in code';
+  const intro = purpose === 'password_reset' ? 'Use this code to reset your password:' : 'Your verification code is:';
+  const html = `<div style="font-family:Arial,sans-serif;max-width:520px;margin:auto;color:#18352a"><h2>HYSACAM Kumba Tracker</h2><p>${intro}</p><p style="font-size:32px;font-weight:bold;letter-spacing:8px">${code}</p><p>This code expires in 10 minutes. Do not share it with anyone. If you did not request this, you can ignore this email.</p></div>`;
   try {
     if (smtpConfigured) {
       const transporter = nodemailer.createTransport({
@@ -104,7 +105,7 @@ export async function sendCode(email, purpose, userId, encryptedRefreshToken = n
         to: email,
         subject,
         html,
-        text: `Your HYSACAM verification code is ${code}. It expires in 10 minutes. Do not share it with anyone.`
+        text: `${purpose === 'password_reset' ? 'Your HYSACAM password reset code' : 'Your HYSACAM verification code'} is ${code}. It expires in 10 minutes. Do not share it with anyone.`
       });
       transporter.close();
     } else {
