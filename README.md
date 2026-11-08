@@ -1,23 +1,27 @@
-# HYSACAM Kumba Community Tracker — New Build
+# HYSACAM Kumba Tracker — Frontend
 
-A fresh responsive front-end prototype for exploring illustrative waste-bin locations, submitting local reports, viewing report history, and editing a local profile
+This package contains the public-facing frontend and a separate private administrator portal shell. The backend is being developed separately.
 
-## Run it
-1 Extract the ZIP file
-2 Open `index.html` in a modern browser, or use VS Code with the Live Server extension
-3 Internet access is required for Leaflet and OpenStreetMap tiles
+## Run locally
+1. Extract this folder.
+2. Open the `CCAS` folder in VS Code.
+3. Use Live Server to open `index.html`.
 
-## Included features
-- Responsive desktop sidebar and fixed five-item mobile bottom navigation
-- Overview dashboard and sample stats
-- Interactive Leaflet maps with sample location markers and status filters
-- Searchable dustbin directory
-- Report submission form with browser-local persistence
-- My Reports list and CSV export
-- Editable local profile and clear-local-data control
-- Help and support page
+## Administrator access and security
+- The public website has no administrator login button and does not render the admin dashboard.
+- The administrator page is separate at `admin.html` and is not linked from public navigation.
+- `admin.html` fails closed until the backend implements `POST /api/admin/login`, validates credentials server-side, and returns `{ authenticated: true, role: "administrator" }` only for an approved administrator.
+- The backend must enforce role checks on every admin API route, use secure HttpOnly/SameSite cookies, rate-limit login attempts, protect against CSRF where applicable, hash passwords with a modern password-hashing algorithm, and never trust frontend-only checks.
+- Implement `POST /api/admin/logout` server-side. Do not store admin passwords or secret keys in frontend JavaScript.
+- No default credentials are included. The administrator must create/approve accounts through the backend, not public sign-up.
 
-## Important limitations
-This is a standalone prototype Sample locations and status values are illustrative, not verified official HYSACAM data Reports and profile settings are stored in the current browser's `localStorage` only No shared database, user authentication, live HYSACAM feed, GPS tracking, or official report delivery is connected
+## Important
+This is frontend work only. The login page is a user interface and is not secure authentication until the backend endpoints and server-side authorisation are implemented. Do not deploy the admin portal as secure until that work is complete.
 
-To make this production-ready for multiple users, connect a backend/database (for example Supabase) with appropriate authentication, access policies, and an official reporting workflow Keep database keys and privileged credentials out of browser JavaScript
+## Images and branding
+The supplied `images/hysacam-truck.jpg` is used in the home hero and About section. The current package did not contain an official HYSACAM logo file, so a simple text monogram is used temporarily; replace it with the official approved logo asset when supplied.
+
+The map uses OpenStreetMap tiles and needs an internet connection. Sample bin records are frontend demonstration data.
+
+
+Branding update: the public header, About section and administrator portal use the small HYSACAM symbol extracted from the supplied reference design. The text K placeholder and full text wordmark have been removed.

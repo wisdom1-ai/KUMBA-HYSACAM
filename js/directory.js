@@ -6,29 +6,35 @@ document.addEventListener("DOMContentLoaded", async () => {
   const message = document.getElementById("directory-message");
 
   if (!directory || !searchInput) {
-    console.error("Directory elements were not found in index.html.");
+    console.error("Dustbin directory elements are missing.");
     return;
   }
 
-  function escapeHTML(value) {
-    return String(value ?? "").replace(/[&<>"']/g, character => ({
+  let bins = [];
+
+  const escapeHTML = (value) =>
+    String(value ?? "").replace(/[&<>"']/g, (character) => ({
       "&": "&amp;",
       "<": "&lt;",
       ">": "&gt;",
       '"': "&quot;",
       "'": "&#039;"
     })[character]);
-  }
 
   function setMessage(text) {
     if (message) message.textContent = text;
   }
 
-  function getStatusClass(status) {
+  function shortId(id) {
+    const value = String(id ?? "");
+    return value.length > 12 ? `${value.slice(0, 8)}…` : value || "ID unavailable";
+  }
+
+  function getStatus(status) {
     const value = String(status || "").toLowerCase();
 
     if (value.includes("full") || value.includes("overflow")) {
-      return "full";
+      return { label: status || "Full", className: "full" };
     }
 
     if (
@@ -36,139 +42,238 @@ document.addEventListener("DOMContentLoaded", async () => {
       value.includes("broken") ||
       value.includes("damage")
     ) {
-      return "maintenance";
+      return { label: status || "Maintenance", className: "maintenance" };
     }
 
-    return "available";
+    if (value.includes("pending") || value.includes("collect")) {
+      return { label: status || "Pending collection", className: "pending" };
+    }
+
+    return { label: status || "Available", className: "available" };
   }
 
-  let bins = [];
+  function validCoordinates(bin) {
+    const lat = Number(bin.latitude);
+    const lng = Number(bin.longitude);
 
-  function renderBins(searchTerm = "") {
-    const query = searchTerm.trim().toLowerCase();
+    return (
+      bin.latitude !== null &&
+      bin.latitude !== "" &&
+      bin.longitude !== null &&
+      bin.longitude !== "" &&
+      Number.isFinite(lat) &&
+      Number.isFinite(lng) &&
+      lat >= -90 &&
+      lat <= 90 &&
+      lng >= -180 &&
+      lng <= 180
+    );
+  }
 
-    const filteredBins = bins.filter(bin => {
-      const name = String(bin.name || "").toLowerCase();
-      const area = String(bin.area || "").toLowerCase();
-      const status = String(bin.status || "").toLowerCase();
+  function renderBins() {
+    const query = searchInput.value.trim().toLowerCase();
 
-      return (
-        name.includes(query) ||
-        area.includes(query) ||
-        status.includes(query)
-      );
+    const filteredBins = bins.filter((bin) => {
+      const searchable = [
+        bin.id,
+        bin.name,
+        bin.area,
+        bin.status
+      ].join(" ").toLowerCase();
+
+      return searchable.includes(query);
     });
 
     if (filteredBins.length === 0) {
       directory.innerHTML = `
-        <p class="placeholder-note">
+        <div class="directory-empty">
+          <span class="directory-empty-icon" aria-hidden="true">⌕</span>
+          <h3>${bins.length ? "No matching locations" : "No dustbins registered yet"}</h3>
+          <p>${
+            bins.length
+              ? "Try another dustbin ID, name or area"
+              : "Registered collection points will appear here when available"
+          }</p>
           ${
-            bins.length === 0
-              ? "No registered dustbins are available yet."
-              : "No dustbins match your search. Try another name or area."
+            query
+              ? '<button type="button" id="directory-clear-search">Clear search</button>'
+              : ""
           }
-        </p>
+        </div>
       `;
 
       setMessage("0 collection points found.");
+
+      document.getElementById("directory-clear-search")?.addEventListener(
+        "click",
+        () => {
+          searchInput.value = "";
+          renderBins();
+          searchInput.focus();
+        }
+      );
+
       return;
     }
 
-    directory.innerHTML = filteredBins.map(bin => {
-      const name = escapeHTML(bin.name || "Unnamed collection point");
-      const area = escapeHTML(bin.area || "Area not specified");
-      const status = escapeHTML(bin.status || "Status unknown");
-      const statusClass = getStatusClass(bin.status);
+    directory.innerHTML = `
+      <div class="directory-results-heading">
+        <span>Collection points</span>
+        <span class="directory-results-count">${filteredBins.length} found</span>
+      </div>
 
-      return `
-        <article class="service-card bin-card">
-          <h3>${name}</h3>
-          <p><strong>Area:</strong> ${area}</p>
-          <p>
-            <strong>Status:</strong>
-            <span class="bin-status ${statusClass}">
-              ${status}
-            </span>
-          </p>
-          ${
-            Number.isFinite(Number(bin.latitude)) &&
-            Number.isFinite(Number(bin.longitude)) &&
-            bin.latitude !== null &&
-            bin.longitude !== null
-              ? `<button
-                  type="button"
-                  class="bin-map-button"
-                  data-lat="${escapeHTML(bin.latitude)}"
-                  data-lng="${escapeHTML(bin.longitude)}"
-                >View on map</button>`
-              : ""
-          }
-        </article>
-      `;
-    }).join("");
+      <div class="directory-list">
+        ${filteredBins.map((bin) => {
+          const name = escapeHTML(bin.name || "Unnamed collection point");
+          const area = escapeHTML(bin.area || "Area not specified");
+          const id = escapeHTML(bin.id || "ID unavailable");
+          const status = getStatus(bin.status);
+          const coordinatesValid = validCoordinates(bin);
+
+          const coordinates = coordinatesValid
+            ? `${Number(bin.latitude).toFixed(4)}, ${Number(bin.longitude).toFixed(4)}`
+            : "Coordinates unavailable";
+
+          return `
+            <article class="directory-card">
+              <div class="directory-card-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="25" height="25"
+                  fill="none" stroke="currentColor" stroke-width="1.8"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z"/>
+                  <circle cx="12" cy="10" r="2.5"/>
+                </svg>
+              </div>
+
+              <div class="directory-card-content">
+                <div class="directory-card-title-row">
+                  <h3 title="${name}">${name}</h3>
+                  <span class="directory-id"
+                    title="Full ID: ${id}"
+                    aria-label="Dustbin ID ${id}">${escapeHTML(shortId(bin.id))}</span>
+                </div>
+
+                <p class="directory-area">${area}</p>
+
+                <p class="directory-coordinates">
+                  <span aria-hidden="true">⌖</span>
+                  ${coordinates}
+                </p>
+
+                <div class="directory-card-bottom">
+                  <span class="directory-status ${status.className}">
+                    <span class="status-dot"></span>
+                    ${escapeHTML(status.label)}
+                  </span>
+
+                  ${
+                    coordinatesValid
+                      ? `<button
+                          type="button"
+                          class="directory-view-button"
+                          data-lat="${Number(bin.latitude)}"
+                          data-lng="${Number(bin.longitude)}"
+                          data-bin-id="${id}"
+                        >View <span aria-hidden="true">→</span></button>`
+                      : `<button type="button" class="directory-view-button" disabled>
+                          No map location
+                        </button>`
+                  }
+                </div>
+              </div>
+            </article>
+          `;
+        }).join("")}
+      </div>
+    `;
 
     setMessage(
-      `Showing ${filteredBins.length} of ${bins.length} collection point(s).`
+      `Showing ${filteredBins.length} of ${bins.length} registered collection point(s).`
     );
   }
 
-  searchInput.addEventListener("input", () => {
-    renderBins(searchInput.value);
-  });
+  searchInput.addEventListener("input", renderBins);
 
-  // Clicking "View on map" takes the user to the map section.
-  directory.addEventListener("click", event => {
-    const button = event.target.closest(".bin-map-button");
-    if (!button) return;
+  directory.addEventListener("click", (event) => {
+    const button = event.target.closest(".directory-view-button");
 
-    const lat = Number(button.dataset.lat);
-    const lng = Number(button.dataset.lng);
+    if (!button || button.disabled) return;
+
+    const latitude = Number(button.dataset.lat);
+    const longitude = Number(button.dataset.lng);
+    const binId = button.dataset.binId;
 
     const mapSection = document.getElementById("map");
+
     if (mapSection) {
-      mapSection.scrollIntoView({ behavior: "smooth" });
+      mapSection.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
     }
 
-    // Notify map.js if it exposes the map-view event.
     document.dispatchEvent(new CustomEvent("hysacam:show-bin", {
-      detail: { latitude: lat, longitude: lng }
+      detail: {
+        latitude,
+        longitude,
+        binId
+      }
     }));
   });
 
   if (typeof supabaseClient === "undefined") {
     directory.innerHTML = `
-      <p class="placeholder-note">
-        The database connection is not available. Please check supabase.js.
-      </p>
+      <div class="directory-empty">
+        <h3>Database connection unavailable</h3>
+        <p>Check your Supabase configuration and try again</p>
+      </div>
     `;
-    setMessage("Database connection unavailable.");
+
+    setMessage("Could not connect to the database.");
     console.error("supabaseClient is not defined.");
     return;
   }
 
-  directory.innerHTML = "<p>Loading dustbin locations...</p>";
-  setMessage("");
-
-  try {
-    const { data, error } = await supabaseClient
-      .from("bins")
-      .select("id, name, area, latitude, longitude, status")
-      .order("name", { ascending: true });
-
-    if (error) throw error;
-
-    bins = data || [];
-    renderBins(searchInput.value);
-
-  } catch (error) {
-    console.error("Could not load the dustbin directory:", error);
-
+  async function loadBins() {
     directory.innerHTML = `
-      <p class="placeholder-note">
-        Could not load dustbin locations. Please try again later.
-      </p>
+      <div class="directory-loading">
+        <span class="directory-spinner" aria-hidden="true"></span>
+        <p>Loading registered collection points...</p>
+      </div>
     `;
 
-    setMessage("Database error. Check the browser console and Supabase permissions.");
+    setMessage("");
+
+    try {
+      const { data, error } = await supabaseClient
+        .from("bins")
+        .select("id, name, area, latitude, longitude, status")
+        .order("name", { ascending: true });
+
+      if (error) throw error;
+
+      bins = data || [];
+      renderBins();
+    } catch (error) {
+      console.error("Could not load the dustbin directory:", error);
+
+      directory.innerHTML = `
+        <div class="directory-empty directory-error">
+          <h3>Unable to load locations</h3>
+          <p>Please check your connection and try again</p>
+          <button type="button" id="directory-retry">Try again</button>
+        </div>
+      `;
+
+      setMessage("Could not retrieve collection points.");
+    }
   }
+
+  directory.addEventListener("click", (event) => {
+    if (event.target.closest("#directory-retry")) {
+      loadBins();
+    }
+  });
+
+  await loadBins();
 });
