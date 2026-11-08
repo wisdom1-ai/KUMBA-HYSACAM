@@ -186,3 +186,91 @@
   .auth-card-reset { width: 100%; max-width: 480px; }
   .auth-card-reset .otp-input { height: 62px !important; font-size: 25px !important; }
 }
+
+
+/* Sign-in and recovery: final layout corrections */
+.auth-card-signin .auth-password-wrap,
+.auth-card-reset .auth-password-wrap {
+  position: relative;
+  display: block;
+  width: 100%;
+}
+.auth-card-signin .auth-password-wrap input,
+.auth-card-reset .auth-password-wrap input {
+  display: block;
+  width: 100%;
+  padding-right: 58px;
+}
+.auth-card-signin .auth-password-wrap .password-toggle-icon,
+.auth-card-reset .auth-password-wrap .password-toggle-icon {
+  position: absolute !important;
+  top: 50% !important;
+  right: 10px !important;
+  left: auto !important;
+  bottom: auto !important;
+  transform: translateY(-50%) !important;
+  display: grid !important;
+  place-items: center !important;
+  width: 38px !important;
+  min-width: 38px !important;
+  max-width: 38px !important;
+  height: 38px !important;
+  min-height: 38px !important;
+  margin: 0 !important;
+  padding: 8px !important;
+  border: 0 !important;
+  border-radius: 9px !important;
+  background: transparent !important;
+  color: #087747 !important;
+  box-shadow: none !important;
+  cursor: pointer;
+}
+.auth-card-signin .auth-password-wrap .password-toggle-icon:hover,
+.auth-card-reset .auth-password-wrap .password-toggle-icon:hover {
+  background: #edf7f0 !important;
+}
+.auth-card-signin .auth-password-wrap .password-toggle-icon svg,
+.auth-card-reset .auth-password-wrap .password-toggle-icon svg {
+  display: block;
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.auth-card-signin .auth-return-home,
+.auth-card-reset .auth-return-home { display: none !important; }
+.auth-card-signin .auth-divider { margin-top: 27px; }
+.auth-card-signin .auth-trust-note { margin-top: 19px; }
+.auth-card-signin .auth-subtitle,
+.auth-card-reset .auth-subtitle { line-height: 1.65; }
+.auth-card-signin .auth-primary-button,
+.auth-card-reset .auth-primary-button {
+  min-height: 54px;
+  letter-spacing: .1px;
+}
+.auth-card-reset .otp-input {
+  display: block;
+  width: 100%;
+  height: 66px !important;
+  padding: 0 14px !important;
+  border-radius: 12px;
+  text-align: center !important;
+  font-size: 28px !important;
+  font-weight: 800;
+  letter-spacing: 12px !important;
+  font-variant-numeric: tabular-nums;
+}
+@media (max-width: 700px) {
+  .auth-card-signin .auth-password-wrap .password-toggle-icon,
+  .auth-card-reset .auth-password-wrap .password-toggle-icon {
+    right: 8px !important;
+  }
+  .auth-card-reset .otp-input {
+    height: 62px !important;
+    font-size: 25px !important;
+    letter-spacing: 10px !important;
+  }
+}
