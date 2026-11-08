@@ -6,6 +6,11 @@
   const completeButton = $('reset-complete-submit');
   let email = '';
 
+  const codeInput = $('reset-code');
+  codeInput.addEventListener('input', () => {
+    codeInput.value = codeInput.value.replace(/\\D/g, '').slice(0, 6);
+  });
+
   requestForm.addEventListener('submit', async event => {
     event.preventDefault();
     msg('');
