@@ -7,8 +7,8 @@ export default async function handler(req, res) {
     if (!/^\S+@\S+\.\S+$/.test(email)) {
       return res.status(400).json({ message: 'Enter a valid email address.' });
     }
-    if (!await consumeLimit(`password-reset:${email}`, 5, 3600)) {
-      return res.status(429).json({ message: 'Too many reset requests. Please try again later.' });
+    if (!await consumeLimit(`password-reset:${email}`, 8, 3600)) {
+      return res.status(429).json({ message: 'You've requested several reset codes recently. Please wait a little before trying again.' });
     }
 
     // Always return the same response for existing and unknown accounts.

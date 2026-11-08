@@ -8,7 +8,7 @@
 
   const codeInput = $('reset-code');
   codeInput.addEventListener('input', () => {
-    codeInput.value = codeInput.value.replace(/\\D/g, '').slice(0, 6);
+    codeInput.value = codeInput.value.replace(/\D/g, '').slice(0, 6);
   });
 
   requestForm.addEventListener('submit', async event => {
@@ -26,7 +26,10 @@
       msg('If an account exists for this email, a reset code has been sent.', true);
       $('reset-code').focus();
     } catch (error) {
-      msg(error.message);
+      const text = /reset requests|reset codes recently|60 seconds/i.test(error.message || '')
+        ? 'For account security, please wait a little before requesting another reset code'
+        : error.message;
+      msg(text);
     } finally {
       busy(requestButton, false, 'Send reset code');
     }

@@ -1,0 +1,10 @@
+PASSWORD RESET + SIGNUP EYE FIX
+
+1. Signup password and confirm-password eye controls are now aligned at the far right,
+   matching the sign-in page.
+2. Password-reset allowance is now 8 requests per email per hour (previously 5).
+   Server-side rate limiting remains enabled for account security.
+3. If your own test email already reached the previous limit, run the optional
+   supabase/clear-own-password-reset-test-limit.sql once in Supabase SQL Editor.
+   Replace YOUR_EMAIL with your own test account email first.
+4. Deploy the updated project to Vercel after extracting this ZIP.
