@@ -92,7 +92,7 @@ export async function sendCode(email, purpose, userId, encryptedRefreshToken = n
         auth: {
           user: SMTP_USER,
           // Google displays App Passwords with spaces; remove them before SMTP auth.
-          pass: String(SMTP_PASS).replace(/\\s+/g, '')
+          pass: String(SMTP_PASS).replace(/\s+/g, '')
         },
         connectionTimeout: 15000,
         greetingTimeout: 15000,

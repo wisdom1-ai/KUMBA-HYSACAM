@@ -18,7 +18,7 @@ export default async function handler(req, res) {
     const password = body.password;
 
     if (!name || name.length > 80 ||
-        !/^\\S+@\\S+\\.\\S+$/.test(email) ||
+        !/^\S+@\S+\.\S+$/.test(email) ||
         typeof password !== 'string' || password.length < 8) {
       return res.status(400).json({
         message: 'Enter a valid name, email and password of at least 8 characters.'
