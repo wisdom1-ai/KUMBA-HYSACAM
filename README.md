@@ -47,3 +47,23 @@ Use secure HttpOnly, Secure, SameSite cookies; CSRF protection where applicable;
 ### Integration status
 
 These are frontend screens and API calls only. Email delivery, OTP generation/verification, account creation, password hashing, session issuance, and server-side dashboard/API protection must be implemented by the backend developer. Until those endpoints exist, account flows will not complete. Do not treat the frontend redirect as a security boundary.
+
+
+## Supabase password + email-code authentication (Vercel backend)
+
+This package now includes Vercel serverless API routes under `api/auth/`. The password is checked by Supabase Auth on the server. A separate 6-digit code is generated and verified server-side. The browser receives an HttpOnly session cookie only after the login code is verified. Sign-up email verification confirms the Supabase user; the new user then signs in with password + code.
+
+### Before deployment
+1. In Supabase SQL Editor, run `supabase/auth-setup.sql`. It creates server-only challenge/session/rate-limit tables. Do not add public policies to these tables.
+2. In Vercel, add every variable from `.env.example` under Project Settings → Environment Variables. Use your project's URL and publishable key for the first two values. Use the Supabase service-role/secret key only as a Vercel server environment variable. Never paste it into browser code or chat.
+3. Create an email-sending provider account (the code uses Resend's HTTP API), verify a sender address/domain with that provider, then set `RESEND_API_KEY` and `EMAIL_FROM`. A `vercel.app` address is a hosting address, not an email sender domain.
+4. Generate a random 32-byte encryption key and encode it as 64 hexadecimal characters for `SESSION_ENCRYPTION_KEY`. Keep it private.
+5. Set `APP_ORIGIN` to `https://kumba-hysacam.vercel.app`.
+6. Ensure the Vercel project root directory is this `CCAS` folder, then deploy.
+
+### Important security and deployment notes
+- This implementation uses server-only Supabase service credentials, HMAC-hashed one-time codes, 10-minute code expiry, five verification attempts, resend cooldowns, rate limits, encrypted refresh tokens, and an HttpOnly SameSite cookie.
+- The Vercel rewrite serves the dashboard HTML through `api/dashboard.js`, which validates the HttpOnly session before returning it. Sensitive records and actions must still be served only through server endpoints that verify the session. Do not rely on hidden frontend controls as authorization.
+- Keep the admin portal separate. These endpoints authenticate public users only; they do not implement administrator authorization.
+- Email delivery will not work until the provider and sender are configured. Do not claim the flow is live until it has been tested on the deployed HTTPS site.
+- The backend endpoints require Node.js 20+ and the Vercel Functions runtime. Local Live Server alone cannot run the API routes.
