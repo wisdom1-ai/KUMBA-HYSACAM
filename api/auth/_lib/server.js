@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
+import nodemailer from 'nodemailer';
 import { createHash, createHmac, randomBytes, randomInt, createCipheriv, createDecipheriv, timingSafeEqual } from 'node:crypto';
 
 const URL = process.env.SUPABASE_URL;
@@ -6,6 +7,10 @@ const ANON = process.env.SUPABASE_ANON_KEY;
 const SERVICE = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const RESEND = process.env.RESEND_API_KEY;
 const FROM = process.env.EMAIL_FROM;
+const SMTP_HOST = process.env.SMTP_HOST;
+const SMTP_PORT = Number(process.env.SMTP_PORT || 465);
+const SMTP_USER = process.env.SMTP_USER;
+const SMTP_PASS = process.env.SMTP_PASS;
 const APP_ORIGIN = process.env.APP_ORIGIN;
 const ENC_KEY = process.env.SESSION_ENCRYPTION_KEY;
 
@@ -64,7 +69,9 @@ export async function consumeLimit(key, max, seconds) {
   return data === true;
 }
 export async function sendCode(email, purpose, userId, encryptedRefreshToken = null) {
-  if (!RESEND || !FROM) throw new Error('Email delivery is not configured yet.');
+  const smtpConfigured = Boolean(SMTP_HOST && SMTP_USER && SMTP_PASS);
+  const resendConfigured = Boolean(RESEND && FROM);
+  if (!smtpConfigured && !resendConfigured) throw new Error('Email delivery is not configured yet.');
   const db = adminClient();
   const code = String(randomInt(0, 1000000)).padStart(6, '0');
   const expires = new Date(Date.now() + 10 * 60 * 1000).toISOString();
@@ -76,13 +83,39 @@ export async function sendCode(email, purpose, userId, encryptedRefreshToken = n
   if (error) throw new Error('Could not prepare verification. Please try again.');
   const subject = purpose === 'signup' ? 'Verify your HYSACAM account' : 'Your HYSACAM sign-in code';
   const html = `<div style="font-family:Arial,sans-serif;max-width:520px;margin:auto;color:#18352a"><h2>HYSACAM Kumba Tracker</h2><p>Your verification code is:</p><p style="font-size:32px;font-weight:bold;letter-spacing:8px">${code}</p><p>This code expires in 10 minutes. Do not share it with anyone.</p></div>`;
-  const response = await fetch('https://api.resend.com/emails', {
-    method: 'POST', headers: { Authorization: `Bearer ${RESEND}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ from: FROM, to: [email], subject, html })
-  });
-  if (!response.ok) {
+  try {
+    if (smtpConfigured) {
+      const transporter = nodemailer.createTransport({
+        host: SMTP_HOST,
+        port: SMTP_PORT,
+        secure: SMTP_PORT === 465,
+        auth: {
+          user: SMTP_USER,
+          // Google displays App Passwords with spaces; remove them before SMTP auth.
+          pass: String(SMTP_PASS).replace(/\\s+/g, '')
+        },
+        connectionTimeout: 15000,
+        greetingTimeout: 15000,
+        socketTimeout: 20000
+      });
+      await transporter.sendMail({
+        from: `HYSACAM Kumba Tracker <${SMTP_USER}>`,
+        to: email,
+        subject,
+        html,
+        text: `Your HYSACAM verification code is ${code}. It expires in 10 minutes. Do not share it with anyone.`
+      });
+      transporter.close();
+    } else {
+      const response = await fetch('https://api.resend.com/emails', {
+        method: 'POST', headers: { Authorization: `Bearer ${RESEND}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ from: FROM, to: [email], subject, html })
+      });
+      if (!response.ok) throw new Error('Resend delivery failed.');
+    }
+  } catch (error) {
     await db.from('hysacam_auth_challenges').delete().eq('email', email).eq('purpose', purpose);
-    throw new Error('We could not send the email code. Email delivery still needs configuration.');
+    throw new Error('We could not send the email code. Check the SMTP settings in Vercel and try again.');
   }
 }
 export async function verifyCode(email, purpose, code) {
