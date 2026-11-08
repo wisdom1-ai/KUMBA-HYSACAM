@@ -25,7 +25,7 @@ export default async function handler(req, res) {
       });
     }
 
-    if (!await consumeLimit(`signup:${email}`, 3, 3600)) {
+    if (!await consumeLimit(`signup:${email}`, 10, 3600)) {
       return res.status(429).json({
         message: 'Too many attempts. Please try again later.'
       });

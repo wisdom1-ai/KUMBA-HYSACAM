@@ -4,10 +4,15 @@ export default async function handler(req, res) {
   try {
     const email = normalEmail(jsonBody(req).email); const password = jsonBody(req).password;
     if (!/^\S+@\S+\.\S+$/.test(email) || typeof password !== 'string' || !password) return res.status(400).json({ message: 'Email or password is incorrect.' });
-    if (!await consumeLimit(`login:${email}`, 8, 900)) return res.status(429).json({ message: 'Too many attempts. Please try again later.' });
     const client = anonClient();
     const { data, error } = await client.auth.signInWithPassword({ email, password });
-    if (error || !data.session || !data.user) return res.status(401).json({ message: 'Email or password is incorrect, or the email has not been verified.' });
+    if (error || !data.session || !data.user) {
+      // Successful sign-ins are not rate-limited. Only failed password attempts count.
+      if (!await consumeLimit(`login-failed:${email}`, 20, 900)) {
+        return res.status(429).json({ message: 'Too many incorrect sign-in attempts. Please try again later.' });
+      }
+      return res.status(401).json({ message: 'Email or password is incorrect, or the email has not been verified.' });
+    }
     await sendCode(email, 'login', data.user.id, encrypt(data.session.refresh_token));
     return res.status(200).json({ code_sent: true });
   } catch (e) { return fail(res,e,500); }
