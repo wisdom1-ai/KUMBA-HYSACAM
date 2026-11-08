@@ -1,1 +1,51 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#087747"><title>Verify email | HYSACAM Kumba</title><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="css/style.css"></head><body><main class="auth-page"><section class="auth-brand-panel"><div><img src="images/hysacam-symbol.png" alt="HYSACAM symbol"><h1>One more step</h1><p>Confirm your email address to protect your HYSACAM Kumba Tracker account.</p></div><div class="auth-brand-foot">HYSACAM Kumba Tracker · Community waste management</div></section><section class="auth-main"><div class="auth-card"><a class="auth-back" href="signin.html">← Back to sign in</a><h2>Check your email</h2><p class="auth-subtitle">Enter the 6-digit verification code sent to <strong id="verify-email-label"></strong>.</p><form class="auth-form" id="verify-form"><label for="verification-code">6-digit code</label><input class="otp-input" id="verification-code" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" minlength="6" maxlength="6" required placeholder="000000"><button class="button" id="verify-submit" type="submit">Verify code &amp; continue</button><div class="auth-message" id="auth-message" role="alert" aria-live="polite"></div></form><p class="auth-switch">Didn't receive the email? <a href="#" id="resend-code">Send a new code</a></p><p class="auth-security">Codes should expire after a short time and can only be used once.</p></div></section></main><script src="js/auth-common.js"></script><script src="js/verify-email.js"></script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#087747">
+  <title>Verify email | HYSACAM Kumba Tracker</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="auth-body">
+  <main class="auth-page auth-page-modern">
+    <section class="auth-brand-panel auth-brand-modern">
+      <a class="auth-home-link" href="index.html" aria-label="HYSACAM Kumba Tracker home">
+        <img src="images/hysacam-symbol.png" alt="HYSACAM symbol">
+        <span>HYSACAM <b>KUMBA TRACKER</b></span>
+      </a>
+      <div class="auth-brand-content">
+        <span class="auth-kicker">A SECURE WAY TO STAY CONNECTED.</span>
+        <h1>One quick step<br><em>to get started.</em></h1>
+        <p>Confirm the email address linked to your account. Once verified, you'll be taken directly to your HYSACAM dashboard.</p>
+      </div>
+      <div class="auth-brand-foot">© 2026 HYSACAM Kumba Tracker</div>
+      <div class="auth-brand-orb auth-orb-one"></div><div class="auth-brand-orb auth-orb-two"></div>
+    </section>
+    <section class="auth-main auth-main-modern">
+      <div class="auth-card auth-card-modern auth-card-verify">
+        <div class="auth-mobile-brand"><img src="images/hysacam-symbol.png" alt=""><span>HYSACAM KUMBA TRACKER</span></div>
+        <span class="auth-step-label">EMAIL VERIFICATION</span>
+        <h2>Check your inbox</h2>
+        <p class="auth-subtitle">Enter the 6-digit code sent to the email address below.</p>
+        <div class="verify-email-chip"><span>EMAIL</span><strong id="verify-email-label"></strong></div>
+        <form class="auth-form auth-form-modern" id="verify-form">
+          <div class="auth-field">
+            <label for="verification-code">Verification code</label>
+            <input class="otp-input" id="verification-code" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" minlength="6" maxlength="6" required placeholder="000000">
+          </div>
+          <button class="button auth-primary-button" id="verify-submit" type="submit">Verify email</button>
+          <div class="auth-message" id="auth-message" role="alert" aria-live="polite"></div>
+        </form>
+        <p class="auth-resend-row">Didn't receive a code? <a href="#" id="resend-code">Resend code</a></p>
+        <p class="auth-trust-note"><span>●</span> Verification codes expire after 10 minutes</p>
+      </div>
+      <a class="auth-return-home" href="signin.html">← Return to sign in</a>
+    </section>
+  </main>
+  <script src="js/auth-common.js"></script>
+  <script src="js/verify-email.js"></script>
+  <script src="js/auth-ui.js"></script>
+</body>
+</html>

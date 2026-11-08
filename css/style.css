@@ -44,3 +44,69 @@
 .auth-back{display:inline-block;color:#087747;font-weight:700;font-size:12px;margin-bottom:24px}
 .auth-security{font-size:11px;color:#7b8981;line-height:1.5;margin-top:16px}
 @media(max-width:760px){.auth-page{grid-template-columns:1fr}.auth-brand-panel{min-height:auto;padding:28px 24px}.auth-brand-panel h1{font-size:30px;margin:18px 0 8px}.auth-brand-foot{display:none}.auth-brand-panel p{margin-bottom:0}.auth-main{padding:25px 16px 40px}}
+
+
+/* HYSACAM professional account experience */
+.auth-body{background:#f4f8f5}
+.auth-page-modern{min-height:100vh;grid-template-columns:minmax(320px,1.05fr) minmax(420px,.95fr);background:#f6f9f7}
+.auth-brand-modern{position:relative;overflow:hidden;isolation:isolate;background:linear-gradient(145deg,#064d35 0%,#087747 58%,#0b8b53 100%);padding:clamp(30px,5vw,72px)}
+.auth-brand-modern>*:not(.auth-brand-orb){position:relative;z-index:1}
+.auth-home-link{display:inline-flex;align-items:center;gap:13px;color:#fff;text-decoration:none;font-size:12px;letter-spacing:1.1px;font-weight:700}
+.auth-home-link img{width:48px;height:48px;object-fit:contain;background:#fff;border-radius:13px;padding:7px}
+.auth-home-link b{display:block;font-size:10px;letter-spacing:2px;color:#bde5cd;margin-top:3px}
+.auth-brand-content{max-width:540px;margin:auto 0}
+.auth-kicker,.auth-step-label{font-size:10px;font-weight:800;letter-spacing:1.8px}
+.auth-kicker{color:#bde5cd}
+.auth-brand-modern .auth-brand-content h1{font-size:clamp(38px,5vw,64px);line-height:1.04;letter-spacing:-2.3px;margin:22px 0 18px;max-width:560px}
+.auth-brand-content h1 em{font-style:normal;color:#b8e4c8}
+.auth-brand-content p{max-width:440px;font-size:15px;line-height:1.8;color:#e1f3e8}
+.auth-brand-points{display:grid;gap:13px;margin-top:30px}
+.auth-brand-points span{display:flex;align-items:center;gap:11px;color:#effaf2;font-size:13px;font-weight:600}
+.auth-brand-points i{display:grid;place-items:center;width:22px;height:22px;border:1px solid rgba(255,255,255,.35);border-radius:50%;font-size:11px;font-style:normal}
+.auth-brand-modern .auth-brand-foot{color:#c5e7d1;font-size:11px}
+.auth-brand-orb{position:absolute;z-index:0;border:1px solid rgba(255,255,255,.09);border-radius:50%;pointer-events:none}
+.auth-orb-one{width:420px;height:420px;right:-180px;top:12%;box-shadow:0 0 0 45px rgba(255,255,255,.025),0 0 0 90px rgba(255,255,255,.018)}
+.auth-orb-two{width:240px;height:240px;right:10%;bottom:-155px;background:rgba(255,255,255,.035)}
+.auth-main-modern{display:flex;flex-direction:column;justify-content:center;align-items:center;padding:42px clamp(20px,5vw,76px);gap:22px}
+.auth-card-modern{width:min(100%,470px);border:1px solid #e4ece6;border-radius:22px;padding:clamp(26px,4vw,44px);box-shadow:0 20px 60px rgba(16,54,33,.08)}
+.auth-step-label{display:inline-block;color:#087747;background:#eaf5ee;padding:8px 11px;border-radius:6px;margin-bottom:18px}
+.auth-card-modern h2{font-size:32px;letter-spacing:-1.1px;margin:0 0 8px;color:#14251b}
+.auth-card-modern .auth-subtitle{font-size:14px;margin:0 0 27px;color:#68766e}
+.auth-form-modern{gap:17px}
+.auth-field{display:grid;gap:8px}
+.auth-field label{font-size:12px;font-weight:700;color:#293b30}
+.auth-form-modern input{height:50px;padding:0 15px;border:1px solid #dce6df;border-radius:10px;background:#fbfdfb;font-size:14px;transition:border-color .18s,box-shadow .18s}
+.auth-form-modern input::placeholder{color:#9aa79f}
+.auth-form-modern input:focus{border-color:#087747;box-shadow:0 0 0 4px rgba(8,119,71,.09);background:#fff}
+.auth-password-wrap{position:relative}
+.auth-password-wrap input{padding-right:66px}
+.password-toggle{position:absolute;right:10px;top:50%;transform:translateY(-50%);border:0;background:transparent;color:#087747;font-size:11px;font-weight:800;padding:8px;cursor:pointer}
+.auth-primary-button{width:100%;min-height:51px;margin-top:5px;border:0;border-radius:10px;background:#087747;color:#fff;font-size:14px;font-weight:800;box-shadow:0 8px 18px rgba(8,119,71,.16);transition:transform .18s,background .18s,box-shadow .18s}
+.auth-primary-button:hover{background:#06643c;transform:translateY(-1px);box-shadow:0 10px 22px rgba(8,119,71,.2)}
+.auth-primary-button:disabled{opacity:.7;cursor:wait;transform:none}
+.auth-card-modern .auth-message{min-height:0;font-size:12px;margin:0;line-height:1.5}
+.auth-divider{display:flex;align-items:center;gap:12px;margin:25px 0 15px;color:#97a39b;font-size:9px;font-weight:800;letter-spacing:1.4px}
+.auth-divider:before,.auth-divider:after{content:"";height:1px;flex:1;background:#e8eee9}
+.auth-switch-modern{margin:0;text-align:center;font-size:13px;color:#68766e}
+.auth-switch-modern a{color:#087747;text-decoration:none;font-weight:800}
+.auth-switch-modern a:hover{text-decoration:underline}
+.auth-trust-note{display:flex;justify-content:center;align-items:center;gap:8px;margin:22px 0 0;color:#829087;font-size:10px}
+.auth-trust-note span{color:#087747;font-size:8px}
+.auth-return-home{color:#718078;font-size:11px;text-decoration:none}
+.auth-return-home:hover{color:#087747}
+.auth-mobile-brand{display:none}
+.auth-card-signup .auth-subtitle{margin-bottom:21px}
+.auth-card-signup .auth-form-modern{gap:13px}
+.auth-card-signup .auth-form-modern input{height:46px}
+.auth-card-signup .auth-divider{margin:19px 0 13px}
+.auth-card-signup .auth-trust-note{margin-top:17px}
+.auth-card-verify{max-width:460px}
+.verify-email-chip{display:grid;gap:5px;padding:13px 15px;background:#f3f8f4;border:1px solid #e4eee6;border-radius:10px;margin:0 0 22px}
+.verify-email-chip span{font-size:9px;font-weight:800;letter-spacing:1.2px;color:#819087}
+.verify-email-chip strong{font-size:13px;color:#26382d;overflow-wrap:anywhere}
+.auth-form-modern .otp-input{height:60px!important;font-size:26px!important;letter-spacing:12px;text-align:center;font-weight:800;padding-left:20px}
+.auth-resend-row{text-align:center;color:#718078;font-size:12px;margin:20px 0 0}
+.auth-resend-row a{color:#087747;font-weight:800;text-decoration:none}
+.auth-resend-row a.is-loading{opacity:.55;pointer-events:none}
+@media(max-width:900px){.auth-page-modern{grid-template-columns:minmax(260px,.85fr) minmax(390px,1.15fr)}.auth-brand-modern{padding:30px}.auth-brand-modern .auth-brand-content h1{font-size:42px}}
+@media(max-width:700px){.auth-page-modern{display:flex;flex-direction:column;min-height:100vh}.auth-brand-modern{min-height:auto;padding:18px 22px 24px}.auth-home-link img{width:38px;height:38px}.auth-brand-content{margin:24px 0 0}.auth-brand-modern .auth-brand-content h1{font-size:31px;letter-spacing:-1px;margin:12px 0 8px}.auth-brand-content p{font-size:12px;line-height:1.6;margin:0}.auth-brand-points,.auth-brand-modern .auth-brand-foot,.auth-brand-orb{display:none}.auth-main-modern{padding:24px 16px 32px;gap:14px;flex:1}.auth-card-modern{padding:25px 21px;border-radius:18px}.auth-card-modern h2{font-size:27px}.auth-card-modern .auth-subtitle{font-size:13px;margin-bottom:22px}.auth-mobile-brand{display:flex;align-items:center;gap:9px;margin-bottom:20px;color:#087747;font-size:9px;font-weight:800;letter-spacing:1.1px}.auth-mobile-brand img{width:29px;height:29px;object-fit:contain}.auth-step-label{margin-bottom:13px}.auth-card-signup .auth-form-modern{gap:12px}.auth-card-signup .auth-form-modern input{height:46px}.auth-return-home{font-size:10px}}

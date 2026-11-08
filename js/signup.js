@@ -1,1 +1,39 @@
-(()=>{const { $,msg,busy,post}=window.HysAuth;const form=$('signup-form'),button=$('signup-submit');form.addEventListener('submit',async e=>{e.preventDefault();msg('');busy(button,true);try{const data=await post('/signup',{name:$('full-name').value.trim(),email:$('email').value.trim(),password:$('password').value});if(data.code_sent===false)throw new Error('Account created, but the email code was not sent. Please contact support.');sessionStorage.setItem('hysacam_pending_email',$('email').value.trim());sessionStorage.setItem('hysacam_pending_purpose','signup');location.href='verify-email.html'}catch(err){msg(err.message)}finally{busy(button,false,'Create account & send code')}})})();
+(()=> {
+  const { $, msg, busy, post } = window.HysAuth;
+  const form = $('signup-form');
+  const button = $('signup-submit');
+
+  form.addEventListener('submit', async event => {
+    event.preventDefault();
+    msg('');
+
+    const password = $('password').value;
+    const confirmation = $('confirm-password').value;
+
+    if (password.length < 8) {
+      msg('Choose a password with at least 8 characters.');
+      return;
+    }
+    if (password !== confirmation) {
+      msg('Your passwords do not match. Please check and try again.');
+      $('confirm-password').focus();
+      return;
+    }
+
+    busy(button, true);
+    try {
+      await post('/signup', {
+        name: $('full-name').value.trim(),
+        email: $('email').value.trim(),
+        password
+      });
+      sessionStorage.setItem('hysacam_pending_email', $('email').value.trim());
+      sessionStorage.setItem('hysacam_pending_purpose', 'signup');
+      location.href = 'verify-email.html';
+    } catch (error) {
+      msg(error.message);
+    } finally {
+      busy(button, false, 'Create account');
+    }
+  });
+})();

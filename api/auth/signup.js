@@ -1,4 +1,4 @@
-import { adminClient, guard, method, jsonBody, normalEmail, consumeLimit, sendCode, fail } from './_lib/server.js';
+import { adminClient, guard, method, jsonBody, normalEmail, consumeLimit, encrypt, sendCode, fail } from './_lib/server.js';
 
 async function findUserByEmail(db, email) {
   // Supabase Auth admin listing is paginated. The project is expected to have
@@ -44,7 +44,9 @@ export default async function handler(req, res) {
         });
       }
 
-      await sendCode(email, 'signup', existing.id);
+      const { error: passwordError } = await db.auth.admin.updateUserById(existing.id, { password });
+      if (passwordError) return res.status(400).json({ message: 'We could not prepare this account. Please try again.' });
+      await sendCode(email, 'signup', existing.id, null, encrypt(password));
       return res.status(200).json({ code_sent: true });
     }
 
@@ -59,7 +61,9 @@ export default async function handler(req, res) {
       // Handle two sign-up requests arriving at nearly the same time.
       existing = await findUserByEmail(db, email);
       if (existing && !existing.email_confirmed_at && !existing.confirmed_at) {
-        await sendCode(email, 'signup', existing.id);
+        const { error: passwordError } = await db.auth.admin.updateUserById(existing.id, { password });
+        if (passwordError) return res.status(400).json({ message: 'We could not prepare this account. Please try again.' });
+        await sendCode(email, 'signup', existing.id, null, encrypt(password));
         return res.status(200).json({ code_sent: true });
       }
 
@@ -68,7 +72,7 @@ export default async function handler(req, res) {
       });
     }
 
-    await sendCode(email, 'signup', data.user.id);
+    await sendCode(email, 'signup', data.user.id, null, encrypt(password));
     return res.status(200).json({ code_sent: true });
   } catch (e) {
     return fail(res, e, 500);

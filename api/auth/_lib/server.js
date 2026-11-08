@@ -68,7 +68,7 @@ export async function consumeLimit(key, max, seconds) {
   if (error) throw new Error('Rate limiting is not configured. Run the supplied SQL setup first.');
   return data === true;
 }
-export async function sendCode(email, purpose, userId, encryptedRefreshToken = null) {
+export async function sendCode(email, purpose, userId, encryptedRefreshToken = null, encryptedSignupPassword = null) {
   const smtpConfigured = Boolean(SMTP_HOST && SMTP_USER && SMTP_PASS);
   const resendConfigured = Boolean(RESEND && FROM);
   if (!smtpConfigured && !resendConfigured) throw new Error('Email delivery is not configured yet.');
@@ -78,7 +78,8 @@ export async function sendCode(email, purpose, userId, encryptedRefreshToken = n
   const { error } = await db.from('hysacam_auth_challenges').upsert({
     email, purpose, user_id: userId, code_hash: otpHash(email, purpose, code),
     expires_at: expires, attempts: 0, sent_at: new Date().toISOString(),
-    encrypted_refresh_token: encryptedRefreshToken
+    encrypted_refresh_token: encryptedRefreshToken,
+    encrypted_signup_password: encryptedSignupPassword
   }, { onConflict: 'email,purpose' });
   if (error) throw new Error('Could not prepare verification. Please try again.');
   const subject = purpose === 'signup' ? 'Verify your HYSACAM account' : 'Your HYSACAM sign-in code';
@@ -118,7 +119,7 @@ export async function sendCode(email, purpose, userId, encryptedRefreshToken = n
     throw new Error('We could not send the email code. Check the SMTP settings in Vercel and try again.');
   }
 }
-export async function verifyCode(email, purpose, code) {
+export async function verifyCode(email, purpose, code, consume = true) {
   const db = adminClient();
   const { data: row, error } = await db.from('hysacam_auth_challenges').select('*').eq('email', email).eq('purpose', purpose).maybeSingle();
   if (error || !row) throw new Error('The code is invalid or has expired. Request a new code.');
@@ -131,7 +132,7 @@ export async function verifyCode(email, purpose, code) {
     await db.from('hysacam_auth_challenges').update({ attempts }).eq('id', row.id);
     throw new Error('The code is invalid or has expired.');
   }
-  await db.from('hysacam_auth_challenges').delete().eq('id', row.id);
+  if (consume) await db.from('hysacam_auth_challenges').delete().eq('id', row.id);
   return row;
 }
 export function setSessionCookie(req, res, value, maxAge = 7 * 24 * 60 * 60) {

@@ -1,1 +1,25 @@
-(()=>{const { $,msg,busy,post}=window.HysAuth;const form=$('signin-form'),button=$('signin-submit');if(sessionStorage.getItem('hysacam_signup_verified')==='1'){sessionStorage.removeItem('hysacam_signup_verified');msg('Your email is verified. Please sign in with your password. ',true)}form.addEventListener('submit',async e=>{e.preventDefault();msg('');busy(button,true);try{const data=await post('/login',{email:$('email').value.trim(),password:$('password').value});if(data.code_sent===false)throw new Error('We could not send your verification code. Please try again.');sessionStorage.setItem('hysacam_pending_email',$('email').value.trim());sessionStorage.setItem('hysacam_pending_purpose','login');location.href='verify-email.html'}catch(err){msg(err.message)}finally{busy(button,false,'Continue & send code')}})})();
+(()=> {
+  const { $, msg, busy, post } = window.HysAuth;
+  const form = $('signin-form');
+  const button = $('signin-submit');
+
+  form.addEventListener('submit', async event => {
+    event.preventDefault();
+    msg('');
+    busy(button, true);
+
+    try {
+      await post('/login', {
+        email: $('email').value.trim(),
+        password: $('password').value
+      });
+      sessionStorage.setItem('hysacam_pending_email', $('email').value.trim());
+      sessionStorage.setItem('hysacam_pending_purpose', 'login');
+      location.href = 'verify-email.html';
+    } catch (error) {
+      msg(error.message);
+    } finally {
+      busy(button, false, 'Sign in');
+    }
+  });
+})();
