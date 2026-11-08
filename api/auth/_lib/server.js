@@ -168,4 +168,8 @@ export async function createSessionFromChallenge(row, req, res) {
   const token = await createSession(row.user_id, row.encrypted_refresh_token);
   setSessionCookie(req, res, token);
 }
-export function fail(res, error, status = 400) { res.status(status).json({ message: error?.message || 'We could not complete that request. Please try again.' }); }
+export function fail(res, error, status = 400) {
+  // Keep diagnostic detail in Vercel Function Logs; never expose database internals to users.
+  console.error('[HYSACAM auth]', error?.message || error);
+  res.status(status).json({ message: error?.message || 'We could not complete that request. Please try again.' });
+}

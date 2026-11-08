@@ -13,7 +13,9 @@ create table if not exists public.hysacam_auth_challenges (
   unique(email,purpose)
 );
 
-alter table public.hysacam_auth_challenges add column if not exists encrypted_signup_password text;\n\ncreate table if not exists public.hysacam_auth_sessions (
+alter table public.hysacam_auth_challenges add column if not exists encrypted_signup_password text;
+
+create table if not exists public.hysacam_auth_sessions (
   id uuid primary key default gen_random_uuid(),
   session_hash text not null unique,
   user_id uuid not null references auth.users(id) on delete cascade,
