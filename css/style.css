@@ -18,3 +18,29 @@
 .brand .hysacam-logo,.admin-logo .hysacam-logo,.admin-login-brand .hysacam-logo{width:42px;height:42px;max-width:42px;max-height:42px;object-fit:contain;object-position:center}
 .hero-promo-mark img{width:82px;height:82px;object-fit:contain;filter:brightness(0) invert(1)}
 .bin-photo img{width:100%;height:100%;max-height:260px;object-fit:cover}
+
+
+/* Account authentication pages */
+.auth-page{min-height:100vh;background:linear-gradient(135deg,#f2f8f4,#e8f3ec);display:grid;grid-template-columns:minmax(280px,1fr) minmax(340px,520px);align-items:stretch}
+.auth-brand-panel{background:linear-gradient(145deg,#005c3c,#087747 65%,#15965c);color:#fff;padding:clamp(32px,6vw,78px);display:flex;flex-direction:column;justify-content:space-between;min-height:100vh}
+.auth-brand-panel img{width:58px;height:58px;object-fit:contain;background:#fff;border-radius:14px;padding:8px}
+.auth-brand-panel h1{font-size:clamp(32px,4vw,52px);line-height:1.08;letter-spacing:-1.5px;max-width:520px;margin:24px 0 14px}
+.auth-brand-panel p{max-width:430px;color:#e0f3e7;line-height:1.7}
+.auth-brand-foot{font-size:12px;color:#d0ead9}
+.auth-main{display:grid;place-items:center;padding:32px 22px}
+.auth-card{width:min(100%,430px);background:#fff;border:1px solid #e0eae3;border-radius:20px;padding:clamp(24px,4vw,38px);box-shadow:0 18px 55px rgba(13,59,35,.10)}
+.auth-card h2{font-size:27px;letter-spacing:-.7px;margin:0 0 8px;color:#17231d}
+.auth-subtitle{color:#65736b;line-height:1.55;margin:0 0 25px}
+.auth-form{display:grid;gap:13px}
+.auth-form label{font-size:12px;font-weight:700;color:#314239}
+.auth-form input{width:100%;padding:13px 14px;border:1px solid #d7e3da;border-radius:9px;outline:none;background:#fbfdfb;color:#17231d}
+.auth-form input:focus{border-color:#087747;box-shadow:0 0 0 3px rgba(8,119,71,.10)}
+.auth-form button{width:100%;margin-top:8px;min-height:46px}
+.auth-switch{text-align:center;font-size:13px;color:#65736b;margin:20px 0 0}
+.auth-switch a,.auth-inline-link{color:#087747;font-weight:700}
+.auth-message{min-height:20px;font-size:12px;line-height:1.5;color:#a42c2c}
+.auth-message.success{color:#087747}
+.otp-input{font-size:25px!important;letter-spacing:9px;text-align:center;font-weight:800}
+.auth-back{display:inline-block;color:#087747;font-weight:700;font-size:12px;margin-bottom:24px}
+.auth-security{font-size:11px;color:#7b8981;line-height:1.5;margin-top:16px}
+@media(max-width:760px){.auth-page{grid-template-columns:1fr}.auth-brand-panel{min-height:auto;padding:28px 24px}.auth-brand-panel h1{font-size:30px;margin:18px 0 8px}.auth-brand-foot{display:none}.auth-brand-panel p{margin-bottom:0}.auth-main{padding:25px 16px 40px}}
