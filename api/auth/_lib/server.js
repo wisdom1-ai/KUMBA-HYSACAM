@@ -100,7 +100,7 @@ function otpHash(email, purpose, code) {
     console.error('[HYSACAM auth] SESSION_ENCRYPTION_KEY is missing for OTP signing');
     throw new Error('OTP signing is not configured.');
   }
-  return createHmac('sha256', encryptionKey()).update(${email}|${purpose}|${code}).digest('hex');
+  return createHmac('sha256', encryptionKey()).update(`${email}|${purpose}|${code}`).digest('hex');
 }
 
 export async function consumeLimit(key, max, seconds) {
@@ -159,7 +159,7 @@ export async function sendCode(email, purpose, userId, encryptedRefreshToken = n
     ? 'Use this code to reset your password:'
     : 'Your verification code is:';
 
-  const html = <div style="font-family:Arial,sans-serif;max-width:520px;margin:auto;color:#18352a"><h2>HYSACAM Kumba Tracker</h2><p>${intro}</p><p style="font-size:32px;font-weight:bold;letter-spacing:8px">${code}</p><p>This code expires in 10 minutes. Do not share it with anyone. If you did not request this, you can ignore this email.</p></div>;
+  const html = `<div style="font-family:Arial,sans-serif;max-width:520px;margin:auto;color:#18352a"><h2>HYSACAM Kumba Tracker</h2><p>${intro}</p><p style="font-size:32px;font-weight:bold;letter-spacing:8px">${code}</p><p>This code expires in 10 minutes. Do not share it with anyone. If you did not request this, you can ignore this email.</p></div>`;
 
   try {
     if (smtpConfigured) {
@@ -177,11 +177,11 @@ export async function sendCode(email, purpose, userId, encryptedRefreshToken = n
       });
 
       await transporter.sendMail({
-        from: HYSACAM Kumba Tracker <${SMTP_USER}>,
+        from: `HYSACAM Kumba Tracker <${SMTP_USER}>`,
         to: email,
         subject,
         html,
-        text: ${purpose === 'password_reset' ? 'Your HYSACAM password reset code' : 'Your HYSACAM verification code'} is ${code}. It expires in 10 minutes. Do not share it with anyone.
+        text: `${purpose === 'password_reset' ? 'Your HYSACAM password reset code' : 'Your HYSACAM verification code'} is ${code}. It expires in 10 minutes. Do not share it with anyone.`,
       });
 
       transporter.close();
@@ -189,7 +189,7 @@ export async function sendCode(email, purpose, userId, encryptedRefreshToken = n
       const response = await fetch('https://api.resend.com/emails', {
         method: 'POST',
         headers: {
-          Authorization: Bearer ${RESEND},
+          Authorization: `Bearer ${RESEND}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({ from: FROM, to: [email], subject, html })
@@ -247,7 +247,7 @@ export async function verifyCode(email, purpose, code, consume = true) {
 
 export function setSessionCookie(req, res, value, maxAge = 7 * 24 * 60 * 60) {
   const secure = process.env.NODE_ENV === 'production' || req.headers['x-forwarded-proto'] === 'https';
-  res.setHeader('Set-Cookie', hysacam_session=${value}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${maxAge}${secure ? '; Secure' : ''});
+  res.setHeader('Set-Cookie', `hysacam_session=${encodeURIComponent(value)}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${maxAge}${secure ? '; Secure' : ''}`);
 }
 
 export function clearSessionCookie(req, res) {
