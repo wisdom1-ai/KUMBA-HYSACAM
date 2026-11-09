@@ -22,7 +22,7 @@ export default async function handler(req, res) {
     }
 
     const allowed = await consumeLimit(
-      `password-reset:${email}`,
+      password-reset:${email},
       8,
       3600
     );
