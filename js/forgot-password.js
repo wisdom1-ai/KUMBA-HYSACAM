@@ -32,7 +32,7 @@
     msg('');
     codeVerified = false;
     const code = $('reset-code').value.trim();
-    if (!/^\\d{6}$/.test(code)) return msg('Enter all 6 digits before continuing.');
+    if (!/^\d{6}$/.test(code)) return msg('Enter all 6 digits before continuing.');
     busy(verifyButton, true);
     try {
       await post('/verify-reset-code', { email, code });

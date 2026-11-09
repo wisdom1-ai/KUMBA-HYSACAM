@@ -6,7 +6,7 @@ export default async function handler(req, res) {
     const body = jsonBody(req);
     const email = normalEmail(body.email);
     const code = String(body.code || '').trim();
-    if (!/^\\S+@\\S+\\.\\S+$/.test(email) || !/^\\d{6}$/.test(code)) {
+    if (!/^\S+@\S+\.\S+$/.test(email) || !/^\d{6}$/.test(code)) {
       return res.status(400).json({ message: 'Enter your email and the complete 6-digit reset code.' });
     }
     if (!await consumeLimit(`password-reset-check:${email}`, 10, 900)) {

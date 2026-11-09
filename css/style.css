@@ -343,7 +343,8 @@
  #reset-password-fields { gap:16px; }
 }
 
-/* Contact details: clear labels and accessible tap targets */
-.contact-card .contact-detail { display:grid; gap:5px; padding:12px 14px; border:1px solid #e2eee6; border-radius:12px; background:#f7fbf8; }
-.contact-card .contact-detail > span { color:#748078; font-size:11px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; }
-.contact-card .contact-detail > a { padding:0; background:transparent; border-radius:0; font-size:14px; overflow-wrap:anywhere; }
+.contact-card .contact-message-button{justify-content:center;text-decoration:none;min-height:48px;border-radius:12px;background:#087747;color:#fff;padding:13px 18px;font-weight:800;box-shadow:0 8px 18px rgba(8,119,71,.14)}
+.contact-card .contact-message-button:hover{filter:brightness(.96)}
+
+/* Secure administrator portal */
+.admin-login-brand .eyebrow{margin-top:24px}.admin-security-points{display:grid;gap:10px;margin-top:28px;color:#d9f3e4;font-size:13px}.admin-login-card .eyebrow{display:block;margin-bottom:10px}.admin-login-card input{margin-bottom:8px}.admin-login-card [hidden]{display:none!important}.admin-text-button{display:block;margin:12px auto 0;border:0;background:none;color:var(--green);font-weight:700}.admin-dashboard-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:16px 0}.admin-dashboard-grid .panel p{color:var(--muted);line-height:1.6;font-size:13px}.admin-private-note{background:#f0f7f2;padding:12px;border-radius:9px}.admin-notice{border-left:4px solid var(--green)}.admin-notice p,.admin-audit-message,.admin-footnote{color:var(--muted);font-size:13px;line-height:1.6}.admin-activity-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}.admin-activity-head h3{margin:5px 0}.admin-side .button{margin-top:auto}.admin-side .admin-logo{display:flex;align-items:center;gap:10px}.admin-side .admin-logo strong{font-size:12px}.admin-footnote{margin-top:14px}.admin-audit-message{margin-bottom:10px}@media(max-width:680px){.admin-dashboard-grid{grid-template-columns:1fr}.admin-activity-head{align-items:flex-start;flex-direction:column}.admin-login-brand{padding:28px 22px}.admin-login-brand h1{font-size:30px}}

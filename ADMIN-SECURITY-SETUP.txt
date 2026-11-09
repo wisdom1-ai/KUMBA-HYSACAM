@@ -1,0 +1,16 @@
+HYSACAM KUMBA TRACKER — ADMIN SECURITY SETUP
+
+Authorised admin emails (both allowed):
+- kelechiwisdom19950@gmail.com
+- hysacamkumba@gmail.com
+
+1. In Vercel > Project > Settings > Environment Variables, add:
+   ADMIN_EMAILS=kelechiwisdom19950@gmail.com,hysacamkumba@gmail.com
+   Apply to Production, Preview and Development as appropriate.
+2. In Supabase SQL Editor, run supabase/admin-security-setup.sql.
+3. Redeploy the project.
+4. Visit /admin.html. Each administrator must already have a verified HYSACAM account and use that account's password; the second step sends a one-time code to that email.
+
+To change the administrator allowlist later, edit ADMIN_EMAILS in Vercel and redeploy. Do not place the service-role key or passwords in frontend files.
+
+The portal now records admin password/OTP attempts in hysacam_admin_audit. The audit view requires the SQL setup above. Dashboard operational metrics and record-management screens remain the next build stage; no fake/live statistics are claimed in this version.
