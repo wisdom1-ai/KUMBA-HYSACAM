@@ -342,3 +342,8 @@
  .contact-card { width:auto; margin:16px; padding:20px; }
  #reset-password-fields { gap:16px; }
 }
+
+/* Contact details: clear labels and accessible tap targets */
+.contact-card .contact-detail { display:grid; gap:5px; padding:12px 14px; border:1px solid #e2eee6; border-radius:12px; background:#f7fbf8; }
+.contact-card .contact-detail > span { color:#748078; font-size:11px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; }
+.contact-card .contact-detail > a { padding:0; background:transparent; border-radius:0; font-size:14px; overflow-wrap:anywhere; }
