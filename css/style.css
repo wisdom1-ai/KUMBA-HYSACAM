@@ -326,3 +326,19 @@
 .auth-password-wrap .password-toggle-icon{touch-action:manipulation;-webkit-tap-highlight-color:transparent;user-select:none}
 .auth-password-wrap input{autocapitalize:none}
 @media(max-width:480px){.otp-boxes{gap:6px}.otp-cell{height:54px;border-radius:9px;font-size:23px}}
+
+/* Refined password-recovery verification stages and contact panel */
+#reset-password-fields[hidden], #verify-reset-code[hidden] { display:none !important; }
+#reset-password-fields { display:grid; gap:18px; margin-top:18px; }
+#reset-password-fields .auth-field { margin:0; }
+.auth-card-reset .auth-code-note { background:#f2f8f4; border:1px solid #e0ece4; border-radius:12px; padding:14px 16px; color:#52665a; }
+.auth-card-reset #verify-reset-code { margin-top:6px; }
+.contact-card { width:min(360px, calc(100% - 32px)); padding:24px; border:1px solid #e2ebe5; border-radius:18px; box-shadow:0 14px 36px rgba(10,55,32,.10); display:grid; gap:12px; }
+.contact-card h3 { font-size:21px; color:#142b20; margin:0; }
+.contact-card p { color:#66766d; line-height:1.65; margin:0; font-size:13px; }
+.contact-card a { display:flex; align-items:center; gap:10px; padding:12px 14px; border-radius:10px; background:#f1f8f3; color:#087747; font-weight:700; font-size:13px; overflow-wrap:anywhere; }
+.contact-card .contact-location { color:#68776f; font-size:12px; padding-top:3px; }
+@media(max-width:680px) {
+ .contact-card { width:auto; margin:16px; padding:20px; }
+ #reset-password-fields { gap:16px; }
+}
