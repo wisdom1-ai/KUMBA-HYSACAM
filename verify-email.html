@@ -28,12 +28,11 @@
         <div class="auth-mobile-brand"><img src="images/hysacam-symbol.png" alt=""><span>HYSACAM KUMBA TRACKER</span></div>
         <span class="auth-step-label">EMAIL VERIFICATION</span>
         <h2>Check your inbox</h2>
-        <p class="auth-subtitle">Enter the 6-digit code sent to the email address below.</p>
-        <div class="verify-email-chip"><span>EMAIL</span><strong id="verify-email-label"></strong></div>
+        <p class="auth-subtitle">Enter the 6-digit code sent to your email address.</p>
         <form class="auth-form auth-form-modern" id="verify-form">
           <div class="auth-field">
             <label for="verification-code">Verification code</label>
-            <input class="otp-input" id="verification-code" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" minlength="6" maxlength="6" required placeholder="000000">
+            <div class="otp-boxes" data-otp-for="verification-code" aria-label="Six-digit verification code"></div><input class="otp-input otp-source" id="verification-code" type="text" inputmode="numeric" autocomplete="one-time-code" autocapitalize="off" spellcheck="false" pattern="[0-9]{6}" minlength="6" maxlength="6" required aria-label="Six-digit verification code">
           </div>
           <button class="button auth-primary-button" id="verify-submit" type="submit">Verify email</button>
           <div class="auth-message" id="auth-message" role="alert" aria-live="polite"></div>

@@ -7,9 +7,6 @@
   let email = '';
 
   const codeInput = $('reset-code');
-  codeInput.addEventListener('input', () => {
-    codeInput.value = codeInput.value.replace(/\D/g, '').slice(0, 6);
-  });
 
   requestForm.addEventListener('submit', async event => {
     event.preventDefault();
@@ -18,7 +15,6 @@
     busy(requestButton, true);
     try {
       await post('/request-password-reset', { email });
-      $('reset-email-label').textContent = email;
       requestForm.hidden = true;
       completeForm.hidden = false;
       $('reset-heading').textContent = 'Check your email';

@@ -315,3 +315,14 @@
   width: 20px;
   height: 20px;
 }
+
+/* Refined six-cell verification code and mobile-friendly password controls */
+.otp-boxes{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:9px;width:100%;margin-top:2px}
+.otp-cell{height:58px;display:grid;place-items:center;border:1.5px solid #dce6df;border-radius:11px;background:#fbfdfb;color:#183d2d;font-size:25px;font-weight:800;font-variant-numeric:tabular-nums;box-shadow:0 1px 2px rgba(15,55,35,.04)}
+.otp-cell.is-current{border-color:#087747;box-shadow:0 0 0 3px rgba(8,119,71,.10)}
+.otp-source{position:absolute!important;width:1px!important;height:1px!important;min-height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important;opacity:0!important}
+.otp-boxes:focus-within .otp-cell{background:#f4faf6}
+.auth-code-note{margin:0 0 8px;color:#718078;font-size:13px;line-height:1.6}
+.auth-password-wrap .password-toggle-icon{touch-action:manipulation;-webkit-tap-highlight-color:transparent;user-select:none}
+.auth-password-wrap input{autocapitalize:none}
+@media(max-width:480px){.otp-boxes{gap:6px}.otp-cell{height:54px;border-radius:9px;font-size:23px}}

@@ -1,1 +1,19 @@
-(()=>{const path=location.pathname;if(!path.endsWith('/index.html')&&!path.endsWith('/'))return;fetch('/api/auth/me',{credentials:'include',headers:{'Accept':'application/json'}}).then(async r=>{if(!r.ok)throw 0;const d=await r.json();if(!d.authenticated)throw 0;const nav=document.getElementById('main-nav');if(nav&&!document.getElementById('signout-button')){const b=document.createElement('button');b.id='signout-button';b.className='button small';b.textContent='Sign out';b.addEventListener('click',async()=>{b.disabled=true;try{const out=await fetch('/api/auth/logout',{method:'POST',credentials:'include'});if(!out.ok)throw new Error();location.replace('signin.html')}catch{b.disabled=false;alert('Could not sign out. Please try again.')}});nav.appendChild(b)}}).catch(()=>location.replace('signin.html'))})();
+(()=>{
+  const path=location.pathname;
+  if(!path.endsWith('/index.html')&&!path.endsWith('/'))return;
+  fetch('/api/auth/me',{credentials:'include',cache:'no-store',headers:{'Accept':'application/json'}})
+    .then(async response=>{
+      if(response.status===401){location.replace('signin.html');return null;}
+      if(!response.ok)throw new Error('Temporary authentication check failure');
+      return response.json();
+    })
+    .then(data=>{
+      if(!data||!data.authenticated)return;
+      const nav=document.getElementById('main-nav');
+      if(nav&&!document.getElementById('signout-button')){
+        const button=document.createElement('button');button.id='signout-button';button.className='button small';button.textContent='Sign out';
+        button.addEventListener('click',async()=>{button.disabled=true;try{const response=await fetch('/api/auth/logout',{method:'POST',credentials:'include'});if(!response.ok)throw new Error();location.replace('signin.html')}catch{button.disabled=false;alert('Could not sign out. Please try again.')}});
+        nav.appendChild(button);
+      }
+    }).catch(error=>console.warn('[HYSACAM auth] Session check temporarily unavailable; keeping dashboard visible.',error));
+})();

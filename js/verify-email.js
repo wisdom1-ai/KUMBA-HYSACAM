@@ -8,7 +8,6 @@
     return;
   }
 
-  $('verify-email-label').textContent = email;
   const form = $('verify-form');
   const button = $('verify-submit');
 
