@@ -1,38 +1,58 @@
-HYSACAM KUMBA TRACKER — REPAIR NOTES
+HYSACAM KUMBA TRACKER — REPAIRED PROJECT NOTES
 
-Main routing repair:
-- Removed the broad /api/:path* rewrite from vercel.json.
-- The /api/[...route].js catch-all now routes using the original request pathname.
-- This prevents the /api prefix from being added twice (for example /api/api/auth/me).
+ROOT CAUSE FIXED IN THIS PACKAGE
+The previous api/[...route].js relied on Next.js-style catch-all routing.
+This project is a plain Vercel Node.js Functions project, so that file did
+not reliably match nested paths such as /api/admin/me. Vercel could list the
+function while returning a platform-level 404 for nested API URLs.
 
-Project structure:
-- api/ contains the two Vercel function entry points.
-- server/auth/ and server/admin/ contain server-only API handlers and shared logic.
-- js/, css/, images/, supabase/ contain the website assets and SQL setup scripts.
+ROUTING REPAIR
+- Replaced api/[...route].js with the ordinary function api/router.js.
+- Added an explicit /api/:path* rewrite to /api/router?path=:path*.
+- The router maps the original endpoint path to the existing server handlers.
+- Kept api/dashboard.js and its index.html includeFiles configuration.
+- The deployment should now contain two API functions: /api/router and
+  /api/dashboard.
 
-Deployment:
-1. Upload/commit the complete contents of this folder to the root of the GitHub repository.
-2. Confirm Vercel Project Settings > General > Root Directory points to the repository root.
+DEPLOYMENT
+1. Upload/commit the complete contents of this ZIP to the ROOT of the GitHub
+   repository used by the Vercel project. Do not put the files inside an extra
+   nested project folder.
+2. In Vercel Project Settings > General, confirm Root Directory is the folder
+   containing package.json, vercel.json, api/, and server/.
 3. Deploy the main branch and wait for Ready.
-4. In Vercel Runtime Logs, test GET /api/auth/me and GET /api/admin/me.
-   A logged-out request should return 401 (not 404). That confirms routing reaches the handler.
-5. Test the normal sign-in and admin sign-in flows.
+4. Test https://YOUR-DOMAIN/api/auth/me while logged out. Expected result:
+   HTTP 401 with {"authenticated":false}, not a Vercel 404.
+5. Test https://YOUR-DOMAIN/api/admin/me while logged out. Expected result:
+   HTTP 401 with {"authenticated":false}, not a Vercel 404.
+6. Then test normal sign-in and administrator sign-in.
 
-Required Vercel environment variables (set values privately; never commit them):
+REQUIRED VERCEL ENVIRONMENT VARIABLES
 - SUPABASE_URL
 - SUPABASE_ANON_KEY
 - SUPABASE_SERVICE_ROLE_KEY
 - SESSION_ENCRYPTION_KEY (exactly 64 hexadecimal characters)
-- APP_ORIGIN (must exactly match the deployed site origin, e.g. https://kumba-hysacam.vercel.app)
-- ADMIN_EMAILS (comma-separated approved admin email addresses)
-- Email delivery: either RESEND_API_KEY + EMAIL_FROM, or SMTP_HOST + SMTP_PORT + SMTP_USER + SMTP_PASS.
+- APP_ORIGIN (exact deployed site origin, e.g. https://kumba-hysacam.vercel.app)
+- ADMIN_EMAILS (comma-separated approved administrator email addresses)
+- Email provider: either RESEND_API_KEY + EMAIL_FROM, or SMTP_HOST +
+  SMTP_PORT + SMTP_USER + SMTP_PASS.
 
-Admin password:
-- Admin login uses the password of an existing Supabase Auth account whose email is in ADMIN_EMAILS.
-- This project does not create a separate administrator password or provide public admin registration.
-- If the account has no password, use the site's normal password-reset flow to set one first.
-- Never share passwords, OTP codes, SUPABASE_SERVICE_ROLE_KEY, or SESSION_ENCRYPTION_KEY.
+Never commit environment secrets or place service-role credentials in browser
+JavaScript. Do not send passwords, OTP codes, or secret keys in chat.
 
-Database:
-- The SQL files in supabase/ are provided setup/migration scripts. Apply only the scripts required by your current database state; do not blindly rerun migrations.
-- Do not expose service-role credentials in frontend files.
+ADMIN LOGIN
+Administrator login uses the password of an existing Supabase Auth account
+whose email is in ADMIN_EMAILS, followed by an email verification code.
+There is no separate administrator password or public admin registration.
+If the account has no password, use the normal password-reset flow to set one.
+
+DATABASE
+SQL scripts are in supabase/. Apply only scripts required by the current
+database state; do not blindly rerun migrations. Database setup cannot fix a
+Vercel platform-level 404. After routing returns 401 for a logged-out request,
+then investigate any Supabase configuration errors separately.
+
+FEATURE SCOPE
+This package includes the administrator authentication foundation and audit
+logging. It does not yet implement a full operational admin dashboard for
+editing bins, users, or live collection records.

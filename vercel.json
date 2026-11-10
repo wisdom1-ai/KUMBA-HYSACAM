@@ -1,7 +1,18 @@
 {
+  "$schema": "https://openapi.vercel.sh/vercel.json",
   "rewrites": [
-    { "source": "/", "destination": "/api/dashboard" },
-    { "source": "/index.html", "destination": "/api/dashboard" }
+    {
+      "source": "/api/:path*",
+      "destination": "/api/router?path=:path*"
+    },
+    {
+      "source": "/",
+      "destination": "/api/dashboard"
+    },
+    {
+      "source": "/index.html",
+      "destination": "/api/dashboard"
+    }
   ],
   "functions": {
     "api/dashboard.js": {
