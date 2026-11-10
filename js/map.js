@@ -28,11 +28,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   const filterPanel = document.getElementById("map-filter-panel");
   const statusFilter = document.getElementById("map-status-filter");
 
-  // Fixed Kumba overview — map gestures and all map zoom controls are disabled
+  // Map navigation is enabled only on the Leaflet map surface
   const map = L.map(mapElement, {
-    zoomControl: false, scrollWheelZoom: false, doubleClickZoom: false,
-    touchZoom: false, boxZoom: false, keyboard: false, dragging: false,
-    tap: false, attributionControl: true, minZoom: 12, maxZoom: 15
+    zoomControl: true, scrollWheelZoom: true, doubleClickZoom: true,
+    touchZoom: true, boxZoom: true, keyboard: true, dragging: true,
+    tap: true, attributionControl: true, minZoom: 11, maxZoom: 19
   }).setView([4.6363, 9.4469], 13);
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     minZoom: 12, maxZoom: 19, attribution: "&copy; OpenStreetMap contributors"

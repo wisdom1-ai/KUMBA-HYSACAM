@@ -4,23 +4,59 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#087747">
-  <meta name="description" content="Sign in to your HYSACAM Kumba Tracker account">
-  <title>Login | HYSACAM Kumba Tracker</title>
+  <meta name="description" content="Sign in to your HYSACAM Kumba Tracker account.">
+  <title>Sign in | HYSACAM Kumba Tracker</title>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
 </head>
-<body class="auth-body auth-reference-body">
-  <main class="auth-reference-page">
-    <section class="auth-reference-card auth-reference-login" aria-labelledby="signin-heading">
-      <a class="auth-reference-logo" href="index.html" aria-label="HYSACAM Kumba Tracker home"><img src="images/hysacam-symbol.png" alt="HYSACAM logo"></a>
-      <h1 id="signin-heading">Login</h1>
-      <form class="auth-reference-form" id="signin-form">
-        <div class="auth-reference-field"><label for="email">Email</label><input id="email" type="email" autocomplete="email" autocapitalize="none" autocorrect="off" spellcheck="false" required placeholder="Enter your email address"></div>
-        <div class="auth-reference-field"><div class="auth-reference-label-row"><label for="password">Password</label><a href="forgot-password.html">Forgot password?</a></div><div class="auth-reference-password"><input id="password" type="password" autocomplete="current-password" autocapitalize="off" required placeholder="Enter your password"><button type="button" data-toggle-password="password" aria-label="Show password">Show</button></div></div>
-        <button class="auth-reference-submit" id="signin-submit" type="submit">Log In</button>
-        <div class="auth-message" id="auth-message" role="alert" aria-live="polite"></div>
-      </form>
-      <p class="auth-reference-switch">Need an account? <a href="signup.html">Sign up</a></p>
+<body class="auth-body">
+  <main class="auth-page auth-page-modern">
+    <section class="auth-brand-panel auth-brand-modern">
+      <a class="auth-home-link" href="index.html" aria-label="HYSACAM Kumba Tracker home">
+        <img src="images/hysacam-symbol.png" alt="HYSACAM symbol">
+        <span>HYSACAM <b>KUMBA TRACKER</b></span>
+      </a>
+      <div class="auth-brand-content">
+        <span class="auth-kicker">CLEANER KUMBA. STRONGER COMMUNITY</span>
+        <h1>Your community.<br><em>Your impact.</em></h1>
+        <p>Access your HYSACAM Kumba Tracker account and stay connected with cleaner streets and collection points across Kumba</p>
+        <div class="auth-brand-points">
+          <span><i>✓</i> Find collection points</span>
+          <span><i>✓</i> Explore the community map</span>
+          <span><i>✓</i> Follow cleaning activity</span>
+        </div>
+      </div>
+      <div class="auth-brand-foot">© 2026 HYSACAM Kumba Tracker</div>
+      <div class="auth-brand-orb auth-orb-one"></div><div class="auth-brand-orb auth-orb-two"></div>
+    </section>
+
+    <section class="auth-main auth-main-modern">
+      <div class="auth-card auth-card-modern auth-card-signin">
+        <div class="auth-mobile-brand"><img src="images/hysacam-symbol.png" alt=""><span>HYSACAM KUMBA TRACKER</span></div>
+        <span class="auth-step-label">ACCOUNT ACCESS</span>
+        <h2>Welcome back</h2>
+        <p class="auth-subtitle">Sign in to continue to your account</p>
+
+        <form class="auth-form auth-form-modern" id="signin-form">
+          <div class="auth-field">
+            <label for="email">Email address</label>
+            <input id="email" type="email" autocomplete="email" autocapitalize="none" autocorrect="off" spellcheck="false" required placeholder="Enter your email address">
+          </div>
+          <div class="auth-field">
+            <div class="auth-label-row"><label for="password">Password</label><a class="auth-forgot-link" href="forgot-password.html">Forgot password?</a></div>
+            <div class="auth-password-wrap">
+              <input id="password" type="password" autocomplete="current-password" autocapitalize="off" autocorrect="off" spellcheck="false" required placeholder="Enter your password">
+              <button class="password-toggle" type="button" data-toggle-password="password" aria-label="Show password">Show</button>
+            </div>
+          </div>
+          <button class="button auth-primary-button" id="signin-submit" type="submit">Sign in</button>
+          <div class="auth-message" id="auth-message" role="alert" aria-live="polite"></div>
+        </form>
+
+        <div class="auth-divider"><span>NEW TO HYSACAM?</span></div>
+        <p class="auth-switch auth-switch-modern">Don't have an account? <a href="signup.html">Create an account</a></p>
+        <p class="auth-trust-note"><span>●</span> Secure account access with email verification</p>
+      </div>
     </section>
   </main>
   <script src="js/auth-common.js"></script>
