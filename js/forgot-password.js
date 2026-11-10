@@ -8,8 +8,6 @@
   const passwordFields = $('reset-password-fields');
   let email = '';
   let codeVerified = false;
-  let verificationInFlight = false;
-  let lastAttemptedCode = '';
 
   requestForm.addEventListener('submit', async event => {
     event.preventDefault(); msg('');
@@ -30,40 +28,24 @@
     } finally { busy(requestButton, false, 'Send reset code'); }
   });
 
-  async function verifyResetCode() {
-    const code = $('reset-code').value.replace(/\D/g, '').slice(0, 6);
-    if (!/^\d{6}$/.test(code) || verificationInFlight || codeVerified || code === lastAttemptedCode) return;
-    verificationInFlight = true;
-    lastAttemptedCode = code;
-    msg('Checking your code');
-    busy(verifyButton, true, 'Verify code');
+  verifyButton.addEventListener('click', async () => {
+    msg('');
+    codeVerified = false;
+    const code = $('reset-code').value.trim();
+    if (!/^\d{6}$/.test(code)) return msg('Enter all 6 digits before continuing.');
+    busy(verifyButton, true);
     try {
       await post('/verify-reset-code', { email, code });
       codeVerified = true;
-      $('reset-code-field').hidden = true;
-      verifyButton.hidden = true;
       passwordFields.hidden = false;
+      verifyButton.hidden = true;
       $('reset-heading').textContent = 'Choose a new password';
-      $('reset-subtitle').textContent = 'Your code is verified — create and confirm your new password below';
-      msg('Code verified — create your new password', true);
-      $('new-password').focus({preventScroll:true});
-    } catch (error) {
-      msg(error.message);
-      lastAttemptedCode = '';
-    } finally {
-      verificationInFlight = false;
-      if (!codeVerified) busy(verifyButton, false, 'Verify code');
-    }
-  }
-  verifyButton.addEventListener('click', verifyResetCode);
-  $('reset-code').addEventListener('input', event => {
-    const cleaned = event.target.value.replace(/\D/g, '').slice(0, 6);
-    if (event.target.value !== cleaned) event.target.value = cleaned;
-    if (cleaned.length === 6) verifyResetCode();
+      $('reset-subtitle').textContent = 'Your code is verified. Create and confirm your new password below.';
+      msg('Code verified. You can now create your new password.', true);
+      $('new-password').focus();
+    } catch (error) { msg(error.message); }
+    finally { if (!codeVerified) busy(verifyButton, false, 'Verify code'); }
   });
-  $('reset-code').addEventListener('paste', () => setTimeout(() => {
-    if ($('reset-code').value.replace(/\D/g, '').length === 6) verifyResetCode();
-  }, 0));
 
   completeForm.addEventListener('submit', async event => {
     event.preventDefault(); msg('');
@@ -89,7 +71,7 @@
     event.preventDefault(); msg('');
     try {
       await post('/request-password-reset', { email });
-      codeVerified = false; lastAttemptedCode = ''; $('reset-code-field').hidden = false; $('reset-code').value = ''; passwordFields.hidden = true; verifyButton.hidden = false;
+      codeVerified = false; passwordFields.hidden = true; verifyButton.hidden = false;
       busy(verifyButton, false, 'Verify code');
       msg('If an account exists for this email, a new reset code has been sent.', true);
     } catch (error) { msg(error.message); }

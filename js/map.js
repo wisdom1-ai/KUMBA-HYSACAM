@@ -28,14 +28,16 @@ document.addEventListener("DOMContentLoaded", async () => {
   const filterPanel = document.getElementById("map-filter-panel");
   const statusFilter = document.getElementById("map-status-filter");
 
-  // Map navigation is enabled only on the Leaflet map surface
+  // Gestures are enabled only on the map canvas
   const map = L.map(mapElement, {
     zoomControl: true, scrollWheelZoom: true, doubleClickZoom: true,
-    touchZoom: true, boxZoom: true, keyboard: true, dragging: true,
+    touchZoom: true, touchRotate: true, rotate: true,
+    rotateControl: { closeOnZeroBearing: false },
+    boxZoom: false, keyboard: true, dragging: true,
     tap: true, attributionControl: true, minZoom: 11, maxZoom: 19
   }).setView([4.6363, 9.4469], 13);
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    minZoom: 12, maxZoom: 19, attribution: "&copy; OpenStreetMap contributors"
+    minZoom: 11, maxZoom: 19, attribution: "&copy; OpenStreetMap contributors"
   }).addTo(map);
 
   const layer = L.layerGroup().addTo(map);

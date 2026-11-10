@@ -10,53 +10,20 @@
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="auth-body">
-  <main class="auth-page auth-page-modern">
-    <section class="auth-brand-panel auth-brand-modern">
-      <a class="auth-home-link" href="index.html" aria-label="HYSACAM Kumba Tracker home">
-        <img src="images/hysacam-symbol.png" alt="HYSACAM symbol">
-        <span>HYSACAM <b>KUMBA TRACKER</b></span>
-      </a>
-      <div class="auth-brand-content">
-        <span class="auth-kicker">CLEANER KUMBA. STRONGER COMMUNITY</span>
-        <h1>Your community.<br><em>Your impact.</em></h1>
-        <p>Access your HYSACAM Kumba Tracker account and stay connected with cleaner streets and collection points across Kumba</p>
-        <div class="auth-brand-points">
-          <span><i>✓</i> Find collection points</span>
-          <span><i>✓</i> Explore the community map</span>
-          <span><i>✓</i> Follow cleaning activity</span>
-        </div>
-      </div>
-      <div class="auth-brand-foot">© 2026 HYSACAM Kumba Tracker</div>
-      <div class="auth-brand-orb auth-orb-one"></div><div class="auth-brand-orb auth-orb-two"></div>
-    </section>
-
-    <section class="auth-main auth-main-modern">
-      <div class="auth-card auth-card-modern auth-card-signin">
-        <div class="auth-mobile-brand"><img src="images/hysacam-symbol.png" alt=""><span>HYSACAM KUMBA TRACKER</span></div>
-        <span class="auth-step-label">ACCOUNT ACCESS</span>
-        <h2>Welcome back</h2>
-        <p class="auth-subtitle">Sign in to continue to your account</p>
-
-        <form class="auth-form auth-form-modern" id="signin-form">
-          <div class="auth-field">
-            <label for="email">Email address</label>
-            <input id="email" type="email" autocomplete="email" autocapitalize="none" autocorrect="off" spellcheck="false" required placeholder="Enter your email address">
-          </div>
-          <div class="auth-field">
-            <div class="auth-label-row"><label for="password">Password</label><a class="auth-forgot-link" href="forgot-password.html">Forgot password?</a></div>
-            <div class="auth-password-wrap">
-              <input id="password" type="password" autocomplete="current-password" autocapitalize="off" autocorrect="off" spellcheck="false" required placeholder="Enter your password">
-              <button class="password-toggle" type="button" data-toggle-password="password" aria-label="Show password">Show</button>
-            </div>
-          </div>
-          <button class="button auth-primary-button" id="signin-submit" type="submit">Sign in</button>
-          <div class="auth-message" id="auth-message" role="alert" aria-live="polite"></div>
-        </form>
-
-        <div class="auth-divider"><span>NEW TO HYSACAM?</span></div>
-        <p class="auth-switch auth-switch-modern">Don't have an account? <a href="signup.html">Create an account</a></p>
-        <p class="auth-trust-note"><span>●</span> Secure account access with email verification</p>
-      </div>
+  <main class="auth-reference-page">
+    <section class="auth-reference-card">
+      <a class="auth-reference-logo" href="index.html" aria-label="HYSACAM Kumba Tracker home"><img src="images/hysacam-symbol.png" alt="HYSACAM logo"></a>
+      <span class="auth-step-label">HYSACAM KUMBA TRACKER</span>
+      <h1>Sign in</h1>
+      <p class="auth-subtitle">Welcome back. Sign in to continue</p>
+      <form class="auth-form auth-form-modern" id="signin-form">
+        <div class="auth-field"><label for="email">Email</label><input id="email" type="email" autocomplete="email" autocapitalize="none" autocorrect="off" spellcheck="false" required placeholder="Enter your email address"></div>
+        <div class="auth-field"><label for="password">Password</label><div class="auth-password-wrap"><input id="password" type="password" autocomplete="current-password" required placeholder="Enter your password"><button class="password-toggle password-toggle-icon" type="button" data-toggle-password="password" aria-label="Show password" title="Show password"></button></div></div>
+        <div class="auth-reference-forgot"><a class="auth-forgot-link" href="forgot-password.html">Forgot password?</a></div>
+        <button class="button auth-primary-button" id="signin-submit" type="submit">Log In</button>
+        <div class="auth-message" id="auth-message" role="alert" aria-live="polite"></div>
+      </form>
+      <p class="auth-switch auth-switch-modern">Need an account? <a href="signup.html">Sign up</a></p>
     </section>
   </main>
   <script src="js/auth-common.js"></script>

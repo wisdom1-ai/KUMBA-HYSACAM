@@ -430,159 +430,126 @@ input,select,textarea,button,a{touch-action:manipulation;}
  .map-frame{height:460px;}
 }
 
-/* Authentication consistency pass: prevent iOS input-focus auto-zoom */
-.auth-page input,
-.auth-page select,
-.auth-page textarea,
-.admin-portal input,
-.admin-portal select,
-.admin-portal textarea,
-.admin-login-page input,
-.admin-login-page select,
-.admin-login-page textarea {
-  font-size: 16px !important;
-  line-height: 1.4;
-}
-.auth-page .auth-field label,
-.auth-page .auth-label-row label { font-size: 15px !important; }
-.auth-page .auth-form-modern input.otp-input {
-  height: 60px !important;
-  min-height: 60px;
-  padding: 12px 16px !important;
-  font-size: 18px !important;
-  letter-spacing: .16em;
-  text-align: center;
-  font-weight: 700;
-}
-.auth-page .auth-field small { color: #68766e; font-size: 13px; line-height: 1.5; }
-.auth-page .auth-form-modern input { min-height: 52px; }
-.auth-page button,
-.auth-page a,
-.admin-portal button,
-.admin-portal a { touch-action: manipulation; }
-@media (max-width: 700px) {
-  .auth-page .auth-form-modern input,
-  .auth-page .auth-form-modern select,
-  .auth-page .auth-form-modern textarea { font-size: 16px !important; }
-  .auth-page .auth-field label,
-  .auth-page .auth-label-row label { font-size: 15px !important; }
-}
 
-/* Consistent readable controls across every route */
-input, select, textarea { font-size: 16px !important; }
+/* 2026 clean HYSACAM authentication screens */
+.auth-reference-page{min-height:100svh;background:#fff;display:flex;align-items:center;justify-content:center;padding:42px 22px}
+.auth-reference-card{width:min(100%,650px);margin:auto;text-align:center}
+.auth-reference-card-wide{width:min(100%,760px)}
+.auth-reference-logo{width:88px;height:88px;border-radius:50%;background:#eff7f1;display:grid;place-items:center;margin:0 auto 22px}
+.auth-reference-logo img{width:62px;height:62px;object-fit:contain}
+.auth-reference-card .auth-step-label{display:block;color:#087747;font-size:10px;letter-spacing:1.7px;margin-bottom:10px}
+.auth-reference-card h1{font-size:clamp(30px,4vw,42px);letter-spacing:-1.4px;margin:0 0 8px;color:#101813;font-weight:800}
+.auth-reference-card .auth-subtitle{font-size:15px;color:#778078;margin:0 0 34px}
+.auth-reference-card .auth-form{display:grid;gap:24px;text-align:left}
+.auth-reference-card .auth-field{margin:0;position:relative}
+.auth-reference-card .auth-field>label{font-size:15px;font-weight:800;color:#18221c;margin:0 0 8px;display:block}
+.auth-reference-card .auth-field input{width:100%;min-height:64px;border:1px solid #d4dcd6;border-radius:12px;padding:0 18px;font-size:17px;color:#17221b;background:#fff;box-shadow:0 3px 8px rgba(18,40,26,.04);outline:none}
+.auth-reference-card .auth-field input:focus{border-color:#087747;box-shadow:0 0 0 3px rgba(8,119,71,.10)}
+.auth-reference-card .auth-password-wrap{position:relative}
+.auth-reference-card .auth-password-wrap input{padding-right:60px}
+.auth-reference-card .password-toggle-icon{position:absolute;right:10px;top:50%;transform:translateY(-50%);width:42px;height:42px;border:0;background:transparent;color:#607269;display:grid;place-items:center;margin:0;padding:9px;cursor:pointer}
+.password-toggle-icon svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.auth-reference-forgot{display:flex;justify-content:flex-end;margin-top:-12px}
+.auth-reference-card .auth-forgot-link,.auth-reference-card .auth-switch a,.auth-reference-card .auth-resend-row a{color:#087747;font-weight:800;text-decoration:none}
+.auth-reference-card .auth-primary-button{width:100%;min-height:64px;border:0;border-radius:13px;background:#087747;color:#fff;font-size:18px;font-weight:800;box-shadow:0 10px 24px rgba(8,119,71,.14);margin:0}
+.auth-reference-card .auth-primary-button:hover{background:#06663d}
+.auth-reference-card .auth-switch{margin:30px 0 0;font-size:15px;color:#18221c}
+.auth-reference-name-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.auth-reference-card[hidden],.auth-reference-card [hidden]{display:none!important}
+.auth-reference-card .auth-message{text-align:center;min-height:18px}
+.auth-reference-page~.auth-return-home{display:none}
+body.auth-body:has(.auth-page-modern){background:#fff}
+.auth-page-modern{display:block;min-height:100svh;background:#fff}
+.auth-page-modern>.auth-brand-panel{display:none}
+.auth-page-modern>.auth-main{min-height:100svh;padding:38px 22px;display:flex;align-items:center;justify-content:center;background:#fff}
+.auth-page-modern .auth-card-modern{width:min(100%,650px);padding:0;margin:auto;border:0;border-radius:0;box-shadow:none;background:#fff}
+.auth-page-modern .auth-card-signup{width:min(100%,760px)}
+.auth-page-modern .auth-mobile-brand{display:grid;justify-items:center;gap:8px;margin-bottom:18px;color:#087747;font-size:10px;letter-spacing:1.4px;font-weight:800}
+.auth-page-modern .auth-mobile-brand img{width:78px;height:78px;object-fit:contain;background:#eff7f1;border-radius:50%;padding:10px}
+.auth-page-modern .auth-step-label{display:block;text-align:center;color:#087747;margin-bottom:9px}
+.auth-page-modern .auth-card-modern h2{text-align:center;font-size:clamp(30px,4vw,42px);margin:0 0 8px;letter-spacing:-1.2px}
+.auth-page-modern .auth-card-modern .auth-subtitle{text-align:center;margin:0 0 30px;color:#778078}
+.auth-page-modern .auth-form-modern{display:grid;gap:20px}
+.auth-page-modern .auth-field{margin:0}
+.auth-page-modern .auth-field>label,.auth-page-modern .auth-label-row>label{font-size:15px;font-weight:800;color:#18221c}
+.auth-page-modern .auth-field input{min-height:62px;border-radius:12px;border:1px solid #d4dcd6;font-size:16px;padding:0 17px;box-shadow:0 3px 8px rgba(18,40,26,.04)}
+.auth-page-modern .auth-password-wrap input{padding-right:58px}
+.auth-page-modern .auth-password-wrap .password-toggle-icon{position:absolute;right:8px;top:50%;transform:translateY(-50%);width:42px;height:42px;border:0;background:transparent;color:#607269;display:grid;place-items:center;padding:9px;margin:0}
+.auth-page-modern .auth-primary-button{width:100%;min-height:62px;border-radius:12px;background:#087747;color:#fff;font-size:17px;font-weight:800;margin:0}
+.auth-page-modern .auth-switch-modern{text-align:center;margin:28px 0 0;font-size:15px}
+.auth-page-modern .auth-switch-modern a,.auth-page-modern .auth-resend-row a{color:#087747;font-weight:800}
+.auth-page-modern .auth-divider,.auth-page-modern .auth-trust-note{display:none}
+.auth-page-modern .auth-reference-forgot,.auth-page-modern .auth-label-row{display:flex;justify-content:flex-end}
+.auth-page-modern .auth-label-row{justify-content:space-between;align-items:center}
+.auth-page-modern .auth-forgot-link{color:#087747;font-weight:800;text-decoration:none}
+.auth-page-modern .otp-boxes{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px;margin-top:8px}
+.auth-page-modern .otp-cell{height:64px;border:1px solid #d4dcd6;border-radius:12px;background:#fff;display:grid;place-items:center;font-size:25px;font-weight:800;color:#087747;box-shadow:0 3px 8px rgba(18,40,26,.04)}
+.auth-page-modern .otp-cell.is-current{border-color:#087747;box-shadow:0 0 0 3px rgba(8,119,71,.1)}
+.auth-page-modern .auth-resend-row{text-align:center;color:#66736b;font-size:13px}
+.auth-page-modern .auth-code-note{background:#f2f8f4;border:1px solid #e0ece4;border-radius:12px;padding:14px;color:#52665a}
+.auth-page-modern #reset-password-fields{display:grid;gap:18px}
+@media(max-width:560px){.auth-reference-page{padding:28px 20px}.auth-reference-name-grid{grid-template-columns:1fr;gap:20px}.auth-page-modern>.auth-main{padding:30px 20px}.auth-page-modern .otp-boxes{gap:7px}.auth-page-modern .otp-cell{height:54px;font-size:22px}.auth-page-modern .auth-card-modern{width:100%}}
 
-
-/* HYSACAM requested clean, centered authentication layout */
-.auth-body{background:#fff;color:#111}
-.auth-page-modern{display:flex;min-height:100vh;align-items:center;justify-content:center;background:#fff;padding:48px 22px}
-.auth-brand-modern{display:none}
-.auth-main-modern{width:min(100%,760px);padding:0;gap:0}
-.auth-card-modern{width:100%;max-width:720px;border:0;border-radius:0;padding:0;box-shadow:none;background:#fff}
-.auth-mobile-brand{display:flex;align-items:center;justify-content:center;gap:10px;margin:0 auto 25px;color:#087747;font-weight:800;letter-spacing:.3px}
-.auth-mobile-brand img{width:58px;height:58px;object-fit:contain}
-.auth-step-label{display:none}
-.auth-card-modern h2{text-align:center;font-size:clamp(29px,4vw,40px);font-weight:800;letter-spacing:-1.2px;margin:0 0 8px;color:#080b09}
-.auth-card-modern .auth-subtitle{text-align:center;color:#778078;margin:0 0 32px;font-size:14px}
-.auth-form-modern{gap:22px}
-.auth-field{gap:7px}
-.auth-field label{font-size:15px;font-weight:800;color:#111}
-.auth-label-row{display:flex;align-items:center;justify-content:space-between;gap:14px}
-.auth-form-modern input{height:60px;padding:0 18px;border:1px solid #cbd2cd;border-radius:10px;background:#fff;font-size:17px;color:#141a16;box-shadow:0 3px 8px rgba(0,0,0,.035)}
-.auth-form-modern input::placeholder{color:#929992}
-.auth-form-modern input:focus{border-color:#087747;box-shadow:0 0 0 3px rgba(8,119,71,.09)}
-.auth-password-wrap input{padding-right:74px}
-.password-toggle{right:12px;font-size:12px}
-.auth-forgot-link{color:#087747;font-weight:800;font-size:14px;white-space:nowrap}
-.auth-primary-button{height:60px;margin-top:1px;border-radius:12px;background:#087747;font-size:17px;box-shadow:0 9px 22px rgba(8,119,71,.13)}
-.auth-primary-button:hover{background:#06643c;transform:translateY(-1px)}
-.auth-divider{margin:30px 0 15px}
-.auth-switch-modern{font-size:15px;color:#151a16}
-.auth-switch-modern a{color:#087747}
-.auth-trust-note{font-size:11px;margin-top:20px}
-.auth-card-signup .auth-form-modern{gap:18px}
-.auth-card-signup .auth-form-modern input{height:58px}
-.auth-card-verify{max-width:720px}
-.auth-form-modern input.otp-input,.otp-input{height:70px!important;border:1.5px solid #aab9af!important;border-radius:12px!important;background:#fbfdfb!important;text-align:center!important;font-size:27px!important;font-weight:800!important;letter-spacing:12px!important;padding:0 18px!important;box-shadow:inset 0 1px 3px rgba(0,0,0,.025)}
-#verification-code-help{color:#748078;font-size:12px}
-.auth-resend-row{text-align:center;color:#69766e;font-size:13px;margin-top:20px}
-.auth-resend-row a{color:#087747;font-weight:800}
-.auth-return-home{display:block;text-align:center;margin-top:18px}
-.auth-message{overflow-wrap:anywhere}
-.admin-otp-input{width:100%;height:66px!important;margin-top:8px;text-align:center;letter-spacing:12px!important;font-size:26px!important;font-weight:800;border:1.5px solid #aab9af!important;border-radius:11px!important;background:#fbfdfb!important}
-.admin-login-page{background:#fff;grid-template-columns:minmax(280px,.9fr) minmax(360px,1.1fr)}
-.admin-login-brand{background:linear-gradient(145deg,#064b36,#087747);padding:clamp(32px,6vw,86px)}
-.admin-login-brand .hysacam-logo{width:74px;height:74px;max-width:74px;max-height:74px;background:#fff;border-radius:16px;padding:9px;margin-bottom:25px}
-.admin-login-brand h1{font-size:clamp(32px,4vw,49px);line-height:1.1;letter-spacing:-1.2px}
-.admin-login-panel{padding:32px}
-.admin-login-card{border:1px solid #e2e9e4;border-radius:18px;padding:clamp(25px,4vw,42px);box-shadow:0 16px 48px rgba(13,59,35,.08)}
-.admin-login-card h2{font-size:29px;letter-spacing:-.7px}
-.admin-login-card input{height:52px;font-size:15px}
-.admin-login-card button.button{min-height:52px;border-radius:10px}
-.admin-portal.authorized{display:block;background:#f3f7f4}
-.admin-portal .admin-layout{grid-template-columns:245px minmax(0,1fr);background:#f3f7f4}
-.admin-side{background:#064b36;padding:24px 15px;gap:7px}
-.admin-side .admin-logo{display:flex;align-items:center;gap:10px;padding:0 9px 25px;color:#fff}
-.admin-side .admin-logo .hysacam-logo{width:52px;height:52px;max-width:52px;max-height:52px;background:#fff;border-radius:9px;padding:5px}
-.admin-side .admin-logo strong{font-size:14px;letter-spacing:.3px}
-.admin-side a{padding:14px 13px;border-radius:9px;font-size:13px;font-weight:650;color:#e8f5ec}
-.admin-side a:before{display:inline-block;width:25px;color:#bfe4cc}
-.admin-side a[href="#overview"]:before{content:"⌂"}
-.admin-side a[href="#login-activity"]:before{content:"◷"}
-.admin-side a[href="index.html#directory"]:before{content:"▤"}
-.admin-side a[href="index.html#cleaning"]:before{content:"✓"}
-.admin-side a.selected,.admin-side a:hover{background:#087747}
-.admin-side #admin-logout{margin-top:auto;background:transparent;border:1px solid #70a98b;color:#fff}
-.admin-main{padding:clamp(22px,3vw,42px)}
-.admin-title{margin-bottom:24px}
-.admin-title h2{font-size:28px;letter-spacing:-.7px}
-.admin-title small{background:#e4f1e8;color:#17633f;border-radius:20px;padding:8px 13px;font-weight:700}
-.admin-notice{border-left:4px solid #087747}
-.admin-dashboard-grid{gap:18px}
-.admin-dashboard-grid>.panel,.admin-main>.panel{border:1px solid #e1e9e3;border-radius:13px;box-shadow:0 4px 15px rgba(10,45,25,.035)}
-.admin-activity-head .button{white-space:nowrap}
-.admin-side .button{width:100%}
-.map-frame #dustbin-map{touch-action:pan-x pan-y pinch-zoom}
-.map-frame{overscroll-behavior:contain}
-@media(max-width:760px){
- .auth-page-modern{padding:35px 20px}
- .auth-main-modern{width:100%}
- .auth-card-modern{max-width:560px}
- .auth-card-modern h2{font-size:30px}
- .auth-form-modern input{height:56px;font-size:16px}
- .auth-card-signup .auth-form-modern input{height:54px}
- .admin-login-page{grid-template-columns:1fr}
- .admin-login-brand{padding:30px 25px}
- .admin-login-brand h1{font-size:30px;margin:10px 0}
- .admin-login-brand p{margin-bottom:0}
- .admin-portal .admin-layout{grid-template-columns:1fr}
- .admin-side{display:flex;flex-direction:row;flex-wrap:wrap;align-items:center;min-height:0;padding:12px}
- .admin-side .admin-logo{width:100%;padding:4px 8px 12px}
- .admin-side a{flex:1 1 42%;min-width:130px}
- .admin-side #admin-logout{width:auto;flex:1 1 100%;margin-top:4px}
- .admin-main{padding:18px}
- .admin-title{align-items:flex-start;flex-direction:column}
- .admin-activity-head{align-items:flex-start;flex-direction:column}
-}
-
-
-/* Administrator overview cards inspired by the supplied dashboard reference */
-.admin-overview-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px;margin:0 0 16px}
-.admin-stat-card{display:flex;align-items:center;gap:15px;min-width:0;background:#fff;border:1px solid #e1e9e3;border-radius:13px;padding:19px;box-shadow:0 4px 15px rgba(10,45,25,.035)}
-.admin-stat-icon{width:45px;height:45px;flex:0 0 45px;border-radius:50%;display:grid;place-items:center;font-size:23px;font-weight:800}
-.admin-stat-icon.green{background:#e1f4e8;color:#0a8b50}.admin-stat-icon.blue{background:#e7f0ff;color:#2867c7}.admin-stat-icon.amber{background:#fff3d6;color:#c38a13}
-.admin-stat-card small{display:block;color:#66776e;font-size:11px;font-weight:700}
-.admin-stat-card strong{display:block;font-size:27px;line-height:1.25;color:#14251d}
-.admin-stat-card em{display:block;color:#8a968f;font-size:9px;font-style:normal;line-height:1.4}
-.admin-analytics-panels{display:grid;grid-template-columns:1.3fr 1fr;gap:15px;margin-bottom:16px}
-.admin-analytics-panels .panel{min-height:205px}
-.admin-chart-note{font-size:12px;color:#728078;line-height:1.6}
-.admin-activity-placeholder{display:grid;gap:7px;align-content:center;min-height:100px;padding:15px 18px;border-radius:10px;background:linear-gradient(120deg,#f1f8f3,#f8fbf9);border:1px solid #e4eee7}
-.admin-activity-placeholder span{font-size:9px;letter-spacing:1.4px;color:#0a8050;font-weight:800}
-.admin-activity-placeholder b{font-size:16px;color:#17442e}
-.admin-activity-placeholder small{font-size:11px;color:#77857c}
-.admin-status-placeholder{padding:18px;border-radius:10px;background:#f6faf7;border:1px solid #e6eee8}
-.admin-status-placeholder>div{display:flex;align-items:center;gap:9px;color:#17442e}
-.admin-status-dot{width:10px;height:10px;border-radius:50%;background:#0c9b5c;box-shadow:0 0 0 5px #dff2e6}
-.admin-status-placeholder p{font-size:12px;line-height:1.6;color:#718078}
-.admin-status-placeholder a{font-size:12px;color:#087747;font-weight:800}
-@media(max-width:760px){.admin-overview-stats{grid-template-columns:1fr}.admin-analytics-panels{grid-template-columns:1fr}.admin-stat-card{padding:15px}}
+/* Administrator dashboard visual system */
+.admin-layout-pro{grid-template-columns:250px minmax(0,1fr);background:#f3f7f4}
+.admin-side-pro{position:sticky;top:0;height:100vh;min-height:100vh;padding:25px 16px;background:linear-gradient(180deg,#064d39,#003b2d);gap:7px}
+.admin-side-pro .admin-logo{display:flex;align-items:center;gap:12px;padding:0 10px 28px;color:#fff;font-size:15px;line-height:1.2}
+.admin-side-pro .admin-logo .hysacam-logo{width:48px;height:48px;max-width:48px;max-height:48px;background:#fff;border-radius:10px;padding:4px}
+.admin-side-pro .admin-logo small{font-size:9px;letter-spacing:1.5px;color:#b7ddc7}
+.admin-nav-label{font-size:9px;letter-spacing:1.7px;color:#9bc9ad;font-weight:800;padding:8px 12px}
+.admin-side-pro>a{display:flex;align-items:center;gap:13px;padding:14px 13px;border-radius:9px;color:#e7f4eb;text-decoration:none;font-size:14px;font-weight:600}
+.admin-side-pro>a.selected,.admin-side-pro>a:hover{background:#087747;color:#fff}
+.admin-side-bottom{margin-top:auto;padding:12px 5px 0;border-top:1px solid #ffffff22}
+.admin-side-bottom button{width:100%;display:flex;gap:12px;align-items:center;background:transparent;border:0;color:#e7f4eb;box-shadow:none;text-align:left}
+.admin-main-pro{padding:34px clamp(20px,3vw,48px);max-width:1600px;width:100%;margin:0 auto}
+.admin-main-pro .admin-title{margin-bottom:28px}
+.admin-main-pro .admin-title h2{font-size:29px;letter-spacing:-.8px;color:#15261c}
+.admin-main-pro .admin-title small{font-weight:700;color:#405449}
+.admin-dashboard-intro{display:flex;justify-content:space-between;align-items:center;margin-bottom:17px}
+.admin-dashboard-intro h3{margin:0 0 5px;font-size:18px}
+.admin-dashboard-intro p,.admin-panel-heading p{margin:0;color:#748178;font-size:12px}
+.admin-live-status{display:flex;align-items:center;gap:8px;font-size:11px;color:#47745a;font-weight:700}
+.admin-live-status i{width:8px;height:8px;border-radius:50%;background:#19a767;box-shadow:0 0 0 4px #19a76720}
+.admin-stat-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:17px;margin-bottom:18px}
+.admin-stat-card{background:#fff;border:1px solid #e5ece7;border-radius:14px;padding:22px;display:flex;align-items:center;gap:16px;box-shadow:0 5px 18px rgba(20,55,34,.035)}
+.admin-stat-icon{width:50px;height:50px;border-radius:13px;display:grid;place-items:center;font-size:23px;font-weight:800}
+.admin-stat-icon.green{background:#e7f7ed;color:#07965a}.admin-stat-icon.blue{background:#e9f1ff;color:#2868d7}.admin-stat-icon.amber{background:#fff5dd;color:#d59a18}
+.admin-stat-card small{display:block;color:#64736a;font-size:12px;font-weight:700;margin-bottom:5px}
+.admin-stat-card strong{display:block;color:#163d2a;font-size:30px;line-height:1.1}
+.admin-analytics-grid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(270px,.9fr);gap:17px;margin-bottom:18px}
+.admin-main-pro .panel{border:1px solid #e5ece7;border-radius:14px;box-shadow:0 5px 18px rgba(20,55,34,.035);padding:22px}
+.admin-panel-heading h3{font-size:16px;margin:0 0 5px}
+.admin-chart-empty{min-height:205px;display:flex;align-items:center;justify-content:center;text-align:center;color:#819087;font-size:12px;padding:20px}
+.admin-bars{height:205px;display:flex;align-items:flex-end;justify-content:space-around;gap:20px;padding:22px 12px 0}
+.admin-bar-col{height:100%;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:8px}
+.admin-bar-col strong{font-size:11px;color:#527060}
+.admin-bar-col span{width:min(54px,75%);background:linear-gradient(180deg,#18a66a,#087747);border-radius:8px 8px 0 0;min-height:8px}
+.admin-bar-col small{font-size:11px;color:#77847b}
+.admin-donut-wrap{display:grid;place-items:center;padding:12px 0}
+.admin-donut{--cleaned:0%;width:178px;height:178px;border-radius:50%;background:conic-gradient(#0b9b5e var(--cleaned),#e4eee7 0);display:grid;place-items:center}
+.admin-donut>div{width:132px;height:132px;border-radius:50%;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.admin-donut strong{font-size:27px;color:#143e2b}.admin-donut small{font-size:12px;color:#728078}
+.admin-status-legend{display:flex;justify-content:center;gap:18px;color:#758178;font-size:10px}
+.admin-status-legend span{display:flex;align-items:center;gap:6px}
+.admin-status-legend i{width:8px;height:8px;border-radius:50%}.legend-green{background:#0b9b5e}.legend-grey{background:#e4eee7}
+.admin-main-pro .admin-notice{margin:0 0 18px;background:#f7fbf8}
+.admin-main-pro .admin-notice h3{margin:0 0 6px}
+.admin-main-pro .admin-notice p{margin:0;color:#66766d;font-size:12px;line-height:1.6}
+.admin-main-pro .admin-activity-head{align-items:center}
+.admin-main-pro section.panel{margin-bottom:18px}
+.admin-main-pro .admin-footnote{font-size:11px;color:#839087}
+.admin-login-page{background:#f4f8f5}
+.admin-login-brand{background:linear-gradient(145deg,#064d35,#087747);padding:clamp(30px,6vw,90px)}
+.admin-login-brand .hysacam-logo{width:68px;height:68px;max-height:68px;object-fit:contain;background:#fff;border-radius:15px;padding:8px}
+.admin-login-card .auth-password-wrap{position:relative}
+.admin-login-card .auth-password-wrap input{padding-right:55px}
+.admin-login-card .password-toggle-icon{position:absolute;right:7px;top:50%;transform:translateY(-50%);width:42px;height:42px;border:0;background:transparent;color:#607269;display:grid;place-items:center;padding:9px;margin:0}
+.admin-login-card .otp-boxes{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;margin-top:8px}
+.admin-login-card .otp-cell{height:52px;border:1px solid #d4dcd6;border-radius:9px;display:grid;place-items:center;background:#fff;font-weight:800;font-size:22px;color:#087747}
+.admin-login-card .otp-cell.is-current{border-color:#087747;box-shadow:0 0 0 3px #08774718}
+@media(max-width:850px){.admin-layout-pro{grid-template-columns:1fr}.admin-side-pro{position:relative;height:auto;min-height:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));padding:14px}.admin-side-pro .admin-logo{grid-column:1/-1;padding:4px 8px 12px}.admin-side-pro .admin-nav-label{grid-column:1/-1}.admin-side-bottom{margin:6px 0 0;grid-column:1/-1}.admin-main-pro{padding:24px 16px}.admin-stat-grid{grid-template-columns:1fr}.admin-analytics-grid{grid-template-columns:1fr}}
+@media(max-width:480px){.admin-dashboard-intro{align-items:flex-start;gap:12px;flex-direction:column}.admin-main-pro .admin-title h2{font-size:24px}.admin-side-pro>a{font-size:12px;padding:12px 9px}.admin-main-pro .panel{padding:16px}.admin-login-card{max-width:100%}}
+/* Keep page pinch/gesture zoom disabled while Leaflet owns gestures inside the map */
+html,body{overscroll-behavior-x:none}
+#dustbin-map{touch-action:none;overscroll-behavior:contain}
+#dustbin-map .leaflet-container{touch-action:pan-x pan-y}
