@@ -1,0 +1,28 @@
+HYSACAM RESIDENT REPORTS - STAGE 2
+
+1. Open the Supabase project used by the live website:
+   https://supabase.com/dashboard/project/edylcpvigtmyuehjeibe
+2. Open SQL Editor, create a new query, paste and run:
+   supabase/resident-reports-setup.sql
+3. In Vercel, confirm these server environment variables already exist:
+   SUPABASE_URL
+   SUPABASE_ANON_KEY
+   SUPABASE_SERVICE_ROLE_KEY
+   SESSION_ENCRYPTION_KEY
+   APP_ORIGIN
+   Do not put the service role key in browser JavaScript or share it in chat.
+4. Deploy this project to Vercel.
+
+API endpoints added:
+GET  /api/reports  - returns only the signed-in resident's reports
+POST /api/reports  - creates a report for the signed-in resident
+
+The API checks the existing HttpOnly hysacam_session cookie on every request.
+A resident cannot choose another resident_id; it is taken from the verified session.
+The database migration creates resident_profiles and resident_reports with RLS.
+
+IMPORTANT LIMITATIONS OF THIS STAGE:
+- The API and schema are prepared, but the current public homepage still needs its
+  resident report form connected to POST /api/reports.
+- The admin report-management screen and photo upload workflow are the next build stage.
+- No test reports or fake cleaning records are inserted.
