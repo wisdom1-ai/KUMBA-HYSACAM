@@ -1,0 +1,11 @@
+CREATE TRIGGER profiles_set_updated_at BEFORE UPDATE ON public.profiles FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
+CREATE TRIGGER profiles_protect_columns BEFORE UPDATE ON public.profiles FOR EACH ROW EXECUTE FUNCTION public.protect_profile_columns();
+CREATE TRIGGER on_auth_user_created AFTER INSERT ON auth.users FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
+CREATE TRIGGER dustbins_set_updated_at BEFORE UPDATE ON public.dustbins FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
+CREATE TRIGGER collection_tasks_before_write BEFORE INSERT OR UPDATE ON public.collection_tasks FOR EACH ROW EXECUTE FUNCTION public.tasks_before_write();
+CREATE TRIGGER collection_tasks_set_updated_at BEFORE UPDATE ON public.collection_tasks FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
+CREATE TRIGGER cleaning_history_before_insert BEFORE INSERT ON public.cleaning_history FOR EACH ROW EXECUTE FUNCTION public.history_before_insert();
+CREATE TRIGGER cleaning_history_protect BEFORE DELETE OR UPDATE ON public.cleaning_history FOR EACH ROW EXECUTE FUNCTION public.history_protect();
+CREATE TRIGGER community_reports_before_write BEFORE INSERT OR UPDATE ON public.community_reports FOR EACH ROW EXECUTE FUNCTION public.reports_before_write();
+CREATE TRIGGER community_reports_set_updated_at BEFORE UPDATE ON public.community_reports FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
+CREATE TRIGGER community_reports_log_status AFTER INSERT OR UPDATE ON public.community_reports FOR EACH ROW EXECUTE FUNCTION public.reports_log_status();

@@ -1,0 +1,17 @@
+CREATE INDEX profiles_role_status_idx ON public.profiles USING btree (role, approval_status);
+CREATE UNIQUE INDEX dustbins_name_unique ON public.dustbins USING btree (lower(btrim(name)));
+CREATE INDEX dustbins_status_idx ON public.dustbins USING btree (status);
+CREATE INDEX dustbins_area_idx ON public.dustbins USING btree (area);
+CREATE INDEX dustbins_assigned_worker_idx ON public.dustbins USING btree (assigned_worker_id);
+CREATE INDEX collection_tasks_worker_status_idx ON public.collection_tasks USING btree (assigned_worker_id, status);
+CREATE INDEX collection_tasks_dustbin_idx ON public.collection_tasks USING btree (dustbin_id);
+CREATE INDEX collection_tasks_status_idx ON public.collection_tasks USING btree (status);
+CREATE UNIQUE INDEX cleaning_history_task_unique ON public.cleaning_history USING btree (task_id) WHERE (task_id IS NOT NULL);
+CREATE INDEX cleaning_history_dustbin_idx ON public.cleaning_history USING btree (dustbin_id, cleaned_at DESC);
+CREATE INDEX cleaning_history_worker_idx ON public.cleaning_history USING btree (worker_id);
+CREATE INDEX cleaning_history_valid_idx ON public.cleaning_history USING btree (valid_until);
+CREATE INDEX community_reports_status_idx ON public.community_reports USING btree (status);
+CREATE INDEX community_reports_reporter_idx ON public.community_reports USING btree (reporter_id);
+CREATE INDEX community_reports_worker_idx ON public.community_reports USING btree (assigned_worker_id);
+CREATE INDEX community_reports_created_idx ON public.community_reports USING btree (created_at DESC);
+CREATE INDEX report_history_report_idx ON public.report_history USING btree (report_id, changed_at);
