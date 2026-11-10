@@ -31,15 +31,15 @@ const routes = new Map([
 ]);
 
 export default async function handler(req, res) {
-  // vercel.json forwards /api/* requests here and preserves the original
-  // endpoint in the `path` query parameter.
-  const forwardedPath = req.query?.path;
-  const pathValue = Array.isArray(forwardedPath) ? forwardedPath.join('/') : forwardedPath;
-  const pathname = pathValue
-    ? `/api/${String(pathValue).replace(/^\/+/, '').replace(/\/+$/, '')}`
-    : new URL(req.url || '/', 'http://localhost').pathname.replace(/\/+$/, '') || '/';
-
+  // Vercel routes /api/* directly to this catch-all function.
+  // Do not prepend /api to an already complete request pathname.
+  const rawPath = new URL(req.url || '/', 'http://localhost').pathname;
+  const pathname = rawPath.replace(/\/+$/, '') || '/';
   const route = routes.get(pathname);
-  if (!route) return res.status(404).json({ message: 'API route not found.' });
+
+  if (!route) {
+    return res.status(404).json({ message: 'API route not found.' });
+  }
+
   return route(req, res);
 }

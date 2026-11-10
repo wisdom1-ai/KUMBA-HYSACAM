@@ -1,0 +1,38 @@
+HYSACAM KUMBA TRACKER — REPAIR NOTES
+
+Main routing repair:
+- Removed the broad /api/:path* rewrite from vercel.json.
+- The /api/[...route].js catch-all now routes using the original request pathname.
+- This prevents the /api prefix from being added twice (for example /api/api/auth/me).
+
+Project structure:
+- api/ contains the two Vercel function entry points.
+- server/auth/ and server/admin/ contain server-only API handlers and shared logic.
+- js/, css/, images/, supabase/ contain the website assets and SQL setup scripts.
+
+Deployment:
+1. Upload/commit the complete contents of this folder to the root of the GitHub repository.
+2. Confirm Vercel Project Settings > General > Root Directory points to the repository root.
+3. Deploy the main branch and wait for Ready.
+4. In Vercel Runtime Logs, test GET /api/auth/me and GET /api/admin/me.
+   A logged-out request should return 401 (not 404). That confirms routing reaches the handler.
+5. Test the normal sign-in and admin sign-in flows.
+
+Required Vercel environment variables (set values privately; never commit them):
+- SUPABASE_URL
+- SUPABASE_ANON_KEY
+- SUPABASE_SERVICE_ROLE_KEY
+- SESSION_ENCRYPTION_KEY (exactly 64 hexadecimal characters)
+- APP_ORIGIN (must exactly match the deployed site origin, e.g. https://kumba-hysacam.vercel.app)
+- ADMIN_EMAILS (comma-separated approved admin email addresses)
+- Email delivery: either RESEND_API_KEY + EMAIL_FROM, or SMTP_HOST + SMTP_PORT + SMTP_USER + SMTP_PASS.
+
+Admin password:
+- Admin login uses the password of an existing Supabase Auth account whose email is in ADMIN_EMAILS.
+- This project does not create a separate administrator password or provide public admin registration.
+- If the account has no password, use the site's normal password-reset flow to set one first.
+- Never share passwords, OTP codes, SUPABASE_SERVICE_ROLE_KEY, or SESSION_ENCRYPTION_KEY.
+
+Database:
+- The SQL files in supabase/ are provided setup/migration scripts. Apply only the scripts required by your current database state; do not blindly rerun migrations.
+- Do not expose service-role credentials in frontend files.
