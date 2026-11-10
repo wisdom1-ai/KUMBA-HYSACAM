@@ -74,7 +74,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       <button id="map-my-location" type="button">◎ My Location</button>
     `;
 
-    mapElement.insertAdjacentElement("afterend", legend);
+    section.insertAdjacentElement("afterend", legend);
   }
 
   const mapSearch = document.getElementById("map-location-search");
