@@ -15,5 +15,4 @@
 // Remove sentence-ending full stops from interface copy as requested
 (function(){const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);const nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);for(const node of nodes){if(node.parentElement&&/^(SCRIPT|STYLE|TEXTAREA)$/i.test(node.parentElement.tagName))continue;node.nodeValue=node.nodeValue.replace(/\.(?=\s|$)/g,"");}})();
 </script>
-<script src="js/interface-polish.js"></script>
 </body></html>

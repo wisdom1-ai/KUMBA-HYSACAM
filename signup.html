@@ -2,35 +2,35 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#087747">
   <meta name="description" content="Create your HYSACAM Kumba Tracker account">
   <title>Create an account | HYSACAM Kumba Tracker</title>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="css/auth-reference-layout.css">
 </head>
 <body class="auth-body auth-reference-body">
-  <main class="reference-auth-shell">
-    <section class="reference-auth-card" aria-labelledby="signup-title">
-      <a class="reference-logo" href="index.html" aria-label="HYSACAM home"><img src="images/hysacam-symbol.png" alt="HYSACAM logo"></a>
-      <h1 id="signup-title">Create an account</h1>
-      <form class="reference-auth-form" id="signup-form">
-        <div class="reference-name-row">
-          <div class="reference-field"><label for="first-name">First Name</label><input id="first-name" autocomplete="given-name" required maxlength="40" placeholder="e.g. John"></div>
-          <div class="reference-field"><label for="last-name">Last Name</label><input id="last-name" autocomplete="family-name" required maxlength="40" placeholder="e.g. Doe"></div>
+  <main class="auth-reference-page">
+    <section class="auth-reference-card" aria-labelledby="signup-heading">
+      <a class="auth-reference-logo" href="index.html" aria-label="HYSACAM Kumba Tracker home">
+        <img src="images/hysacam-symbol.png" alt="HYSACAM logo">
+      </a>
+      <h1 id="signup-heading">Create an account</h1>
+      <form class="auth-reference-form" id="signup-form">
+        <div class="auth-name-row">
+          <div class="auth-reference-field"><label for="first-name">First Name</label><input id="first-name" autocomplete="given-name" maxlength="40" required placeholder="Enter first name"></div>
+          <div class="auth-reference-field"><label for="last-name">Last Name</label><input id="last-name" autocomplete="family-name" maxlength="40" required placeholder="Enter last name"></div>
         </div>
-        <div class="reference-field"><label for="email">Email</label><input id="email" type="email" autocomplete="email" autocapitalize="none" autocorrect="off" spellcheck="false" required placeholder="e.g. name@example.com"></div>
-        <div class="reference-field"><label for="password">Password</label><div class="reference-password"><input id="password" type="password" autocomplete="new-password" autocapitalize="off" autocorrect="off" spellcheck="false" required minlength="8" placeholder="At least 8 characters"><button type="button" class="reference-password-toggle" data-toggle-password="password" aria-label="Show password">Show</button></div></div>
-        <button class="reference-submit" id="signup-submit" type="submit">Sign Up</button>
-        <div class="auth-message reference-message" id="auth-message" role="alert" aria-live="polite"></div>
+        <div class="auth-reference-field"><label for="email">Email</label><input id="email" type="email" autocomplete="email" autocapitalize="none" autocorrect="off" spellcheck="false" required placeholder="Enter your email address"></div>
+        <div class="auth-reference-field"><label for="password">Password</label><div class="auth-reference-password"><input id="password" type="password" autocomplete="new-password" autocapitalize="off" required minlength="8" placeholder="Create a password"><button type="button" data-toggle-password="password" aria-label="Show password">Show</button></div></div>
+        <button class="auth-reference-submit" id="signup-submit" type="submit">Sign Up</button>
+        <div class="auth-message" id="auth-message" role="alert" aria-live="polite"></div>
       </form>
-      <p class="reference-auth-switch">Have an account? <a href="signin.html">Sign in</a></p>
+      <p class="auth-reference-switch">Have an account? <a href="signin.html">Sign in</a></p>
     </section>
   </main>
   <script src="js/auth-common.js"></script>
   <script src="js/signup.js"></script>
   <script src="js/auth-ui.js"></script>
-  <script src="js/interface-polish.js"></script>
 </body>
 </html>

@@ -2,32 +2,29 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#087747">
   <meta name="description" content="Sign in to your HYSACAM Kumba Tracker account">
-  <title>Sign in | HYSACAM Kumba Tracker</title>
+  <title>Login | HYSACAM Kumba Tracker</title>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="css/auth-reference-layout.css">
 </head>
 <body class="auth-body auth-reference-body">
-  <main class="reference-auth-shell">
-    <section class="reference-auth-card reference-signin-card" aria-labelledby="signin-title">
-      <a class="reference-logo" href="index.html" aria-label="HYSACAM home"><img src="images/hysacam-symbol.png" alt="HYSACAM logo"></a>
-      <h1 id="signin-title">Sign in</h1>
-      <p class="reference-intro">Sign in to continue to your account</p>
-      <form class="reference-auth-form" id="signin-form">
-        <div class="reference-field"><label for="email">Email</label><input id="email" type="email" autocomplete="email" autocapitalize="none" autocorrect="off" spellcheck="false" required placeholder="e.g. name@example.com"></div>
-        <div class="reference-field"><div class="reference-label-row"><label for="password">Password</label><a href="forgot-password.html">Forgot password?</a></div><div class="reference-password"><input id="password" type="password" autocomplete="current-password" autocapitalize="off" autocorrect="off" spellcheck="false" required placeholder="Enter your password"><button type="button" class="reference-password-toggle" data-toggle-password="password" aria-label="Show password">Show</button></div></div>
-        <button class="reference-submit" id="signin-submit" type="submit">Log In</button>
-        <div class="auth-message reference-message" id="auth-message" role="alert" aria-live="polite"></div>
+  <main class="auth-reference-page">
+    <section class="auth-reference-card auth-reference-login" aria-labelledby="signin-heading">
+      <a class="auth-reference-logo" href="index.html" aria-label="HYSACAM Kumba Tracker home"><img src="images/hysacam-symbol.png" alt="HYSACAM logo"></a>
+      <h1 id="signin-heading">Login</h1>
+      <form class="auth-reference-form" id="signin-form">
+        <div class="auth-reference-field"><label for="email">Email</label><input id="email" type="email" autocomplete="email" autocapitalize="none" autocorrect="off" spellcheck="false" required placeholder="Enter your email address"></div>
+        <div class="auth-reference-field"><div class="auth-reference-label-row"><label for="password">Password</label><a href="forgot-password.html">Forgot password?</a></div><div class="auth-reference-password"><input id="password" type="password" autocomplete="current-password" autocapitalize="off" required placeholder="Enter your password"><button type="button" data-toggle-password="password" aria-label="Show password">Show</button></div></div>
+        <button class="auth-reference-submit" id="signin-submit" type="submit">Log In</button>
+        <div class="auth-message" id="auth-message" role="alert" aria-live="polite"></div>
       </form>
-      <p class="reference-auth-switch">Need an account? <a href="signup.html">Sign up</a></p>
+      <p class="auth-reference-switch">Need an account? <a href="signup.html">Sign up</a></p>
     </section>
   </main>
   <script src="js/auth-common.js"></script>
   <script src="js/signin.js"></script>
   <script src="js/auth-ui.js"></script>
-  <script src="js/interface-polish.js"></script>
 </body>
 </html>
