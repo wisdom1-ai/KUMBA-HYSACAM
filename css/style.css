@@ -429,3 +429,44 @@ input,select,textarea,button,a{touch-action:manipulation;}
  .admin-report-card p,.admin-report-card small{font-size:16px!important;}
  .map-frame{height:460px;}
 }
+
+/* Authentication consistency pass: prevent iOS input-focus auto-zoom */
+.auth-page input,
+.auth-page select,
+.auth-page textarea,
+.admin-portal input,
+.admin-portal select,
+.admin-portal textarea,
+.admin-login-page input,
+.admin-login-page select,
+.admin-login-page textarea {
+  font-size: 16px !important;
+  line-height: 1.4;
+}
+.auth-page .auth-field label,
+.auth-page .auth-label-row label { font-size: 15px !important; }
+.auth-page .auth-form-modern input.otp-input {
+  height: 60px !important;
+  min-height: 60px;
+  padding: 12px 16px !important;
+  font-size: 18px !important;
+  letter-spacing: .16em;
+  text-align: center;
+  font-weight: 700;
+}
+.auth-page .auth-field small { color: #68766e; font-size: 13px; line-height: 1.5; }
+.auth-page .auth-form-modern input { min-height: 52px; }
+.auth-page button,
+.auth-page a,
+.admin-portal button,
+.admin-portal a { touch-action: manipulation; }
+@media (max-width: 700px) {
+  .auth-page .auth-form-modern input,
+  .auth-page .auth-form-modern select,
+  .auth-page .auth-form-modern textarea { font-size: 16px !important; }
+  .auth-page .auth-field label,
+  .auth-page .auth-label-row label { font-size: 15px !important; }
+}
+
+/* Consistent readable controls across every route */
+input, select, textarea { font-size: 16px !important; }
