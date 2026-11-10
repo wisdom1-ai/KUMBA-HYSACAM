@@ -31,6 +31,10 @@ const routes = new Map([
 ]);
 
 export default async function handler(req, res) {
+  return res.status(200).json({
+  message: "Catch-all function reached",
+  url: req.url
+});
   // Vercel routes /api/* directly to this catch-all function.
   // Do not prepend /api to an already complete request pathname.
   const rawPath = new URL(req.url || '/', 'http://localhost').pathname;
