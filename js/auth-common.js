@@ -10,7 +10,18 @@
       host.innerHTML=''; const cells=[];
       for(let i=0;i<6;i++){const cell=document.createElement('span');cell.className='otp-cell';cell.setAttribute('aria-hidden','true');host.appendChild(cell);cells.push(cell)}
       const paint=()=>{const value=input.value.replace(/\D/g,'').slice(0,6);if(value!==input.value)input.value=value;cells.forEach((cell,i)=>{cell.textContent=value[i]||'';cell.classList.toggle('is-current',input===document.activeElement&&i===Math.min(value.length,5))});};
-      input.addEventListener('input',paint);input.addEventListener('focus',paint);input.addEventListener('blur',paint);host.addEventListener('click',()=>input.focus({preventScroll:true}));paint();
+      const acceptCode=value=>{const digits=String(value||'').replace(/\\D/g,'').slice(0,6);input.value=digits;input.dispatchEvent(new Event('input',{bubbles:true}));input.focus({preventScroll:true});paint();};
+      input.addEventListener('input',paint);
+      input.addEventListener('focus',paint);
+      input.addEventListener('blur',paint);
+      input.addEventListener('paste',event=>{const text=event.clipboardData?.getData('text')||'';if(text){event.preventDefault();acceptCode(text);}});
+      host.addEventListener('click',()=>input.focus({preventScroll:true}));
+      host.addEventListener('paste',event=>{const text=event.clipboardData?.getData('text')||'';if(text){event.preventDefault();acceptCode(text);}});
+      host.setAttribute('role','group');
+      host.setAttribute('tabindex','0');
+      host.setAttribute('aria-label','Six-digit code input. Tap to type or paste your code');
+      host.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();input.focus({preventScroll:true});}});
+      paint();
     });
   }
   window.HysAuth={ $,msg,busy,post,setupOtpBoxes};
