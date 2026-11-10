@@ -3,461 +3,112 @@
 document.addEventListener("DOMContentLoaded", async () => {
   const mapElement = document.getElementById("dustbin-map");
   const mapMessage = document.getElementById("map-message");
-
-  const showMessage = (message) => {
-    if (mapMessage) mapMessage.textContent = message;
-  };
-
-  if (!mapElement) {
-    console.error("Map container #dustbin-map was not found.");
-    return;
-  }
-
-  if (!window.L) {
-    showMessage("The map library did not load. Check your internet connection.");
-    return;
-  }
-
-  if (typeof supabaseClient === "undefined") {
-    showMessage("Database connection is not configured.");
-    return;
-  }
-
-  /* MAP TOOLBAR */
+  const showMessage = (message) => { if (mapMessage) mapMessage.textContent = message; };
+  if (!mapElement) return;
+  if (!window.L) { showMessage("Map could not load — check your internet connection"); return; }
+  if (typeof supabaseClient === "undefined") { showMessage("Database connection is not configured"); return; }
 
   const section = mapElement.parentElement;
-
   let toolbar = document.getElementById("map-toolbar");
-
   if (!toolbar) {
     toolbar = document.createElement("div");
     toolbar.id = "map-toolbar";
     toolbar.className = "map-toolbar";
-
-    toolbar.innerHTML = `
-      <div class="map-search">
-        <input
-          id="map-location-search"
-          type="search"
-          placeholder="Search location..."
-          aria-label="Search dustbin locations"
-          autocomplete="off"
-        >
-        <button id="map-filter-button" type="button">Filter</button>
-      </div>
-
-      <div id="map-filter-panel" class="map-filter-panel" hidden>
-        <label for="map-status-filter">Dustbin status</label>
-        <select id="map-status-filter">
-          <option value="all">All statuses</option>
-          <option value="available">Available</option>
-          <option value="full">Full</option>
-          <option value="maintenance">Maintenance</option>
-          <option value="pending">Pending collection</option>
-        </select>
-      </div>
-    `;
-
+    toolbar.innerHTML = `<div class="map-search"><input id="map-location-search" type="search" placeholder="Search a Kumba location" aria-label="Search dustbin locations" autocomplete="off"><button id="map-filter-button" type="button">Filter</button></div><div id="map-filter-panel" class="map-filter-panel" hidden><label for="map-status-filter">Dustbin status</label><select id="map-status-filter"><option value="all">All statuses</option><option value="available">Available</option><option value="full">Full</option><option value="maintenance">Maintenance</option><option value="pending">Pending collection</option></select></div>`;
     section.insertBefore(toolbar, mapElement);
   }
-
   let legend = document.getElementById("map-legend");
-
   if (!legend) {
-    legend = document.createElement("div");
-    legend.id = "map-legend";
-    legend.className = "map-legend";
-
-    legend.innerHTML = `
-      <span><i class="legend-dot bin-dot"></i> Dustbin Location</span>
-      <span><i class="legend-dot selected-dot"></i> Selected Location</span>
-      <button id="map-my-location" type="button">◎ My Location</button>
-    `;
-
+    legend = document.createElement("div"); legend.id = "map-legend"; legend.className = "map-legend";
+    legend.innerHTML = `<span><i class="legend-dot bin-dot"></i> Registered dustbin locations</span><span><i class="legend-dot selected-dot"></i> Selected location</span>`;
     section.insertAdjacentElement("afterend", legend);
   }
-
-  const mapSearch = document.getElementById("map-location-search");
+  const search = document.getElementById("map-location-search");
   const filterButton = document.getElementById("map-filter-button");
   const filterPanel = document.getElementById("map-filter-panel");
   const statusFilter = document.getElementById("map-status-filter");
-  const myLocationButton = document.getElementById("map-my-location");
 
-  /* CREATE MAP */
-
+  // Fixed Kumba overview — map gestures and all map zoom controls are disabled
   const map = L.map(mapElement, {
-    zoomControl: true
-  }).setView([4.636, 9.446], 13);
-
-  map.zoomControl.setPosition("topleft");
-
+    zoomControl: false, scrollWheelZoom: false, doubleClickZoom: false,
+    touchZoom: false, boxZoom: false, keyboard: false, dragging: false,
+    tap: false, attributionControl: true, minZoom: 12, maxZoom: 15
+  }).setView([4.6363, 9.4469], 13);
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    maxZoom: 19,
-    attribution: "&copy; OpenStreetMap contributors"
+    minZoom: 12, maxZoom: 19, attribution: "&copy; OpenStreetMap contributors"
   }).addTo(map);
 
-  const markerLayer = L.layerGroup().addTo(map);
-  const markerItems = new Map();
-
-  let selectedItem = null;
-  let currentLocationMarker = null;
-
-  function escapeHTML(value) {
-    return String(value ?? "").replace(/[&<>"']/g, (character) => ({
-      "&": "&amp;",
-      "<": "&lt;",
-      ">": "&gt;",
-      '"': "&quot;",
-      "'": "&#039;"
-    })[character]);
-  }
-
-  /* MARKER APPEARANCE */
-
-  function markerColor(status) {
-    const value = String(status || "").toLowerCase();
-
-    if (value.includes("full") || value.includes("overflow")) {
-      return "#e74c3c";
-    }
-
-    if (
-      value.includes("maintenance") ||
-      value.includes("broken") ||
-      value.includes("damage")
-    ) {
-      return "#8e44ad";
-    }
-
-    if (value.includes("pending") || value.includes("collect")) {
-      return "#f39c12";
-    }
-
-    return "#168653";
-  }
-
-  function createMarkerIcon(status, selected = false) {
-    const color = selected ? "#2475e8" : markerColor(status);
-
-    return L.divIcon({
-      className: "hysacam-marker",
-      html: `
-        <div class="hysacam-pin" style="--pin-color:${color}">
-          <span>♻</span>
-        </div>
-      `,
-      iconSize: [34, 42],
-      iconAnchor: [17, 40],
-      popupAnchor: [0, -38]
-    });
-  }
-
-  /* DUSTBIN DETAILS POPUP */
-
-  function createPopup(bin) {
-    return `
-      <div class="bin-popup">
-        <strong>${escapeHTML(bin.name || "Unnamed collection point")}</strong>
-        <p><strong>ID:</strong> ${escapeHTML(bin.id)}</p>
-        <p><strong>Area:</strong> ${escapeHTML(bin.area || "Not specified")}</p>
-        <p><strong>Status:</strong> ${escapeHTML(bin.status || "Available")}</p>
-      </div>
-    `;
-  }
-
-  function selectItem(item, openPopup = true) {
-    if (selectedItem && selectedItem.marker !== item.marker) {
-      selectedItem.marker.setIcon(
-        createMarkerIcon(selectedItem.bin.status)
-      );
-    }
-
-    selectedItem = item;
-    item.marker.setIcon(createMarkerIcon(item.bin.status, true));
-
-    if (!markerLayer.hasLayer(item.marker)) {
-      item.marker.addTo(markerLayer);
-    }
-
-    if (openPopup) {
-      item.marker.openPopup();
-    }
-  }
-
+  const layer = L.layerGroup().addTo(map);
+  const items = new Map();
+  let selected = null;
+  const escapeHTML = (value) => String(value ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
+  const greenDot = (active = false) => L.divIcon({
+    className: "hysacam-green-indicator",
+    html: `<span class="hysacam-green-dot${active ? " is-selected" : ""}"></span>`,
+    iconSize: [22, 22], iconAnchor: [11, 11]
+  });
   function addBin(bin) {
-    const latitude = Number(bin.latitude);
-    const longitude = Number(bin.longitude);
-
-    const marker = L.marker([latitude, longitude], {
-      icon: createMarkerIcon(bin.status),
-      title: bin.name || "Dustbin location"
-    });
-
+    const lat = Number(bin.latitude), lng = Number(bin.longitude);
+    if (bin.latitude == null || bin.longitude == null || !Number.isFinite(lat) || !Number.isFinite(lng)) return;
+    const marker = L.marker([lat, lng], { icon: greenDot(), title: bin.name || `Dustbin ${bin.id}`, keyboard: false });
+    marker.bindPopup(`<div class="bin-popup"><strong>${escapeHTML(bin.name || "Registered collection point")}</strong><p>${escapeHTML(bin.area || "Kumba")}</p><p>Status: ${escapeHTML(bin.status || "Not specified")}</p></div>`);
     const item = { bin, marker };
-
-    marker.bindPopup(createPopup(bin));
-
     marker.on("click", () => {
-      selectItem(item, false);
+      if (selected) selected.marker.setIcon(greenDot());
+      selected = item; marker.setIcon(greenDot(true));
     });
-
-    marker.addTo(markerLayer);
-    markerItems.set(String(bin.id), item);
+    marker.addTo(layer); items.set(String(bin.id), item);
   }
-
-  /* SEARCH AND FILTER */
-
-  function applyFilters() {
-    const query = (mapSearch.value || "").trim().toLowerCase();
-    const wantedStatus = (statusFilter.value || "all").toLowerCase();
-    let visibleCount = 0;
-
-    markerItems.forEach((item) => {
-      const bin = item.bin;
-
-      const searchable = [
-        bin.id,
-        bin.name,
-        bin.area,
-        bin.status
-      ].join(" ").toLowerCase();
-
-      const actualStatus = String(bin.status || "available").toLowerCase();
-
-      const matchesQuery = searchable.includes(query);
-      const matchesStatus =
-        wantedStatus === "all" || actualStatus.includes(wantedStatus);
-
-      if (matchesQuery && matchesStatus) {
-        if (!markerLayer.hasLayer(item.marker)) {
-          item.marker.addTo(markerLayer);
-        }
-        visibleCount++;
-      } else {
-        if (markerLayer.hasLayer(item.marker)) {
-          markerLayer.removeLayer(item.marker);
-        }
-
-        if (selectedItem === item) {
-          selectedItem = null;
-        }
-      }
+  function filterMarkers() {
+    const q = (search.value || "").trim().toLowerCase();
+    const wanted = (statusFilter.value || "all").toLowerCase();
+    let count = 0;
+    items.forEach(item => {
+      const b = item.bin;
+      const text = [b.id, b.name, b.area, b.status].join(" ").toLowerCase();
+      const match = text.includes(q) && (wanted === "all" || String(b.status || "").toLowerCase().includes(wanted));
+      if (match) { if (!layer.hasLayer(item.marker)) item.marker.addTo(layer); count++; }
+      else if (layer.hasLayer(item.marker)) layer.removeLayer(item.marker);
     });
-
-    showMessage(
-      visibleCount
-        ? `Showing ${visibleCount} matching dustbin location(s).`
-        : "No dustbin locations match your search and filter."
-    );
+    showMessage(count ? `${count} registered location${count === 1 ? "" : "s"} shown on the Kumba map` : "No registered locations match this search");
   }
+  search.addEventListener("input", filterMarkers);
+  filterButton.addEventListener("click", () => { filterPanel.hidden = !filterPanel.hidden; });
+  statusFilter.addEventListener("change", filterMarkers);
 
-  mapSearch.addEventListener("input", applyFilters);
-
-  filterButton.addEventListener("click", () => {
-    filterPanel.hidden = !filterPanel.hidden;
+  document.addEventListener("hysacam:show-bin", event => {
+    const id = event.detail?.binId;
+    const item = id != null ? items.get(String(id)) : null;
+    if (!item) { showMessage("This collection point has no verified map location yet"); return; }
+    search.value = ""; statusFilter.value = "all"; filterMarkers();
+    if (selected) selected.marker.setIcon(greenDot());
+    selected = item; item.marker.setIcon(greenDot(true)); item.marker.openPopup();
+    showMessage(`Selected ${item.bin.name || "collection point"} in ${item.bin.area || "Kumba"}`);
   });
 
-  statusFilter.addEventListener("change", applyFilters);
-
-  /* VIEW A DUSTBIN FROM PAGE 3 */
-
-  document.addEventListener("hysacam:show-bin", (event) => {
-    const detail = event.detail || {};
-    const binId = detail.binId;
-
-    // Prefer the exact database ID sent by the directory.
-    let item = binId != null
-      ? markerItems.get(String(binId))
-      : null;
-
-    // Fall back to the supplied coordinates if no ID match exists.
-    if (!item) {
-      const latitude = Number(detail.latitude);
-      const longitude = Number(detail.longitude);
-
-      if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) {
-        showMessage("This dustbin has no valid map coordinates.");
-        return;
-      }
-
-      item = [...markerItems.values()].find(({ bin }) =>
-        Math.abs(Number(bin.latitude) - latitude) < 0.000001 &&
-        Math.abs(Number(bin.longitude) - longitude) < 0.000001
-      );
-    }
-
-    if (!item) {
-      showMessage("This dustbin could not be found on the map.");
-      return;
-    }
-
-    // Ensure filters do not hide the selected location.
-    mapSearch.value = "";
-    statusFilter.value = "all";
-    applyFilters();
-
-    selectItem(item, false);
-
-    const latitude = Number(item.bin.latitude);
-    const longitude = Number(item.bin.longitude);
-
-    map.setView([latitude, longitude], 17, {
-      animate: true
-    });
-
-    // Open the popup after Leaflet begins moving to the location.
-    map.once("moveend", () => {
-      item.marker.openPopup();
-    });
-
-    // Also handle cases where the map is already at the same location.
-    setTimeout(() => {
-      if (selectedItem === item) {
-        item.marker.openPopup();
-      }
-    }, 350);
-
-    showMessage(
-      `Selected collection point: ${item.bin.name || item.bin.id}`
-    );
-  });
-
-  /* CURRENT LOCATION */
-
-  const locationControl = L.control({ position: "topright" });
-
-  locationControl.onAdd = function () {
-    const button = L.DomUtil.create("button", "map-floating-location");
-
-    button.type = "button";
-    button.title = "Find my location";
-    button.setAttribute("aria-label", "Find my location");
-    button.textContent = "◎";
-
-    L.DomEvent.disableClickPropagation(button);
-    L.DomEvent.disableScrollPropagation(button);
-
-    button.addEventListener("click", () => myLocationButton.click());
-
-    return button;
-  };
-
-  locationControl.addTo(map);
-
-  myLocationButton.addEventListener("click", () => {
-    if (!navigator.geolocation) {
-      showMessage("Your browser does not support location services.");
-      return;
-    }
-
-    showMessage("Finding your current location...");
-
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const latitude = position.coords.latitude;
-        const longitude = position.coords.longitude;
-
-        if (currentLocationMarker) {
-          map.removeLayer(currentLocationMarker);
-        }
-
-        currentLocationMarker = L.circleMarker(
-          [latitude, longitude],
-          {
-            radius: 8,
-            color: "#fff",
-            weight: 3,
-            fillColor: "#2475e8",
-            fillOpacity: 1
-          }
-        )
-          .bindPopup("Your current location")
-          .addTo(map);
-
-        map.setView([latitude, longitude], 16);
-        currentLocationMarker.openPopup();
-
-        showMessage("Your current location is shown on the map.");
-      },
-      (error) => {
-        console.warn("Could not get current location:", error.message);
-
-        if (error.code === 1) {
-          showMessage("Location permission was denied. Check your browser settings.");
-        } else if (error.code === 3) {
-          showMessage("Location request timed out. Please try again.");
-        } else {
-          showMessage("Unable to determine your location. Please try again.");
-        }
-      },
-      {
-        enableHighAccuracy: true,
-        timeout: 10000,
-        maximumAge: 60000
-      }
-    );
-  });
-
-  /* LOAD FROM SUPABASE */
-
-  showMessage("Loading registered dustbin locations...");
-
+  showMessage("Loading all registered dustbin locations in Kumba");
   try {
-    const { data, error } = await supabaseClient
-      .from("bins")
-      .select("id, name, area, latitude, longitude, status");
-
-    if (error) throw error;
-
-    const validBins = (data || []).filter((bin) => {
-      const latitude = Number(bin.latitude);
-      const longitude = Number(bin.longitude);
-
-      return (
-        bin.latitude !== null &&
-        bin.latitude !== "" &&
-        bin.longitude !== null &&
-        bin.longitude !== "" &&
-        Number.isFinite(latitude) &&
-        Number.isFinite(longitude) &&
-        latitude >= -90 &&
-        latitude <= 90 &&
-        longitude >= -180 &&
-        longitude <= 180
-      );
-    });
-
-    validBins.forEach(addBin);
-
-    if (validBins.length > 0) {
-      const bounds = L.featureGroup(
-        [...markerItems.values()].map((item) => item.marker)
-      ).getBounds();
-
-      if (bounds.isValid()) {
-        map.fitBounds(bounds, {
-          padding: [30, 30],
-          maxZoom: 15
-        });
-      }
-
-      showMessage(
-        `Showing ${validBins.length} registered dustbin location(s).`
-      );
-    } else {
-      showMessage("No registered dustbins with valid coordinates were found.");
+    // Supabase returns a limited page by default — retrieve every page so no saved locations are omitted
+    const allBins = []; const pageSize = 500; let from = 0;
+    while (true) {
+      const { data, error } = await supabaseClient.from("bins")
+        .select("id, name, area, latitude, longitude, status")
+        .order("name", { ascending: true }).range(from, from + pageSize - 1);
+      if (error) throw error;
+      const page = data || []; allBins.push(...page);
+      if (page.length < pageSize) break;
+      from += pageSize;
     }
+    allBins.forEach(addBin);
+    if (items.size) {
+      const bounds = L.featureGroup([...items.values()].map(x => x.marker)).getBounds();
+      if (bounds.isValid()) map.fitBounds(bounds, { padding: [28, 28], maxZoom: 14, animate: false });
+      showMessage(`Showing all ${items.size} registered dustbin locations in Kumba`);
+    } else showMessage("No verified dustbin locations with Kumba coordinates are registered yet");
   } catch (error) {
-    console.error("Could not load dustbin locations:", error);
-
-    showMessage(
-      "Could not load dustbins. Check your Supabase connection, bins table and permissions."
-    );
+    console.error("Could not load dustbin locations", error);
+    showMessage("Could not load locations — check the bins table permissions and Supabase connection");
   }
-
   setTimeout(() => map.invalidateSize(), 250);
-
-  window.addEventListener("resize", () => {
-    map.invalidateSize();
-  });
+  window.addEventListener("resize", () => map.invalidateSize());
 });
