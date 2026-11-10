@@ -15,6 +15,8 @@ import admin_logout from '../server/admin/logout.js';
 import admin_audit from '../server/admin/audit.js';
 import admin_login from '../server/admin/login.js';
 import admin_me from '../server/admin/me.js';
+import resident_reports from '../server/reports/index.js';
+import admin_reports from '../server/reports/admin.js';
 
 const routes = new Map([
   ['/api/auth/request-password-reset', auth_request_password_reset],
@@ -31,6 +33,8 @@ const routes = new Map([
   ['/api/admin/audit', admin_audit],
   ['/api/admin/login', admin_login],
   ['/api/admin/me', admin_me],
+  ['/api/reports', resident_reports],
+  ['/api/admin/reports', admin_reports],
 ]);
 
 export default async function handler(req, res) {

@@ -373,3 +373,13 @@ button,.button{min-height:42px}
 }
 @media(max-width:420px){.hero-copy h1{font-size:34px}.hero-links{gap:12px}.hero-links a{font-size:12px}.searchbar button{padding-inline:13px}.map-frame{height:320px}}
 .report-gate{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:26px;border:1px solid #e0ebe3;border-radius:18px;background:#fff;box-shadow:0 10px 30px rgba(12,57,34,.06)}.report-gate h3{margin:0 0 8px;color:#173b29}.report-gate p{max-width:650px;margin:0;color:#68786f;line-height:1.7;font-size:14px}.report-gate .button{white-space:nowrap}@media(max-width:680px){.report-gate{align-items:stretch;flex-direction:column;padding:20px}.report-gate .button{width:100%;text-align:center}}
+
+/* Resident reporting and administrator report management */
+.report-form,.resident-report-item,.admin-report-card{background:#fff;border:1px solid #e3ece7;border-radius:16px;padding:20px;margin-top:16px}
+.report-form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:18px 0}
+.report-form-grid label{display:flex;flex-direction:column;gap:7px;font-weight:600;color:#234235}
+.report-form-grid .wide{grid-column:1/-1}
+.report-form input,.report-form select,.report-form textarea,.admin-report-controls select,.admin-report-controls textarea{width:100%;padding:12px;border:1px solid #cad8d0;border-radius:9px;font:inherit;background:#fff;color:#173b2b;min-width:0}
+.gps-row{display:flex;gap:8px}.resident-report-item>div{display:flex;align-items:center;justify-content:space-between;gap:12px}.resident-report-item p{margin:10px 0}.report-status{display:inline-flex;padding:5px 9px;border-radius:20px;background:#eaf4ee;color:#17633f;font-size:12px}
+.admin-reports-list{display:grid;gap:12px}.admin-report-card h4{margin:0 0 8px}.admin-report-card p{margin:7px 0;overflow-wrap:anywhere}.admin-report-controls{display:grid;grid-template-columns:minmax(130px,.7fr) minmax(180px,2fr) auto;gap:10px;align-items:start;margin-top:14px}.admin-report-card small{color:#60766a}
+@media(max-width:650px){.report-form-grid{grid-template-columns:1fr}.report-form-grid .wide{grid-column:auto}.admin-report-controls{grid-template-columns:1fr}.resident-report-item>div{align-items:flex-start;flex-direction:column}}

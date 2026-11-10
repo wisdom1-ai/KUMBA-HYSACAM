@@ -1,0 +1,12 @@
+(()=>{
+ const form=document.getElementById('resident-report-form'); if(!form)return;
+ const gate=document.getElementById('report-auth-gate'), mine=document.getElementById('resident-my-reports'), msg=document.getElementById('resident-report-message');
+ const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ const labels={submitted:'Submitted',under_review:'Under review',assigned:'Assigned',in_progress:'In progress',resolved:'Resolved',rejected:'Rejected'};
+ async function request(url,options={}){const r=await fetch(url,{credentials:'include',cache:'no-store',...options,headers:{'Content-Type':'application/json',...(options.headers||{})}});const d=await r.json().catch(()=>({}));if(!r.ok)throw new Error(d.message||'Request failed.');return d;}
+ function render(items){const host=document.getElementById('my-reports-list');host.innerHTML=items.length?items.map(x=>`<article class="resident-report-item"><div><b>${esc(x.reference_code)}</b><span class="status report-status">${esc(labels[x.status]||x.status)}</span></div><p>${esc(x.issue_type)} · ${esc(x.area)} · ${esc(x.location_description)}</p><small>${new Date(x.created_at).toLocaleString()}</small>${x.admin_notes?`<p class="hint">Team update: ${esc(x.admin_notes)}</p>`:''}</article>`).join(''):'<p class="empty-state compact">You have not submitted any reports yet.</p>';}
+ async function load(){try{const d=await request('/api/reports');render(d.reports||[]);}catch(e){document.getElementById('my-reports-list').textContent=e.message;}}
+ async function init(){try{const d=await request('/api/auth/me');if(d.authenticated){gate.hidden=true;form.hidden=false;mine.hidden=false;await load();}}catch(e){/* unauthenticated residents use the sign-in gate */}}
+ form.addEventListener('submit',async e=>{e.preventDefault();msg.textContent='';const b=document.getElementById('submit-resident-report');b.disabled=true;b.textContent='Submitting…';const f=new FormData(form);const payload=Object.fromEntries(f.entries());for(const k of ['latitude','longitude'])payload[k]=payload[k]===''?null:Number(payload[k]);try{const d=await request('/api/reports',{method:'POST',body:JSON.stringify(payload)});msg.textContent=`Report submitted. Your reference is ${d.report.reference_code}.`;form.reset();await load();}catch(err){msg.textContent=err.message;}finally{b.disabled=false;b.textContent='Submit report';}});
+ document.getElementById('refresh-my-reports')?.addEventListener('click',load);init();
+})();
