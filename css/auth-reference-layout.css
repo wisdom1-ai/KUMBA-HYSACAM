@@ -1,0 +1,32 @@
+/* Reference-matched HYSACAM authentication layout */
+.auth-reference-body{min-height:100vh;background:#fff;color:#101713;font-family:"DM Sans",Arial,sans-serif}
+.reference-auth-shell{min-height:100svh;display:flex;justify-content:center;align-items:flex-start;padding:clamp(34px,7vh,78px) 22px 54px;background:#fff}
+.reference-auth-card{width:min(100%,720px);margin:0 auto;padding:0;background:#fff;border:0;border-radius:0;box-shadow:none}
+.reference-logo{width:88px;height:88px;margin:0 auto 30px;border-radius:50%;background:#eff6f1;display:grid;place-items:center;overflow:hidden}
+.reference-logo img{display:block;width:65px;height:65px;object-fit:contain}
+.reference-auth-card h1{margin:0 0 34px;text-align:center;color:#090d0a;font-size:clamp(30px,4.2vw,46px);font-weight:800;line-height:1.12;letter-spacing:-1.2px}
+.reference-intro{text-align:center;margin:-14px 0 34px;color:#65736b;font-size:clamp(16px,2vw,20px)}
+.reference-auth-form{display:grid;gap:30px}
+.reference-name-row{display:grid;grid-template-columns:1fr 1fr;gap:26px}
+.reference-field{min-width:0;display:grid;gap:8px}
+.reference-field label{font-size:17px;font-weight:700;color:#101713;line-height:1.2}
+.reference-field input{width:100%;height:78px;border:1px solid #cfd4d1;border-radius:13px;background:#fff;padding:0 24px;color:#17231d;font-family:inherit;font-size:20px;outline:none;box-shadow:0 3px 7px rgba(0,0,0,.045)}
+.reference-field input::placeholder{color:#8a8f8c;opacity:1}
+.reference-field input:focus{border-color:#087747;box-shadow:0 0 0 3px rgba(8,119,71,.10)}
+.reference-password{position:relative}
+.reference-password input{padding-right:100px}
+.reference-password-toggle{position:absolute;right:12px;top:50%;transform:translateY(-50%);width:auto!important;min-width:66px;height:44px!important;margin:0!important;padding:0 12px;border:0;border-radius:8px;background:#edf5ef;color:#087747;font-size:14px;font-weight:700}
+.reference-submit{width:100%;height:86px;margin-top:0;border:0;border-radius:16px;background:#4b49e8;color:#fff;font-family:inherit;font-size:22px;font-weight:800;box-shadow:0 12px 25px rgba(55,55,180,.12)}
+.reference-submit:hover{filter:brightness(.96)}
+.reference-message{min-height:0;margin:0;font-size:14px}
+.reference-auth-switch{text-align:center;margin:54px 0 0;color:#101713;font-size:18px;font-weight:500}
+.reference-auth-switch a,.reference-label-row a{color:#087747;font-weight:800;text-decoration:none}
+.reference-label-row{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.reference-label-row a{font-size:16px;white-space:nowrap}
+.reference-signin-card{max-width:720px;padding-top:12px}
+.reference-signin-card .reference-logo{margin-bottom:30px}
+.reference-signin-card h1{margin-bottom:42px}
+.reference-signin-card .reference-auth-form{gap:30px}
+.reference-signin-card .reference-auth-switch{margin-top:54px}
+@media(max-width:600px){.reference-auth-shell{padding:38px 24px 44px}.reference-auth-card{width:100%}.reference-logo{width:78px;height:78px;margin-bottom:25px}.reference-logo img{width:58px;height:58px}.reference-auth-card h1{font-size:32px;margin-bottom:30px}.reference-name-row{gap:14px}.reference-field label{font-size:15px}.reference-field input{height:64px;padding:0 16px;font-size:17px}.reference-auth-form{gap:23px}.reference-submit{height:70px;font-size:19px;border-radius:13px}.reference-auth-switch{font-size:16px;margin-top:42px}.reference-label-row a{font-size:14px}.reference-password input{padding-right:82px}}
+@media(max-width:380px){.reference-name-row{grid-template-columns:1fr}.reference-name-row .reference-field input{height:60px}}

@@ -8,15 +8,9 @@
     msg('');
 
     const password = $('password').value;
-    const confirmation = $('confirm-password').value;
 
     if (password.length < 8) {
       msg('Choose a password with at least 8 characters.');
-      return;
-    }
-    if (password !== confirmation) {
-      msg('Your passwords do not match. Please check and try again.');
-      $('confirm-password').focus();
       return;
     }
 
