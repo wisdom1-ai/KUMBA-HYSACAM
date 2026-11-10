@@ -23,7 +23,7 @@
     busy(button, true);
     try {
       await post('/signup', {
-        name: $('full-name').value.trim(),
+        name: `${$('first-name').value.trim()} ${$('last-name').value.trim()}`.trim(),
         email: $('email').value.trim(),
         password
       });

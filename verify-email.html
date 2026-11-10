@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
   <meta name="theme-color" content="#087747">
   <title>Verify email | HYSACAM Kumba Tracker</title>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -34,7 +34,7 @@
             <label for="verification-code">Verification code</label>
             <input class="otp-input" id="verification-code" name="otp" type="text" inputmode="numeric" autocomplete="one-time-code" autocapitalize="off" autocorrect="off" spellcheck="false" pattern="[0-9]{6}" minlength="6" maxlength="6" required aria-describedby="verification-code-help" placeholder="Enter or paste your 6-digit code"><small id="verification-code-help">Your code will be checked automatically when all 6 digits are entered</small>
           </div>
-          <button class="button auth-primary-button" id="verify-submit" type="submit">Verify email</button>
+          <button class="button auth-primary-button" id="verify-submit" type="submit" hidden>Verify email</button>
           <div class="auth-message" id="auth-message" role="alert" aria-live="polite"></div>
         </form>
         <p class="auth-resend-row">Didn't receive a code? <a href="#" id="resend-code">Resend code</a></p>
@@ -46,5 +46,6 @@
   <script src="js/auth-common.js"></script>
   <script src="js/verify-email.js"></script>
   <script src="js/auth-ui.js"></script>
+<script src="js/interface-polish.js"></script>
 </body>
 </html>
