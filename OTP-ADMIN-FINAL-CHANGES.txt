@@ -1,20 +1,14 @@
-HYSACAM KUMBA TRACKER — OTP AND ADMIN LOGIN FINAL CHANGES
+HYSACAM KUMBA TRACKER — AUTHENTICATION POLISH
 
-- Resident email verification uses six separate square code boxes.
-- Administrator email verification uses the same six-box layout.
-- Pasting a complete six-digit code into the input fills the six visible boxes.
-- Administrator login no longer displays Continue with Google.
-- Administrator login no longer contains the Google OAuth button handler or Google callback branch.
-- Administrator password input disables automatic capitalization and autocorrection to avoid unwanted uppercase keyboard behaviour.
-- Password visibility toggle remains available.
-- Administrator email/password login and server-side six-digit verification remain in place.
+- Resident email verification and administrator verification display six distinct square code boxes.
+- The six-digit code can be pasted as one complete value; it fills the six displayed boxes.
+- Resident verification heading, button and resend label now match the supplied reference wording.
+- Administrator login has no Continue with Google button or Google login handler.
+- Password fields in resident sign-in, sign-up, password reset and administrator sign-in disable automatic capitalization, autocorrection and spellcheck.
+- Password visibility eye controls remain in place.
+- Resident Continue with Google button has a clean white, bordered, professional treatment and a multicolour Google G.
 
-Preserved:
-- Existing HYSACAM logo and branding
-- Existing Supabase client configuration
-- Existing administrator login and verification API endpoints
-- Existing administrator role checks and session handling
-- Existing dashboard, map, resident authentication and password reset files
-- Existing database and SQL setup files
+IMPORTANT PLATFORM LIMITATION
+A Caps Lock/Shift indicator drawn by the iPhone/iOS keyboard or browser is controlled by iOS and cannot be hidden by website HTML, CSS or JavaScript. The website now requests no automatic capitalization and does not add any Caps Lock arrow of its own.
 
-No live deployment or database changes were performed.
+Preserved: existing logo, Supabase settings, API routes, administrator role checks, authentication flows, dashboard and map. No database or live deployment changes were made.

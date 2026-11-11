@@ -914,3 +914,78 @@ html,body{max-width:100%;overflow-x:hidden}
   .otp-boxes{gap:7px;margin:12px auto 16px}
   .otp-cell{border-radius:11px;max-height:58px;font-size:22px}
 }
+
+
+/* Reference-matched six-digit verification: six separate square boxes */
+.auth-page-modern .otp-boxes,
+.auth-reference-card .otp-boxes,
+.admin-login-card .otp-boxes{
+  display:grid;
+  grid-template-columns:repeat(6,minmax(0,1fr));
+  gap:clamp(8px,1.35vw,14px);
+  width:100%;
+  max-width:100%;
+  margin:18px 0 22px;
+  align-items:center;
+}
+.auth-page-modern .otp-cell,
+.auth-reference-card .otp-cell,
+.admin-login-card .otp-cell{
+  width:100%;
+  height:auto;
+  aspect-ratio:1 / 1;
+  min-height:0;
+  max-height:82px;
+  border:1.6px solid #d2d8d3;
+  border-radius:15px;
+  background:#fff;
+  color:#087747;
+  display:grid;
+  place-items:center;
+  font-size:clamp(20px,3vw,28px);
+  font-weight:750;
+  font-variant-numeric:tabular-nums;
+  box-shadow:0 2px 7px rgba(20,45,29,.045);
+  transition:border-color .16s ease,box-shadow .16s ease,background .16s ease;
+}
+.auth-page-modern .otp-cell.is-current,
+.auth-reference-card .otp-cell.is-current,
+.admin-login-card .otp-cell.is-current{
+  border:2px solid #159653;
+  background:#fbfffc;
+  box-shadow:0 0 0 2px rgba(21,150,83,.08);
+}
+.otp-boxes{cursor:text;touch-action:manipulation}
+.otp-source{font-size:16px!important;autocapitalize:none!important;text-transform:none!important}
+
+/* Prevent automatic capitals in every password field; preserve the eye control */
+.auth-password-wrap input,
+.admin-login-card input[type="password"],
+.admin-login-card input[type="text"]{
+  text-transform:none!important;
+  font-variant:normal;
+}
+.auth-password-wrap .password-toggle-icon{z-index:2}
+
+/* Refined resident Google button */
+.google-auth-button{
+  min-height:62px;
+  border:1px solid #d5ddd7;
+  border-radius:13px;
+  background:#fff;
+  color:#202820;
+  font-family:inherit;
+  font-size:16px;
+  font-weight:650;
+  letter-spacing:0;
+  box-shadow:0 2px 7px rgba(20,45,29,.055);
+  gap:12px;
+}
+.google-auth-button:hover{background:#fbfdfb;border-color:#aebfb3;transform:translateY(-1px)}
+.google-auth-button:focus-visible{outline:3px solid rgba(8,119,71,.2);outline-offset:3px}
+.google-g{font-size:25px;line-height:1;background:conic-gradient(from -45deg,#4285f4 0 25%,#34a853 25% 50%,#fbbc05 50% 75%,#ea4335 75%);-webkit-background-clip:text;background-clip:text;color:transparent}
+@media(max-width:560px){
+ .auth-page-modern .otp-boxes,.auth-reference-card .otp-boxes,.admin-login-card .otp-boxes{gap:7px;margin:15px 0 19px}
+ .auth-page-modern .otp-cell,.auth-reference-card .otp-cell,.admin-login-card .otp-cell{border-radius:11px;max-height:62px;font-size:22px}
+ .google-auth-button{min-height:58px;border-radius:12px;font-size:15px}
+}
