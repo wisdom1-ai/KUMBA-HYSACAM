@@ -5,17 +5,11 @@
     const input=document.getElementById(button.dataset.togglePassword);if(!input)return;
     button.innerHTML=eye;button.classList.add('password-toggle-icon');
     button.addEventListener('pointerdown',event=>{event.preventDefault()});
-    // Keep the native input type=password. Reveal text using CSS so tapping
-    // the eye does not switch iOS keyboard modes or trigger its Shift state.
     button.addEventListener('click',()=>{
-      const showing=input.classList.contains('password-visible-text');
-      input.setAttribute('autocapitalize','none');
-      input.setAttribute('autocorrect','off');
-      input.setAttribute('spellcheck','false');
-      input.classList.toggle('password-visible-text',!showing);
-      button.innerHTML=showing?eye:eyeOff;
-      button.setAttribute('aria-label',showing?'Show password':'Hide password');
-      button.setAttribute('title',showing?'Show password':'Hide password');
+      const start=input.selectionStart,end=input.selectionEnd,showing=input.type==='text';
+      input.type=showing?'password':'text';button.innerHTML=showing?eye:eyeOff;
+      button.setAttribute('aria-label',showing?'Show password':'Hide password');button.setAttribute('title',showing?'Show password':'Hide password');
+      input.focus({preventScroll:true});try{if(start!==null&&end!==null)input.setSelectionRange(start,end)}catch{}
     });
   });
 })();

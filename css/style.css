@@ -868,12 +868,15 @@ html,body{max-width:100%;overflow-x:hidden}
 .auth-body{overscroll-behavior-y:contain}
 #dustbin-map,.leaflet-container{touch-action:auto}
 
-
-/* Reveal password characters without changing native input type=password. */
-input[type="password"].password-visible-text{
-  -webkit-text-security:none!important;
-  text-security:none!important;
-}
-input[type="password"]:not(.password-visible-text){
-  -webkit-text-security:disc;
-}
+/* Six-digit verification layout: clean, evenly spaced code cells */
+.auth-page-modern .auth-card-verify .otp-boxes,
+.admin-login-card .otp-boxes{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px;width:100%;margin:24px 0 28px}
+.auth-page-modern .auth-card-verify .otp-cell,
+.admin-login-card .otp-cell{height:76px;min-width:0;border:2px solid #d8ddd9;border-radius:15px;background:#fff;display:grid;place-items:center;font-size:30px;font-weight:700;color:#087747;box-shadow:none;transition:border-color .18s,background .18s}
+.auth-page-modern .auth-card-verify .otp-cell.is-current,
+.admin-login-card .otp-cell.is-current{border-color:#15945a;background:#f5fbf7;box-shadow:0 0 0 2px rgba(21,148,90,.08)}
+.admin-login-card .admin-code-title{margin:26px 0 8px;font-size:27px;font-weight:800;color:#14251b;text-align:center}
+.admin-login-card .admin-code-subtitle{text-align:center;color:#65736a;margin:0 0 8px!important;font-size:16px!important}
+.admin-login-card #admin-code-stage .button{width:100%;margin-top:0}
+.admin-login-card #admin-code-stage .admin-text-button{margin-top:14px}
+@media(max-width:560px){.auth-page-modern .auth-card-verify .otp-boxes,.admin-login-card .otp-boxes{gap:7px}.auth-page-modern .auth-card-verify .otp-cell,.admin-login-card .otp-cell{height:56px;border-radius:10px;font-size:23px}}
