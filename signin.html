@@ -10,14 +10,23 @@
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="auth-body">
-  <main class="auth-reference-page">
+  <main class="auth-reference-page auth-split-page">
+    <aside class="auth-photo-panel">
+      <a class="auth-brand-lockup" href="index.html" aria-label="HYSACAM Kumba Tracker home">
+        <img src="images/hysacam-symbol.png" alt="HYSACAM logo">
+        <span><strong>HYSACAM</strong><small>KUMBA TRACKER</small></span>
+      </a>
+      <div class="auth-photo-copy"><span>A CLEANER KUMBA</span><h2>Kumba Tracker</h2><p>A Cleaner Kumba<br>A Healthier Community</p></div>
+      <div class="auth-photo-bottom">Working together for a cleaner Kumba</div>
+    </aside>
+    <section class="auth-content-panel">
     <section class="auth-reference-card">
       <a class="auth-reference-logo" href="index.html" aria-label="HYSACAM Kumba Tracker home"><img src="images/hysacam-symbol.png" alt="HYSACAM logo"></a>
       <span class="auth-step-label">HYSACAM KUMBA TRACKER</span>
       <h1>Sign in</h1>
       <p class="auth-subtitle">Welcome back. Sign in to continue</p>
       <form class="auth-form auth-form-modern" id="signin-form">
-        <div class="auth-field"><label for="email">Email</label><input id="email" type="email" autocomplete="email" autocapitalize="none" autocorrect="off" spellcheck="false" required placeholder="Enter your email address"></div>
+        <div class="auth-field"><label for="email">Email</label><input id="email" type="email" autocomplete="email" autocapitalize="none" autocorrect="off" spellcheck="false" required placeholder="Enter your email"></div>
         <div class="auth-field"><label for="password">Password</label><div class="auth-password-wrap"><input id="password" type="password" autocomplete="current-password" required placeholder="Enter your password"><button class="password-toggle password-toggle-icon" type="button" data-toggle-password="password" aria-label="Show password" title="Show password"></button></div></div>
         <div class="auth-reference-forgot"><a class="auth-forgot-link" href="forgot-password.html">Forgot password?</a></div>
         <button class="button auth-primary-button" id="signin-submit" type="submit">Sign in</button>
@@ -26,6 +35,7 @@
         <div class="auth-message" id="auth-message" role="alert" aria-live="polite"></div>
       </form>
       <p class="auth-switch auth-switch-modern">Need an account? <a href="signup.html">Sign up</a></p>
+    </section>
     </section>
   </main>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>

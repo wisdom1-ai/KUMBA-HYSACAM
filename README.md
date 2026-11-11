@@ -19,7 +19,7 @@ This package contains the public-facing frontend and a separate private administ
 This is frontend work only. The login page is a user interface and is not secure authentication until the backend endpoints and server-side authorisation are implemented. Do not deploy the admin portal as secure until that work is complete.
 
 ## Images and branding
-The supplied `images/hysacam-truck.jpg` is used in the home hero and About section. The current package did not contain an official HYSACAM logo file, so a simple text monogram is used temporarily; replace it with the official approved logo asset when supplied.
+The supplied HYSACAM collection-team photograph is used in the home hero, About section, dustbin details and authentication brand panels. The existing HYSACAM symbol asset is preserved across the website.
 
 The map uses OpenStreetMap tiles and needs an internet connection. Sample bin records are frontend demonstration data.
 
@@ -76,3 +76,6 @@ The sign-in page links to `forgot-password.html`. The recovery flow sends a six-
 The Supabase SQL setup now permits `password_reset` challenges and adds the signup-password column if it is missing. If the database setup was already run, run the updated `supabase/auth-setup.sql` again in Supabase SQL Editor; it uses safe `IF NOT EXISTS` / constraint replacement statements and does not delete user records. Keep the existing Vercel email, Supabase, and session-encryption environment variables configured. Test email delivery on the deployed HTTPS site.
 
 Password fields on the sign-in, sign-up, and reset pages use accessible eye controls to show or hide the entered password.
+
+
+Final visual refresh: resident sign-in, registration and administrator sign-in use a consistent split-screen HYSACAM design. The signup form uses First Name, Last Name, Email and Password while preserving the backend `name` field by combining first and last name. The Google setup guide is in `GOOGLE-SIGNIN-SETUP.txt`.

@@ -10,23 +10,35 @@
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="auth-body">
-  <main class="auth-reference-page">
+  <main class="auth-reference-page auth-split-page">
+    <aside class="auth-photo-panel">
+      <a class="auth-brand-lockup" href="index.html" aria-label="HYSACAM Kumba Tracker home">
+        <img src="images/hysacam-symbol.png" alt="HYSACAM logo">
+        <span><strong>HYSACAM</strong><small>KUMBA TRACKER</small></span>
+      </a>
+      <div class="auth-photo-copy"><span>A CLEANER KUMBA</span><h2>Kumba Tracker</h2><p>A Cleaner Kumba<br>A Healthier Community</p></div>
+      <div class="auth-photo-bottom">Working together for a cleaner Kumba</div>
+    </aside>
+    <section class="auth-content-panel">
     <section class="auth-reference-card auth-reference-card-wide">
       <a class="auth-reference-logo" href="index.html" aria-label="HYSACAM Kumba Tracker home"><img src="images/hysacam-symbol.png" alt="HYSACAM logo"></a>
       <span class="auth-step-label">HYSACAM KUMBA TRACKER</span>
       <h1>Create an account</h1>
       <p class="auth-subtitle">Join the HYSACAM Kumba Tracker community</p>
       <form class="auth-form auth-form-modern" id="signup-form">
-        <div class="auth-field"><label for="full-name">Full name</label><input id="full-name" autocomplete="name" required maxlength="80" placeholder="Enter your full name"></div>
-        <div class="auth-field"><label for="email">Email</label><input id="email" type="email" autocomplete="email" autocapitalize="none" autocorrect="off" spellcheck="false" required placeholder="Enter your email address"></div>
-        <div class="auth-field"><label for="password">Password</label><div class="auth-password-wrap"><input id="password" type="password" autocomplete="new-password" required minlength="8" placeholder="Create a password (8+ characters)"><button class="password-toggle password-toggle-icon" type="button" data-toggle-password="password" aria-label="Show password" title="Show password"></button></div></div>
-        <div class="auth-field"><label for="confirm-password">Confirm Password</label><div class="auth-password-wrap"><input id="confirm-password" type="password" autocomplete="new-password" required minlength="8" placeholder="Enter your password again"><button class="password-toggle password-toggle-icon" type="button" data-toggle-password="confirm-password" aria-label="Show password" title="Show password"></button></div></div>
+        <div class="auth-reference-name-grid">
+          <div class="auth-field"><label for="first-name">First Name</label><input id="first-name" autocomplete="given-name" required maxlength="40" placeholder="Enter first name"></div>
+          <div class="auth-field"><label for="last-name">Last Name</label><input id="last-name" autocomplete="family-name" required maxlength="40" placeholder="Enter last name"></div>
+        </div>
+        <div class="auth-field"><label for="email">Email</label><input id="email" type="email" autocomplete="email" autocapitalize="none" autocorrect="off" spellcheck="false" required placeholder="Enter your email"></div>
+        <div class="auth-field"><label for="password">Password</label><div class="auth-password-wrap"><input id="password" type="password" autocomplete="new-password" required minlength="8" placeholder="Create a password"><button class="password-toggle password-toggle-icon" type="button" data-toggle-password="password" aria-label="Show password" title="Show password"></button></div></div>
         <button class="button auth-primary-button" id="signup-submit" type="submit">Create account</button>
         <div class="auth-divider"><span>or</span></div>
         <button class="google-auth-button" type="button" data-google-auth="resident"><span class="google-g" aria-hidden="true">G</span>Continue with Google</button>
         <div class="auth-message" id="auth-message" role="alert" aria-live="polite"></div>
       </form>
       <p class="auth-switch auth-switch-modern">Have an account? <a href="signin.html">Sign in</a></p>
+    </section>
     </section>
   </main>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
