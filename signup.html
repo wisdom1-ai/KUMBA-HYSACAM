@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
   <meta name="theme-color" content="#087747">
   <meta name="description" content="Create your HYSACAM Kumba Tracker account.">
   <title>Create account | HYSACAM Kumba Tracker</title>
@@ -17,20 +17,22 @@
       <h1>Create an account</h1>
       <p class="auth-subtitle">Join the HYSACAM Kumba Tracker community</p>
       <form class="auth-form auth-form-modern" id="signup-form">
-        <div class="auth-reference-name-grid">
-          <div class="auth-field"><label for="first-name">First Name</label><input id="first-name" autocomplete="given-name" required maxlength="40" placeholder="Enter first name"></div>
-          <div class="auth-field"><label for="last-name">Last Name</label><input id="last-name" autocomplete="family-name" required maxlength="40" placeholder="Enter last name"></div>
-        </div>
+        <div class="auth-field"><label for="full-name">Full name</label><input id="full-name" autocomplete="name" required maxlength="80" placeholder="Enter your full name"></div>
         <div class="auth-field"><label for="email">Email</label><input id="email" type="email" autocomplete="email" autocapitalize="none" autocorrect="off" spellcheck="false" required placeholder="Enter your email address"></div>
         <div class="auth-field"><label for="password">Password</label><div class="auth-password-wrap"><input id="password" type="password" autocomplete="new-password" required minlength="8" placeholder="Create a password (8+ characters)"><button class="password-toggle password-toggle-icon" type="button" data-toggle-password="password" aria-label="Show password" title="Show password"></button></div></div>
         <div class="auth-field"><label for="confirm-password">Confirm Password</label><div class="auth-password-wrap"><input id="confirm-password" type="password" autocomplete="new-password" required minlength="8" placeholder="Enter your password again"><button class="password-toggle password-toggle-icon" type="button" data-toggle-password="confirm-password" aria-label="Show password" title="Show password"></button></div></div>
-        <button class="button auth-primary-button" id="signup-submit" type="submit">Sign Up</button>
+        <button class="button auth-primary-button" id="signup-submit" type="submit">Create account</button>
+        <div class="auth-divider"><span>or</span></div>
+        <button class="google-auth-button" type="button" data-google-auth="resident"><span class="google-g" aria-hidden="true">G</span>Continue with Google</button>
         <div class="auth-message" id="auth-message" role="alert" aria-live="polite"></div>
       </form>
       <p class="auth-switch auth-switch-modern">Have an account? <a href="signin.html">Sign in</a></p>
     </section>
   </main>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase.js"></script>
   <script src="js/auth-common.js"></script>
+  <script src="js/google-auth.js"></script>
   <script src="js/signup.js"></script>
   <script src="js/auth-ui.js"></script>
 </body>

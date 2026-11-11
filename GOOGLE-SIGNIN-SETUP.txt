@@ -1,0 +1,30 @@
+HYSACAM KUMBA TRACKER — GOOGLE SIGN-IN SETUP
+
+Google sign-in is now wired into the resident sign-in, resident registration and administrator sign-in screens.
+
+IMPORTANT: Google sign-in will only work after the provider is enabled in the existing Supabase project.
+
+1. In Supabase, open Authentication → Providers → Google and enable Google
+2. Create or select a Google OAuth client in Google Cloud Console
+3. In Google Cloud, add this Authorized redirect URI:
+   https://edylcpvigtmyuehje.supabase.co/auth/v1/callback
+4. Copy the Google OAuth Client ID and Client Secret into the Supabase Google provider settings and save
+5. In Supabase Authentication → URL Configuration, add the deployed site URL as the Site URL
+6. Add the deployed callback URL to Additional Redirect URLs:
+   https://YOUR-DOMAIN/oauth-callback.html
+7. Also add your local development callback URL if you use localhost:
+   http://localhost:3000/oauth-callback.html
+
+ADMINISTRATOR GOOGLE ACCESS
+Google administrator sign-in is still restricted by the server-side ADMIN_EMAILS allowlist.
+After Google confirms the account, HYSACAM sends a six-digit email verification code.
+The user must enter that code before the administrator dashboard opens.
+Do not remove ADMIN_EMAILS or the existing administrator verification endpoints.
+
+SECURITY
+- The browser receives only the existing Supabase publishable key
+- OAuth tokens are exchanged server-side for the existing HttpOnly HYSACAM session cookie
+- The service-role key remains server-only
+- Do not paste secrets into HTML or JavaScript files
+
+The existing email/password and email-code sign-in paths remain available.

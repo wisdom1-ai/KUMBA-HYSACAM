@@ -9,12 +9,14 @@ import auth_verify_reset_code from '../server/auth/verify-reset-code.js';
 import auth_login from '../server/auth/login.js';
 import auth_reset_password from '../server/auth/reset-password.js';
 import auth_me from '../server/auth/me.js';
+import auth_oauth_session from '../server/auth/oauth-session.js';
 import auth_resend_code from '../server/auth/resend-code.js';
 import admin_verify from '../server/admin/verify.js';
 import admin_logout from '../server/admin/logout.js';
 import admin_audit from '../server/admin/audit.js';
 import admin_login from '../server/admin/login.js';
 import admin_me from '../server/admin/me.js';
+import admin_oauth_start from '../server/admin/oauth-start.js';
 import resident_reports from '../server/reports/index.js';
 import admin_reports from '../server/reports/admin.js';
 
@@ -27,12 +29,14 @@ const routes = new Map([
   ['/api/auth/login', auth_login],
   ['/api/auth/reset-password', auth_reset_password],
   ['/api/auth/me', auth_me],
+  ['/api/auth/oauth-session', auth_oauth_session],
   ['/api/auth/resend-code', auth_resend_code],
   ['/api/admin/verify', admin_verify],
   ['/api/admin/logout', admin_logout],
   ['/api/admin/audit', admin_audit],
   ['/api/admin/login', admin_login],
   ['/api/admin/me', admin_me],
+  ['/api/admin/oauth-start', admin_oauth_start],
   ['/api/reports', resident_reports],
   ['/api/admin/reports', admin_reports],
 ]);

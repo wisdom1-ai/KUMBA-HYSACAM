@@ -45,3 +45,4 @@ async function loadCleaningRecords() {
 
   return data || [];
 }
+window.supabaseClient = supabaseClient;

@@ -8,20 +8,21 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (!window.L) { showMessage("Map could not load — check your internet connection"); return; }
   if (typeof supabaseClient === "undefined") { showMessage("Database connection is not configured"); return; }
 
-  const section = mapElement.parentElement;
+  const mapFrame = mapElement.parentElement;
+  const section = mapFrame.parentElement;
   let toolbar = document.getElementById("map-toolbar");
   if (!toolbar) {
     toolbar = document.createElement("div");
     toolbar.id = "map-toolbar";
     toolbar.className = "map-toolbar";
     toolbar.innerHTML = `<div class="map-search"><input id="map-location-search" type="search" placeholder="Search a Kumba location" aria-label="Search dustbin locations" autocomplete="off"><button id="map-filter-button" type="button">Filter</button></div><div id="map-filter-panel" class="map-filter-panel" hidden><label for="map-status-filter">Dustbin status</label><select id="map-status-filter"><option value="all">All statuses</option><option value="available">Available</option><option value="full">Full</option><option value="maintenance">Maintenance</option><option value="pending">Pending collection</option></select></div>`;
-    section.insertBefore(toolbar, mapElement);
+    section.insertBefore(toolbar, mapFrame);
   }
   let legend = document.getElementById("map-legend");
   if (!legend) {
     legend = document.createElement("div"); legend.id = "map-legend"; legend.className = "map-legend";
     legend.innerHTML = `<span><i class="legend-dot bin-dot"></i> Registered dustbin locations</span><span><i class="legend-dot selected-dot"></i> Selected location</span>`;
-    section.insertAdjacentElement("afterend", legend);
+    mapFrame.insertAdjacentElement("afterend", legend);
   }
   const search = document.getElementById("map-location-search");
   const filterButton = document.getElementById("map-filter-button");

@@ -10,7 +10,7 @@
       host.innerHTML=''; const cells=[];
       for(let i=0;i<6;i++){const cell=document.createElement('span');cell.className='otp-cell';cell.setAttribute('aria-hidden','true');host.appendChild(cell);cells.push(cell)}
       const paint=()=>{const value=input.value.replace(/\D/g,'').slice(0,6);if(value!==input.value)input.value=value;cells.forEach((cell,i)=>{cell.textContent=value[i]||'';cell.classList.toggle('is-current',input===document.activeElement&&i===Math.min(value.length,5))});};
-      const acceptCode=value=>{const digits=String(value||'').replace(/\\D/g,'').slice(0,6);input.value=digits;input.dispatchEvent(new Event('input',{bubbles:true}));input.focus({preventScroll:true});paint();};
+      const acceptCode=value=>{const digits=String(value||'').replace(/\D/g,'').slice(0,6);input.value=digits;input.dispatchEvent(new Event('input',{bubbles:true}));input.focus({preventScroll:true});paint();};
       input.addEventListener('input',paint);
       input.addEventListener('focus',paint);
       input.addEventListener('blur',paint);

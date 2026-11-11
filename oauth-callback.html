@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"><meta name="theme-color" content="#087747"><title>Connecting Google | HYSACAM Kumba Tracker</title><link rel="stylesheet" href="css/style.css"></head>
+<body class="auth-body"><main class="auth-reference-page"><section class="auth-reference-card oauth-callback-card">
+<a class="auth-reference-logo" href="index.html"><img src="images/hysacam-symbol.png" alt="HYSACAM"></a>
+<h1>Finishing sign in</h1><p id="oauth-status" class="auth-subtitle">Securely connecting your Google account</p><div class="auth-loading-mark" aria-hidden="true"></div>
+</section></main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="js/supabase.js"></script>
+<script>
+(async()=>{
+ const status=document.getElementById('oauth-status');
+ const say=t=>status.textContent=t;
+ try{
+  const {data,error}=await window.supabaseClient.auth.getSession();
+  if(error||!data.session)throw new Error('Google did not return a valid session. Please try again.');
+  const intent=sessionStorage.getItem('hysacam_google_intent')||'resident';
+  const endpoint=intent==='admin'?'/api/admin/oauth-start':'/api/auth/oauth-session';
+  const response=await fetch(endpoint,{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({access_token:data.session.access_token,refresh_token:data.session.refresh_token})});
+  const result=await response.json().catch(()=>({}));
+  if(!response.ok)throw new Error(result.message||'Your Google account could not be connected');
+  await window.supabaseClient.auth.signOut();
+  if(intent==='admin'){
+    sessionStorage.setItem('hysacam_admin_google_email',result.email);
+    location.replace('admin.html?google_admin=1');
+  }else{
+    const next=sessionStorage.getItem('hysacam_google_next')||'';
+    location.replace(next==='report'?'index.html#report':'index.html');
+  }
+ }catch(error){say(error.message||'Google sign-in failed');}
+})();
+</script></body></html>
