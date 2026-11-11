@@ -1,0 +1,21 @@
+HYSACAM AUTHENTICATION — OTP AND IOS CAPITALISATION FIX
+
+OTP:
+- Six actual input fields are rendered, not decorative boxes.
+- Each box accepts one digit.
+- Paste a complete six-digit code into the first box (or any box) to distribute digits across all six.
+- iOS one-time-code autofill is enabled on the first box.
+- Backspace and left/right arrow navigation are supported.
+- Existing hidden source field remains the value read by the current submit handlers, so API endpoints and payload formats remain unchanged.
+
+PASSWORD:
+- Resident sign-in, sign-up, administrator sign-in, and reset-password fields explicitly disable autocapitalization, autocorrection and spellcheck.
+- The password visibility eye remains.
+- auth-ui.js re-applies autocapitalize=none before changing password input type to text, preventing iOS from automatically switching the text keyboard into initial-capital mode.
+
+ADMIN:
+- Removed administrator Continue with Google button and its legacy Google callback flow.
+- Resident Continue with Google remains unchanged.
+- Administrator password + email OTP server routes remain unchanged.
+
+No Supabase credentials, database tables, API routes, admin allowlist, or deployed site were changed.

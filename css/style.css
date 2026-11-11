@@ -869,123 +869,66 @@ html,body{max-width:100%;overflow-x:hidden}
 #dustbin-map,.leaflet-container{touch-action:auto}
 
 
-/* Final OTP layout: six distinct square entry boxes for residents and admins */
+/* Native six-field OTP inputs: one box per digit, with full-code paste support */
 .otp-boxes{
-  display:grid;
-  grid-template-columns:repeat(6,minmax(0,1fr));
-  gap:clamp(8px,1.5vw,16px);
-  width:100%;
-  max-width:620px;
-  margin:14px auto 18px;
-  align-items:center;
-}
-.otp-cell{
-  width:100%;
-  aspect-ratio:1 / 1;
-  min-height:0;
-  max-height:78px;
-  height:auto;
-  display:grid;
-  place-items:center;
-  border:1.5px solid #d4d9d6;
-  border-radius:15px;
-  background:#fff;
-  color:#087747;
-  font-size:clamp(21px,3vw,28px);
-  font-weight:800;
-  font-variant-numeric:tabular-nums;
-  box-shadow:0 2px 5px rgba(15,55,35,.045);
-  transition:border-color .16s ease,box-shadow .16s ease,background .16s ease;
-}
-.otp-cell.is-current{
-  border:2px solid #159653;
-  background:#fbfffc;
-  box-shadow:0 0 0 2px rgba(21,150,83,.08);
-}
-.otp-boxes:focus-within .otp-cell{background:#fff}
-#admin-code-stage .otp-boxes{margin:16px 0 20px}
-#admin-code-stage .otp-cell{max-height:72px}
-#admin-password{autocapitalize:none;text-transform:none}
-.admin-login-card input[type="password"]{
-  text-transform:none;
-  -webkit-text-security:disc;
-}
-@media(max-width:520px){
-  .otp-boxes{gap:7px;margin:12px auto 16px}
-  .otp-cell{border-radius:11px;max-height:58px;font-size:22px}
-}
-
-
-/* Reference-matched six-digit verification: six separate square boxes */
-.auth-page-modern .otp-boxes,
-.auth-reference-card .otp-boxes,
-.admin-login-card .otp-boxes{
-  display:grid;
-  grid-template-columns:repeat(6,minmax(0,1fr));
-  gap:clamp(8px,1.35vw,14px);
+  display:grid!important;
+  grid-template-columns:repeat(6,minmax(0,1fr))!important;
+  gap:clamp(8px,1.6vw,14px)!important;
   width:100%;
   max-width:100%;
-  margin:18px 0 22px;
-  align-items:center;
+  margin:12px 0 18px!important;
 }
-.auth-page-modern .otp-cell,
-.auth-reference-card .otp-cell,
-.admin-login-card .otp-cell{
+.otp-boxes .otp-cell{
+  box-sizing:border-box;
+  display:block;
   width:100%;
-  height:auto;
-  aspect-ratio:1 / 1;
-  min-height:0;
-  max-height:82px;
-  border:1.6px solid #d2d8d3;
-  border-radius:15px;
-  background:#fff;
-  color:#087747;
-  display:grid;
-  place-items:center;
-  font-size:clamp(20px,3vw,28px);
-  font-weight:750;
-  font-variant-numeric:tabular-nums;
-  box-shadow:0 2px 7px rgba(20,45,29,.045);
-  transition:border-color .16s ease,box-shadow .16s ease,background .16s ease;
+  min-width:0;
+  height:clamp(54px,7vw,72px)!important;
+  min-height:0!important;
+  padding:0!important;
+  margin:0!important;
+  border:1.5px solid #d4d9d6!important;
+  border-radius:13px!important;
+  background:#fff!important;
+  color:#087747!important;
+  text-align:center!important;
+  font-family:inherit!important;
+  font-size:clamp(22px,3vw,28px)!important;
+  font-weight:750!important;
+  line-height:1!important;
+  box-shadow:0 2px 7px rgba(18,40,26,.045)!important;
+  caret-color:#087747;
+  outline:none;
+  -webkit-appearance:none;
+  appearance:none;
 }
-.auth-page-modern .otp-cell.is-current,
-.auth-reference-card .otp-cell.is-current,
-.admin-login-card .otp-cell.is-current{
-  border:2px solid #159653;
-  background:#fbfffc;
-  box-shadow:0 0 0 2px rgba(21,150,83,.08);
+.otp-boxes .otp-cell:focus,
+.otp-boxes .otp-cell.is-current{
+  border:2px solid #159653!important;
+  background:#fbfffc!important;
+  box-shadow:0 0 0 2px rgba(21,150,83,.09)!important;
 }
-.otp-boxes{cursor:text;touch-action:manipulation}
-.otp-source{font-size:16px!important;autocapitalize:none!important;text-transform:none!important}
-
-/* Prevent automatic capitals in every password field; preserve the eye control */
-.auth-password-wrap input,
-.admin-login-card input[type="password"],
-.admin-login-card input[type="text"]{
+.otp-source{
+  position:absolute!important;
+  width:1px!important;height:1px!important;
+  min-height:1px!important;
+  padding:0!important;margin:-1px!important;
+  overflow:hidden!important;
+  clip:rect(0,0,0,0)!important;
+  clip-path:inset(50%)!important;
+  white-space:nowrap!important;
+  border:0!important;opacity:0!important;
+}
+.auth-password-wrap input[type="password"],
+.auth-password-wrap input[type="text"],
+#admin-password{
   text-transform:none!important;
-  font-variant:normal;
+  -webkit-text-size-adjust:100%;
 }
-.auth-password-wrap .password-toggle-icon{z-index:2}
-
-/* Refined resident Google button */
-.google-auth-button{
-  min-height:62px;
-  border:1px solid #d5ddd7;
-  border-radius:13px;
-  background:#fff;
-  color:#202820;
-  font-family:inherit;
-  font-size:16px;
-  font-weight:650;
-  letter-spacing:0;
-  box-shadow:0 2px 7px rgba(20,45,29,.055);
-  gap:12px;
+.auth-password-wrap input{
+  autocapitalize:none;
 }
-.google-auth-button:hover{background:#fbfdfb;border-color:#aebfb3;transform:translateY(-1px)}
-.google-auth-button:focus-visible{outline:3px solid rgba(8,119,71,.2);outline-offset:3px}
-.google-g{font-size:25px;line-height:1;background:conic-gradient(from -45deg,#4285f4 0 25%,#34a853 25% 50%,#fbbc05 50% 75%,#ea4335 75%);-webkit-background-clip:text;background-clip:text;color:transparent}
-@media(max-width:560px){
- .auth-page-modern .otp-boxes,.auth-reference-card .otp-boxes,.admin-login-card .otp-boxes{gap:7px;margin:15px 0 19px}
- .auth-page-modern .otp-cell,.auth-reference-card .otp-cell,.admin-login-card .otp-cell{border-radius:11px;max-height:62px;font-size:22px}
- .google-auth-button{min-height:58px;border-radius:12px;font-size:15px}
+@media(max-width:480px){
+  .otp-boxes{gap:7px!important}
+  .otp-boxes .otp-cell{height:56px!important;border-radius:11px!important;font-size:23px!important}
 }
