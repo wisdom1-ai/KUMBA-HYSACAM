@@ -1,0 +1,20 @@
+HYSACAM KUMBA TRACKER — OTP AND ADMIN LOGIN FINAL CHANGES
+
+- Resident email verification uses six separate square code boxes.
+- Administrator email verification uses the same six-box layout.
+- Pasting a complete six-digit code into the input fills the six visible boxes.
+- Administrator login no longer displays Continue with Google.
+- Administrator login no longer contains the Google OAuth button handler or Google callback branch.
+- Administrator password input disables automatic capitalization and autocorrection to avoid unwanted uppercase keyboard behaviour.
+- Password visibility toggle remains available.
+- Administrator email/password login and server-side six-digit verification remain in place.
+
+Preserved:
+- Existing HYSACAM logo and branding
+- Existing Supabase client configuration
+- Existing administrator login and verification API endpoints
+- Existing administrator role checks and session handling
+- Existing dashboard, map, resident authentication and password reset files
+- Existing database and SQL setup files
+
+No live deployment or database changes were performed.

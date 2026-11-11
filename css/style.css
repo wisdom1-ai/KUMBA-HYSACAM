@@ -867,3 +867,50 @@ input,select,textarea,button{font-size:16px}
 html,body{max-width:100%;overflow-x:hidden}
 .auth-body{overscroll-behavior-y:contain}
 #dustbin-map,.leaflet-container{touch-action:auto}
+
+
+/* Final OTP layout: six distinct square entry boxes for residents and admins */
+.otp-boxes{
+  display:grid;
+  grid-template-columns:repeat(6,minmax(0,1fr));
+  gap:clamp(8px,1.5vw,16px);
+  width:100%;
+  max-width:620px;
+  margin:14px auto 18px;
+  align-items:center;
+}
+.otp-cell{
+  width:100%;
+  aspect-ratio:1 / 1;
+  min-height:0;
+  max-height:78px;
+  height:auto;
+  display:grid;
+  place-items:center;
+  border:1.5px solid #d4d9d6;
+  border-radius:15px;
+  background:#fff;
+  color:#087747;
+  font-size:clamp(21px,3vw,28px);
+  font-weight:800;
+  font-variant-numeric:tabular-nums;
+  box-shadow:0 2px 5px rgba(15,55,35,.045);
+  transition:border-color .16s ease,box-shadow .16s ease,background .16s ease;
+}
+.otp-cell.is-current{
+  border:2px solid #159653;
+  background:#fbfffc;
+  box-shadow:0 0 0 2px rgba(21,150,83,.08);
+}
+.otp-boxes:focus-within .otp-cell{background:#fff}
+#admin-code-stage .otp-boxes{margin:16px 0 20px}
+#admin-code-stage .otp-cell{max-height:72px}
+#admin-password{autocapitalize:none;text-transform:none}
+.admin-login-card input[type="password"]{
+  text-transform:none;
+  -webkit-text-security:disc;
+}
+@media(max-width:520px){
+  .otp-boxes{gap:7px;margin:12px auto 16px}
+  .otp-cell{border-radius:11px;max-height:58px;font-size:22px}
+}
