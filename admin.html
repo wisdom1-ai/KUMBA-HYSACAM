@@ -29,7 +29,13 @@
     </div>
   </aside>
 
+  <button class="admin-drawer-backdrop" id="admin-drawer-backdrop" type="button" aria-label="Close navigation menu"></button>
   <main class="admin-main admin-main-pro">
+    <div class="admin-mobile-topbar">
+      <button class="admin-menu-toggle" id="admin-menu-toggle" type="button" aria-label="Open navigation menu" aria-expanded="false">☰</button>
+      <div class="admin-mobile-brand"><img src="images/hysacam-symbol.svg" alt=""><span><strong>HYSACAM</strong><small>Cleaner City, Healthier Life</small></span></div>
+      <span class="admin-mobile-avatar">A</span>
+    </div>
     <header class="admin-title">
       <div><span class="eyebrow">HYSACAM KUMBA TRACKER</span><h2>Admin Dashboard</h2></div>
       <div class="admin-user-chip"><span class="admin-user-avatar">A</span><span><b id="admin-welcome">Welcome, Admin</b><small>Administrator</small></span></div>
@@ -96,4 +102,34 @@
 // Remove sentence-ending full stops from interface copy as requested
 (function(){const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);const nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);for(const node of nodes){if(node.parentElement&&/^(SCRIPT|STYLE|TEXTAREA)$/i.test(node.parentElement.tagName))continue;node.nodeValue=node.nodeValue.replace(/\.(?=\s|$)/g,"");}})();
 </script>
+
+<script>
+(function () {
+  const side = document.querySelector('.admin-side-pro');
+  const toggle = document.getElementById('admin-menu-toggle');
+  const backdrop = document.getElementById('admin-drawer-backdrop');
+  if (!side || !toggle || !backdrop) return;
+  const closeMenu = () => {
+    side.classList.remove('drawer-open');
+    backdrop.classList.remove('visible');
+    toggle.setAttribute('aria-expanded', 'false');
+    document.body.classList.remove('admin-drawer-lock');
+  };
+  const openMenu = () => {
+    side.classList.add('drawer-open');
+    backdrop.classList.add('visible');
+    toggle.setAttribute('aria-expanded', 'true');
+    document.body.classList.add('admin-drawer-lock');
+  };
+  toggle.addEventListener('click', () => {
+    side.classList.contains('drawer-open') ? closeMenu() : openMenu();
+  });
+  backdrop.addEventListener('click', closeMenu);
+  side.querySelectorAll('a').forEach(link => link.addEventListener('click', closeMenu));
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape') closeMenu();
+  });
+})();
+</script>
+
 </body></html>
