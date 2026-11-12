@@ -61,10 +61,18 @@ export default async function handler(req, res) {
         const payload = { bin_code: binCode, name, area, latitude, longitude, status };
         const { data, error } = await db.from('bins').insert(payload).select('id,bin_code,name,area,latitude,longitude,status').single();
         if (error) {
+          // Log database diagnostics on the server only. Never log request payloads,
+          // credentials, cookies, or Supabase keys.
+          console.error('[HYSACAM dustbin insert] Supabase rejected the insert:', {
+            code: error.code || null,
+            message: error.message || null,
+            details: error.details || null,
+            hint: error.hint || null
+          });
           if (error.code === '23505') return res.status(409).json({ message: 'That dustbin code is already registered.' });
           if (error.code === '42703') throw new Error('The bins.bin_code column is missing. Run supabase/uuid-bin-code-migration.sql in Supabase first.');
           if (error.code === '22P02') throw new Error('The database rejected an identifier format. Confirm the UUID/bin-code migration is installed.');
-          throw new Error('Could not register this dustbin. Check the Supabase database migration and server permissions.');
+          throw new Error('Could not register this dustbin. Check Vercel function logs for the Supabase error details.');
         }
         return res.status(201).json({ bin: data });
       }
@@ -115,7 +123,11 @@ export default async function handler(req, res) {
     res.setHeader('Allow', 'GET, POST, PATCH, DELETE');
     return res.status(405).json({ message: 'Method not allowed.' });
   } catch (error) {
-    console.error('[HYSACAM admin management]', error?.message || error, error?.code || '');
+    console.error('[HYSACAM admin management]', {
+      message: error?.message || 'Unknown error',
+      code: error?.code || null,
+      name: error?.name || null
+    });
     return res.status(500).json({ message: error?.message || 'Administrator data could not be loaded.' });
   }
 }
