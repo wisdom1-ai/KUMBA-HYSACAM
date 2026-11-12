@@ -17,6 +17,10 @@
       <img class="hysacam-logo" src="images/hysacam-symbol.svg" alt="HYSACAM">
       <strong>HYSACAM<br><small>ADMINISTRATION</small></strong>
     </div>
+    <div class="admin-profile-card">
+      <span class="admin-profile-avatar" aria-hidden="true">A</span>
+      <span class="admin-profile-copy"><strong>Admin</strong><small>Administrator</small><em><i></i> Online</em></span>
+    </div>
     <span class="admin-nav-label">MAIN MENU</span>
     <a class="selected" href="#overview"><span class="admin-nav-icon">⌂</span><span>Dashboard</span></a>
     <a href="#manage-bins"><span class="admin-nav-icon">▤</span><span>Manage Bins</span></a>
@@ -25,7 +29,12 @@
     <a href="#reports"><span class="admin-nav-icon">▥</span><span>Reports</span></a>
     <a href="#settings"><span class="admin-nav-icon">⚙</span><span>Settings</span></a>
     <div class="admin-side-bottom">
-      <button class="button" id="admin-logout" type="button"><span class="admin-nav-icon">↪</span><span>Logout</span></button>
+      <button class="button" id="admin-logout" type="button"><span class="admin-nav-icon">⇥</span><span>Logout</span></button>
+    </div>
+    <div class="admin-side-visual">
+      <img src="images/hysacam-truck.jpg" alt="HYSACAM waste collection truck">
+      <strong>Together for a<br>Cleaner Cameroon</strong>
+      <span></span>
     </div>
   </aside>
 
@@ -37,7 +46,7 @@
       <span class="admin-mobile-avatar">A</span>
     </div>
     <header class="admin-title">
-      <div><span class="eyebrow">HYSACAM KUMBA TRACKER</span><h2>Admin Dashboard</h2></div>
+      <div><span class="eyebrow">HYSACAM KUMBA TRACKER</span><h2>Admin Dashboard</h2><p class="admin-title-subtitle">Manage operations efficiently</p></div>
       <div class="admin-user-chip"><span class="admin-user-avatar">A</span><span><b id="admin-welcome">Welcome, Admin</b><small>Administrator</small></span></div>
     </header>
 
@@ -45,6 +54,10 @@
       <div><h3>Overview</h3><p>Here is what is happening across your Kumba operations</p></div>
       <span class="admin-live-status"><i></i> Live overview</span>
     </div>
+
+    <section class="admin-session-status" aria-label="Administrator session status">
+      <span class="admin-session-check">✓</span><span><small>System Status</small><strong>Admin session active</strong><em>Authorised administrator workspace</em></span><span class="admin-session-arrow">›</span>
+    </section>
 
     <section id="overview" class="admin-stat-grid">
       <article class="admin-stat-card">
@@ -59,6 +72,16 @@
         <span class="admin-stat-icon amber">◷</span>
         <div><small>Pending</small><strong id="admin-pending">—</strong><em>Awaiting attention</em></div>
       </article>
+    </section>
+
+    <section class="admin-quick-actions" aria-label="Quick actions">
+      <h3>Quick Actions</h3>
+      <div class="admin-quick-grid">
+        <a href="#manage-bins"><span>⌖</span><b>Manage<br>Bins</b></a>
+        <a href="#reports"><span>▤</span><b>Generate<br>Report</b></a>
+        <a href="#users"><span>♙＋</span><b>View<br>Users</b></a>
+        <a href="#settings"><span>⚙</span><b>Settings</b></a>
+      </div>
     </section>
 
     <section class="admin-analytics-grid">
