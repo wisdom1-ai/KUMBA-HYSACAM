@@ -16,7 +16,7 @@ PART A — CREATE GOOGLE OAUTH CREDENTIALS
 6. Open APIs & Services → Credentials → Create Credentials → OAuth client ID
 7. Choose Web application
 8. Add this Authorized redirect URI exactly:
-   https://edylcpvigtmyuehjeibe.supabase.co/auth/v1/callback
+   https://edylcpvigtmyuehje.supabase.co/auth/v1/callback
 9. Create the client and copy the Client ID and Client Secret
 
 PART B — ENABLE GOOGLE IN SUPABASE
@@ -29,10 +29,10 @@ PART B — ENABLE GOOGLE IN SUPABASE
 PART C — ALLOW YOUR WEBSITE CALLBACK
 1. In Supabase, open Authentication → URL Configuration
 2. Set Site URL to your actual deployed website origin, for example:
-   https://hysacam.vercel.app
+   https://YOUR-DEPLOYED-DOMAIN
    Do not include a page path
 3. Add this exact URL under Additional Redirect URLs:
-   https://hysacam.vercel.app/oauth-callback.html
+   https://YOUR-DEPLOYED-DOMAIN/oauth-callback.html
 4. For local testing, add the actual local origin you use, for example:
    http://localhost:5500/oauth-callback.html
    Use your real Live Server port if it is different

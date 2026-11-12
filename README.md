@@ -58,7 +58,7 @@ This package now includes Vercel serverless API routes under `api/auth/`. The pa
 2. In Vercel, add every variable from `.env.example` under Project Settings → Environment Variables. Use your project's URL and publishable key for the first two values. Use the Supabase service-role/secret key only as a Vercel server environment variable. Never paste it into browser code or chat.
 3. Create an email-sending provider account (the code uses Resend's HTTP API), verify a sender address/domain with that provider, then set `RESEND_API_KEY` and `EMAIL_FROM`. A `vercel.app` address is a hosting address, not an email sender domain.
 4. Generate a random 32-byte encryption key and encode it as 64 hexadecimal characters for `SESSION_ENCRYPTION_KEY`. Keep it private.
-5. Set `APP_ORIGIN` to `https://kumba-hysacam.vercel.app`.
+5. Set `APP_ORIGIN` to the exact deployed website origin (scheme + hostname only), e.g. `https://your-domain.vercel.app`.
 6. Ensure the Vercel project root directory is this `CCAS` folder, then deploy.
 
 ### Important security and deployment notes

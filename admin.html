@@ -1,16 +1,14 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#087747"><title>Administrator Portal | HYSACAM Kumba</title><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="css/style.css"></head><body>
 <div class="admin-login-page" id="admin-login-page"><section class="admin-login-brand auth-photo-panel">
-  <div class="auth-brand-lockup" aria-label="HYSACAM Kumba Tracker">
+  <a class="auth-brand-lockup" href="index.html" aria-label="HYSACAM Kumba Tracker home">
     <img src="images/hysacam-symbol.png" alt="HYSACAM logo">
     <span><strong>HYSACAM</strong><small>KUMBA TRACKER</small></span>
-  </div>
+  </a>
   <div class="auth-photo-copy"><span>RESTRICTED ADMINISTRATOR ACCESS</span><h1>Kumba Tracker</h1><p>A Cleaner Kumba<br>A Healthier Community</p></div>
   <div class="admin-security-points"><span>✓ Two-step verification</span><span>✓ Approved administrator accounts only</span><span>✓ Protected administrator session</span></div>
   <div class="auth-photo-bottom">Secure HYSACAM administration</div>
 </section><section class="admin-login-panel"><form class="admin-login-card" id="admin-login-form"><span class="eyebrow">HYSACAM KUMBA TRACKER</span><h2 id="admin-form-title">Administrator sign in</h2><p id="admin-form-copy">Enter your authorised account credentials to continue.</p><div id="admin-password-stage"><label for="admin-email">Authorised email</label><input id="admin-email" type="email" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" required placeholder="Enter administrator email"><label for="admin-password">Password</label><div class="auth-password-wrap"><input id="admin-password" type="password" autocomplete="current-password" required placeholder="Enter your password"><button class="password-toggle password-toggle-icon" type="button" data-toggle-password="admin-password" aria-label="Show password" title="Show password"></button></div><button class="button" type="submit" id="admin-submit">Continue securely</button>
-<div class="auth-divider"><span>or</span></div>
-<button class="google-auth-button" type="button" data-google-auth="admin"><span class="google-g" aria-hidden="true">G</span>Continue with Google</button>
 </div><div id="admin-code-stage" hidden><h3 class="admin-code-title">Verify Your Email</h3><p class="admin-code-subtitle">Enter the 6 digit code sent to your email</p><div class="otp-boxes" data-otp-for="admin-code" aria-label="Six-digit administrator verification code"></div><input class="otp-input otp-source" id="admin-code" type="text" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" placeholder="000000"><button class="button" type="button" id="admin-verify">Verify Code</button><button class="admin-text-button" type="button" id="admin-back">Back to sign in</button></div><div class="auth-message" id="auth-message" role="alert" aria-live="polite"></div><div class="security-note">No public administrator registration. Unapproved accounts are denied by the server.</div></form></section></div>
 <section class="admin-portal" id="admin-portal">
 <div class="admin-layout admin-layout-pro">
@@ -77,23 +75,11 @@
   </main>
 </div>
 </section>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="js/supabase.js"></script><script src="js/auth-common.js"></script><script src="js/auth-ui.js"></script><script src="js/google-auth.js"></script><script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="js/supabase.js"></script><script src="js/auth-common.js"></script><script src="js/auth-ui.js"></script><script>
 (()=>{
  const $=id=>document.getElementById(id), form=$('admin-login-form'), msg=$('auth-message'), loginPage=$('admin-login-page'), portal=$('admin-portal'); let email='';
  const say=t=>{msg.textContent=t||''};
  async function post(url,body){const r=await fetch(url,{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});const d=await r.json().catch(()=>({}));if(!r.ok)throw new Error(d.message||'Secure request failed.');return d;}
- const googleAdminEmail=sessionStorage.getItem('hysacam_admin_google_email');
- if(new URLSearchParams(location.search).get('google_admin')==='1' && googleAdminEmail){
-   email=googleAdminEmail;
-   $('admin-password-stage').hidden=true;
-   $('admin-code-stage').hidden=false;
-   $('admin-code').required=true;
-   $('admin-form-title').textContent='Verify Your Email';
-   $('admin-form-copy').textContent='Enter the 6 digit code sent to your email';
-   $('admin-code').focus();
-   sessionStorage.removeItem('hysacam_admin_google_email');
-   history.replaceState({},'',location.pathname);
- }
  async function openDashboard(){const r=await fetch('/api/admin/me',{credentials:'include',cache:'no-store'});if(!r.ok)return false;const d=await r.json();if(!d.authenticated||d.role!=='administrator')return false;email=d.email||email;$('admin-welcome').textContent=email;loginPage.style.display='none';portal.classList.add('authorized');loadDashboardStats();return true;}
  form.addEventListener('submit',async e=>{e.preventDefault();say('');email=$('admin-email').value.trim().toLowerCase();const b=$('admin-submit');b.disabled=true;b.textContent='Checking account…';try{await post('/api/admin/login',{email,password:$('admin-password').value});$('admin-password-stage').hidden=true;$('admin-code-stage').hidden=false;$('admin-code').required=true;$('admin-form-title').textContent='Verify Your Email';$('admin-form-copy').textContent='Enter the 6 digit code sent to your email';$('admin-code').focus();}catch(err){say(err.message);}finally{b.disabled=false;b.textContent='Continue securely';}});
  $('admin-verify').addEventListener('click',async()=>{say('');const code=$('admin-code').value.trim();if(!/^\d{6}$/.test(code)){say('Enter the complete six-digit code.');return;}const b=$('admin-verify');b.disabled=true;b.textContent='Verifying…';try{await post('/api/admin/verify',{email,code});if(!await openDashboard())throw new Error('Your administrator session could not be confirmed.');}catch(err){say(err.message);}finally{b.disabled=false;b.textContent='Verify Code';}});
