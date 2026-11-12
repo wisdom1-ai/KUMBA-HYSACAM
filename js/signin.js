@@ -3,6 +3,12 @@
   const form = $('signin-form');
   const button = $('signin-submit');
 
+  const flash = sessionStorage.getItem('hysacam_auth_flash');
+  if (flash) {
+    msg(flash);
+    sessionStorage.removeItem('hysacam_auth_flash');
+  }
+
   form.addEventListener('submit', async event => {
     event.preventDefault();
     msg('');

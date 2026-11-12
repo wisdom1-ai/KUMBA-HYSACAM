@@ -1,10 +1,22 @@
-PASSWORD RESET + SIGNUP EYE FIX
+HYSACAM AUTHENTICATION FIXES
 
-1. Signup password and confirm-password eye controls are now aligned at the far right,
-   matching the sign-in page.
-2. Password-reset allowance is now 8 requests per email per hour (previously 5).
-   Server-side rate limiting remains enabled for account security.
-3. If your own test email already reached the previous limit, run the optional
-   supabase/clear-own-password-reset-test-limit.sql once in Supabase SQL Editor.
-   Replace YOUR_EMAIL with your own test account email first.
-4. Deploy the updated project to Vercel after extracting this ZIP.
+1. Google OAuth callback
+- OAuth cancellation/access_denied now returns to the existing signin.html page.
+- Callback errors no longer strand users on the "Finishing sign in" screen.
+- Non-cancellation errors are shown on the existing login page.
+- A successfully-created HYSACAM HttpOnly session is preserved when the temporary Supabase browser session is cleared.
+
+2. Server-side session validation
+- readSession no longer rotates the Supabase refresh token on every dashboard/API authentication check.
+- The old behaviour could cause simultaneous dashboard and /api/auth/me requests to refresh the same token and invalidate one another.
+- The opaque HYSACAM server session is now checked against hysacam_auth_sessions and the account is validated through the Supabase service-role user lookup.
+- Expired or missing application sessions remain unauthenticated; transient Supabase lookup errors are reported as temporary failures instead of deleting a potentially valid session.
+- Logout continues to revoke the application session by deleting its database row and clearing the HttpOnly cookie.
+
+3. Email/password flow
+- Existing email verification-code step is intentionally preserved. Password sign-in sends a six-digit code; successful code verification creates the HYSACAM server session and sets the HttpOnly cookie.
+- Existing admin allowlist and OTP verification are unchanged.
+
+4. Verification
+- JavaScript syntax checks passed for the modified files and the existing auth scripts.
+- Live Google OAuth, email delivery, Supabase database, cookie, and deployed Vercel tests require the project's configured environment and must be run after deployment.

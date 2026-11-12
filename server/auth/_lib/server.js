@@ -286,29 +286,29 @@ export async function readSession(req) {
   if (!token) return null;
 
   const db = adminClient();
+  const sessionHash = hash(token);
   const { data: row, error } = await db.from('hysacam_auth_sessions')
-    .select('*')
-    .eq('session_hash', hash(token))
+    .select('id, session_hash, user_id, expires_at')
+    .eq('session_hash', sessionHash)
     .maybeSingle();
 
-  if (error || !row || new Date(row.expires_at).getTime() < Date.now()) {
-    return null;
+  if (error) {
+    console.error('[HYSACAM auth] Session lookup failed:', error.message);
+    throw new Error('Your session could not be checked. Please try again.');
   }
+  if (!row || new Date(row.expires_at).getTime() < Date.now()) return null;
 
-  const client = anonClient();
-  const { data, error: refreshError } = await client.auth.refreshSession({
-    refresh_token: decrypt(row.encrypted_refresh_token)
-  });
-
-  if (refreshError || !data.session || !data.user) {
-    await db.from('hysacam_auth_sessions').delete().eq('session_hash', hash(token));
-    return null;
+  // hysacam_session is the application's own random, HttpOnly session token.
+  // Do not rotate a Supabase refresh token on every page/API request: concurrent
+  // dashboard and /auth/me checks can otherwise race and invalidate one another.
+  // The server-side session row is created only after Supabase verifies the user.
+  const { data, error: userError } = await db.auth.admin.getUserById(row.user_id);
+  if (userError) {
+    if (Number(userError.status) === 404) return null;
+    console.error('[HYSACAM auth] User lookup failed:', userError.message);
+    throw new Error('Your account could not be checked. Please try again.');
   }
-
-  await db.from('hysacam_auth_sessions').update({
-    encrypted_refresh_token: encrypt(data.session.refresh_token),
-    expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
-  }).eq('session_hash', hash(token));
+  if (!data?.user) return null;
 
   return { user: data.user, row, token };
 }
