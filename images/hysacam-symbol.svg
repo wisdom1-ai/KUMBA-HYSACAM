@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="HYSACAM recycling symbol">
+  <defs><linearGradient id="g" x1="18" y1="12" x2="108" y2="116" gradientUnits="userSpaceOnUse"><stop stop-color="#15965c"/><stop offset="1" stop-color="#006b43"/></linearGradient></defs>
+  <g fill="none" stroke="url(#g)" stroke-width="17" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M47 18c7-5 17-5 24 0l10 7"/><path d="M81 25l-2-17 18 7"/>
+    <path d="M108 55c2 9-2 18-10 23l-9 5"/><path d="M89 83l18 4-12 14"/>
+    <path d="M39 105c-9-1-16-7-18-16l-2-11"/><path d="M19 78L7 92l-6-19"/>
+  </g>
+  <path d="M64 38l7 14 16 2-12 11 3 16-14-8-14 8 3-16-12-11 16-2z" fill="#15965c"/>
+</svg>

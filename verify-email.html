@@ -2,44 +2,49 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#087747">
-  <title>Verify email | HYSACAM Kumba Tracker</title>
+  <meta name="description" content="Verify your HYSACAM Kumba Tracker email address.">
+  <title>Verify your email | HYSACAM Kumba Tracker</title>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="auth-body">
-  <main class="auth-page auth-page-modern">
-    <section class="auth-brand-panel auth-brand-modern">
-      <a class="auth-home-link" href="index.html" aria-label="HYSACAM Kumba Tracker home">
-        <img src="images/hysacam-symbol.png" alt="HYSACAM symbol">
-        <span>HYSACAM <b>KUMBA TRACKER</b></span>
+  <main class="auth-reference-page auth-split-page auth-verify-split">
+    <aside class="auth-photo-panel">
+      <a class="auth-brand-lockup" href="signin.html" aria-label="HYSACAM Kumba Tracker sign in">
+        <img src="images/hysacam-symbol.svg" alt="HYSACAM logo">
+        <span><strong>HYSACAM</strong><small>KUMBA TRACKER</small></span>
       </a>
-      <div class="auth-brand-content">
-        <span class="auth-kicker">A SECURE WAY TO STAY CONNECTED.</span>
-        <h1>One quick step<br><em>to get started.</em></h1>
-        <p>Confirm the email address linked to your account. Once verified, you'll be taken directly to your HYSACAM dashboard.</p>
+      <div class="auth-photo-copy">
+        <span>A CLEANER KUMBA</span><h2>Kumba Tracker</h2>
+        <p>A Cleaner Kumba<br>A Healthier Community</p>
+        <div class="auth-verify-benefits">
+          <span><i>✓</i> Two-step verification</span>
+          <span><i>✓</i> Secure and reliable</span>
+          <span><i>✓</i> For a cleaner Cameroon</span>
+        </div>
       </div>
-      <div class="auth-brand-foot">© 2026 HYSACAM Kumba Tracker</div>
-      <div class="auth-brand-orb auth-orb-one"></div><div class="auth-brand-orb auth-orb-two"></div>
-    </section>
-    <section class="auth-main auth-main-modern">
-      <div class="auth-card auth-card-modern auth-card-verify">
-        <div class="auth-mobile-brand"><img src="images/hysacam-symbol.png" alt=""><span>HYSACAM KUMBA TRACKER</span></div>
-        <span class="auth-step-label">EMAIL VERIFICATION</span>
-        <h2>Verify Your Email</h2>
+      <div class="auth-photo-bottom">Working together for a cleaner Kumba</div>
+    </aside>
+    <section class="auth-content-panel">
+      <section class="auth-reference-card auth-reference-verify-card">
+        <div class="verify-card-icon" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M6 12.5h36v24H6z"/><path d="m7 14 17 13 17-13"/><path d="m31 33 5 5 9-11"/></svg></div>
+        <span class="auth-step-label">HYSACAM KUMBA TRACKER</span>
+        <h1>Verify Your Email</h1>
         <p class="auth-subtitle">Enter the 6 digit code sent to your email</p>
         <form class="auth-form auth-form-modern" id="verify-form">
           <div class="auth-field">
-            <div class="otp-boxes" data-otp-for="verification-code" aria-label="Six-digit verification code"></div><input class="otp-input otp-source" id="verification-code" type="text" inputmode="numeric" autocomplete="one-time-code" autocapitalize="off" spellcheck="false" pattern="[0-9]{6}" minlength="6" maxlength="6" required aria-label="Six-digit verification code">
+            <div class="otp-boxes" data-otp-for="verification-code" aria-label="Six-digit verification code"></div>
+            <input class="otp-input otp-source" id="verification-code" type="text" inputmode="numeric" autocomplete="one-time-code" autocapitalize="off" spellcheck="false" pattern="[0-9]{6}" minlength="6" maxlength="6" required aria-label="Six-digit verification code">
           </div>
           <button class="button auth-primary-button" id="verify-submit" type="submit">Verify Code</button>
           <div class="auth-message" id="auth-message" role="alert" aria-live="polite"></div>
         </form>
-        <p class="auth-resend-row">Didn't receive a code? <a href="#" id="resend-code">Resend code</a></p>
-        <p class="auth-trust-note"><span>●</span> Verification codes expire after 10 minutes</p>
-      </div>
-      <a class="auth-return-home" href="signin.html">← Return to sign in</a>
+        <p class="auth-resend-row">Didn't receive a code? <a href="#" id="resend-code">Resend Code</a></p>
+        <div class="verify-card-divider"></div>
+        <a class="verify-back-link" href="signin.html">Back to sign in</a>
+      </section>
     </section>
   </main>
   <script src="js/auth-common.js"></script>
