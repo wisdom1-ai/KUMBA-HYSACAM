@@ -106,17 +106,17 @@
 
   function renderBins() {
     const q = ($("admin-bin-search").value || "").toLowerCase();
-    const rows = state.bins.filter(b => [b.id,b.name,b.area,b.status].join(" ").toLowerCase().includes(q));
+    const rows = state.bins.filter(b => [b.bin_code,b.name,b.area,b.status].join(" ").toLowerCase().includes(q));
     $("admin-bin-count").textContent = `${state.bins.length} registered dustbin(s)`;
     $("admin-bins-table").innerHTML = rows.length ? rows.map(b => `<tr>
-      <td><b>${esc(b.id)}</b></td><td>${esc(b.name)}</td><td>${esc(b.area)}</td><td><span class="status">${esc(b.status || "Available")}</span></td>
+      <td><b>${esc(b.bin_code)}</b></td><td>${esc(b.name)}</td><td>${esc(b.area)}</td><td><span class="status">${esc(b.status || "Available")}</span></td>
       <td><div class="admin-row-actions"><button type="button" class="admin-action-link" data-edit-bin="${esc(b.id)}">Edit</button><button type="button" class="admin-action-link danger" data-delete-bin="${esc(b.id)}">Delete</button></div></td></tr>`).join("") : `<tr><td colspan="5">No matching dustbins found</td></tr>`;
-    $("record-bin-id").innerHTML = `<option value="">Select a dustbin</option>${state.bins.map(b=>`<option value="${esc(b.id)}">${esc(b.id)} — ${esc(b.area)}</option>`).join("")}`;
+    $("record-bin-id").innerHTML = `<option value="">Select a dustbin</option>${state.bins.map(b=>`<option value="${esc(b.id)}">${esc(b.bin_code)} — ${esc(b.area)}</option>`).join("")}`;
   }
 
   function renderRecords() {
     $("admin-records-table").innerHTML = state.records.length ? state.records.map(r=>`<tr>
-      <td><b>${esc(r.bin_id)}</b></td><td>${esc(r.area)}</td><td>${esc(localDate(r.cleaned_at))}</td><td>${esc(r.activity || "Cleaning")}</td><td><span class="status">${esc(r.status || "Recorded")}</span></td><td>${r.verified ? "Verified" : "Pending verification"}</td></tr>`).join("") : `<tr><td colspan="6">No cleaning records have been registered</td></tr>`;
+      <td><b>${esc(state.bins.find(b=>String(b.id)===String(r.bin_id))?.bin_code || r.bin_id)}</b></td><td>${esc(r.area)}</td><td>${esc(localDate(r.cleaned_at))}</td><td>${esc(r.activity || "Cleaning")}</td><td><span class="status">${esc(r.status || "Recorded")}</span></td><td>${r.verified ? "Verified" : "Pending verification"}</td></tr>`).join("") : `<tr><td colspan="6">No cleaning records have been registered</td></tr>`;
   }
 
   function renderUsers() {
@@ -169,7 +169,7 @@
   $("admin-bin-form")?.addEventListener("submit", async event => {
     event.preventDefault();
     const editing = Boolean($("bin-edit-id").value);
-    const payload = { id:$("bin-id").value.trim(), name:$("bin-name").value.trim(), area:$("bin-area").value.trim(), latitude:$("bin-lat").value, longitude:$("bin-lng").value, status:$("bin-status").value };
+    const payload = { bin_code:$("bin-id").value.trim(), id:$("bin-edit-id").value, name:$("bin-name").value.trim(), area:$("bin-area").value.trim(), latitude:$("bin-lat").value, longitude:$("bin-lng").value, status:$("bin-status").value };
     const button = $("bin-save"); button.disabled = true;
     try {
       await (editing ? patch("/api/admin/manage",payload) : post("/api/admin/manage",{type:"bin",...payload}));
@@ -184,7 +184,7 @@
     if (edit) {
       const bin = state.bins.find(b=>String(b.id)===edit.dataset.editBin); if (!bin) return;
       $("admin-bin-form").hidden = false; $("bin-edit-id").value = bin.id;
-      $("bin-id").value = bin.id; $("bin-id").disabled = true;
+      $("bin-id").value = bin.bin_code || ""; $("bin-id").disabled = true;
       $("bin-name").value = bin.name || ""; $("bin-area").value = bin.area || "";
       $("bin-lat").value = bin.latitude ?? ""; $("bin-lng").value = bin.longitude ?? "";
       $("bin-status").value = bin.status || "Available"; $("bin-save").textContent = "Update dustbin";

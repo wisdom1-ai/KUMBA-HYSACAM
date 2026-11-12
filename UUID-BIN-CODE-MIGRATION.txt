@@ -1,0 +1,10 @@
+IMPORTANT DATABASE FIX
+
+Your existing public.bins.id is UUID, while the admin form uses readable IDs such as BIN-008.
+Run supabase/uuid-bin-code-migration.sql in Supabase SQL Editor first.
+
+The migration adds public.bins.bin_code for the readable code, preserves UUID primary keys,
+preserves cleaning_records.bin_id UUID references, and assigns stable display codes to any
+existing dustbins without deleting records.
+
+After running the migration, deploy this updated CCAS folder to Vercel.

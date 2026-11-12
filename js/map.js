@@ -53,7 +53,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   function addBin(bin) {
     const lat = Number(bin.latitude), lng = Number(bin.longitude);
     if (bin.latitude == null || bin.longitude == null || !Number.isFinite(lat) || !Number.isFinite(lng)) return;
-    const marker = L.marker([lat, lng], { icon: greenDot(), title: bin.name || `Dustbin ${bin.id}`, keyboard: false });
+    const marker = L.marker([lat, lng], { icon: greenDot(), title: bin.name || `Dustbin ${bin.bin_code || bin.id}`, keyboard: false });
     marker.bindPopup(`<div class="bin-popup"><strong>${escapeHTML(bin.name || "Registered collection point")}</strong><p>${escapeHTML(bin.area || "Kumba")}</p><p>Status: ${escapeHTML(bin.status || "Not specified")}</p></div>`);
     const item = { bin, marker };
     marker.on("click", () => {
@@ -69,7 +69,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     let count = 0;
     items.forEach(item => {
       const b = item.bin;
-      const text = [b.id, b.name, b.area, b.status].join(" ").toLowerCase();
+      const text = [b.bin_code, b.name, b.area, b.status].join(" ").toLowerCase();
       const match = text.includes(q) && (wanted === "all" || String(b.status || "").toLowerCase().includes(wanted));
       if (match) { if (!layer.hasLayer(item.marker)) item.marker.addTo(layer); count++; }
       else if (layer.hasLayer(item.marker)) layer.removeLayer(item.marker);
@@ -96,7 +96,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const allBins = []; const pageSize = 500; let from = 0;
     while (true) {
       const { data, error } = await supabaseClient.from("bins")
-        .select("id, name, area, latitude, longitude, status")
+        .select("id, bin_code, name, area, latitude, longitude, status")
         .order("name", { ascending: true }).range(from, from + pageSize - 1);
       if (error) throw error;
       const page = data || []; allBins.push(...page);

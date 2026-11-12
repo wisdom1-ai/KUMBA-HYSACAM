@@ -1,0 +1,18 @@
+HYSACAM DUSTBIN DATABASE SETUP
+
+1. Open the Supabase project connected to this website.
+2. Open SQL Editor and create a new query.
+3. Open supabase/dustbins-and-cleaning-setup.sql from this project.
+4. Copy the complete SQL into the Supabase SQL Editor and run it.
+5. Check Table Editor for public.bins and public.cleaning_records.
+6. Do not add made-up dustbin coordinates. Add only collection points confirmed by HYSACAM/Kumba field information.
+7. In the admin portal, use Manage Dustbins to add each verified collection point. Enter latitude and longitude together if the point should appear on the map. A bin without coordinates remains in the directory but cannot appear as a map marker.
+8. Add cleaning records from the admin portal. The current admin endpoint marks administrator-created records verified. Public visitors can see only verified cleaning records.
+
+SECURITY
+- Public browser access is read-only for bins and verified cleaning_records.
+- All writes must go through the existing administrator API, which checks the administrator session on the server.
+- Never place SUPABASE_SERVICE_ROLE_KEY in js/supabase.js or any browser code. It belongs only in Vercel environment variables.
+
+IMPORTANT
+This SQL creates the expected tables if they do not exist and adds missing fields. If your Supabase database already has tables with different data types or constraints, inspect/backup them before running the script. Do not delete existing tables or records to make this setup work.

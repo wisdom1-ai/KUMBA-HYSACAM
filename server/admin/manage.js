@@ -22,11 +22,11 @@ export default async function handler(req, res) {
 
     if (req.method === 'GET') {
       const [{ data: bins, error: binsError }, { data: records, error: recordsError }, usersResult] = await Promise.all([
-        db.from('bins').select('id,name,area,latitude,longitude,status').order('name', { ascending: true }).limit(1000),
+        db.from('bins').select('id,bin_code,name,area,latitude,longitude,status').order('name', { ascending: true }).limit(1000),
         db.from('cleaning_records').select('id,bin_id,area,cleaned_at,activity,status,notes,verified').order('cleaned_at', { ascending: false }).limit(500),
         db.auth.admin.listUsers({ page: 1, perPage: 1000 })
       ]);
-      if (binsError) throw new Error('Could not load dustbins.');
+      if (binsError) throw new Error(binsError.code === '42703' ? 'The bins.bin_code column is missing. Run supabase/uuid-bin-code-migration.sql in Supabase first.' : 'Could not load dustbins.');
       if (recordsError) throw new Error('Could not load cleaning records.');
       if (usersResult.error) throw new Error('Could not load user accounts.');
       const users = (usersResult.data?.users || []).map(user => ({
@@ -49,20 +49,22 @@ export default async function handler(req, res) {
     if (req.method === 'POST') {
       const body = jsonBody(req);
       if (body.type === 'bin') {
-        const id = clean(body.id, 48);
+        const binCode = clean(body.bin_code, 48).toUpperCase();
         const name = clean(body.name, 120);
         const area = clean(body.area, 120);
         const latitude = body.latitude == null || body.latitude === '' ? null : Number(body.latitude);
         const longitude = body.longitude == null || body.longitude === '' ? null : Number(body.longitude);
         const status = clean(body.status || 'Available', 40);
-        if (!id || !name || !area || !validCoord(latitude, -90, 90) || !validCoord(longitude, -180, 180) || ((latitude == null) !== (longitude == null))) {
-          return res.status(400).json({ message: 'Enter a dustbin ID, name, area and valid coordinate pair.' });
+        if (!binCode || !name || !area || !validCoord(latitude, -90, 90) || !validCoord(longitude, -180, 180) || ((latitude == null) !== (longitude == null))) {
+          return res.status(400).json({ message: 'Enter a dustbin code, name, area and valid coordinate pair.' });
         }
-        const payload = { id, name, area, latitude, longitude, status };
-        const { data, error } = await db.from('bins').insert(payload).select('id,name,area,latitude,longitude,status').single();
+        const payload = { bin_code: binCode, name, area, latitude, longitude, status };
+        const { data, error } = await db.from('bins').insert(payload).select('id,bin_code,name,area,latitude,longitude,status').single();
         if (error) {
-          if (error.code === '23505') return res.status(409).json({ message: 'That dustbin ID is already registered.' });
-          throw new Error('Could not register this dustbin. Check the bins table fields and permissions.');
+          if (error.code === '23505') return res.status(409).json({ message: 'That dustbin code is already registered.' });
+          if (error.code === '42703') throw new Error('The bins.bin_code column is missing. Run supabase/uuid-bin-code-migration.sql in Supabase first.');
+          if (error.code === '22P02') throw new Error('The database rejected an identifier format. Confirm the UUID/bin-code migration is installed.');
+          throw new Error('Could not register this dustbin. Check the Supabase database migration and server permissions.');
         }
         return res.status(201).json({ bin: data });
       }
@@ -97,7 +99,7 @@ export default async function handler(req, res) {
       if (!id || !name || !area || !validCoord(latitude, -90, 90) || !validCoord(longitude, -180, 180) || ((latitude == null) !== (longitude == null))) {
         return res.status(400).json({ message: 'Enter valid dustbin details and a valid coordinate pair.' });
       }
-      const { data, error } = await db.from('bins').update({ name, area, latitude, longitude, status: status || 'Available' }).eq('id', id).select('id,name,area,latitude,longitude,status').single();
+      const { data, error } = await db.from('bins').update({ name, area, latitude, longitude, status: status || 'Available' }).eq('id', id).select('id,bin_code,name,area,latitude,longitude,status').single();
       if (error) throw new Error('Could not update this dustbin.');
       return res.status(200).json({ bin: data });
     }
@@ -113,7 +115,7 @@ export default async function handler(req, res) {
     res.setHeader('Allow', 'GET, POST, PATCH, DELETE');
     return res.status(405).json({ message: 'Method not allowed.' });
   } catch (error) {
-    console.error('[HYSACAM admin management]', error?.message || error);
+    console.error('[HYSACAM admin management]', error?.message || error, error?.code || '');
     return res.status(500).json({ message: error?.message || 'Administrator data could not be loaded.' });
   }
 }
