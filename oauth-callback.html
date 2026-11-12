@@ -17,12 +17,7 @@
   const response=await fetch(endpoint,{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({access_token:data.session.access_token,refresh_token:data.session.refresh_token})});
   const result=await response.json().catch(()=>({}));
   if(!response.ok)throw new Error(result.message||'Your Google account could not be connected');
-  // Do not call supabase.auth.signOut() here. Its default scope is "global" and
-  // revokes the refresh token that the HYSACAM server has just stored. That
-  // makes the next dashboard request treat the new HYSACAM session as expired.
-  // Clear only this browser's cached Supabase token without sending a logout
-  // request; the independent HttpOnly HYSACAM session cookie remains valid.
-  try { localStorage.removeItem('sb-edylcpvigtmyuehjeibe-auth-token'); } catch (_) {}
+  await window.supabaseClient.auth.signOut();
   if(intent==='admin'){
     sessionStorage.setItem('hysacam_admin_google_email',result.email);
     location.replace('admin.html?google_admin=1');
