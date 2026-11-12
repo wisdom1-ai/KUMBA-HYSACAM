@@ -2,44 +2,67 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#087747">
   <title>Verify email | HYSACAM Kumba Tracker</title>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
+  <style>
+    .verify-page-clean{min-height:100svh;background:#f5f8f6;display:grid;grid-template-columns:minmax(0,1fr) minmax(420px,560px);align-items:stretch}
+    .verify-brand{position:relative;min-height:100svh;padding:clamp(28px,5vw,64px);display:flex;flex-direction:column;justify-content:space-between;color:#fff;background:linear-gradient(180deg,rgba(0,47,31,.68),rgba(0,47,31,.78)),url('images/hysacam-truck.jpg') center/cover no-repeat;overflow:hidden}
+    .verify-brand:after{content:"";position:absolute;width:420px;height:420px;left:-250px;bottom:-260px;border:48px solid rgba(0,188,105,.75);border-radius:50%;pointer-events:none}
+    .verify-brand-logo{display:flex;align-items:center;gap:15px;color:#fff;text-decoration:none;position:relative;z-index:1}
+    .verify-brand-logo img{width:70px;height:70px;object-fit:contain;background:#fff;border-radius:16px;padding:8px}
+    .verify-brand-logo strong{display:block;font-size:clamp(22px,3vw,34px);letter-spacing:.5px}
+    .verify-brand-logo small{display:block;font-size:12px;letter-spacing:3px;font-weight:800;color:#d9f2e4;margin-top:5px}
+    .verify-brand-copy{position:relative;z-index:1;max-width:550px}
+    .verify-brand-copy span{font-size:11px;letter-spacing:2px;font-weight:800;color:#c8ead6}
+    .verify-brand-copy h1{font-size:clamp(38px,5vw,62px);line-height:1.05;margin:15px 0}
+    .verify-brand-copy p{font-size:clamp(16px,2vw,22px);line-height:1.55;color:#effaf3}
+    .verify-brand-foot{position:relative;z-index:1;font-size:12px;color:#d9eee2}
+    .verify-content{display:grid;place-items:center;padding:clamp(24px,5vw,64px)}
+    .verify-card-clean{width:100%;max-width:440px;background:#fff;border:1px solid #e1ebe4;border-radius:22px;padding:clamp(26px,4vw,42px);box-shadow:0 20px 60px rgba(16,54,33,.08)}
+    .verify-card-clean .auth-step-label{margin-bottom:18px}
+    .verify-card-clean h2{font-size:clamp(27px,3vw,34px);line-height:1.15;letter-spacing:-1px;margin:0 0 10px;color:#14251b}
+    .verify-card-clean .auth-subtitle{font-size:15px;line-height:1.55;margin:0 0 26px;color:#68766e}
+    .verify-card-clean .otp-boxes{margin:4px 0 8px}
+    .verify-card-clean .auth-primary-button{width:100%;min-height:54px}
+    .verify-back{display:block;text-align:center;margin-top:22px;color:#087747;font-weight:700;text-decoration:none}
+    .verify-resend{font-size:13px;text-align:center;color:#718078;margin:18px 0 0}
+    .verify-resend a{color:#087747;font-weight:800;text-decoration:none}
+    @media(max-width:760px){.verify-page-clean{display:flex;flex-direction:column}.verify-brand{min-height:300px;padding:24px 25px 28px}.verify-brand-logo img{width:52px;height:52px}.verify-brand-logo strong{font-size:23px}.verify-brand-logo small{font-size:9px;letter-spacing:2px}.verify-brand-copy{margin-top:34px}.verify-brand-copy h1{font-size:34px;margin:8px 0}.verify-brand-copy p{font-size:15px;margin:0}.verify-brand-foot{display:none}.verify-content{padding:26px 18px 38px}.verify-card-clean{padding:28px 22px;border-radius:18px}.verify-card-clean h2{font-size:29px}}
+  </style>
 </head>
 <body class="auth-body">
-  <main class="auth-page auth-page-modern">
-    <section class="auth-brand-panel auth-brand-modern">
-      <a class="auth-home-link" href="index.html" aria-label="HYSACAM Kumba Tracker home">
-        <img src="images/hysacam-symbol.png" alt="HYSACAM symbol">
-        <span>HYSACAM <b>KUMBA TRACKER</b></span>
-      </a>
-      <div class="auth-brand-content">
-        <span class="auth-kicker">A SECURE WAY TO STAY CONNECTED.</span>
-        <h1>One quick step<br><em>to get started.</em></h1>
-        <p>Confirm the email address linked to your account. Once verified, you'll be taken directly to your HYSACAM dashboard.</p>
+  <main class="verify-page-clean">
+    <section class="verify-brand">
+      <div class="verify-brand-logo" aria-label="HYSACAM Kumba Tracker">
+        <img src="images/hysacam-symbol.png" alt="HYSACAM logo">
+        <span><strong>HYSACAM</strong><small>KUMBA TRACKER</small></span>
       </div>
-      <div class="auth-brand-foot">© 2026 HYSACAM Kumba Tracker</div>
-      <div class="auth-brand-orb auth-orb-one"></div><div class="auth-brand-orb auth-orb-two"></div>
+      <div class="verify-brand-copy">
+        <span>SECURE EMAIL CONFIRMATION</span>
+        <h1>Kumba Tracker</h1>
+        <p>A Cleaner Kumba<br>A Healthier Community</p>
+      </div>
+      <div class="verify-brand-foot">© 2026 HYSACAM Kumba Tracker</div>
     </section>
-    <section class="auth-main auth-main-modern">
-      <div class="auth-card auth-card-modern auth-card-verify">
-        <div class="auth-mobile-brand"><img src="images/hysacam-symbol.png" alt=""><span>HYSACAM KUMBA TRACKER</span></div>
-        <span class="auth-step-label">EMAIL VERIFICATION</span>
+    <section class="verify-content">
+      <div class="verify-card-clean">
+        <span class="auth-step-label">HYSACAM KUMBA TRACKER</span>
         <h2>Verify Your Email</h2>
         <p class="auth-subtitle">Enter the 6 digit code sent to your email</p>
         <form class="auth-form auth-form-modern" id="verify-form">
           <div class="auth-field">
-            <div class="otp-boxes" data-otp-for="verification-code" aria-label="Six-digit verification code"></div><input class="otp-input otp-source" id="verification-code" type="text" inputmode="numeric" autocomplete="one-time-code" autocapitalize="off" spellcheck="false" pattern="[0-9]{6}" minlength="6" maxlength="6" required aria-label="Six-digit verification code">
+            <div class="otp-boxes" data-otp-for="verification-code" aria-label="Six-digit verification code"></div>
+            <input class="otp-input otp-source" id="verification-code" type="text" inputmode="numeric" autocomplete="one-time-code" autocapitalize="off" spellcheck="false" pattern="[0-9]{6}" minlength="6" maxlength="6" required aria-label="Six-digit verification code">
           </div>
           <button class="button auth-primary-button" id="verify-submit" type="submit">Verify Code</button>
           <div class="auth-message" id="auth-message" role="alert" aria-live="polite"></div>
         </form>
-        <p class="auth-resend-row">Didn't receive a code? <a href="#" id="resend-code">Resend code</a></p>
-        <p class="auth-trust-note"><span>●</span> Verification codes expire after 10 minutes</p>
+        <p class="verify-resend">Didn't receive a code? <a href="#" id="resend-code">Resend code</a></p>
+        <a class="verify-back" href="signin.html">Back to sign in</a>
       </div>
-      <a class="auth-return-home" href="signin.html">← Return to sign in</a>
     </section>
   </main>
   <script src="js/auth-common.js"></script>
