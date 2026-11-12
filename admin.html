@@ -19,8 +19,8 @@
     </div>
     <span class="admin-nav-label">MAIN MENU</span>
     <a class="selected" href="#overview"><span class="admin-nav-icon">⌂</span><span>Dashboard</span></a>
-    <a href="index.html#directory"><span class="admin-nav-icon">▤</span><span>Manage Bins</span></a>
-    <a href="#cleaning-activity"><span class="admin-nav-icon">✓</span><span>Cleaning Records</span></a>
+    <a href="#manage-bins"><span class="admin-nav-icon">▤</span><span>Manage Bins</span></a>
+    <a href="#manage-records"><span class="admin-nav-icon">✓</span><span>Cleaning Records</span></a>
     <a href="#users"><span class="admin-nav-icon">♙</span><span>Users</span></a>
     <a href="#reports"><span class="admin-nav-icon">▥</span><span>Reports</span></a>
     <a href="#settings"><span class="admin-nav-icon">⚙</span><span>Settings</span></a>
@@ -67,6 +67,23 @@
       </article>
     </section>
 
+    <section id="manage-bins" class="admin-management-section">
+      <div class="admin-dashboard-intro"><div><h3>Manage Dustbins</h3><p>Register, update and remove collection points</p></div><button class="button" id="admin-add-bin" type="button">＋ Add dustbin</button></div>
+      <form id="admin-bin-form" class="panel admin-entry-form" hidden>
+        <input type="hidden" id="bin-edit-id">
+        <label>Dustbin ID<input id="bin-id" required maxlength="48" placeholder="e.g. BIN-001"></label><label>Display name<input id="bin-name" required maxlength="120" placeholder="e.g. Mile 2 Collection Point"></label><label>Area<input id="bin-area" required maxlength="120" placeholder="e.g. Mile 2, Kumba"></label><label>Latitude<input id="bin-lat" type="number" step="any" min="-90" max="90" placeholder="4.6363"></label><label>Longitude<input id="bin-lng" type="number" step="any" min="-180" max="180" placeholder="9.4469"></label><label>Status<select id="bin-status"><option>Available</option><option>Pending</option><option>Full</option><option>Maintenance</option><option>Inactive</option></select></label>
+        <div class="admin-form-actions"><button class="button" type="submit" id="bin-save">Save dustbin</button><button class="button outline" type="button" id="bin-cancel">Cancel</button></div><p class="auth-message" id="bin-form-message" role="status"></p>
+      </form>
+      <div class="panel admin-table-panel"><div class="admin-panel-heading"><div><h3>Registered collection points</h3><p id="admin-bin-count">Loading dustbins…</p></div><input id="admin-bin-search" class="admin-table-search" type="search" placeholder="Search ID or area"></div><div class="table-wrap"><table><thead><tr><th>ID</th><th>Name</th><th>Area</th><th>Status</th><th>Actions</th></tr></thead><tbody id="admin-bins-table"><tr><td colspan="5">Loading…</td></tr></tbody></table></div></div>
+    </section>
+    <section id="manage-records" class="admin-management-section">
+      <div class="admin-dashboard-intro"><div><h3>Cleaning Records</h3><p>Review verified activities and add new cleaning records</p></div><button class="button" id="admin-add-record" type="button">＋ Add record</button></div>
+      <form id="admin-record-form" class="panel admin-entry-form" hidden><label>Dustbin<select id="record-bin-id" required><option value="">Select a dustbin</option></select></label><label>Location<input id="record-area" required maxlength="120" placeholder="Collection point area"></label><label>Date and time<input id="record-cleaned-at" type="datetime-local" required></label><label>Activity<input id="record-activity" maxlength="120" value="Routine cleaning" required></label><label>Status<select id="record-status"><option>Cleaned</option><option>Pending</option><option>In progress</option></select></label><label>Notes<input id="record-notes" maxlength="500" placeholder="Optional notes"></label><div class="admin-form-actions"><button class="button" type="submit" id="record-save">Save record</button><button class="button outline" type="button" id="record-cancel">Cancel</button></div><p class="auth-message" id="record-form-message" role="status"></p></form>
+      <div class="panel admin-table-panel"><div class="admin-panel-heading"><div><h3>Recent cleaning activity</h3><p>Latest 500 records</p></div></div><div class="table-wrap"><table><thead><tr><th>Dustbin ID</th><th>Location</th><th>Date &amp; time</th><th>Activity</th><th>Status</th><th>Verification</th></tr></thead><tbody id="admin-records-table"><tr><td colspan="6">Loading…</td></tr></tbody></table></div></div>
+    </section>
+    <section id="users" class="admin-management-section"><div class="admin-dashboard-intro"><div><h3>User Management</h3><p>View registered HYSACAM Tracker accounts and verification status</p></div></div><div class="panel admin-table-panel"><div class="admin-panel-heading"><div><h3>Registered users</h3><p id="admin-user-count">Loading users…</p></div><input id="admin-user-search" class="admin-table-search" type="search" placeholder="Search name or email"></div><div class="table-wrap"><table><thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Email verified</th><th>Joined</th></tr></thead><tbody id="admin-users-table"><tr><td colspan="5">Loading…</td></tr></tbody></table></div><p class="hint admin-permission-note">Administrator privileges are controlled by the server-side ADMIN_EMAILS allowlist. They cannot be granted from this screen.</p></div></section>
+    <section id="reports" class="admin-management-section"><div class="admin-dashboard-intro"><div><h3>Resident Reports</h3><p>Review and update waste issue submissions</p></div><button class="button outline" id="admin-refresh-reports" type="button">Refresh reports</button></div><div class="panel admin-table-panel"><div class="table-wrap"><table><thead><tr><th>Reference</th><th>Issue</th><th>Area</th><th>Submitted by</th><th>Status</th><th>Update</th></tr></thead><tbody id="admin-reports-table"><tr><td colspan="6">Loading…</td></tr></tbody></table></div></div></section>
+    <section id="settings" class="admin-management-section"><div class="admin-dashboard-intro"><div><h3>System Settings &amp; Security</h3><p>Review administrator access and recent security events</p></div></div><div class="panel admin-table-panel"><h3>Access control</h3><p>Only email addresses configured in the Vercel <b>ADMIN_EMAILS</b> environment variable can access this administration portal. Changes to administrator access must be made by the project owner in Vercel.</p><p class="hint">Session checks and all management actions are enforced by server-side APIs.</p></div><div class="panel admin-table-panel"><div class="admin-panel-heading"><div><h3>Recent administrator activity</h3><p>Security audit events</p></div></div><div class="table-wrap"><table><thead><tr><th>Time</th><th>Administrator</th><th>Event</th><th>Outcome</th></tr></thead><tbody id="admin-audit-table"><tr><td colspan="4">Loading…</td></tr></tbody></table></div></div></section>
     <div class="admin-dashboard-footer">
       <span class="admin-footer-mark">✓</span>
       <span><b>Secure administrator workspace</b><small>Dashboard information is available only to authorised HYSACAM administrators</small></span>
@@ -75,45 +92,7 @@
   </main>
 </div>
 </section>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="js/supabase.js"></script><script src="js/auth-common.js"></script><script src="js/auth-ui.js"></script><script>
-(()=>{
- const $=id=>document.getElementById(id), form=$('admin-login-form'), msg=$('auth-message'), loginPage=$('admin-login-page'), portal=$('admin-portal'); let email='';
- const say=t=>{msg.textContent=t||''};
- async function post(url,body){const r=await fetch(url,{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});const d=await r.json().catch(()=>({}));if(!r.ok)throw new Error(d.message||'Secure request failed.');return d;}
- async function openDashboard(){const r=await fetch('/api/admin/me',{credentials:'include',cache:'no-store'});if(!r.ok)return false;const d=await r.json();if(!d.authenticated||d.role!=='administrator')return false;email=d.email||email;$('admin-welcome').textContent=email;loginPage.style.display='none';portal.classList.add('authorized');loadDashboardStats();return true;}
- form.addEventListener('submit',async e=>{e.preventDefault();say('');email=$('admin-email').value.trim().toLowerCase();const b=$('admin-submit');b.disabled=true;b.textContent='Checking account…';try{await post('/api/admin/login',{email,password:$('admin-password').value});$('admin-password-stage').hidden=true;$('admin-code-stage').hidden=false;$('admin-code').required=true;$('admin-form-title').textContent='Verify Your Email';$('admin-form-copy').textContent='Enter the 6 digit code sent to your email';$('admin-code').focus();}catch(err){say(err.message);}finally{b.disabled=false;b.textContent='Continue securely';}});
- $('admin-verify').addEventListener('click',async()=>{say('');const code=$('admin-code').value.trim();if(!/^\d{6}$/.test(code)){say('Enter the complete six-digit code.');return;}const b=$('admin-verify');b.disabled=true;b.textContent='Verifying…';try{await post('/api/admin/verify',{email,code});if(!await openDashboard())throw new Error('Your administrator session could not be confirmed.');}catch(err){say(err.message);}finally{b.disabled=false;b.textContent='Verify Code';}});
- $('admin-back').addEventListener('click',()=>{$('admin-code-stage').hidden=true;$('admin-password-stage').hidden=false;$('admin-code').value='';$('admin-code').required=false;$('admin-form-title').textContent='Administrator sign in';$('admin-form-copy').textContent='Enter your authorised account credentials to continue.';say('');});
- async function loadDashboardStats(){
-  const total=$('admin-total-bins'),cleaned=$('admin-cleaned-today'),pending=$('admin-pending');
-  try{
-   if(typeof supabaseClient==='undefined')throw new Error('Database connection unavailable');
-   const [{data:binRows,count:binCount,error:binError},{data:records,error:recordError}]=await Promise.all([
-    supabaseClient.from('bins').select('id,status',{count:'exact'}),
-    supabaseClient.from('cleaning_records').select('id,cleaned_at,status,verified').eq('verified',true).order('cleaned_at',{ascending:false}).limit(500)
-   ]);
-   if(binError)throw binError;if(recordError)throw recordError;
-   const bins=binRows||[],rows=records||[],today=new Date().toISOString().slice(0,10);
-   const todayCount=rows.filter(x=>String(x.cleaned_at||'').slice(0,10)===today).length;
-   const pendingCount=rows.filter(x=>String(x.status||'').toLowerCase().includes('pending')).length;
-   total.textContent=Number(binCount||0).toLocaleString();cleaned.textContent=todayCount.toLocaleString();pending.textContent=pendingCount.toLocaleString();
-   const pct=rows.length?Math.round(rows.filter(x=>String(x.status||'').toLowerCase().includes('clean')).length/rows.length*100):0;
-   $('admin-cleaned-percent').textContent=rows.length?pct+'%':'—';
-   $('admin-bin-donut').style.setProperty('--cleaned',pct+'%');
-   if(rows.length){
-    const months=Array.from({length:5},(_,i)=>{const d=new Date();d.setMonth(d.getMonth()-4+i);return {label:d.toLocaleString('en',{month:'short'}),count:rows.filter(x=>{const v=new Date(x.cleaned_at);return v.getFullYear()===d.getFullYear()&&v.getMonth()===d.getMonth()}).length}});
-    const max=Math.max(1,...months.map(x=>x.count));
-    const points=months.map((x,i)=>({x:42+i*105,y:164-(x.count/max)*118,count:x.count,label:x.label}));
-    const path=points.map((p,i)=>(i?'L':'M')+' '+p.x+' '+p.y).join(' ');
-    const area=path+' L 462 180 L 42 180 Z';
-    $('admin-cleaning-chart').innerHTML='<div class="admin-line-chart"><svg viewBox="0 0 500 220" role="img" aria-label="Monthly verified cleaning activity line chart"><defs><linearGradient id="adminChartFill" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#16a66a" stop-opacity=".22"/><stop offset="1" stop-color="#16a66a" stop-opacity=".02"/></linearGradient></defs><line x1="42" y1="28" x2="462" y2="28" class="chart-grid"/><line x1="42" y1="104" x2="462" y2="104" class="chart-grid"/><line x1="42" y1="180" x2="462" y2="180" class="chart-grid"/><text x="8" y="32" class="chart-axis">'+max+'</text><text x="8" y="184" class="chart-axis">0</text><path d="'+area+'" fill="url(#adminChartFill)"/><path d="'+path+'" class="chart-line"/>'+points.map(p=>'<circle cx="'+p.x+'" cy="'+p.y+'" r="6" class="chart-point"><title>'+p.count+' cleanings in '+p.label+'</title></circle><text x="'+p.x+'" y="207" text-anchor="middle" class="chart-month">'+p.label+'</text>').join('')+'</svg></div>';
-   }
-  }catch(err){console.warn('Admin statistics unavailable',err);[total,cleaned,pending].forEach(el=>el.textContent='—');$('admin-cleaning-chart').textContent='Statistics will appear when the database permissions and verified records are available';}
- }
- $('admin-logout').addEventListener('click',async()=>{try{await fetch('/api/admin/logout',{method:'POST',credentials:'include'});}finally{portal.classList.remove('authorized');loginPage.style.display='grid';form.reset();$('admin-code-stage').hidden=true;$('admin-password-stage').hidden=false;say('You have signed out.');}});
- openDashboard().catch(()=>{});
-})();
-</script><script>
+<script src="js/auth-common.js"></script><script src="js/auth-ui.js"></script><script src="js/admin-dashboard.js"></script><script>
 // Remove sentence-ending full stops from interface copy as requested
 (function(){const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);const nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);for(const node of nodes){if(node.parentElement&&/^(SCRIPT|STYLE|TEXTAREA)$/i.test(node.parentElement.tagName))continue;node.nodeValue=node.nodeValue.replace(/\.(?=\s|$)/g,"");}})();
 </script>

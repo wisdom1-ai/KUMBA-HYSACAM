@@ -19,7 +19,9 @@ export default async function handler(req, res) {
       const body = jsonBody(req); const id = String(body.id || ''); const status = String(body.status || '');
       const notes = typeof body.admin_notes === 'string' ? body.admin_notes.trim().slice(0,1000) : '';
       if (!id || !STATUSES.has(status)) return res.status(400).json({ message: 'A valid report and status are required.' });
-      const { data, error } = await db.from('resident_reports').update({ status, admin_notes: notes || null, updated_at: new Date().toISOString() }).eq('id', id).select('id,reference_code,status,admin_notes,updated_at').single();
+      const update = { status, updated_at: new Date().toISOString() };
+      if (typeof body.admin_notes === 'string') update.admin_notes = notes || null;
+      const { data, error } = await db.from('resident_reports').update(update).eq('id', id).select('id,reference_code,status,admin_notes,updated_at').single();
       if (error) throw new Error('Could not update this report.');
       return res.status(200).json({ report: data });
     }

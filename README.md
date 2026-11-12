@@ -79,3 +79,28 @@ Password fields on the sign-in, sign-up, and reset pages use accessible eye cont
 
 
 Final visual refresh: resident sign-in, registration and administrator sign-in use a consistent split-screen HYSACAM design. The signup form uses First Name, Last Name, Email and Password while preserving the backend `name` field by combining first and last name. The Google setup guide is in `GOOGLE-SIGNIN-SETUP.txt`.
+
+
+## Live platform sections and administrator workspace
+
+The public `index.html` now loads `js/platform.js` for live Dustbin Directory, Dustbin Details, and verified Cleaning Records. The Leaflet map in `js/map.js` uses the same `bins` data and selecting a marker opens the matching details section.
+
+The separate `admin.html` portal now includes:
+- Dashboard statistics and recent cleaning activity chart
+- Dustbin registration, editing, searching, and deletion
+- Verified cleaning-record creation and review
+- Registered account list (read-only; administrator privileges remain controlled by `ADMIN_EMAILS`)
+- Resident report status updates
+- Administrator audit-event review and security guidance
+
+All administrator reads and mutations go through `/api/admin/manage`, `/api/admin/reports`, and `/api/admin/audit`. These endpoints validate the HttpOnly HYSACAM session and the server-side `ADMIN_EMAILS` allowlist. The Supabase service-role key is used only in Vercel server functions and is never sent to the browser.
+
+### Existing database fields required
+
+The existing `public.bins` table must provide `id`, `name`, `area`, `latitude`, `longitude`, and `status`. The existing `public.cleaning_records` table must provide `id`, `bin_id`, `area`, `cleaned_at`, `activity`, `status`, `notes`, and `verified`. These fields are already used by the existing map and Supabase client code. Keep RLS enabled; browser access should remain read-only according to your current public policies. All writes from the administrator workspace are performed server-side.
+
+The user list is read-only and loads up to the first 1,000 Supabase Auth users. Role changes are intentionally not exposed in the browser; configure administrator emails in Vercel `ADMIN_EMAILS` instead.
+
+### Deployment verification
+
+After deploying to Vercel, sign in using an authorised administrator account and test: create/edit/delete a dustbin, open a map marker, check the public directory and details, add a cleaning record, update a resident report status, and confirm a non-administrator receives HTTP 403 from `/api/admin/manage`. A successful local syntax check does not replace testing against your actual Supabase project and deployed Vercel environment.

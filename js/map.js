@@ -59,6 +59,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     marker.on("click", () => {
       if (selected) selected.marker.setIcon(greenDot());
       selected = item; marker.setIcon(greenDot(true));
+      document.dispatchEvent(new CustomEvent("hysacam:bin-selected", { detail: { bin } }));
     });
     marker.addTo(layer); items.set(String(bin.id), item);
   }

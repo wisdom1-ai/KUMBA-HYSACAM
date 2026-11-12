@@ -946,3 +946,89 @@ html,body{max-width:100%;overflow-x:hidden}
 .auth-verify-benefits i{width:25px;height:25px;border-radius:50%;display:grid;place-items:center;background:#42d98a;color:#064c31;font-style:normal;font-weight:900}
 @media(max-width:820px){.auth-verify-split{grid-template-columns:1fr}.auth-verify-split .auth-photo-panel{min-height:300px}.auth-verify-split .auth-content-panel{min-height:auto;padding:28px 20px 42px}.auth-verify-split .auth-reference-verify-card{width:min(100%,620px)}}
 @media(max-width:560px){.auth-verify-split .auth-photo-panel{min-height:260px;padding:20px}.auth-verify-split .auth-photo-copy{margin:22px 0 0}.auth-verify-split .auth-photo-copy h2{font-size:32px}.auth-verify-split .auth-photo-copy p{font-size:15px}.auth-verify-split .auth-reference-verify-card{padding:24px 18px;border-radius:18px}.auth-reference-verify-card .otp-boxes{gap:7px}.auth-reference-verify-card .otp-cell{height:54px;border-radius:10px;font-size:22px}}
+
+
+/* HYSACAM live directory and administration workspace */
+.directory-status.full,.status.full{background:#ffe7e4;color:#a93428}
+.directory-status.maintenance,.status.maintenance{background:#fff0dc;color:#9a5b12}
+.directory-status.available,.status.available{background:#e4f5e9;color:#167044}
+.directory-status.pending,.status.pending{background:#fff2ce;color:#8a6500}
+.directory-status.cleaned,.status.cleaned{background:#d9f5e3;color:#08733d}
+.admin-management-section{scroll-margin-top:22px;margin:30px 0}
+.admin-table-panel{margin:0 0 18px;background:#fff}
+.admin-panel-heading{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:15px}
+.admin-panel-heading h3{margin:0 0 5px;font-size:16px;color:#173d2b}
+.admin-table-search{width:min(260px,100%);border:1px solid #dce6df;border-radius:9px;padding:10px 12px;font:inherit;font-size:12px;background:#fff}
+.admin-entry-form{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:0 0 18px}
+.admin-entry-form[hidden]{display:none}
+.admin-entry-form label{display:flex;flex-direction:column;gap:6px;font-size:12px;font-weight:700;color:#365143}
+.admin-entry-form input,.admin-entry-form select,.admin-report-status{width:100%;min-width:0;border:1px solid #dce6df;border-radius:8px;padding:11px 12px;background:#fff;color:#1d3025;font:inherit;font-size:13px}
+.admin-form-actions{grid-column:1/-1;display:flex;gap:10px;align-items:center}
+.admin-form-actions .button{min-width:140px}
+.admin-entry-form .auth-message{grid-column:1/-1;margin:0;color:#a33b2c;font-size:12px}
+.admin-row-actions{display:flex;gap:10px;align-items:center}
+.admin-action-link{border:0;background:transparent;color:#087747;font:inherit;font-size:12px;font-weight:800;cursor:pointer;padding:5px}
+.admin-action-link.danger{color:#b33c32}
+.admin-permission-note{padding:12px 0 0}
+.admin-table-panel .table-wrap{border:0;border-radius:0}
+.admin-table-panel table{min-width:720px}
+.admin-table-panel td{vertical-align:middle}
+.admin-report-status{max-width:145px;padding:7px 8px;text-transform:capitalize}
+.admin-dashboard-footer{margin-top:28px}
+.admin-main-pro .admin-dashboard-intro .button{white-space:nowrap}
+.admin-side-pro>a{scroll-margin-top:20px}
+.admin-side-pro>a .admin-nav-icon{width:20px;text-align:center}
+@media(max-width:1050px){
+ .admin-layout-pro{grid-template-columns:210px minmax(0,1fr)}
+ .admin-main-pro .admin-stat-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .admin-entry-form{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:760px){
+ .admin-layout-pro{display:block}
+ .admin-side-pro{position:relative;height:auto;min-height:0;padding:12px;display:flex;flex-direction:row;flex-wrap:wrap;align-items:center}
+ .admin-side-pro .admin-logo{width:100%;padding:5px 8px 12px}
+ .admin-nav-label{display:none}
+ .admin-side-pro>a{padding:9px 10px;font-size:11px;flex:1 1 40%}
+ .admin-side-bottom{margin:0 0 0 auto;padding:0;border:0}
+ .admin-side-bottom button{padding:8px 10px}
+ .admin-main-pro{padding:22px 14px!important}
+ .admin-main-pro .admin-title{align-items:flex-start;gap:12px;flex-wrap:wrap}
+ .admin-main-pro .admin-stat-grid{grid-template-columns:1fr}
+ .admin-analytics-grid{grid-template-columns:1fr}
+ .admin-entry-form{grid-template-columns:1fr}
+ .admin-dashboard-intro{align-items:flex-start;gap:12px;flex-wrap:wrap}
+ .admin-table-search{width:100%}
+ .admin-panel-heading{align-items:flex-start;flex-direction:column}
+ .admin-form-actions{flex-wrap:wrap}
+}
+
+
+/* Public collection directory and record list */
+.directory-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px;margin-top:14px}
+.directory-card{display:flex;align-items:flex-start;gap:13px;padding:17px;background:#fff;border:1px solid #e1eae4;border-radius:13px;box-shadow:0 5px 18px rgba(20,55,34,.035);min-width:0}
+.directory-card-icon{width:42px;height:42px;flex:0 0 42px;display:grid;place-items:center;border-radius:12px;background:#e8f6ed;color:#087747;font-size:23px;font-weight:800}
+.directory-card-content{min-width:0;flex:1}
+.directory-card-title-row{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.directory-card-title-row h3{margin:0;color:#183a29;font-size:14px;overflow-wrap:anywhere}
+.directory-id{font-size:10px;font-weight:800;color:#557363;background:#f1f6f2;border-radius:6px;padding:5px 7px;white-space:nowrap}
+.directory-area{margin:7px 0 4px;color:#42584b;font-size:12px}
+.directory-coordinates{margin:0;color:#829087;font-size:11px}
+.directory-card-bottom{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:12px}
+.directory-status{display:inline-flex;align-items:center;gap:6px;padding:5px 9px;border-radius:20px;font-size:10px;font-weight:800}
+.directory-status .status-dot{width:6px;height:6px;border-radius:50%;background:currentColor}
+.directory-view-button{border:1px solid #087747;background:#fff;color:#087747;border-radius:7px;padding:7px 10px;font-size:11px;font-weight:800;cursor:pointer;white-space:nowrap}
+.directory-view-button:hover{background:#087747;color:#fff}
+.directory-empty{grid-column:1/-1;text-align:center;padding:34px 18px;background:#fff;border:1px dashed #d6e2d9;border-radius:13px;color:#718078}
+.directory-empty h3{margin:0 0 6px;color:#284b38;font-size:16px}
+.directory-empty p{margin:0;font-size:12px}
+.directory-results-heading{display:flex;justify-content:space-between;align-items:center;color:#314c3c;font-size:12px;font-weight:800}
+.directory-results-count{color:#728078;font-weight:600}
+.pagination button:disabled{opacity:.4;cursor:not-allowed}
+.table-wrap .status{display:inline-flex;align-items:center;white-space:nowrap}
+@media(max-width:680px){
+ .directory-list{grid-template-columns:1fr}
+ .directory-card{padding:14px}
+ .directory-card-title-row{align-items:flex-start;flex-direction:column;gap:5px}
+ .directory-card-bottom{align-items:flex-start;flex-direction:column}
+ .directory-view-button{width:100%}
+}

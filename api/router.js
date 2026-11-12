@@ -17,6 +17,7 @@ import admin_audit from '../server/admin/audit.js';
 import admin_login from '../server/admin/login.js';
 import admin_me from '../server/admin/me.js';
 import admin_oauth_start from '../server/admin/oauth-start.js';
+import admin_manage from '../server/admin/manage.js';
 import resident_reports from '../server/reports/index.js';
 import admin_reports from '../server/reports/admin.js';
 
@@ -37,6 +38,7 @@ const routes = new Map([
   ['/api/admin/login', admin_login],
   ['/api/admin/me', admin_me],
   ['/api/admin/oauth-start', admin_oauth_start],
+  ['/api/admin/manage', admin_manage],
   ['/api/reports', resident_reports],
   ['/api/admin/reports', admin_reports],
 ]);
