@@ -1157,3 +1157,6 @@ html,body{max-width:100%;overflow-x:hidden}
  .admin-mobile-topbar{display:flex!important}.admin-mobile-brand{display:flex!important}
  .admin-main-pro{padding:16px!important}.admin-stat-grid{grid-template-columns:1fr!important}
 }
+
+/* Resident mobile navigation interaction */
+@media(max-width:680px){body.nav-open{overflow:hidden;touch-action:none}#main-nav{overscroll-behavior:contain}#menu-toggle{position:relative;z-index:1203}.nav-backdrop{cursor:pointer}}
