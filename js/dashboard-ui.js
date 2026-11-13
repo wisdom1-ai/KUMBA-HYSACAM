@@ -1,51 +1,206 @@
 "use strict";
 document.addEventListener("DOMContentLoaded", () => {
-  const $ = id => document.getElementById(id);
+  const $ = (id) => document.getElementById(id);
   const main = document.querySelector("main");
+  const header = document.querySelector(".topbar");
   if (!main) return;
-  // Keep the existing page sections and their database-backed IDs intact.
+
+  const safeStorage = {
+    get(key, fallback) { try { const value = localStorage.getItem(key); return value == null ? fallback : value; } catch { return fallback; } },
+    set(key, value) { try { localStorage.setItem(key, value); } catch { /* private browsing may block storage */ } }
+  };
+  const escapeHTML = (value) => String(value ?? "").replace(/[&<>"']/g, (ch) => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
+  const fmtDate = (value) => { const d = new Date(value); return Number.isNaN(d.getTime()) ? "Date unavailable" : d.toLocaleString(); };
+
+  // Dynamic settings and profile sections use the authenticated account API.
+  const settings = document.createElement("section");
+  settings.id = "settings"; settings.className = "page-section app-extra-page";
+  settings.innerHTML = `
+    <div class="section-head"><div><span class="eyebrow">PREFERENCES &amp; SECURITY</span><h2>Settings</h2><p>Manage your account and application preferences</p></div></div>
+    <div class="settings-profile-card"><span class="settings-avatar" aria-hidden="true">●</span><div><b id="settings-user-name">Guest User</b><small id="settings-user-email">Sign in to view account details</small><span class="role-pill" id="settings-user-role">Resident</span></div></div>
+    <div class="settings-list">
+      <a class="settings-item" href="#profile"><span class="settings-icon">♙</span><span><b>Account Settings</b><small>View your account information</small></span><span>›</span></a>
+      <button class="settings-item" id="settings-notifications" type="button"><span class="settings-icon">♟</span><span><b>Notifications</b><small>View report updates and alerts</small></span><span>›</span></button>
+      <button class="settings-item" id="settings-privacy" type="button"><span class="settings-icon">♢</span><span><b>Privacy &amp; Security</b><small>Review your account security</small></span><span>›</span></button>
+      <button class="settings-item" id="settings-appearance" type="button"><span class="settings-icon">⚙</span><span><b>App Preferences</b><small>Toggle comfortable display spacing</small></span><span>›</span></button>
+      <a class="settings-item" href="#about"><span class="settings-icon">ⓘ</span><span><b>About HYSACAM</b><small>Platform information and support</small></span><span>›</span></a>
+    </div>
+    <button id="settings-signout" class="signout-button" type="button" hidden>↪ Sign Out</button>
+    <div class="settings-footer"><span class="footer-recycle" aria-hidden="true">♻</span><b>HYSACAM Kumba Tracker</b><p>Cleaner City. Healthier Community.</p><small>© 2026 HYSACAM. All rights reserved</small></div>`;
+  const profile = document.createElement("section");
+  profile.id = "profile"; profile.className = "page-section app-extra-page";
+  profile.innerHTML = `
+    <div class="section-head"><div><span class="eyebrow">YOUR ACCOUNT</span><h2>Profile</h2><p>Manage your HYSACAM Tracker account</p></div></div>
+    <div class="profile-card"><span class="profile-avatar" aria-hidden="true">●</span><h2 id="profile-user-name">Guest User</h2><p id="profile-user-email">Not signed in</p><span class="role-pill" id="profile-user-role">Resident</span></div>
+    <div class="settings-list">
+      <a class="settings-item" href="signin.html"><span class="settings-icon">♙</span><span><b>Sign In / Account Access</b><small>Access your resident account</small></span><span>›</span></a>
+      <a class="settings-item" href="#report"><span class="settings-icon">▤</span><span><b>My Reports</b><small>Track your submitted reports</small></span><span>›</span></a>
+      <a class="settings-item" href="#settings"><span class="settings-icon">⚙</span><span><b>Settings</b><small>Manage app preferences</small></span><span>›</span></a>
+    </div><button id="profile-signout" class="signout-button" type="button" hidden>↪ Sign Out</button>`;
+  main.append(settings, profile);
+
+  // The five-tab bottom bar follows the supplied iPhone reference.
   const nav = document.createElement("nav");
   nav.className = "bottom-nav"; nav.setAttribute("aria-label", "Main navigation");
-  nav.innerHTML = `<a href="#home" data-tab="home"><span>⌂</span><b>Home</b></a><a href="#map" data-tab="map"><span>♧</span><b>Map</b></a><a href="#report" data-tab="report"><span>▤</span><b>Reports</b></a><a href="#settings" data-tab="settings"><span>⚙</span><b>Settings</b></a><a href="#profile" data-tab="profile"><span>●</span><b>Profile</b></a>`;
+  nav.innerHTML = `
+    <a href="#home" data-tab="home" class="active"><svg class="bottom-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 10.7 12 2.8l9.5 7.9v10a1.3 1.3 0 0 1-1.3 1.3h-5.3v-7.1H9.1V22H3.8a1.3 1.3 0 0 1-1.3-1.3z"/></svg><b>Home</b></a>
+    <a href="#map" data-tab="map"><svg class="bottom-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-8.2 8-13.1a8 8 0 1 0-16 0C4 13.8 12 22 12 22Z"/><circle cx="12" cy="8.8" r="2.8" class="icon-cutout"/></svg><b>Map</b></a>
+    <a href="#report" data-tab="report"><svg class="bottom-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2.5h9.2L20 7.3v14.2H6a2 2 0 0 1-2-2v-15a2 2 0 0 1 2-2Zm8 1.9v4h4"/><path d="M8 11h8M8 14.5h8M8 18h6" class="icon-lines"/></svg><b>Reports</b></a>
+    <a href="#settings" data-tab="settings"><svg class="bottom-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m10 2.5 4 0 .7 2.2 1.8.8 2.1-1 2.1 3.6-1.6 1.7v2l1.6 1.7-2.1 3.6-2.1-1-1.8.8-.7 2.2h-4l-.7-2.2-1.8-.8-2.1 1-2.1-3.6 1.6-1.7v-2L3.3 8.1l2.1-3.6 2.1 1 1.8-.8z"/><circle cx="12" cy="11" r="3.2" class="icon-cutout"/></svg><b>Settings</b></a>
+    <a href="#profile" data-tab="profile"><svg class="bottom-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="7.2" r="4.2"/><path d="M3 22c.4-5.1 3.7-8 9-8s8.6 2.9 9 8z"/></svg><b>Profile</b></a>`;
   document.body.append(nav);
-  const settings = document.createElement("section"); settings.id="settings"; settings.className="page-section app-extra-page"; settings.innerHTML=`<div class="section-head"><div><span class="eyebrow">PREFERENCES & SECURITY</span><h2>Settings</h2><p>Manage your account and application preferences</p></div></div><div class="settings-profile-card"><span class="settings-avatar">●</span><div><b id="settings-user-name">Guest User</b><small id="settings-user-email">Sign in to view account details</small><span class="role-pill">Resident account</span></div></div><div class="settings-list"><a class="settings-item" href="signin.html"><span class="settings-icon">♙</span><span><b>Account Settings</b><small>Manage your account information</small></span><span>›</span></a><button class="settings-item" id="settings-notifications"><span class="settings-icon">♟</span><span><b>Notifications</b><small>Manage notification preferences</small></span><span>›</span></button><button class="settings-item" id="settings-privacy"><span class="settings-icon">♢</span><span><b>Privacy & Security</b><small>Review your account security</small></span><span>›</span></button><button class="settings-item" id="settings-appearance"><span class="settings-icon">⚙</span><span><b>App Preferences</b><small>Appearance and display options</small></span><span>›</span></button><a class="settings-item" href="#about"><span class="settings-icon">ⓘ</span><span><b>About HYSACAM</b><small>Platform information</small></span><span>›</span></a></div><button id="settings-signout" class="signout-button" hidden>↪ Sign Out</button><div class="settings-footer"><span class="footer-recycle">♻</span><b>HYSACAM Kumba Tracker</b><p>Cleaner City. Healthier Community.</p><small>© 2026 HYSACAM. All rights reserved</small></div>`;
-  const profile = document.createElement("section"); profile.id="profile"; profile.className="page-section app-extra-page"; profile.innerHTML=`<div class="section-head"><div><span class="eyebrow">YOUR ACCOUNT</span><h2>Profile</h2><p>Manage your HYSACAM Tracker account</p></div></div><div class="profile-card"><span class="profile-avatar">●</span><h2 id="profile-user-name">Guest User</h2><p id="profile-user-email">Not signed in</p><span class="role-pill">Resident</span></div><div class="settings-list"><a class="settings-item" href="signin.html"><span class="settings-icon">♙</span><span><b>Sign In / Account Access</b><small>Access your resident account</small></span><span>›</span></a><a class="settings-item" href="#report"><span class="settings-icon">▤</span><span><b>My Reports</b><small>Track submitted reports</small></span><span>›</span></a><a class="settings-item" href="#settings"><span class="settings-icon">⚙</span><span><b>Settings</b><small>Manage app preferences</small></span><span>›</span></a></div><button id="profile-signout" class="signout-button" hidden>↪ Sign Out</button>`;
-  main.append(settings, profile);
-  // Header account controls and notification tray.
-  const header=document.querySelector(".topbar");
-  if(header){
-    const brand=header.querySelector(".brand"); if(brand){brand.innerHTML=`<span class="brand-symbol">♻</span><span class="brand-wordmark"><b>HYSACAM</b><small>Kumba Tracker</small></span>`;}
-    const actions=document.createElement("div"); actions.className="dashboard-header-actions"; actions.innerHTML=`<button id="notification-toggle" class="header-icon-button" aria-label="Notifications" type="button">♟<span id="notification-count" hidden>0</span></button>`;
-    header.append(actions);
-    const panel=document.createElement("div");panel.id="notification-panel";panel.className="notification-panel";panel.hidden=true;panel.innerHTML=`<div class="notification-head"><b>Notifications</b></div><p class="notification-empty">No new notifications</p>`;header.append(panel);
-    const toggle=$('notification-toggle');toggle?.addEventListener('click',()=>{panel.hidden=!panel.hidden;toggle.setAttribute('aria-expanded',String(!panel.hidden));});
+
+  // Header controls are authored in index.html so the bell always comes before the menu.
+  const menu = $("main-nav"), menuBtn = $("menu-toggle"), panel = $("notification-panel"), bell = $("notification-toggle");
+  const backdrop = $("nav-backdrop");
+  function closeMenu() { menu?.classList.remove("open"); menu?.setAttribute("hidden", ""); menuBtn?.setAttribute("aria-expanded", "false"); backdrop?.setAttribute("hidden", ""); }
+  function openMenu() { if (!menu) return; menu.removeAttribute("hidden"); menu.classList.add("open"); menuBtn?.setAttribute("aria-expanded", "true"); backdrop?.removeAttribute("hidden"); }
+  menuBtn?.addEventListener("click", () => menu?.classList.contains("open") ? closeMenu() : openMenu());
+  $("menu-close")?.addEventListener("click", closeMenu);
+  backdrop?.addEventListener("click", closeMenu);
+  menu?.querySelectorAll("a").forEach(a => a.addEventListener("click", closeMenu));
+
+  // Navigation shows the existing, database-backed sections without duplicating them.
+  const routeSections = [...main.querySelectorAll("section[id]")];
+  function route() {
+    const target = (location.hash || "#home").slice(1);
+    const known = ["home", "map", "report", "directory", "cleaning", "details", "about", "settings", "profile"];
+    const anchor = $(target);
+    const ownerSection = anchor?.closest("section[id]")?.id;
+    const page = known.includes(target) ? target : (known.includes(ownerSection) ? ownerSection : "home");
+    routeSections.forEach(section => {
+      const visible = page === "home"
+        ? ["home", "home-services", "map", "home-recent-reports"].includes(section.id)
+        : page === "map" ? section.id === "map"
+        : known.includes(page) ? section.id === page
+        : true;
+      section.classList.toggle("route-hidden", !visible);
+    });
+    nav.querySelectorAll("a").forEach(a => a.classList.toggle("active", a.dataset.tab === page));
+    closeMenu();
+    if (page === "map") setTimeout(() => window.dispatchEvent(new Event("resize")), 180);
+    if (anchor && target !== page) setTimeout(() => anchor.scrollIntoView({ behavior: "smooth", block: "start" }), 30);
+    else window.scrollTo({ top: 0, behavior: "instant" });
   }
-  // Replace the old hamburger navigation with a compact account/menu panel.
-  const menu=$('main-nav'); if(menu){menu.innerHTML=`<div class="mobile-nav-head"><b>HYSACAM Kumba Tracker</b><button id="menu-close" type="button" aria-label="Close menu">×</button></div><a href="#home">⌂ <span>Home</span></a><a href="#map">♧ <span>Dustbin Map</span></a><a href="#directory">▤ <span>Dustbin Directory</span></a><a href="#cleaning">☷ <span>Cleaning Records</span></a><a href="#report">＋ <span>Submit a Report</span></a><a href="#settings">⚙ <span>Settings</span></a><a href="#profile">● <span>Profile</span></a><a href="#about">ⓘ <span>About HYSACAM</span></a>`;menu.classList.add('dashboard-menu');}
-  const menuBtn=$('menu-toggle');menuBtn?.addEventListener('click',()=>{menu?.classList.toggle('open');menuBtn.setAttribute('aria-expanded',String(menu?.classList.contains('open')));});
-  $('menu-close')?.addEventListener('click',()=>menu?.classList.remove('open'));
-  // Route visibility: keep every existing section and its original IDs available.
-  const routeSections=[...main.querySelectorAll('section[id]')];
-  function route(){const raw=(location.hash||'#home').slice(1);let target=raw==='map'?'map':raw;const mapSection=document.getElementById('map');
-    routeSections.forEach(s=>{s.classList.toggle('route-hidden',!['home','map','report','directory','cleaning','details','about','settings','profile'].includes(target)?false:(target==='home'?!(s.id==='home'||s.id==='home-services'||s.id==='map'||s.id==='home-recent-reports'):target==='map'?s.id!=='map':s.id!==target));});
-    // Sections that belong to a selected page remain accessible via the original navigation/menu.
-    if(!document.getElementById(target) && target!=='map') {routeSections.forEach(s=>s.classList.remove('route-hidden'));}
-    if(target==='map' && mapSection){mapSection.classList.remove('route-hidden');setTimeout(()=>window.dispatchEvent(new Event('resize')),100);}
-    nav.querySelectorAll('a').forEach(a=>a.classList.toggle('active',a.dataset.tab===target));
-    menu?.classList.remove('open');
-    window.scrollTo({top:0,behavior:'instant'});
+  window.addEventListener("hashchange", route); route();
+
+  // Notifications are derived from the signed-in user's real report records.
+  // Read state is stored locally per report status update; no fake records/counts are used.
+  const readKey = "hysacamTrackerReadNotificationsV1";
+  let reportCache = null;
+  function readSet() { try { return new Set(JSON.parse(safeStorage.get(readKey, "[]"))); } catch { return new Set(); } }
+  function saveRead(set) { safeStorage.set(readKey, JSON.stringify([...set])); }
+  function reportNotificationKey(report) { return `${report.reference_code || report.id || "report"}:${report.status || "submitted"}:${report.updated_at || report.created_at || ""}`; }
+  const statusText = (status) => ({submitted:"Submitted",under_review:"In review",assigned:"Assigned",in_progress:"In progress",resolved:"Resolved",rejected:"Closed"}[String(status || "submitted").toLowerCase()] || String(status || "Submitted").replaceAll("_", " "));
+  function renderNotifications() {
+    const host = $("notification-list"), count = $("notification-count");
+    if (!host || !count) return;
+    const seen = readSet();
+    const items = (reportCache || []).slice(0, 12);
+    const unread = items.filter(item => !seen.has(reportNotificationKey(item)));
+    count.textContent = unread.length > 9 ? "9+" : String(unread.length);
+    count.hidden = unread.length === 0;
+    host.innerHTML = items.length ? items.map(item => {
+      const key = reportNotificationKey(item), unreadClass = seen.has(key) ? "" : " is-unread";
+      const label = statusText(item.status);
+      return `<button type="button" class="notification-item${unreadClass}" data-notification-key="${escapeHTML(key)}"><span class="notification-dot" aria-hidden="true"></span><span class="notification-copy"><b>${escapeHTML(item.reference_code || "Your report")}</b><span>Status: ${escapeHTML(label)}</span><small>${escapeHTML(fmtDate(item.updated_at || item.created_at))}</small></span></button>`;
+    }).join("") : `<p class="notification-empty">${reportCache === null ? "Sign in to see report updates" : "No report updates yet"}</p>`;
+    host.querySelectorAll("[data-notification-key]").forEach(button => button.addEventListener("click", () => {
+      const next = readSet(); next.add(button.dataset.notificationKey); saveRead(next); renderNotifications();
+      if (panel) panel.hidden = true; bell?.setAttribute("aria-expanded", "false"); location.hash = "#report";
+    }));
   }
-  window.addEventListener('hashchange',route); route();
-  nav.addEventListener('click',e=>{const a=e.target.closest('a');if(a){nav.querySelectorAll('a').forEach(x=>x.classList.toggle('active',x===a));}});
-  // Mirror existing search input to the actual map search field created by map.js.
-  $('location-search')?.addEventListener('submit',()=>{});
-  $('settings-notifications')?.addEventListener('click',()=>{const panel=$('notification-panel');if(panel){panel.hidden=false;panel.scrollIntoView({behavior:'smooth',block:'nearest'});}});
-  $('settings-privacy')?.addEventListener('click',()=>alert('Your sign-in and account security are managed through the connected HYSACAM authentication service.'));
-  $('settings-appearance')?.addEventListener('click',()=>{document.body.classList.toggle('comfortable-view');localStorage.setItem('hysacam-comfortable-view',document.body.classList.contains('comfortable-view')?'on':'off');});
-  if(localStorage.getItem('hysacam-comfortable-view')==='on')document.body.classList.add('comfortable-view');
-  async function loadRecentReports(){const host=$('home-recent-report-list');if(!host)return;try{const r=await fetch('/api/reports',{credentials:'include',cache:'no-store'});if(!r.ok)throw new Error('Sign in to see your submitted reports');const d=await r.json();const items=(d.reports||[]).slice(0,3);host.innerHTML=items.length?items.map(x=>`<article class="recent-report-card"><span class="recent-report-check">✓</span><div><b>${String(x.reference_code||'Report')}</b><small>${new Date(x.created_at).toLocaleString()}</small></div><span class="recent-report-status">${String(x.status||'Submitted').replaceAll('_',' ')}</span></article>`).join(''):'<p class="empty-state compact">No reports have been submitted yet</p>';}catch(e){host.innerHTML='<p class="empty-state compact">Sign in to view your submitted reports</p>';}}
-  loadRecentReports();
-  async function loadAccount(){try{const r=await fetch('/api/auth/me',{credentials:'include',cache:'no-store'});const d=await r.json();if(!r.ok||!d.authenticated)return;const u=d.user||d.profile||{};const name=u.full_name||u.name||u.email||'Resident';const email=u.email||'';['settings-user-name','profile-user-name'].forEach(id=>{if($(id))$(id).textContent=name;});['settings-user-email','profile-user-email'].forEach(id=>{if($(id))$(id).textContent=email;});['settings-signout','profile-signout'].forEach(id=>{if($(id))$(id).hidden=false;});}catch(e){console.info('Account details are not available while signed out');}}
-  async function signOut(){try{const r=await fetch('/api/auth/logout',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'}});if(!r.ok)throw new Error('Sign out failed');location.href='signin.html';}catch(e){alert('Unable to sign out right now. Please try again.');}}
-  ['settings-signout','profile-signout'].forEach(id=>$(id)?.addEventListener('click',signOut));loadAccount();
+  async function loadReports() {
+    try {
+      const response = await fetch("/api/reports", { credentials: "include", cache: "no-store" });
+      if (!response.ok) throw new Error("Not signed in");
+      const data = await response.json(); reportCache = Array.isArray(data.reports) ? data.reports : [];
+      renderNotifications(); renderRecentReports(reportCache); renderReportStats(reportCache);
+    } catch {
+      reportCache = null; renderNotifications();
+      const recent = $("home-recent-report-list"); if (recent) recent.innerHTML = `<p class="empty-state compact">Sign in to view your submitted reports</p>`;
+      const stats = $("report-stats"); if (stats) stats.hidden = true;
+    }
+  }
+  bell?.addEventListener("click", async () => {
+    await loadReports();
+    if (panel) panel.hidden = !panel.hidden;
+    bell.setAttribute("aria-expanded", String(!panel?.hidden));
+  });
+  $("notification-read-all")?.addEventListener("click", () => {
+    const all = readSet(); (reportCache || []).forEach(item => all.add(reportNotificationKey(item))); saveRead(all); renderNotifications();
+  });
+  document.addEventListener("click", (event) => {
+    if (panel && !panel.hidden && !event.target.closest("#notification-panel") && !event.target.closest("#notification-toggle")) {
+      panel.hidden = true; bell?.setAttribute("aria-expanded", "false");
+    }
+  });
+
+  function renderRecentReports(items) {
+    const host = $("home-recent-report-list"); if (!host) return;
+    host.innerHTML = items.length ? items.slice(0, 3).map(item => `<article class="recent-report-card"><span class="recent-report-check">✓</span><div><b>${escapeHTML(item.reference_code || "Report")}</b><small>${escapeHTML(fmtDate(item.created_at))}</small></div><span class="recent-report-status">${escapeHTML(statusText(item.status))}</span></article>`).join("") : `<p class="empty-state compact">No reports have been submitted yet</p>`;
+  }
+  function renderReportStats(items) {
+    const section = $("report"), existing = $("report-stats"); if (!section) return;
+    let host = existing;
+    if (!host) { host = document.createElement("div"); host.id = "report-stats"; host.className = "report-stats"; section.insertBefore(host, $("report-auth-gate")); }
+    const pending = items.filter(x => ["submitted", "under_review", "assigned", "in_progress"].includes(String(x.status).toLowerCase())).length;
+    const resolved = items.filter(x => String(x.status).toLowerCase() === "resolved").length;
+    const closed = items.filter(x => String(x.status).toLowerCase() === "rejected").length;
+    host.hidden = false;
+    host.innerHTML = `<div><b>${items.length}</b><span>Total</span></div><div><b>${pending}</b><span>Pending</span></div><div><b>${resolved}</b><span>Resolved</span></div><div><b>${closed}</b><span>Closed</span></div>`;
+  }
+
+  // Load account identity from the existing session endpoint; never infer it from local storage.
+  async function loadAccount() {
+    try {
+      const response = await fetch("/api/auth/me", { credentials: "include", cache: "no-store" });
+      const data = await response.json();
+      if (!response.ok || !data.authenticated) return;
+      const user = data.user || data.profile || {};
+      const name = user.full_name || user.name || user.email || "Resident";
+      const email = user.email || "";
+      ["settings-user-name", "profile-user-name", "menu-user-name"].forEach(id => { if ($(id)) $(id).textContent = name; });
+      ["settings-user-email", "profile-user-email", "menu-user-email"].forEach(id => { if ($(id)) $(id).textContent = email; });
+      ["settings-signout", "profile-signout", "menu-signout"].forEach(id => { if ($(id)) $(id).hidden = false; });
+      if ($("menu-signin")) $("menu-signin").hidden = true;
+      const role = user.role || user.account_type || "Resident";
+      ["settings-user-role", "profile-user-role"].forEach(id => { if ($(id)) $(id).textContent = role; });
+    } catch (error) { console.info("Account details are not available while signed out"); }
+  }
+  async function signOut() {
+    const buttons = [$("settings-signout"), $("profile-signout"), $("menu-signout")].filter(Boolean);
+    buttons.forEach(button => { button.disabled = true; button.textContent = "Signing out…"; });
+    try {
+      const response = await fetch("/api/auth/logout", { method: "POST", credentials: "include", headers: { "Content-Type": "application/json" } });
+      if (!response.ok) throw new Error("Sign out failed");
+      location.href = "signin.html";
+    } catch {
+      buttons.forEach(button => { button.disabled = false; button.textContent = "↪ Sign Out"; });
+      alert("Unable to sign out right now. Please try again.");
+    }
+  }
+  ["settings-signout", "profile-signout", "menu-signout"].forEach(id => $(id)?.addEventListener("click", signOut));
+
+  $("settings-notifications")?.addEventListener("click", async () => { await loadReports(); if (panel) panel.hidden = false; bell?.setAttribute("aria-expanded", "true"); window.scrollTo({ top: 0, behavior: "smooth" }); });
+  $("settings-privacy")?.addEventListener("click", () => {
+    let dialog = $("privacy-dialog");
+    if (!dialog) {
+      dialog = document.createElement("div"); dialog.id = "privacy-dialog"; dialog.className = "modal";
+      dialog.innerHTML = `<section class="modal-card privacy-dialog-card" role="dialog" aria-modal="true" aria-labelledby="privacy-dialog-title"><button type="button" class="modal-close" aria-label="Close">×</button><span class="settings-icon privacy-dialog-icon">♢</span><h2 id="privacy-dialog-title">Privacy &amp; Security</h2><p>Your account sign-in, password verification and recovery are handled by the connected HYSACAM authentication service. Never share your password or email verification codes.</p><a class="primary-button" href="forgot-password.html">Go to password recovery</a></section>`;
+      document.body.append(dialog);
+      dialog.addEventListener("click", event => { if (event.target === dialog || event.target.closest(".modal-close")) dialog.classList.remove("open"); });
+      document.addEventListener("keydown", event => { if (event.key === "Escape") dialog.classList.remove("open"); });
+    }
+    dialog.classList.add("open");
+  });
+  $("settings-appearance")?.addEventListener("click", () => {
+    document.body.classList.toggle("comfortable-view");
+    safeStorage.set("hysacam-comfortable-view", document.body.classList.contains("comfortable-view") ? "on" : "off");
+  });
+  if (safeStorage.get("hysacam-comfortable-view", "off") === "on") document.body.classList.add("comfortable-view");
+  $("refresh-my-reports")?.addEventListener("click", loadReports);
+  window.addEventListener("hysacam:reports-updated", loadReports);
+
+  loadAccount(); loadReports();
 });

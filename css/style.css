@@ -1527,3 +1527,107 @@ main{max-width:1200px;margin:0 auto}.hero{margin:18px 20px 0;min-height:310px;bo
 @media(max-width:390px){.service-grid{gap:6px}.service-card{padding:12px 4px}.service-card h3{font-size:10px}.hero h1{font-size:30px}}
 .topbar nav.dashboard-menu{display:none!important}.topbar nav.dashboard-menu.open{display:flex!important}.topbar nav.dashboard-menu a{display:flex;gap:12px;align-items:center}.hysacam-map-pin.is-maintenance{background:#e8a300}.hysacam-map-pin.is-attention{background:#d97706}.hysacam-map-pin.is-selected{background:#1769d2!important}
 .home-recent-reports{padding-top:18px!important}.recent-report-list{display:grid;gap:10px}.recent-report-card{display:flex;align-items:center;gap:12px;padding:14px;background:#fff;border:1px solid #e7eee9;border-radius:14px}.recent-report-check{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:#d9f3e1;color:#078447;font-weight:900}.recent-report-card>div{display:flex;flex:1;flex-direction:column;gap:3px;min-width:0}.recent-report-card b{font-size:13px}.recent-report-card small{color:#6b756e;font-size:11px}.recent-report-status{padding:6px 9px;border-radius:20px;background:#e3f5e8;color:#087747;font-size:10px;font-weight:700;text-transform:capitalize}.topbar .brand{min-width:0}
+
+
+/* Final dashboard navigation and brand refinements */
+.hysacam-mark{display:inline-grid;place-items:center;flex:0 0 auto;color:#078447;font-family:Arial,sans-serif;font-size:46px;line-height:1;width:52px;height:52px}
+.brand .hysacam-mark{width:48px;height:48px;font-size:44px}
+.auth-brand-lockup .hysacam-mark{width:48px;height:48px;font-size:42px;color:#fff;background:#087747;border-radius:14px}
+.auth-reference-logo .hysacam-mark{width:64px;height:64px;font-size:58px;color:#087747}
+.admin-logo .hysacam-mark{width:52px;height:52px;font-size:48px}
+.admin-mobile-brand .hysacam-mark{width:36px;height:36px;font-size:34px}
+.mobile-nav-brand .hysacam-mark{width:38px;height:38px;font-size:35px}
+.hero-promo-mark{font-size:76px;letter-spacing:0;border-radius:50%}
+
+.topbar{display:flex;align-items:center;gap:12px}
+.topbar .brand{margin-right:auto;min-width:0}
+.dashboard-header-actions{display:flex;align-items:center;gap:10px;margin-left:0;order:2}
+.header-icon-button{display:grid;place-items:center;width:43px;height:43px;padding:9px;border:1px solid #e2ece5;border-radius:13px;background:#f3faf5;color:#087747;position:relative;cursor:pointer}
+.header-icon-button svg{display:block;width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.header-icon-button .notification-count{position:absolute;right:-5px;top:-5px;min-width:18px;height:18px;padding:0 4px;border-radius:20px;background:#e5484d;color:white;font-size:11px;font-weight:800;display:grid;place-items:center;border:2px solid white}
+.header-icon-button .notification-count[hidden]{display:none}
+.topbar .menu-toggle{display:flex!important;order:2;width:43px;height:43px;flex:0 0 43px;border:1px solid #e2ece5;border-radius:13px;background:#f3faf5;box-shadow:none;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:0}
+.topbar .menu-toggle span{display:block;width:20px;height:2.4px;background:#087747;border-radius:3px}
+.topbar .dashboard-header-actions{order:1}
+.topbar nav.dashboard-menu{position:absolute;display:flex;flex-direction:column;gap:3px;right:16px;top:calc(100% + 8px);width:min(320px,calc(100vw - 28px));max-height:min(76vh,650px);overflow-y:auto;padding:12px;background:#fff;border:1px solid #e5eee8;border-radius:19px;box-shadow:0 18px 48px rgba(17,52,32,.18);z-index:1402}
+.topbar nav.dashboard-menu[hidden]{display:none!important}
+.topbar nav.dashboard-menu a,.topbar nav.dashboard-menu>button{display:flex;align-items:center;gap:12px;width:100%;min-height:44px;padding:11px 12px;border:0;border-radius:11px;background:transparent;color:#18231d;text-decoration:none;text-align:left;font-size:14px;font-weight:600}
+.topbar nav.dashboard-menu a:hover,.topbar nav.dashboard-menu>button:hover{background:#eff8f2;color:#087747}
+.topbar nav.dashboard-menu>button{cursor:pointer}
+.menu-account-row{display:flex;align-items:center;gap:11px;padding:9px 8px 14px;margin-bottom:4px;border-bottom:1px solid #edf1ee}
+.menu-account-row>span:nth-child(2){display:flex;flex:1;flex-direction:column;min-width:0;gap:3px}
+.menu-account-row b{font-size:14px;color:#17231d}
+.menu-account-row small{font-size:11px;color:#68756d;overflow-wrap:anywhere}
+.menu-account-avatar{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:#e4f4e9;color:#087747;font-size:29px;border:1px solid #cde8d5}
+.menu-account-row button{border:0;background:transparent;color:#5b6c61;font-size:25px;cursor:pointer}
+.notification-panel{position:absolute;right:72px;top:calc(100% + 8px);width:min(360px,calc(100vw - 26px));max-height:min(72vh,560px);overflow:auto;padding:14px;background:#fff;border:1px solid #e5eee8;border-radius:18px;box-shadow:0 18px 48px rgba(17,52,32,.18);z-index:1403}
+.notification-panel[hidden]{display:none!important}
+.notification-head{display:flex;align-items:center;justify-content:space-between;padding:3px 3px 11px;border-bottom:1px solid #edf1ee}
+.notification-head b{font-size:15px;color:#15241b}
+.notification-head button{border:0;background:transparent;color:#087747;font-size:11px;font-weight:700;cursor:pointer}
+.notification-item{display:flex;gap:10px;align-items:flex-start;width:100%;padding:12px 8px;border:0;border-bottom:1px solid #f0f3f1;background:white;text-align:left;cursor:pointer}
+.notification-item:last-child{border-bottom:0}
+.notification-item.is-unread{background:#f4faf6}
+.notification-dot{width:8px;height:8px;margin-top:5px;flex:0 0 8px;border-radius:50%;background:transparent}
+.notification-item.is-unread .notification-dot{background:#078447}
+.notification-copy{display:flex;flex-direction:column;gap:4px;min-width:0}
+.notification-copy b{font-size:12px;color:#17231d;overflow-wrap:anywhere}
+.notification-copy span{font-size:12px;color:#087747;font-weight:700}
+.notification-copy small{font-size:10px;color:#7a867e}
+.notification-empty{margin:0;padding:23px 8px;color:#718078;text-align:center;font-size:12px}
+.nav-backdrop{display:block;position:fixed;inset:66px 0 0;border:0;background:rgba(14,29,20,.24);z-index:1390}
+.nav-backdrop[hidden]{display:none!important}
+
+/* Five-icon fixed bottom bar matched to the supplied iPhone reference */
+body{padding-bottom:calc(82px + env(safe-area-inset-bottom))}
+.bottom-nav{position:fixed;left:0;right:0;bottom:0;z-index:1450;width:100%;height:calc(76px + env(safe-area-inset-bottom));padding:6px max(12px,env(safe-area-inset-left)) calc(5px + env(safe-area-inset-bottom));display:flex;align-items:stretch;justify-content:space-around;background:rgba(255,255,255,.985);border-top:1px solid #e4eae6;box-shadow:0 -3px 15px rgba(13,42,24,.055);backdrop-filter:blur(12px)}
+.bottom-nav a{position:relative;display:flex;flex:1;max-width:220px;height:100%;align-items:center;justify-content:center;flex-direction:column;gap:4px;color:#10251f;text-decoration:none}
+.bottom-nav .bottom-icon{display:block;width:29px;height:29px;fill:currentColor;stroke:currentColor;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
+.bottom-nav .bottom-icon .icon-cutout{fill:#fff;stroke:#fff}
+.bottom-nav .bottom-icon .icon-lines{fill:none;stroke:#fff;stroke-width:1.6}
+.bottom-nav a b{font-size:13px;line-height:1.15;font-weight:500}
+.bottom-nav a.active{color:#078447}
+.bottom-nav a.active b{font-weight:700}
+.bottom-nav a.active:after{content:"";position:absolute;left:8%;right:8%;height:4px;bottom:calc(0px + env(safe-area-inset-bottom));border-radius:8px;background:#078447}
+
+.report-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;margin:0 0 20px;padding:18px 10px;background:#eaf7ef;border:1px solid #d5eadc;border-radius:16px;text-align:center}
+.report-stats[hidden]{display:none}
+.report-stats>div{display:flex;flex-direction:column;gap:5px;border-right:1px solid #d1e5d8}
+.report-stats>div:last-child{border-right:0}
+.report-stats b{font-size:23px;color:#14251b}
+.report-stats span{font-size:11px;color:#5e6e64}
+.settings-item:disabled{opacity:.6;cursor:wait}
+
+@media(max-width:680px){
+  body{padding-bottom:calc(76px + env(safe-area-inset-bottom))}
+  .topbar{height:66px;padding:0 14px;gap:9px}
+  .brand-symbol{font-size:39px;width:42px;height:42px}
+  .brand-wordmark b{font-size:20px}
+  .brand-wordmark small{font-size:11px}
+  .dashboard-header-actions{gap:8px}
+  .header-icon-button,.topbar .menu-toggle{width:41px;height:41px;flex-basis:41px;border-radius:12px}
+  .notification-panel{right:10px;top:calc(100% + 7px)}
+  .topbar nav.dashboard-menu{right:10px;top:calc(100% + 7px)}
+  .nav-backdrop{inset:66px 0 0}
+  .bottom-nav{height:calc(70px + env(safe-area-inset-bottom));padding-top:5px;padding-bottom:env(safe-area-inset-bottom)}
+  .bottom-nav a{gap:3px}
+  .bottom-nav .bottom-icon{width:28px;height:28px}
+  .bottom-nav a b{font-size:12px}
+  .bottom-nav a.active:after{bottom:calc(2px + env(safe-area-inset-bottom));height:4px}
+  .report-stats{padding:15px 5px}
+  .report-stats b{font-size:19px}
+  .report-stats span{font-size:10px}
+  .auth-brand-lockup .hysacam-mark{font-size:39px;width:44px;height:44px}
+  .auth-reference-logo .hysacam-mark{font-size:52px;width:58px;height:58px}
+}
+@media(max-width:370px){
+  .brand-wordmark b{font-size:18px}
+  .brand-wordmark small{font-size:10px}
+  .dashboard-header-actions{gap:6px}
+  .bottom-nav a b{font-size:11px}
+  .bottom-nav .bottom-icon{width:25px;height:25px}
+}
+
+.topbar nav.dashboard-menu [hidden]{display:none!important}
+
+.privacy-dialog-card{max-width:440px;padding:28px}.privacy-dialog-card p{font-size:13px;line-height:1.65;color:#617067;margin:12px 0 20px}.privacy-dialog-icon{margin-bottom:10px}
