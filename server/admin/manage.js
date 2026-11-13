@@ -3,6 +3,8 @@ import { isAdminEmail } from './_lib/admin.js';
 
 const clean = (v, max = 160) => typeof v === 'string' ? v.trim().slice(0, max) : '';
 const validCoord = (v, min, max) => v === '' || v == null || (Number.isFinite(Number(v)) && Number(v) >= min && Number(v) <= max);
+const normalizeBinStatus = (value) => clean(value || 'available', 40).toLowerCase();
+const ALLOWED_BIN_STATUSES = new Set(['available', 'full', 'maintenance']);
 
 async function requireAdmin(req, res) {
   const session = await readSession(req);
@@ -54,9 +56,12 @@ export default async function handler(req, res) {
         const area = clean(body.area, 120);
         const latitude = body.latitude == null || body.latitude === '' ? null : Number(body.latitude);
         const longitude = body.longitude == null || body.longitude === '' ? null : Number(body.longitude);
-        const status = clean(body.status || 'Available', 40);
+        const status = normalizeBinStatus(body.status);
         if (!binCode || !name || !area || !validCoord(latitude, -90, 90) || !validCoord(longitude, -180, 180) || ((latitude == null) !== (longitude == null))) {
           return res.status(400).json({ message: 'Enter a dustbin code, name, area and valid coordinate pair.' });
+        }
+        if (!ALLOWED_BIN_STATUSES.has(status)) {
+          return res.status(400).json({ message: 'Choose Available, Full, or Maintenance for dustbin status.' });
         }
         const payload = { bin_code: binCode, name, area, latitude, longitude, status };
         const { data, error } = await db.from('bins').insert(payload).select('id,bin_code,name,area,latitude,longitude,status').single();
@@ -123,13 +128,16 @@ export default async function handler(req, res) {
       const id = clean(body.id, 48);
       const name = clean(body.name, 120);
       const area = clean(body.area, 120);
-      const status = clean(body.status, 40);
+      const status = normalizeBinStatus(body.status);
       const latitude = body.latitude == null || body.latitude === '' ? null : Number(body.latitude);
       const longitude = body.longitude == null || body.longitude === '' ? null : Number(body.longitude);
       if (!id || !name || !area || !validCoord(latitude, -90, 90) || !validCoord(longitude, -180, 180) || ((latitude == null) !== (longitude == null))) {
         return res.status(400).json({ message: 'Enter valid dustbin details and a valid coordinate pair.' });
       }
-      const { data, error } = await db.from('bins').update({ name, area, latitude, longitude, status: status || 'Available' }).eq('id', id).select('id,bin_code,name,area,latitude,longitude,status').single();
+      if (!ALLOWED_BIN_STATUSES.has(status)) {
+        return res.status(400).json({ message: 'Choose Available, Full, or Maintenance for dustbin status.' });
+      }
+      const { data, error } = await db.from('bins').update({ name, area, latitude, longitude, status }).eq('id', id).select('id,bin_code,name,area,latitude,longitude,status').single();
       if (error) throw new Error('Could not update this dustbin.');
       return res.status(200).json({ bin: data });
     }

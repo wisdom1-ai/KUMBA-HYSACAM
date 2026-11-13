@@ -193,7 +193,7 @@
       $("bin-id").value = bin.bin_code || ""; $("bin-id").disabled = true;
       $("bin-name").value = bin.name || ""; $("bin-area").value = bin.area || "";
       $("bin-lat").value = bin.latitude ?? ""; $("bin-lng").value = bin.longitude ?? "";
-      $("bin-status").value = bin.status || "Available"; $("bin-save").textContent = "Update dustbin";
+      $("bin-status").value = String(bin.status || "available").toLowerCase(); $("bin-save").textContent = "Update dustbin";
       $("admin-bin-form").scrollIntoView({behavior:"smooth",block:"center"});
     }
     if (remove && confirm(`Delete dustbin ${remove.dataset.deleteBin}? This may be blocked if cleaning records reference it.`)) {
