@@ -47,7 +47,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const escapeHTML = (value) => String(value ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
   const greenDot = (active = false) => L.divIcon({
     className: "hysacam-green-indicator",
-    html: `<span class="hysacam-green-dot${active ? " is-selected" : ""}"></span>`,
+    html: `<span class="hysacam-green-dot${active ? " is-selected" : ""}"><i>♻</i></span>`,
     iconSize: [22, 22], iconAnchor: [11, 11]
   });
   function addBin(bin) {
