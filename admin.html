@@ -17,10 +17,6 @@
       <img class="hysacam-logo" src="images/hysacam-symbol.svg" alt="HYSACAM">
       <strong>HYSACAM<br><small>ADMINISTRATION</small></strong>
     </div>
-    <div class="admin-profile-card">
-      <span class="admin-profile-avatar" aria-hidden="true">A</span>
-      <span class="admin-profile-copy"><strong>Admin</strong><small>Administrator</small><em><i></i> Online</em></span>
-    </div>
     <span class="admin-nav-label">MAIN MENU</span>
     <a class="selected" href="#overview"><span class="admin-nav-icon">⌂</span><span>Dashboard</span></a>
     <a href="#manage-bins"><span class="admin-nav-icon">▤</span><span>Manage Bins</span></a>
@@ -29,33 +25,13 @@
     <a href="#reports"><span class="admin-nav-icon">▥</span><span>Reports</span></a>
     <a href="#settings"><span class="admin-nav-icon">⚙</span><span>Settings</span></a>
     <div class="admin-side-bottom">
-      <button class="button" id="admin-logout" type="button"><span class="admin-nav-icon">⇥</span><span>Logout</span></button>
-    </div>
-    <div class="admin-side-visual">
-      <img src="images/hysacam-truck.jpg" alt="HYSACAM waste collection truck">
-      <strong>Together for a<br>Cleaner Cameroon</strong>
-      <span></span>
+      <button class="button" id="admin-logout" type="button"><span class="admin-nav-icon">↪</span><span>Logout</span></button>
     </div>
   </aside>
 
-  <button class="admin-drawer-backdrop" id="admin-drawer-backdrop" type="button" aria-label="Close navigation menu"></button>
-  <main id="admin-main-pro" class="admin-main admin-main-pro">
-    <div class="admin-mobile-topbar">
-      <button class="admin-menu-toggle" id="admin-menu-toggle" type="button" aria-label="Open navigation menu" aria-expanded="false">☰</button>
-      <div class="admin-mobile-brand"><img src="images/hysacam-symbol.svg" alt=""><span><strong>HYSACAM</strong><small>Cleaner City, Healthier Life</small></span></div>
-      <div class="admin-profile-menu-wrap">
-        <button class="admin-mobile-avatar" id="admin-profile-toggle" type="button" aria-label="Open administrator profile" aria-expanded="false">A</button>
-        <div class="admin-profile-popover" id="admin-profile-popover" hidden>
-          <strong id="admin-profile-name">Administrator</strong>
-          <small id="admin-profile-email">Loading account…</small>
-          <span class="admin-profile-role">Administrator account</span>
-          <button type="button" id="admin-profile-settings">Account &amp; settings</button>
-          <button type="button" id="admin-profile-logout">Sign out</button>
-        </div>
-      </div>
-    </div>
+  <main class="admin-main admin-main-pro">
     <header class="admin-title">
-      <div><span class="eyebrow">HYSACAM KUMBA TRACKER</span><h2>Admin Dashboard</h2><p class="admin-title-subtitle">Manage operations efficiently</p></div>
+      <div><span class="eyebrow">HYSACAM KUMBA TRACKER</span><h2>Admin Dashboard</h2></div>
       <div class="admin-user-chip"><span class="admin-user-avatar">A</span><span><b id="admin-welcome">Welcome, Admin</b><small>Administrator</small></span></div>
     </header>
 
@@ -63,10 +39,6 @@
       <div><h3>Overview</h3><p>Here is what is happening across your Kumba operations</p></div>
       <span class="admin-live-status"><i></i> Live overview</span>
     </div>
-
-    <section class="admin-session-status" aria-label="Administrator session status">
-      <span class="admin-session-check">✓</span><span><small>System Status</small><strong>Admin session active</strong><em>Authorised administrator workspace</em></span><span class="admin-session-arrow">›</span>
-    </section>
 
     <section id="overview" class="admin-stat-grid">
       <article class="admin-stat-card">
@@ -81,16 +53,6 @@
         <span class="admin-stat-icon amber">◷</span>
         <div><small>Pending</small><strong id="admin-pending">—</strong><em>Awaiting attention</em></div>
       </article>
-    </section>
-
-    <section class="admin-quick-actions" aria-label="Quick actions">
-      <h3>Quick Actions</h3>
-      <div class="admin-quick-grid">
-        <a href="#manage-bins"><span>⌖</span><b>Manage<br>Bins</b></a>
-        <a href="#reports"><span>▤</span><b>Generate<br>Report</b></a>
-        <a href="#users"><span>♙＋</span><b>View<br>Users</b></a>
-        <a href="#settings"><span>⚙</span><b>Settings</b></a>
-      </div>
     </section>
 
     <section class="admin-analytics-grid">
@@ -109,7 +71,7 @@
       <div class="admin-dashboard-intro"><div><h3>Manage Dustbins</h3><p>Register, update and remove collection points</p></div><button class="button" id="admin-add-bin" type="button">＋ Add dustbin</button></div>
       <form id="admin-bin-form" class="panel admin-entry-form" hidden>
         <input type="hidden" id="bin-edit-id">
-        <label>Dustbin ID<input id="bin-id" required maxlength="48" placeholder="e.g. BIN-001"></label><label>Display name<input id="bin-name" required maxlength="120" placeholder="e.g. Mile 2 Collection Point"></label><label>Area<input id="bin-area" required maxlength="120" placeholder="e.g. Mile 2, Kumba"></label><label>Latitude<input id="bin-lat" type="number" step="any" min="-90" max="90" placeholder="4.6363"></label><label>Longitude<input id="bin-lng" type="number" step="any" min="-180" max="180" placeholder="9.4469"></label><label>Status<select id="bin-status"><option value="available">Available</option><option value="full">Full</option><option value="maintenance">Maintenance</option></select></label>
+        <label>Dustbin ID<input id="bin-id" required maxlength="48" placeholder="e.g. BIN-001"></label><label>Display name<input id="bin-name" required maxlength="120" placeholder="e.g. Mile 2 Collection Point"></label><label>Area<input id="bin-area" required maxlength="120" placeholder="e.g. Mile 2, Kumba"></label><label>Latitude<input id="bin-lat" type="number" step="any" min="-90" max="90" placeholder="4.6363"></label><label>Longitude<input id="bin-lng" type="number" step="any" min="-180" max="180" placeholder="9.4469"></label><label>Status<select id="bin-status"><option>Available</option><option>Pending</option><option>Full</option><option>Maintenance</option><option>Inactive</option></select></label>
         <div class="admin-form-actions"><button class="button" type="submit" id="bin-save">Save dustbin</button><button class="button outline" type="button" id="bin-cancel">Cancel</button></div><p class="auth-message" id="bin-form-message" role="status"></p>
       </form>
       <div class="panel admin-table-panel"><div class="admin-panel-heading"><div><h3>Registered collection points</h3><p id="admin-bin-count">Loading dustbins…</p></div><input id="admin-bin-search" class="admin-table-search" type="search" placeholder="Search ID or area"></div><div class="table-wrap"><table><thead><tr><th>ID</th><th>Name</th><th>Area</th><th>Status</th><th>Actions</th></tr></thead><tbody id="admin-bins-table"><tr><td colspan="5">Loading…</td></tr></tbody></table></div></div>
@@ -121,22 +83,7 @@
     </section>
     <section id="users" class="admin-management-section"><div class="admin-dashboard-intro"><div><h3>User Management</h3><p>View registered HYSACAM Tracker accounts and verification status</p></div></div><div class="panel admin-table-panel"><div class="admin-panel-heading"><div><h3>Registered users</h3><p id="admin-user-count">Loading users…</p></div><input id="admin-user-search" class="admin-table-search" type="search" placeholder="Search name or email"></div><div class="table-wrap"><table><thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Email verified</th><th>Joined</th></tr></thead><tbody id="admin-users-table"><tr><td colspan="5">Loading…</td></tr></tbody></table></div><p class="hint admin-permission-note">Administrator privileges are controlled by the server-side ADMIN_EMAILS allowlist. They cannot be granted from this screen.</p></div></section>
     <section id="reports" class="admin-management-section"><div class="admin-dashboard-intro"><div><h3>Resident Reports</h3><p>Review and update waste issue submissions</p></div><button class="button outline" id="admin-refresh-reports" type="button">Refresh reports</button></div><div class="panel admin-table-panel"><div class="table-wrap"><table><thead><tr><th>Reference</th><th>Issue</th><th>Area</th><th>Submitted by</th><th>Status</th><th>Update</th></tr></thead><tbody id="admin-reports-table"><tr><td colspan="6">Loading…</td></tr></tbody></table></div></div></section>
-    <section id="settings" class="admin-management-section"><div class="admin-dashboard-intro"><div><h3>System Settings &amp; Security</h3><p>Review administrator access and recent security events</p></div></div><div class="panel admin-table-panel admin-preferences-panel">
-      <h3>Dashboard preferences</h3>
-      <p>These settings affect this administrator dashboard on this device</p>
-      <label class="admin-setting-row"><span><b>Compact dashboard cards</b><small>Show dashboard summary cards with less spacing</small></span><input type="checkbox" id="admin-setting-compact"></label>
-      <label class="admin-setting-row"><span><b>Reduce motion</b><small>Use simpler transitions and scrolling</small></span><input type="checkbox" id="admin-setting-reduced-motion"></label>
-      <div class="admin-settings-actions"><button class="button outline" type="button" id="admin-setting-save">Save preferences</button><button class="button outline" type="button" id="admin-setting-reset">Reset preferences</button><button class="button" type="button" id="admin-setting-refresh">Refresh dashboard data</button></div>
-      <p class="admin-setting-feedback" id="admin-setting-feedback" role="status" aria-live="polite"></p>
-    </div>
-    <div class="panel admin-table-panel"><h3>Access control</h3><p>Only email addresses configured in the Vercel <b>ADMIN_EMAILS</b> environment variable can access this administration portal. Changes to administrator access must be made by the project owner in Vercel.</p><p class="hint">Session checks and all management actions are enforced by server-side APIs.</p></div><div class="panel admin-table-panel"><div class="admin-panel-heading"><div><h3>Recent administrator activity</h3><p>Security audit events</p></div></div><div class="table-wrap"><table><thead><tr><th>Time</th><th>Administrator</th><th>Event</th><th>Outcome</th></tr></thead><tbody id="admin-audit-table"><tr><td colspan="4">Loading…</td></tr></tbody></table></div></div></section>
-    <nav class="admin-mobile-bottom-nav" aria-label="Admin quick navigation">
-      <a href="#overview" class="active"><span>⌂</span><small>Dashboard</small></a>
-      <a href="#manage-bins"><span>▤</span><small>Dustbins</small></a>
-      <a href="#users"><span>♙</span><small>Users</small></a>
-      <a href="#reports"><span>▥</span><small>Reports</small></a>
-      <a href="#settings"><span>⚙</span><small>Settings</small></a>
-    </nav>
+    <section id="settings" class="admin-management-section"><div class="admin-dashboard-intro"><div><h3>System Settings &amp; Security</h3><p>Review administrator access and recent security events</p></div></div><div class="panel admin-table-panel"><h3>Access control</h3><p>Only email addresses configured in the Vercel <b>ADMIN_EMAILS</b> environment variable can access this administration portal. Changes to administrator access must be made by the project owner in Vercel.</p><p class="hint">Session checks and all management actions are enforced by server-side APIs.</p></div><div class="panel admin-table-panel"><div class="admin-panel-heading"><div><h3>Recent administrator activity</h3><p>Security audit events</p></div></div><div class="table-wrap"><table><thead><tr><th>Time</th><th>Administrator</th><th>Event</th><th>Outcome</th></tr></thead><tbody id="admin-audit-table"><tr><td colspan="4">Loading…</td></tr></tbody></table></div></div></section>
     <div class="admin-dashboard-footer">
       <span class="admin-footer-mark">✓</span>
       <span><b>Secure administrator workspace</b><small>Dashboard information is available only to authorised HYSACAM administrators</small></span>
@@ -149,7 +96,4 @@
 // Remove sentence-ending full stops from interface copy as requested
 (function(){const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);const nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);for(const node of nodes){if(node.parentElement&&/^(SCRIPT|STYLE|TEXTAREA)$/i.test(node.parentElement.tagName))continue;node.nodeValue=node.nodeValue.replace(/\.(?=\s|$)/g,"");}})();
 </script>
-
-
-
 </body></html>

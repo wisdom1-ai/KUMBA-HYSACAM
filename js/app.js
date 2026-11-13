@@ -106,7 +106,7 @@
 
     const { data, error } = await supabaseClient
       .from("bins")
-      .select("id, bin_code, name, area, latitude, longitude, status, notes")
+      .select("id, name, area, latitude, longitude, status, notes")
       .order("name");
 
     if (error) {
@@ -316,7 +316,7 @@
 
     const found = locations.filter(location =>
       (status === "all" || location.status === status) &&
-      `${location.bin_code} ${location.name} ${location.area} ${location.status}`
+      `${location.name} ${location.area} ${location.status}`
         .toLowerCase()
         .includes(query)
     );
@@ -326,7 +326,7 @@
           <tr>
             <td>
               <strong>${escapeHTML(location.name)}</strong>
-              <small>${escapeHTML(location.bin_code || 'Bin record')}</small>
+              <small>Bin record</small>
             </td>
             <td>${escapeHTML(location.area)}</td>
             <td>${statusBadge(location.status)}</td>

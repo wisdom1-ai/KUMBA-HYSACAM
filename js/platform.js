@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   function selectBin(bin) {
     if (!bin) return;
-    $("detail-name").textContent = bin.name || `Dustbin ${bin.bin_code || bin.id}`;
+    $("detail-name").textContent = bin.name || `Dustbin ${bin.id}`;
     $("detail-area").textContent = `${bin.area || "Area not specified"}, Kumba`;
     $("detail-area2").textContent = bin.area || "—";
     const details = $("dustbin-details");
@@ -45,7 +45,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       const dl = details.querySelector("dl");
       if (dl) {
         dl.innerHTML = `
-          <dt>Dustbin ID</dt><dd>${esc(bin.bin_code || bin.id)}</dd>
+          <dt>Dustbin ID</dt><dd>${esc(bin.id)}</dd>
           <dt>Area</dt><dd>${esc(bin.area || "—")}</dd>
           <dt>Type</dt><dd>${esc(bin.type || "Public collection point")}</dd>
           <dt>Coordinates</dt><dd>${validCoords(bin) ? `${Number(bin.latitude).toFixed(5)}, ${Number(bin.longitude).toFixed(5)}` : "Not available"}</dd>
@@ -61,7 +61,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   function renderDirectory() {
     const q = (search?.value || "").trim().toLowerCase();
-    const filtered = bins.filter(b => [b.bin_code,b.name,b.area,b.status].join(" ").toLowerCase().includes(q));
+    const filtered = bins.filter(b => [b.id,b.name,b.area,b.status].join(" ").toLowerCase().includes(q));
     const pages = Math.max(1, Math.ceil(filtered.length / pageSize));
     page = Math.min(page, pages);
     const pageRows = filtered.slice((page - 1) * pageSize, page * pageSize);
@@ -71,7 +71,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         <article class="directory-card">
           <div class="directory-card-icon" aria-hidden="true">⌖</div>
           <div class="directory-card-content">
-            <div class="directory-card-title-row"><h3>${esc(b.name || "Collection point")}</h3><span class="directory-id">${esc(b.bin_code || b.id)}</span></div>
+            <div class="directory-card-title-row"><h3>${esc(b.name || "Collection point")}</h3><span class="directory-id">${esc(b.id)}</span></div>
             <p class="directory-area">${esc(b.area || "Area not specified")}, Kumba</p>
             <p class="directory-coordinates">${validCoords(b) ? `${Number(b.latitude).toFixed(4)}, ${Number(b.longitude).toFixed(4)}` : "Coordinates not registered"}</p>
             <div class="directory-card-bottom"><span class="directory-status ${statusClass(b.status)}"><span class="status-dot"></span>${esc(b.status || "Available")}</span><button type="button" class="directory-view-button" data-bin-id="${esc(b.id)}">View details →</button></div>
@@ -89,7 +89,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       const bin = bins.find(b => String(b.id) === String(r.bin_id));
       const location = r.area || bin?.area || "Location not specified";
       const when = r.cleaned_at ? new Date(r.cleaned_at).toLocaleString() : "—";
-      return `<tr><td>${i+1}</td><td><b>${esc(bins.find(b => String(b.id) === String(r.bin_id))?.bin_code || r.bin_id || "—")}</b></td><td>${esc(location)}</td><td>${esc(when)}</td><td><span class="status ${statusClass(r.status)}">${esc(r.status || "Recorded")}</span></td><td><button type="button" class="directory-view-button" data-record-bin="${esc(r.bin_id || "")}">View</button></td></tr>`;
+      return `<tr><td>${i+1}</td><td><b>${esc(r.bin_id || "—")}</b></td><td>${esc(location)}</td><td>${esc(when)}</td><td><span class="status ${statusClass(r.status)}">${esc(r.status || "Recorded")}</span></td><td><button type="button" class="directory-view-button" data-record-id="${esc(r.id || "")}" data-record-bin="${esc(r.bin_id || "")}">View</button></td></tr>`;
     }).join("") : `<tr><td colspan="6"><div class="empty-state compact"><h3>No verified cleaning records yet</h3><p>Verified staff cleaning activities will appear here</p></div></td></tr>`;
   }
 
@@ -103,9 +103,35 @@ document.addEventListener("DOMContentLoaded", async () => {
       selectBin(bin);
     }
   });
+  // Cleaning-record View opens the actual selected record, not just its dustbin.
+  let recordDialog = document.getElementById("cleaning-record-dialog");
+  if (!recordDialog) {
+    recordDialog = document.createElement("dialog");
+    recordDialog.id = "cleaning-record-dialog";
+    recordDialog.className = "record-detail-dialog";
+    recordDialog.innerHTML = `<div class="record-detail-head"><div><span class="eyebrow">VERIFIED ACTIVITY</span><h3>Cleaning record details</h3></div><button type="button" class="record-detail-close" aria-label="Close details">×</button></div><dl class="record-detail-fields"></dl>`;
+    document.body.appendChild(recordDialog);
+    recordDialog.querySelector(".record-detail-close").addEventListener("click",()=>recordDialog.close());
+    recordDialog.addEventListener("click",event=>{if(event.target===recordDialog)recordDialog.close();});
+  }
   table?.addEventListener("click", e => {
     const btn = e.target.closest("[data-record-bin]");
-    if (btn) selectBin(bins.find(b => String(b.id) === btn.dataset.recordBin));
+    if (!btn) return;
+    const record = records.find(r => String(r.id || "") === btn.dataset.recordId);
+    if (!record) return;
+    const bin = bins.find(b => String(b.id) === String(record.bin_id));
+    const fields = [
+      ["Dustbin", bin?.name || "Collection point"],
+      ["Dustbin ID", bin?.bin_code || record.bin_id || "—"],
+      ["Location", record.area || bin?.area || "—"],
+      ["Activity", record.activity || "Cleaning"],
+      ["Date & time", record.cleaned_at ? new Date(record.cleaned_at).toLocaleString() : "—"],
+      ["Status", record.status || "Recorded"],
+      ["Notes", record.notes || "No additional notes"],
+      ["Verification", record.verified ? "Verified" : "Not verified"]
+    ];
+    recordDialog.querySelector(".record-detail-fields").innerHTML = fields.map(([label,value])=>`<dt>${esc(label)}</dt><dd>${esc(value)}</dd>`).join("");
+    if (typeof recordDialog.showModal === "function") recordDialog.showModal(); else recordDialog.setAttribute("open","");
   });
   search?.addEventListener("input", () => { page = 1; renderDirectory(); });
   $("prev-page")?.addEventListener("click", () => { page = Math.max(1,page-1); renderDirectory(); });
@@ -117,12 +143,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (search) search.value = q;
     page = 1; renderDirectory();
     $("directory")?.scrollIntoView({behavior:"smooth"});
-    $("search-message").textContent = q ? `${bins.filter(b => [b.bin_code,b.name,b.area].join(" ").toLowerCase().includes(q.toLowerCase())).length} matching location(s) found` : "Enter a location or dustbin ID";
+    $("search-message").textContent = q ? `${bins.filter(b => [b.id,b.name,b.area].join(" ").toLowerCase().includes(q.toLowerCase())).length} matching location(s) found` : "Enter a location or dustbin ID";
   });
 
   try {
     const [{data: binRows,error:binError},{data: recordRows,error:recordError}] = await Promise.all([
-      client.from("bins").select("id,bin_code,name,area,latitude,longitude,status").order("name",{ascending:true}).limit(1000),
+      client.from("bins").select("id,name,area,latitude,longitude,status").order("name",{ascending:true}).limit(1000),
       client.from("cleaning_records").select("id,bin_id,area,cleaned_at,activity,status,notes").eq("verified",true).order("cleaned_at",{ascending:false}).limit(100)
     ]);
     if (binError) throw binError;
