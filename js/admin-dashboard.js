@@ -21,7 +21,13 @@
       headers: { ...(options.body ? { "Content-Type": "application/json" } : {}), ...(options.headers || {}) }
     });
     const data = await response.json().catch(() => ({}));
-    if (!response.ok) throw new Error(data.message || "The request could not be completed.");
+    if (!response.ok) {
+      const diagnostic = data.diagnostic;
+      const diagnosticText = diagnostic
+        ? `\\nDatabase code: ${diagnostic.code || "UNKNOWN"}\\nDatabase message: ${diagnostic.message || "Not provided"}${diagnostic.details ? `\\nDetails: ${diagnostic.details}` : ""}${diagnostic.hint ? `\\nHint: ${diagnostic.hint}` : ""}`
+        : "";
+      throw new Error((data.message || "The request could not be completed.") + diagnosticText);
+    }
     return data;
   }
   const post = (url, body) => request(url, { method: "POST", body: JSON.stringify(body) });

@@ -70,9 +70,31 @@ export default async function handler(req, res) {
             hint: error.hint || null
           });
           if (error.code === '23505') return res.status(409).json({ message: 'That dustbin code is already registered.' });
-          if (error.code === '42703') throw new Error('The bins.bin_code column is missing. Run supabase/uuid-bin-code-migration.sql in Supabase first.');
-          if (error.code === '22P02') throw new Error('The database rejected an identifier format. Confirm the UUID/bin-code migration is installed.');
-          throw new Error('Could not register this dustbin. Check Vercel function logs for the Supabase error details.');
+          // Return limited database diagnostics only after the administrator session
+          // and administrator email have been verified above. Never include request
+          // headers, cookies, access tokens, or Supabase credentials.
+          const diagnostic = {
+            code: String(error.code || 'UNKNOWN').slice(0, 40),
+            message: String(error.message || 'No database message was provided.').slice(0, 500),
+            details: String(error.details || '').slice(0, 500),
+            hint: String(error.hint || '').slice(0, 500)
+          };
+          if (error.code === '42703') {
+            return res.status(500).json({
+              message: 'The database is missing a required column. Check the diagnostic below.',
+              diagnostic
+            });
+          }
+          if (error.code === '22P02') {
+            return res.status(500).json({
+              message: 'The database rejected a value format. Check the diagnostic below.',
+              diagnostic
+            });
+          }
+          return res.status(500).json({
+            message: 'Supabase rejected the dustbin registration. Share the diagnostic below so we can identify the exact fix.',
+            diagnostic
+          });
         }
         return res.status(201).json({ bin: data });
       }
