@@ -130,28 +130,29 @@
 (function () {
   const side = document.querySelector('.admin-side-pro');
   const toggle = document.getElementById('admin-menu-toggle');
-  const backdrop = document.getElementById('admin-drawer-backdrop');
-  if (!side || !toggle || !backdrop) return;
-  const closeMenu = () => {
-    side.classList.remove('drawer-open');
-    backdrop.classList.remove('visible');
-    toggle.setAttribute('aria-expanded', 'false');
-    document.body.classList.remove('admin-drawer-lock');
-  };
-  const openMenu = () => {
-    side.classList.add('drawer-open');
-    backdrop.classList.add('visible');
-    toggle.setAttribute('aria-expanded', 'true');
-    document.body.classList.add('admin-drawer-lock');
+  const main = document.querySelector('.admin-main-pro');
+  if (!side || !toggle || !main) return;
+  const isPhone = () => window.matchMedia('(max-width: 560px)').matches;
+  const setCollapsed = collapsed => {
+    side.classList.toggle('drawer-collapsed', Boolean(collapsed && isPhone()));
+    main.classList.toggle('menu-expanded', Boolean(collapsed && isPhone()));
+    toggle.setAttribute('aria-expanded', String(!collapsed));
+    toggle.setAttribute('aria-label', collapsed ? 'Open navigation menu' : 'Close navigation menu');
   };
   toggle.addEventListener('click', () => {
-    side.classList.contains('drawer-open') ? closeMenu() : openMenu();
+    setCollapsed(!side.classList.contains('drawer-collapsed'));
   });
-  backdrop.addEventListener('click', closeMenu);
-  side.querySelectorAll('a').forEach(link => link.addEventListener('click', closeMenu));
   document.addEventListener('keydown', event => {
-    if (event.key === 'Escape') closeMenu();
+    if (event.key === 'Escape' && isPhone()) setCollapsed(true);
   });
+  window.addEventListener('resize', () => {
+    if (!isPhone()) {
+      side.classList.remove('drawer-collapsed');
+      main.classList.remove('menu-expanded');
+      toggle.setAttribute('aria-expanded', 'true');
+    }
+  });
+  setCollapsed(false);
 })();
 </script>
 
