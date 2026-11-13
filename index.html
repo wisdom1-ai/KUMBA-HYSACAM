@@ -4,7 +4,10 @@
     <img class="hysacam-logo" src="images/hysacam-symbol.svg" alt="HYSACAM symbol">
     <span class="brand-wordmark"><b>HYSACAM</b><small>KUMBA TRACKER</small></span>
   </a>
-  <button id="menu-toggle" class="menu-toggle" type="button" aria-label="Open navigation" aria-controls="main-nav" aria-expanded="false"><span></span><span></span><span></span></button>
+  <div class="header-tools">
+    <button id="notification-toggle" class="notification-toggle" type="button" aria-label="Open notifications" aria-expanded="false">🔔<span id="notification-count" class="notification-count" hidden>0</span></button>
+    <button id="menu-toggle" class="menu-toggle" type="button" aria-label="Open navigation" aria-controls="main-nav" aria-expanded="false"><span></span><span></span><span></span></button>
+  </div>
   <div id="header-account-actions" class="header-account-actions" aria-label="Account actions"></div>
   <nav id="main-nav" aria-label="Main navigation">
     <div class="mobile-nav-head">
@@ -17,6 +20,8 @@
     <a href="#cleaning"><span class="nav-item-icon">✓</span><span>Cleaning Records</span></a>
     <a href="#report"><span class="nav-item-icon">＋</span><span>Report an Issue</span></a>
     <a href="#about"><span class="nav-item-icon">ⓘ</span><span>About</span></a>
+    <a href="#settings" data-open-settings><span class="nav-item-icon">⚙</span><span>Settings</span></a>
+    <a href="#profile" data-open-profile><span class="nav-item-icon">●</span><span>Profile</span></a>
     <div class="mobile-nav-footer">HYSACAM Kumba Tracker</div>
   </nav>
   <button class="nav-backdrop" id="nav-backdrop" type="button" aria-label="Close navigation"></button>
@@ -30,10 +35,29 @@
 <section id="details" class="page-section tint"><div class="section-head"><div><span class="eyebrow">COLLECTION POINT INFORMATION</span><h2>Dustbin Details</h2></div></div><div id="dustbin-details" class="detail-card"><div class="bin-photo"><img src="images/hysacam-truck.jpg" alt="HYSACAM collection team working beside a waste collection truck"></div><div class="detail-content"><div class="detail-top"><div><span class="eyebrow">SELECTED COLLECTION POINT</span><h3 id="detail-name">Select a dustbin</h3></div><span class="status">Not selected</span></div><p>📍 <span id="detail-area">Choose a location from the directory</span></p><h4>Additional Information</h4><dl><dt>Area</dt><dd id="detail-area2">—</dd><dt>Collection point type</dt><dd>Awaiting verified record</dd><dt>Last updated</dt><dd>Awaiting verified record</dd></dl><p class="hint">Cleaning status is updated by authorised staff when verified records are connected</p></div></div></section>
 <section id="cleaning" class="page-section"><div class="section-head"><div><span class="eyebrow">COMMUNITY CLEANLINESS</span><h2>Cleaning Records</h2><p>View verified cleaning activities across Kumba</p></div></div><div class="table-wrap"><table><thead><tr><th>#</th><th>Dustbin ID</th><th>Location</th><th>Date &amp; Time</th><th>Status</th><th>Action</th></tr></thead><tbody id="cleaning-table"></tbody></table></div></section>
 
+<section id="settings" class="page-section account-page" aria-labelledby="settings-title">
+  <div class="section-head"><div><span class="eyebrow">PREFERENCES</span><h2 id="settings-title">Settings</h2><p>Manage the preferences for this device and your HYSACAM account</p></div></div>
+  <div class="account-card"><div class="account-avatar" aria-hidden="true">●</div><div><h3 id="settings-user-name">Loading account…</h3><p id="settings-user-email">Checking your signed-in account</p><span id="settings-user-role" class="account-role">Account</span></div></div>
+  <div class="settings-list">
+    <label class="setting-row"><span><b>Notifications</b><small>Show in-app updates about your reports and cleaning activity</small></span><input id="pref-notifications" type="checkbox" checked></label>
+    <label class="setting-row"><span><b>Reduce motion</b><small>Use simpler transitions throughout the website</small></span><input id="pref-reduce-motion" type="checkbox"></label>
+    <label class="setting-row"><span><b>Compact layout</b><small>Use tighter spacing on this device</small></span><input id="pref-compact" type="checkbox"></label>
+    <a class="setting-row setting-link" href="forgot-password.html"><span><b>Password &amp; security</b><small>Open the secure password recovery page</small></span><span aria-hidden="true">›</span></a>
+    <a class="setting-row setting-link" href="#profile"><span><b>Profile information</b><small>View your account details</small></span><span aria-hidden="true">›</span></a>
+  </div>
+  <p id="settings-save-message" class="settings-note" role="status" aria-live="polite">Preferences are saved on this device only</p>
+</section>
+<section id="profile" class="page-section account-page" aria-labelledby="profile-title">
+  <div class="section-head"><div><span class="eyebrow">YOUR ACCOUNT</span><h2 id="profile-title">Profile</h2><p>Your signed-in HYSACAM Kumba Tracker account</p></div></div>
+  <div class="profile-card"><div class="account-avatar large" aria-hidden="true">●</div><h3 id="profile-user-name">Loading account…</h3><p id="profile-user-email">—</p><span id="profile-user-role" class="account-role">Account</span><button id="profile-signout" class="button outline" type="button">Sign out</button></div>
+  <p class="settings-note">For your security, account identity is read from the authenticated server session</p>
+</section>
 <section id="about" class="about-page"><div class="about-nav"><a class="brand" href="#home" aria-label="HYSACAM Kumba Tracker home"><img class="hysacam-logo" src="images/hysacam-symbol.svg" alt="HYSACAM symbol"></a><nav><a href="#home">Home</a><a href="#map">Map</a><a href="#directory">Directory</a><a href="#cleaning">Cleaning Records</a><a href="#about">About</a></nav></div><div class="about-body"><div class="about-copy"><span class="eyebrow">WHO WE ARE</span><h2>About HYSACAM</h2><p>HYSACAM (Highlands and Western Sanitation Company) is committed to keeping our communities clean and healthy. This platform helps residents and staff locate waste collection points, track cleaning activities and promote responsible waste management in Kumba</p><div class="values"><span>🌿 <b>Cleaner<br>Environment</b></span><span>♥ <b>Better<br>Health</b></span><span>♻ <b>Sustainable<br>Communities</b></span></div></div><div class="about-image"><img src="images/hysacam-truck.jpg" alt="HYSACAM collection team working beside a waste collection truck"></div></div><footer class="about-footer"><span>© 2026 HYSACAM. All rights reserved</span></footer></section></main><footer class="site-footer"><span>© HYSACAM Kumba Tracker</span><a href="#home">Back to top ↑</a></footer>
+<aside id="notification-panel" class="notification-panel" hidden aria-label="Notifications"><div class="notification-head"><div><span class="eyebrow">LATEST UPDATES</span><h3>Notifications</h3></div><button id="notification-close" type="button" aria-label="Close notifications">×</button></div><div id="notification-list" class="notification-list"><p class="notification-empty">Loading your latest updates…</p></div><p class="notification-foot">Updates are based on records available to your signed-in account</p></aside>
+<nav class="mobile-bottom-nav" aria-label="Quick navigation"><a href="#home" class="active"><span>⌂</span><b>Home</b></a><a href="#map"><span>⌖</span><b>Map</b></a><a href="#report"><span>▤</span><b>Reports</b></a><a href="#settings"><span>⚙</span><b>Settings</b></a><a href="#profile"><span>●</span><b>Profile</b></a></nav>
 <div class="modal" id="record-modal"><form id="record-form" class="modal-card"><button type="button" class="modal-close" id="close-modal">×</button><h2>Add Cleaning Record</h2><label>Dustbin ID</label><input id="record-bin" required value="BIN-001"><label>Location</label><input id="record-location" required placeholder="Enter location"><label>Date &amp; Time</label><input id="record-date" type="datetime-local" required><label>Status</label><select id="record-status"><option>Cleaned</option><option>Pending</option></select><button class="button full" type="button" disabled>Administrator access required</button><p class="hint">Cleaning records are created by authorised HYSACAM administrators</p></form></div><link rel="stylesheet" href="https://unpkg.com/leaflet-rotate@0.5.4/dist/leaflet-rotate.css">
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="https://unpkg.com/leaflet-rotate@0.5.4/dist/leaflet-rotate.js"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="js/supabase.js"></script><script src="js/map.js"></script><script src="js/platform.js"></script><script src="js/reports.js"></script><script defer src="js/auth-guard.js"></script><script>
+<script src="https://unpkg.com/leaflet-rotate@0.5.4/dist/leaflet-rotate.js"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="js/supabase.js"></script><script src="js/map.js"></script><script src="js/platform.js"></script><script src="js/reports.js"></script><script src="js/app-shell.js"></script><script defer src="js/auth-guard.js"></script><script>
 // Remove sentence-ending full stops from interface copy as requested
 (function(){const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);const nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);for(const node of nodes){if(node.parentElement&&/^(SCRIPT|STYLE|TEXTAREA)$/i.test(node.parentElement.tagName))continue;node.nodeValue=node.nodeValue.replace(/\.(?=\s|$)/g,"");}})();
 </script>
