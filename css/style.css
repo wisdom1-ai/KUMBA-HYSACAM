@@ -1631,3 +1631,30 @@ body{padding-bottom:calc(82px + env(safe-area-inset-bottom))}
 .topbar nav.dashboard-menu [hidden]{display:none!important}
 
 .privacy-dialog-card{max-width:440px;padding:28px}.privacy-dialog-card p{font-size:13px;line-height:1.65;color:#617067;margin:12px 0 20px}.privacy-dialog-icon{margin-bottom:10px}
+
+/* Settings preference dialogs */
+.settings-dialog.open{display:flex;align-items:center;justify-content:center;padding:18px;z-index:3000}
+.settings-dialog-card{width:min(480px,100%);max-height:min(82dvh,700px);overflow:auto;padding:26px;border-radius:22px}
+.settings-dialog-card h2{margin:4px 42px 18px 0;color:#183b2d;font-size:23px}
+.settings-dialog-content{display:grid;gap:15px;color:#5e6d63;line-height:1.55}
+.settings-dialog-content p{margin:0}
+.settings-switch-row{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px;border:1px solid #e3ece6;border-radius:14px;background:#f8fbf9;cursor:pointer}
+.settings-switch-row span{display:grid;gap:4px}
+.settings-switch-row b{color:#183b2d;font-size:14px}
+.settings-switch-row small{color:#6a786f;font-size:12px}
+.settings-switch-row input{width:22px;height:22px;accent-color:#087747;flex:0 0 auto}
+.settings-dialog-note{font-size:12px;color:#748078}
+.settings-dialog-card .settings-done{margin-top:20px;width:100%;border:0;cursor:pointer}
+.profile-card .profile-avatar{font-size:0}
+.profile-card .profile-avatar:before{content:"♻";font-size:39px;color:#087747}
+.dark-appearance{background:#101a15!important;color:#e8f2ec!important}
+.dark-appearance .page-section,.dark-appearance .settings-profile-card,.dark-appearance .profile-card,.dark-appearance .settings-item,.dark-appearance .settings-dialog-card{background:#19271f!important;color:#e8f2ec!important;border-color:#304438!important}
+.dark-appearance .settings-item,.dark-appearance .settings-item b,.dark-appearance .settings-dialog-card h2,.dark-appearance .settings-switch-row b{color:#e8f2ec!important}
+.dark-appearance .settings-item small,.dark-appearance .settings-profile-card small,.dark-appearance .profile-card p,.dark-appearance .settings-dialog-content{color:#b7c8bd!important}
+.dark-appearance .settings-switch-row{background:#223329;border-color:#3a5143}
+.dark-appearance .settings-switch-row small{color:#b7c8bd}
+.dark-appearance .bottom-nav{background:rgba(20,31,25,.97);border-color:#304438}
+.dark-appearance .bottom-nav a{color:#d8e6dd}
+.dark-appearance .bottom-nav a.active{color:#54c58b}
+.dark-appearance .settings-footer{background:#1d3326;color:#e5f5eb}
+@media(max-width:560px){.settings-dialog-card{padding:22px 18px}.settings-switch-row{padding:12px}}
