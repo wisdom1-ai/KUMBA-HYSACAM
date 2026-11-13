@@ -75,7 +75,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const filteredBins = bins.filter((bin) => {
       const searchable = [
-        bin.id,
+        bin.bin_code,
         bin.name,
         bin.area,
         bin.status
@@ -126,7 +126,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         ${filteredBins.map((bin) => {
           const name = escapeHTML(bin.name || "Unnamed collection point");
           const area = escapeHTML(bin.area || "Area not specified");
-          const id = escapeHTML(bin.id || "ID unavailable");
+          const id = escapeHTML(bin.bin_code || bin.id || "ID unavailable");
           const status = getStatus(bin.status);
           const coordinatesValid = validCoordinates(bin);
 
@@ -150,7 +150,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                   <h3 title="${name}">${name}</h3>
                   <span class="directory-id"
                     title="Full ID: ${id}"
-                    aria-label="Dustbin ID ${id}">${escapeHTML(shortId(bin.id))}</span>
+                    aria-label="Dustbin ID ${id}">${escapeHTML(shortId(bin.bin_code || bin.id))}</span>
                 </div>
 
                 <p class="directory-area">${area}</p>
@@ -247,7 +247,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     try {
       const { data, error } = await supabaseClient
         .from("bins")
-        .select("id, name, area, latitude, longitude, status")
+        .select("id, bin_code, name, area, latitude, longitude, status")
         .order("name", { ascending: true });
 
       if (error) throw error;

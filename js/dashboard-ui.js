@@ -1,93 +1,51 @@
-(() => {
-  "use strict";
-  const $ = (id) => document.getElementById(id);
-  const client = window.supabaseClient;
-  const pageIds = ["home", "map", "directory", "reports", "report", "cleaning", "details", "settings", "profile", "about"];
-  function route() {
-    let id = location.hash.replace("#", "") || "home";
-    if (!pageIds.includes(id)) id = "home";
-    document.querySelectorAll(".app-page").forEach(p => p.classList.toggle("active-page", p.id === id));
-    document.querySelectorAll(".bottom-nav [data-tab]").forEach(a => a.classList.toggle("active", a.dataset.tab === (id === "directory" ? "map" : id === "report" ? "reports" : id)));
-    const workspace = $("map-workspace");
-    const mapHost = id === "map" ? $("map-map-host") : $("home-map-host");
-    if (workspace && mapHost && workspace.parentElement !== mapHost) mapHost.appendChild(workspace);
-    if (id === "map") setTimeout(() => window.dispatchEvent(new Event("resize")), 120);
-    $("main-nav").hidden = true;
-    $("menu-toggle").setAttribute("aria-expanded", "false");
-    $("notification-panel").hidden = true;
+"use strict";
+document.addEventListener("DOMContentLoaded", () => {
+  const $ = id => document.getElementById(id);
+  const main = document.querySelector("main");
+  if (!main) return;
+  // Keep the existing page sections and their database-backed IDs intact.
+  const nav = document.createElement("nav");
+  nav.className = "bottom-nav"; nav.setAttribute("aria-label", "Main navigation");
+  nav.innerHTML = `<a href="#home" data-tab="home"><span>⌂</span><b>Home</b></a><a href="#map" data-tab="map"><span>♧</span><b>Map</b></a><a href="#report" data-tab="report"><span>▤</span><b>Reports</b></a><a href="#settings" data-tab="settings"><span>⚙</span><b>Settings</b></a><a href="#profile" data-tab="profile"><span>●</span><b>Profile</b></a>`;
+  document.body.append(nav);
+  const settings = document.createElement("section"); settings.id="settings"; settings.className="page-section app-extra-page"; settings.innerHTML=`<div class="section-head"><div><span class="eyebrow">PREFERENCES & SECURITY</span><h2>Settings</h2><p>Manage your account and application preferences</p></div></div><div class="settings-profile-card"><span class="settings-avatar">●</span><div><b id="settings-user-name">Guest User</b><small id="settings-user-email">Sign in to view account details</small><span class="role-pill">Resident account</span></div></div><div class="settings-list"><a class="settings-item" href="signin.html"><span class="settings-icon">♙</span><span><b>Account Settings</b><small>Manage your account information</small></span><span>›</span></a><button class="settings-item" id="settings-notifications"><span class="settings-icon">♟</span><span><b>Notifications</b><small>Manage notification preferences</small></span><span>›</span></button><button class="settings-item" id="settings-privacy"><span class="settings-icon">♢</span><span><b>Privacy & Security</b><small>Review your account security</small></span><span>›</span></button><button class="settings-item" id="settings-appearance"><span class="settings-icon">⚙</span><span><b>App Preferences</b><small>Appearance and display options</small></span><span>›</span></button><a class="settings-item" href="#about"><span class="settings-icon">ⓘ</span><span><b>About HYSACAM</b><small>Platform information</small></span><span>›</span></a></div><button id="settings-signout" class="signout-button" hidden>↪ Sign Out</button><div class="settings-footer"><span class="footer-recycle">♻</span><b>HYSACAM Kumba Tracker</b><p>Cleaner City. Healthier Community.</p><small>© 2026 HYSACAM. All rights reserved</small></div>`;
+  const profile = document.createElement("section"); profile.id="profile"; profile.className="page-section app-extra-page"; profile.innerHTML=`<div class="section-head"><div><span class="eyebrow">YOUR ACCOUNT</span><h2>Profile</h2><p>Manage your HYSACAM Tracker account</p></div></div><div class="profile-card"><span class="profile-avatar">●</span><h2 id="profile-user-name">Guest User</h2><p id="profile-user-email">Not signed in</p><span class="role-pill">Resident</span></div><div class="settings-list"><a class="settings-item" href="signin.html"><span class="settings-icon">♙</span><span><b>Sign In / Account Access</b><small>Access your resident account</small></span><span>›</span></a><a class="settings-item" href="#report"><span class="settings-icon">▤</span><span><b>My Reports</b><small>Track submitted reports</small></span><span>›</span></a><a class="settings-item" href="#settings"><span class="settings-icon">⚙</span><span><b>Settings</b><small>Manage app preferences</small></span><span>›</span></a></div><button id="profile-signout" class="signout-button" hidden>↪ Sign Out</button>`;
+  main.append(settings, profile);
+  // Header account controls and notification tray.
+  const header=document.querySelector(".topbar");
+  if(header){
+    const brand=header.querySelector(".brand"); if(brand){brand.innerHTML=`<span class="brand-symbol">♻</span><span class="brand-wordmark"><b>HYSACAM</b><small>Kumba Tracker</small></span>`;}
+    const actions=document.createElement("div"); actions.className="dashboard-header-actions"; actions.innerHTML=`<button id="notification-toggle" class="header-icon-button" aria-label="Notifications" type="button">♟<span id="notification-count" hidden>0</span></button>`;
+    header.append(actions);
+    const panel=document.createElement("div");panel.id="notification-panel";panel.className="notification-panel";panel.hidden=true;panel.innerHTML=`<div class="notification-head"><b>Notifications</b></div><p class="notification-empty">No new notifications</p>`;header.append(panel);
+    const toggle=$('notification-toggle');toggle?.addEventListener('click',()=>{panel.hidden=!panel.hidden;toggle.setAttribute('aria-expanded',String(!panel.hidden));});
   }
-  window.addEventListener("hashchange", route); route();
-  $("menu-toggle")?.addEventListener("click", () => {
-    const menu = $("main-nav"); menu.hidden = !menu.hidden;
-    $("menu-toggle").setAttribute("aria-expanded", String(!menu.hidden));
-  });
-  $("notification-toggle")?.addEventListener("click", () => {
-    const panel = $("notification-panel"); panel.hidden = !panel.hidden;
-    $("notification-toggle").setAttribute("aria-expanded", String(!panel.hidden));
-  });
-  $("home-filter-button")?.addEventListener("click", () => location.hash = "#map");
-  $("map-filter-button")?.addEventListener("click", () => { const panel = $("map-filter-panel"); if (panel) panel.hidden = !panel.hidden; });
-  $("map-location-search")?.addEventListener("input", e => { const homeSearch = $("location-input"); if (homeSearch) homeSearch.value = e.target.value; });
-  $("location-input")?.addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); location.hash = "#map"; setTimeout(() => { const q = $("map-location-search"); if (q) { q.value = e.target.value; q.dispatchEvent(new Event("input")); } }, 120); } });
-  const signOut = async () => {
-    if (!client) { location.href = "signin.html"; return; }
-    const { error } = await client.auth.signOut();
-    if (error) { alert("Could not sign out. Please try again."); return; }
-    location.href = "signin.html";
-  };
-  $("menu-signout")?.addEventListener("click", signOut);
-  $("settings-signout")?.addEventListener("click", signOut);
-  $("notification-mark-read")?.addEventListener("click", () => {
-    localStorage.setItem("hysacam_notifications_read", "true");
-    localStorage.setItem("hysacam_reports_read_at", String(Date.now()));
-    $("notification-count").hidden = true;
-    $("notification-list").innerHTML = '<p class="empty-notifications">You’re all caught up</p>';
-  });
-  document.querySelectorAll("[data-setting]").forEach(btn => btn.addEventListener("click", () => {
-    const target = $("settings-detail"); const type = btn.dataset.setting; target.hidden = false;
-    const content = {
-      account: '<h3>Account Settings</h3><p>Your account details are managed securely through sign-in.</p><a class="button" href="signin.html">Manage account</a>',
-      notifications: '<h3>Notifications</h3><label class="preference-row"><span>Email notifications</span><input type="checkbox" id="email-notifications"></label><label class="preference-row"><span>In-app notifications</span><input type="checkbox" id="inapp-notifications" checked></label><p class="muted">Email delivery depends on your account and Supabase email configuration.</p>',
-      privacy: '<h3>Privacy &amp; Security</h3><p>Use a strong password and never share your sign-in code. Password changes and recovery are handled by the secure authentication service.</p><a class="button" href="forgot-password.html">Reset password</a>',
-      preferences: '<h3>App Preferences</h3><label class="preference-row"><span>Dark appearance</span><input type="checkbox" id="dark-appearance"></label><p class="muted">Your appearance preference is saved on this device.</p>'
-    };
-    target.innerHTML = content[type] || '';
-    const dark = $("dark-appearance"); if (dark) { dark.checked = localStorage.getItem("hysacam_dark_mode") === "true"; dark.addEventListener("change", () => { document.body.classList.toggle("dark-mode", dark.checked); localStorage.setItem("hysacam_dark_mode", String(dark.checked)); }); }
-    const inapp = $("inapp-notifications"); if (inapp) { inapp.checked = localStorage.getItem("hysacam_inapp_notifications") !== "false"; inapp.addEventListener("change", () => localStorage.setItem("hysacam_inapp_notifications", String(inapp.checked))); }
-    const email = $("email-notifications"); if (email) { email.checked = localStorage.getItem("hysacam_email_notifications") === "true"; email.addEventListener("change", () => localStorage.setItem("hysacam_email_notifications", String(email.checked))); }
-  }));
-  if (localStorage.getItem("hysacam_dark_mode") === "true") document.body.classList.add("dark-mode");
-  async function loadReportActivity() {
-    try {
-      const response = await fetch('/api/reports', { credentials: 'include', cache: 'no-store' });
-      if (!response.ok) return;
-      const payload = await response.json(); const reports = payload.reports || [];
-      const recent = reports.slice(0, 3);
-      const home = $('home-recent-reports');
-      if (home) home.innerHTML = recent.length ? recent.map(r => `<article class="resident-report-item"><div><b>${String(r.reference_code || 'Report').replace(/[<>]/g,'')}</b><span class="status">${String(r.status || 'Submitted').replace(/[<>]/g,'')}</span></div><p>${String(r.issue_type || 'Waste issue').replace(/[<>]/g,'')} · ${String(r.area || 'Kumba').replace(/[<>]/g,'')}</p><small>${r.created_at ? new Date(r.created_at).toLocaleString() : ''}</small></article>`).join('') : '<p class="muted">No reports have been submitted yet</p>';
-      const counts = { total: reports.length, pending: 0, resolved: 0, closed: 0 };
-      reports.forEach(r => { const st = String(r.status || '').toLowerCase(); if (['resolved','closed','rejected'].includes(st)) counts[st === 'rejected' ? 'closed' : st]++; else counts.pending++; });
-      [['report-total',counts.total],['report-pending',counts.pending],['report-resolved',counts.resolved],['report-closed',counts.closed]].forEach(([id,n]) => { if ($(id)) $(id).textContent = n; });
-      const readAt = Number(localStorage.getItem('hysacam_reports_read_at') || 0);
-      const unread = reports.filter(r => new Date(r.updated_at || r.created_at || 0).getTime() > readAt);
-      const badge = $('notification-count'); const list = $('notification-list');
-      if (badge && unread.length && localStorage.getItem('hysacam_inapp_notifications') !== 'false') { badge.textContent = unread.length > 9 ? '9+' : String(unread.length); badge.hidden = false; }
-      if (list) list.innerHTML = unread.length ? unread.slice(0,5).map(r => `<article class="notification-item"><b>${String(r.reference_code || 'Report update').replace(/[<>]/g,'')}</b><p>${String(r.status || 'Submitted').replace(/[<>]/g,'')} · ${String(r.issue_type || 'Waste report').replace(/[<>]/g,'')}</p><small>${r.updated_at || r.created_at ? new Date(r.updated_at || r.created_at).toLocaleString() : ''}</small></article>`).join('') : '<p class="empty-notifications">You’re all caught up</p>';
-      $('notification-mark-read')?.addEventListener('click', () => localStorage.setItem('hysacam_reports_read_at', String(Date.now())), { once: true });
-    } catch (error) { console.info('[HYSACAM] Report activity is not available yet', error); }
+  // Replace the old hamburger navigation with a compact account/menu panel.
+  const menu=$('main-nav'); if(menu){menu.innerHTML=`<div class="mobile-nav-head"><b>HYSACAM Kumba Tracker</b><button id="menu-close" type="button" aria-label="Close menu">×</button></div><a href="#home">⌂ <span>Home</span></a><a href="#map">♧ <span>Dustbin Map</span></a><a href="#directory">▤ <span>Dustbin Directory</span></a><a href="#cleaning">☷ <span>Cleaning Records</span></a><a href="#report">＋ <span>Submit a Report</span></a><a href="#settings">⚙ <span>Settings</span></a><a href="#profile">● <span>Profile</span></a><a href="#about">ⓘ <span>About HYSACAM</span></a>`;menu.classList.add('dashboard-menu');}
+  const menuBtn=$('menu-toggle');menuBtn?.addEventListener('click',()=>{menu?.classList.toggle('open');menuBtn.setAttribute('aria-expanded',String(menu?.classList.contains('open')));});
+  $('menu-close')?.addEventListener('click',()=>menu?.classList.remove('open'));
+  // Route visibility: keep every existing section and its original IDs available.
+  const routeSections=[...main.querySelectorAll('section[id]')];
+  function route(){const raw=(location.hash||'#home').slice(1);let target=raw==='map'?'map':raw;const mapSection=document.getElementById('map');
+    routeSections.forEach(s=>{s.classList.toggle('route-hidden',!['home','map','report','directory','cleaning','details','about','settings','profile'].includes(target)?false:(target==='home'?!(s.id==='home'||s.id==='home-services'||s.id==='map'||s.id==='home-recent-reports'):target==='map'?s.id!=='map':s.id!==target));});
+    // Sections that belong to a selected page remain accessible via the original navigation/menu.
+    if(!document.getElementById(target) && target!=='map') {routeSections.forEach(s=>s.classList.remove('route-hidden'));}
+    if(target==='map' && mapSection){mapSection.classList.remove('route-hidden');setTimeout(()=>window.dispatchEvent(new Event('resize')),100);}
+    nav.querySelectorAll('a').forEach(a=>a.classList.toggle('active',a.dataset.tab===target));
+    menu?.classList.remove('open');
+    window.scrollTo({top:0,behavior:'instant'});
   }
-  async function loadUser() {
-    if (!client) return;
-    const { data } = await client.auth.getUser(); const user = data?.user;
-    if (!user) return;
-    loadReportActivity();
-    const name = user.user_metadata?.full_name || user.user_metadata?.name || user.email?.split("@")[0] || "Resident";
-    ["menu-user-name", "settings-user-name", "profile-name"].forEach(id => { if ($(id)) $(id).textContent = name; });
-    ["menu-user-email", "settings-user-email", "profile-email"].forEach(id => { if ($(id)) $(id).textContent = user.email || ""; });
-    if ($("profile-signin")) $("profile-signin").hidden = true;
-    if ($("report-auth-gate")) $("report-auth-gate").hidden = true;
-    if ($("resident-report-form")) $("resident-report-form").hidden = false;
-    if ($("resident-my-reports")) $("resident-my-reports").hidden = false;
-  }
-  loadUser();
-})();
+  window.addEventListener('hashchange',route); route();
+  nav.addEventListener('click',e=>{const a=e.target.closest('a');if(a){nav.querySelectorAll('a').forEach(x=>x.classList.toggle('active',x===a));}});
+  // Mirror existing search input to the actual map search field created by map.js.
+  $('location-search')?.addEventListener('submit',()=>{});
+  $('settings-notifications')?.addEventListener('click',()=>{const panel=$('notification-panel');if(panel){panel.hidden=false;panel.scrollIntoView({behavior:'smooth',block:'nearest'});}});
+  $('settings-privacy')?.addEventListener('click',()=>alert('Your sign-in and account security are managed through the connected HYSACAM authentication service.'));
+  $('settings-appearance')?.addEventListener('click',()=>{document.body.classList.toggle('comfortable-view');localStorage.setItem('hysacam-comfortable-view',document.body.classList.contains('comfortable-view')?'on':'off');});
+  if(localStorage.getItem('hysacam-comfortable-view')==='on')document.body.classList.add('comfortable-view');
+  async function loadRecentReports(){const host=$('home-recent-report-list');if(!host)return;try{const r=await fetch('/api/reports',{credentials:'include',cache:'no-store'});if(!r.ok)throw new Error('Sign in to see your submitted reports');const d=await r.json();const items=(d.reports||[]).slice(0,3);host.innerHTML=items.length?items.map(x=>`<article class="recent-report-card"><span class="recent-report-check">✓</span><div><b>${String(x.reference_code||'Report')}</b><small>${new Date(x.created_at).toLocaleString()}</small></div><span class="recent-report-status">${String(x.status||'Submitted').replaceAll('_',' ')}</span></article>`).join(''):'<p class="empty-state compact">No reports have been submitted yet</p>';}catch(e){host.innerHTML='<p class="empty-state compact">Sign in to view your submitted reports</p>';}}
+  loadRecentReports();
+  async function loadAccount(){try{const r=await fetch('/api/auth/me',{credentials:'include',cache:'no-store'});const d=await r.json();if(!r.ok||!d.authenticated)return;const u=d.user||d.profile||{};const name=u.full_name||u.name||u.email||'Resident';const email=u.email||'';['settings-user-name','profile-user-name'].forEach(id=>{if($(id))$(id).textContent=name;});['settings-user-email','profile-user-email'].forEach(id=>{if($(id))$(id).textContent=email;});['settings-signout','profile-signout'].forEach(id=>{if($(id))$(id).hidden=false;});}catch(e){console.info('Account details are not available while signed out');}}
+  async function signOut(){try{const r=await fetch('/api/auth/logout',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'}});if(!r.ok)throw new Error('Sign out failed');location.href='signin.html';}catch(e){alert('Unable to sign out right now. Please try again.');}}
+  ['settings-signout','profile-signout'].forEach(id=>$(id)?.addEventListener('click',signOut));loadAccount();
+});
