@@ -117,7 +117,26 @@ export default async function handler(req, res) {
           bin_id: binId, area: area || bin.area, cleaned_at: cleanedAt.toISOString(),
           activity, status, notes: notes || null, verified: true
         }).select('id,bin_id,area,cleaned_at,activity,status,notes,verified').single();
-        if (error) throw new Error('Could not save this cleaning record. Check the cleaning_records table fields.');
+        if (error) {
+          // Return safe database diagnostics to the authenticated administrator.
+          // Do not include credentials, request headers, cookies, or tokens.
+          console.error('[HYSACAM cleaning record insert] Supabase rejected the insert:', {
+            code: error.code || null,
+            message: error.message || null,
+            details: error.details || null,
+            hint: error.hint || null
+          });
+          const diagnostic = {
+            code: String(error.code || 'UNKNOWN').slice(0, 40),
+            message: String(error.message || 'No database message was provided.').slice(0, 500),
+            details: String(error.details || '').slice(0, 500),
+            hint: String(error.hint || '').slice(0, 500)
+          };
+          return res.status(500).json({
+            message: 'Supabase rejected the cleaning record. Share the diagnostic below so we can identify the exact fix.',
+            diagnostic
+          });
+        }
         return res.status(201).json({ record: data });
       }
       return res.status(400).json({ message: 'Unknown administrator action.' });
