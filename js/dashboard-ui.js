@@ -19,10 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
     <div class="section-head"><div><span class="eyebrow">PREFERENCES &amp; SECURITY</span><h2>Settings</h2><p>Manage your account and application preferences</p></div></div>
     <div class="settings-profile-card"><span class="settings-avatar" aria-hidden="true">●</span><div><b id="settings-user-name">Guest User</b><small id="settings-user-email">Sign in to view account details</small><span class="role-pill" id="settings-user-role">Resident</span></div></div>
     <div class="settings-list">
-      <a class="settings-item" href="#profile"><span class="settings-icon">♙</span><span><b>Account Settings</b><small>View your account information</small></span><span>›</span></a>
-      <button class="settings-item" id="settings-notifications" type="button"><span class="settings-icon">♟</span><span><b>Notifications</b><small>View report updates and alerts</small></span><span>›</span></button>
-      <button class="settings-item" id="settings-privacy" type="button"><span class="settings-icon">♢</span><span><b>Privacy &amp; Security</b><small>Review your account security</small></span><span>›</span></button>
-      <button class="settings-item" id="settings-appearance" type="button"><span class="settings-icon">⚙</span><span><b>App Preferences</b><small>Toggle comfortable display spacing</small></span><span>›</span></button>
+      <button class="settings-item" id="settings-privacy" type="button"><span class="settings-icon">♢</span><span><b>Privacy &amp; Security</b><small>Password, account protection and session security</small></span><span>›</span></button>
       <a class="settings-item" href="#about"><span class="settings-icon">ⓘ</span><span><b>About HYSACAM</b><small>Platform information and support</small></span><span>›</span></a>
     </div>
     <button id="settings-signout" class="signout-button" type="button" hidden>↪ Sign Out</button>
@@ -33,9 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
     <div class="section-head"><div><span class="eyebrow">YOUR ACCOUNT</span><h2>Profile</h2><p>Manage your HYSACAM Tracker account</p></div></div>
     <div class="profile-card"><span class="profile-avatar" aria-hidden="true">●</span><h2 id="profile-user-name">Guest User</h2><p id="profile-user-email">Not signed in</p><span class="role-pill" id="profile-user-role">Resident</span></div>
     <div class="settings-list">
-      <a class="settings-item" href="#settings"><span class="settings-icon">♙</span><span><b>Account Information</b><small>View your account and security settings</small></span><span>›</span></a>
       <a class="settings-item" href="#report"><span class="settings-icon">▤</span><span><b>My Reports</b><small>Track your submitted reports</small></span><span>›</span></a>
-      <a class="settings-item" href="#settings"><span class="settings-icon">⚙</span><span><b>Settings</b><small>Manage app preferences</small></span><span>›</span></a>
     </div><button id="profile-signout" class="signout-button" type="button" hidden>↪ Sign Out</button>`;
   main.append(settings, profile);
 
@@ -96,10 +91,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const host = $("notification-list"), count = $("notification-count");
     if (!host || !count) return;
     const seen = readSet();
-    const items = preferences.reportNotifications ? (reportCache || []).slice(0, 12) : [];
+    const items = (reportCache || []).slice(0, 12);
     const unread = items.filter(item => !seen.has(reportNotificationKey(item)));
     count.textContent = unread.length > 9 ? "9+" : String(unread.length);
-    count.hidden = !preferences.unreadBadge || unread.length === 0;
+    count.hidden = unread.length === 0;
     host.innerHTML = items.length ? items.map(item => {
       const key = reportNotificationKey(item), unreadClass = seen.has(key) ? "" : " is-unread";
       const label = statusText(item.status);
@@ -182,74 +177,49 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   ["settings-signout", "profile-signout", "menu-signout"].forEach(id => $(id)?.addEventListener("click", signOut));
 
-  // Settings: persist notification preferences and provide clear, working controls.
-  const preferenceKey = "hysacamTrackerPreferencesV1";
-  const defaultPreferences = { reportNotifications: true, unreadBadge: true, comfortableSpacing: false, darkAppearance: false };
-  function getPreferences() {
-    try { return { ...defaultPreferences, ...JSON.parse(safeStorage.get(preferenceKey, "{}")) }; }
-    catch { return { ...defaultPreferences }; }
-  }
-  function savePreferences(next) {
-    safeStorage.set(preferenceKey, JSON.stringify(next));
-    document.body.classList.toggle("comfortable-view", !!next.comfortableSpacing);
-    document.body.classList.toggle("dark-appearance", !!next.darkAppearance);
-    renderNotifications();
-  }
-  let preferences = getPreferences();
-  document.body.classList.toggle("comfortable-view", !!preferences.comfortableSpacing);
-  document.body.classList.toggle("dark-appearance", !!preferences.darkAppearance);
-
-  function openSettingsDialog(id, title, content) {
-    let dialog = $(id);
-    if (!dialog) {
-      dialog = document.createElement("div");
-      dialog.id = id; dialog.className = "modal settings-dialog";
-      dialog.innerHTML = `<section class="modal-card settings-dialog-card" role="dialog" aria-modal="true" aria-labelledby="${id}-title"><button type="button" class="modal-close" aria-label="Close">×</button><h2 id="${id}-title">${title}</h2><div class="settings-dialog-content">${content}</div><button type="button" class="primary-button settings-done">Done</button></section>`;
-      document.body.append(dialog);
-      dialog.addEventListener("click", event => {
-        if (event.target === dialog || event.target.closest(".modal-close") || event.target.closest(".settings-done")) dialog.classList.remove("open");
-      });
+  // Privacy & Security centre: links to the existing secure account recovery and sign-out flows.
+  $("settings-privacy")?.addEventListener("click", async () => {
+    let accountState = "Checking your current sign-in session…";
+    try {
+      const response = await fetch("/api/auth/me", { credentials: "include", cache: "no-store" });
+      const data = await response.json();
+      accountState = response.ok && data.authenticated
+        ? "You are signed in. Your account session is active on this device."
+        : "You are currently signed out. Sign in to access your resident account.";
+    } catch {
+      accountState = "Your session status could not be checked. Check your connection and try again.";
     }
-    dialog.classList.add("open");
-    return dialog;
-  }
-  $("settings-notifications")?.addEventListener("click", () => {
-    const dialog = openSettingsDialog("notification-preferences-dialog", "Notification Preferences", `
-      <label class="settings-switch-row"><span><b>Report status updates</b><small>Show updates when your submitted reports change status</small></span><input id="pref-report-notifications" type="checkbox"></label>
-      <label class="settings-switch-row"><span><b>Unread notification badge</b><small>Show the unread count on the notification bell</small></span><input id="pref-unread-badge" type="checkbox"></label>
-      <p class="settings-dialog-note">These preferences apply to report notifications available in your account. They do not change HYSACAM's email delivery settings.</p>`);
-    $("pref-report-notifications").checked = !!preferences.reportNotifications;
-    $("pref-unread-badge").checked = !!preferences.unreadBadge;
-    ["pref-report-notifications","pref-unread-badge"].forEach(id => { if ($(id)) $(id).onchange = () => {
-      preferences = { ...preferences, reportNotifications: $("pref-report-notifications").checked, unreadBadge: $("pref-unread-badge").checked };
-      savePreferences(preferences);
-    }; });
-  });
-  $("settings-privacy")?.addEventListener("click", () => {
     const dialog = openSettingsDialog("privacy-dialog", "Privacy & Security", `
-      <p>Your account sign-in, password verification and recovery are handled by the connected HYSACAM authentication service.</p>
-      <p>Use a unique password and never share your password or email verification codes.</p>
-      <a class="primary-button" href="forgot-password.html">Reset your password</a>
-      <p class="settings-dialog-note">Signing out ends the current session on this device.</p>`);
-  });
-  $("settings-appearance")?.addEventListener("click", () => {
-    const dialog = openSettingsDialog("appearance-preferences-dialog", "App Preferences", `
-      <label class="settings-switch-row"><span><b>Comfortable spacing</b><small>Increase spacing between content cards</small></span><input id="pref-comfortable-spacing" type="checkbox"></label>
-      <label class="settings-switch-row"><span><b>Dark appearance</b><small>Use a darker interface on this device</small></span><input id="pref-dark-appearance" type="checkbox"></label>
-      <p class="settings-dialog-note">Your choices are saved on this device and do not change other users' settings.</p>`);
-    $("pref-comfortable-spacing").checked = !!preferences.comfortableSpacing;
-    $("pref-dark-appearance").checked = !!preferences.darkAppearance;
-    $("pref-comfortable-spacing").onchange = () => {
-      preferences = { ...preferences, comfortableSpacing: $("pref-comfortable-spacing").checked }; savePreferences(preferences);
-    };
-    $("pref-dark-appearance").onchange = () => {
-      preferences = { ...preferences, darkAppearance: $("pref-dark-appearance").checked }; savePreferences(preferences);
-    };
+      <div class="security-status-card"><span class="security-status-icon">♢</span><span><b>Account session</b><small>${escapeHTML(accountState)}</small></span></div>
+      <div class="security-guidance"><b>Protect your account</b><ul>
+        <li>Use a strong password that you do not reuse on other websites</li>
+        <li>Never share your password or email verification code</li>
+        <li>Only sign in on devices you trust</li>
+        <li>Sign out when using a shared phone or computer</li>
+      </ul></div>
+      <div class="security-action-list">
+        <a class="security-action" href="forgot-password.html"><span>↻</span><span><b>Reset your password</b><small>Use the verified password-recovery process</small></span><span>›</span></a>
+        <button class="security-action" type="button" id="privacy-signout"><span>↪</span><span><b>Sign out of this device</b><small>End your current resident session</small></span><span>›</span></button>
+      </div>
+      <p class="settings-dialog-note">HYSACAM uses its connected authentication service for account access. This page does not claim that a device or account is risk-free. Keep your sign-in details private and contact the project administrator if you notice unexpected account activity.</p>`);
+    dialog.querySelector("#privacy-signout")?.addEventListener("click", async () => {
+      const button = dialog.querySelector("#privacy-signout");
+      button.disabled = true;
+      button.querySelector("b").textContent = "Signing out…";
+      try {
+        const response = await fetch("/api/auth/logout", { method: "POST", credentials: "include", headers: { "Content-Type": "application/json" } });
+        if (!response.ok) throw new Error("Sign out failed");
+        location.href = "signin.html";
+      } catch {
+        button.disabled = false;
+        button.querySelector("b").textContent = "Sign out of this device";
+        alert("Unable to sign out right now. Please try again.");
+      }
+    });
   });
   document.addEventListener("keydown", event => {
     if (event.key === "Escape") document.querySelectorAll(".settings-dialog.open").forEach(dialog => dialog.classList.remove("open"));
   });
-  $("refresh-my-reports")?.addEventListener("click", loadReports);
   window.addEventListener("hysacam:reports-updated", loadReports);
 
   loadAccount(); loadReports();
