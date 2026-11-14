@@ -48,6 +48,11 @@
   const backdrop = document.getElementById("nav-backdrop");
   if (!toggle || !nav || !backdrop) return;
 
+  // Keep the drawer and backdrop at the document root so they are not
+  // affected by the sticky header's stacking context on mobile browsers.
+  if (nav.parentElement !== document.body) document.body.appendChild(nav);
+  if (backdrop.parentElement !== document.body) document.body.appendChild(backdrop);
+
   function setMenu(open, returnFocus) {
     nav.classList.toggle("open", open);
     backdrop.classList.toggle("open", open);
