@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#087747"><title>Administrator Portal | HYSACAM Kumba</title><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="css/style.css"></head><body>
 <div class="admin-login-page" id="admin-login-page"><section class="admin-login-brand auth-photo-panel">
   <a class="auth-brand-lockup" href="index.html" aria-label="HYSACAM Kumba Tracker home">
-    <img src="images/hysacam-symbol.svg" alt="HYSACAM logo">
+    <span class="hysacam-mark" aria-hidden="true">♻</span>
     <span><strong>HYSACAM</strong><small>KUMBA TRACKER</small></span>
   </a>
   <div class="auth-photo-copy"><span>RESTRICTED ADMINISTRATOR ACCESS</span><h1>Kumba Tracker</h1><p>A Cleaner Kumba<br>A Healthier Community</p></div>
@@ -14,7 +14,7 @@
 <div class="admin-layout admin-layout-pro">
   <aside class="admin-side admin-side-pro">
     <div class="admin-logo">
-      <img class="hysacam-logo" src="images/hysacam-symbol.svg" alt="HYSACAM">
+      <span class="hysacam-mark" aria-hidden="true">♻</span>
       <strong>HYSACAM<br><small>ADMINISTRATION</small></strong>
     </div>
     <div class="admin-profile-card">
@@ -39,11 +39,20 @@
   </aside>
 
   <button class="admin-drawer-backdrop" id="admin-drawer-backdrop" type="button" aria-label="Close navigation menu"></button>
-  <main class="admin-main admin-main-pro">
+  <main id="admin-main-pro" class="admin-main admin-main-pro">
     <div class="admin-mobile-topbar">
       <button class="admin-menu-toggle" id="admin-menu-toggle" type="button" aria-label="Open navigation menu" aria-expanded="false">☰</button>
-      <div class="admin-mobile-brand"><img src="images/hysacam-symbol.svg" alt=""><span><strong>HYSACAM</strong><small>Cleaner City, Healthier Life</small></span></div>
-      <span class="admin-mobile-avatar">A</span>
+      <div class="admin-mobile-brand"><span class="hysacam-mark" aria-hidden="true">♻</span><span><strong>HYSACAM</strong><small>Cleaner City, Healthier Life</small></span></div>
+      <div class="admin-profile-menu-wrap">
+        <button class="admin-mobile-avatar" id="admin-profile-toggle" type="button" aria-label="Open administrator profile" aria-expanded="false">A</button>
+        <div class="admin-profile-popover" id="admin-profile-popover" hidden>
+          <strong id="admin-profile-name">Administrator</strong>
+          <small id="admin-profile-email">Loading account…</small>
+          <span class="admin-profile-role">Administrator account</span>
+          <button type="button" id="admin-profile-settings">Account &amp; settings</button>
+          <button type="button" id="admin-profile-logout">Sign out</button>
+        </div>
+      </div>
     </div>
     <header class="admin-title">
       <div><span class="eyebrow">HYSACAM KUMBA TRACKER</span><h2>Admin Dashboard</h2><p class="admin-title-subtitle">Manage operations efficiently</p></div>
@@ -100,7 +109,7 @@
       <div class="admin-dashboard-intro"><div><h3>Manage Dustbins</h3><p>Register, update and remove collection points</p></div><button class="button" id="admin-add-bin" type="button">＋ Add dustbin</button></div>
       <form id="admin-bin-form" class="panel admin-entry-form" hidden>
         <input type="hidden" id="bin-edit-id">
-        <label>Dustbin ID<input id="bin-id" required maxlength="48" placeholder="e.g. BIN-001"></label><label>Display name<input id="bin-name" required maxlength="120" placeholder="e.g. Mile 2 Collection Point"></label><label>Area<input id="bin-area" required maxlength="120" placeholder="e.g. Mile 2, Kumba"></label><label>Latitude<input id="bin-lat" type="number" step="any" min="-90" max="90" placeholder="4.6363"></label><label>Longitude<input id="bin-lng" type="number" step="any" min="-180" max="180" placeholder="9.4469"></label><label>Status<select id="bin-status"><option>Available</option><option>Pending</option><option>Full</option><option>Maintenance</option><option>Inactive</option></select></label>
+        <label>Dustbin ID<input id="bin-id" required maxlength="48" placeholder="e.g. BIN-001"></label><label>Display name<input id="bin-name" required maxlength="120" placeholder="e.g. Mile 2 Collection Point"></label><label>Area<input id="bin-area" required maxlength="120" placeholder="e.g. Mile 2, Kumba"></label><label>Latitude<input id="bin-lat" type="number" step="any" min="-90" max="90" placeholder="4.6363"></label><label>Longitude<input id="bin-lng" type="number" step="any" min="-180" max="180" placeholder="9.4469"></label><label>Status<select id="bin-status"><option value="available">Available</option><option value="full">Full</option><option value="maintenance">Maintenance</option></select></label>
         <div class="admin-form-actions"><button class="button" type="submit" id="bin-save">Save dustbin</button><button class="button outline" type="button" id="bin-cancel">Cancel</button></div><p class="auth-message" id="bin-form-message" role="status"></p>
       </form>
       <div class="panel admin-table-panel"><div class="admin-panel-heading"><div><h3>Registered collection points</h3><p id="admin-bin-count">Loading dustbins…</p></div><input id="admin-bin-search" class="admin-table-search" type="search" placeholder="Search ID or area"></div><div class="table-wrap"><table><thead><tr><th>ID</th><th>Name</th><th>Area</th><th>Status</th><th>Actions</th></tr></thead><tbody id="admin-bins-table"><tr><td colspan="5">Loading…</td></tr></tbody></table></div></div>
@@ -112,7 +121,22 @@
     </section>
     <section id="users" class="admin-management-section"><div class="admin-dashboard-intro"><div><h3>User Management</h3><p>View registered HYSACAM Tracker accounts and verification status</p></div></div><div class="panel admin-table-panel"><div class="admin-panel-heading"><div><h3>Registered users</h3><p id="admin-user-count">Loading users…</p></div><input id="admin-user-search" class="admin-table-search" type="search" placeholder="Search name or email"></div><div class="table-wrap"><table><thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Email verified</th><th>Joined</th></tr></thead><tbody id="admin-users-table"><tr><td colspan="5">Loading…</td></tr></tbody></table></div><p class="hint admin-permission-note">Administrator privileges are controlled by the server-side ADMIN_EMAILS allowlist. They cannot be granted from this screen.</p></div></section>
     <section id="reports" class="admin-management-section"><div class="admin-dashboard-intro"><div><h3>Resident Reports</h3><p>Review and update waste issue submissions</p></div><button class="button outline" id="admin-refresh-reports" type="button">Refresh reports</button></div><div class="panel admin-table-panel"><div class="table-wrap"><table><thead><tr><th>Reference</th><th>Issue</th><th>Area</th><th>Submitted by</th><th>Status</th><th>Update</th></tr></thead><tbody id="admin-reports-table"><tr><td colspan="6">Loading…</td></tr></tbody></table></div></div></section>
-    <section id="settings" class="admin-management-section"><div class="admin-dashboard-intro"><div><h3>System Settings &amp; Security</h3><p>Review administrator access and recent security events</p></div></div><div class="panel admin-table-panel"><h3>Access control</h3><p>Only email addresses configured in the Vercel <b>ADMIN_EMAILS</b> environment variable can access this administration portal. Changes to administrator access must be made by the project owner in Vercel.</p><p class="hint">Session checks and all management actions are enforced by server-side APIs.</p></div><div class="panel admin-table-panel"><div class="admin-panel-heading"><div><h3>Recent administrator activity</h3><p>Security audit events</p></div></div><div class="table-wrap"><table><thead><tr><th>Time</th><th>Administrator</th><th>Event</th><th>Outcome</th></tr></thead><tbody id="admin-audit-table"><tr><td colspan="4">Loading…</td></tr></tbody></table></div></div></section>
+    <section id="settings" class="admin-management-section"><div class="admin-dashboard-intro"><div><h3>System Settings &amp; Security</h3><p>Review administrator access and recent security events</p></div></div><div class="panel admin-table-panel admin-preferences-panel">
+      <h3>Dashboard preferences</h3>
+      <p>These settings affect this administrator dashboard on this device</p>
+      <label class="admin-setting-row"><span><b>Compact dashboard cards</b><small>Show dashboard summary cards with less spacing</small></span><input type="checkbox" id="admin-setting-compact"></label>
+      <label class="admin-setting-row"><span><b>Reduce motion</b><small>Use simpler transitions and scrolling</small></span><input type="checkbox" id="admin-setting-reduced-motion"></label>
+      <div class="admin-settings-actions"><button class="button outline" type="button" id="admin-setting-save">Save preferences</button><button class="button outline" type="button" id="admin-setting-reset">Reset preferences</button><button class="button" type="button" id="admin-setting-refresh">Refresh dashboard data</button></div>
+      <p class="admin-setting-feedback" id="admin-setting-feedback" role="status" aria-live="polite"></p>
+    </div>
+    <div class="panel admin-table-panel"><h3>Access control</h3><p>Only email addresses configured in the Vercel <b>ADMIN_EMAILS</b> environment variable can access this administration portal. Changes to administrator access must be made by the project owner in Vercel.</p><p class="hint">Session checks and all management actions are enforced by server-side APIs.</p></div><div class="panel admin-table-panel"><div class="admin-panel-heading"><div><h3>Recent administrator activity</h3><p>Security audit events</p></div></div><div class="table-wrap"><table><thead><tr><th>Time</th><th>Administrator</th><th>Event</th><th>Outcome</th></tr></thead><tbody id="admin-audit-table"><tr><td colspan="4">Loading…</td></tr></tbody></table></div></div></section>
+    <nav class="admin-mobile-bottom-nav" aria-label="Admin quick navigation">
+      <a href="#overview" class="active"><span>⌂</span><small>Dashboard</small></a>
+      <a href="#manage-bins"><span>▤</span><small>Dustbins</small></a>
+      <a href="#users"><span>♙</span><small>Users</small></a>
+      <a href="#reports"><span>▥</span><small>Reports</small></a>
+      <a href="#settings"><span>⚙</span><small>Settings</small></a>
+    </nav>
     <div class="admin-dashboard-footer">
       <span class="admin-footer-mark">✓</span>
       <span><b>Secure administrator workspace</b><small>Dashboard information is available only to authorised HYSACAM administrators</small></span>
@@ -126,34 +150,6 @@
 (function(){const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);const nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);for(const node of nodes){if(node.parentElement&&/^(SCRIPT|STYLE|TEXTAREA)$/i.test(node.parentElement.tagName))continue;node.nodeValue=node.nodeValue.replace(/\.(?=\s|$)/g,"");}})();
 </script>
 
-<script>
-/* Responsive administrator navigation drawer */
-(function () {
-  "use strict";
-  const side = document.querySelector(".admin-side-pro");
-  const toggle = document.getElementById("admin-menu-toggle");
-  const backdrop = document.getElementById("admin-drawer-backdrop");
-  if (!side || !toggle || !backdrop) return;
 
-  function setMenu(open, returnFocus) {
-    side.classList.toggle("drawer-open", open);
-    backdrop.classList.toggle("visible", open);
-    document.body.classList.toggle("admin-drawer-lock", open);
-    toggle.setAttribute("aria-expanded", String(open));
-    toggle.setAttribute("aria-label", open ? "Close navigation menu" : "Open navigation menu");
-    if (!open && returnFocus && window.matchMedia("(max-width: 760px)").matches) toggle.focus();
-  }
-
-  toggle.addEventListener("click", () => setMenu(toggle.getAttribute("aria-expanded") !== "true", false));
-  backdrop.addEventListener("click", () => setMenu(false, true));
-  side.querySelectorAll('a[href^="#"]').forEach(link => link.addEventListener("click", () => setMenu(false, false)));
-  document.addEventListener("keydown", event => {
-    if (event.key === "Escape" && side.classList.contains("drawer-open")) setMenu(false, true);
-  });
-  window.addEventListener("resize", () => {
-    if (window.matchMedia("(min-width: 761px)").matches) setMenu(false, false);
-  });
-})();
-</script>
 
 </body></html>
