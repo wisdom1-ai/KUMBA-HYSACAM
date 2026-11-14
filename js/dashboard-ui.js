@@ -105,7 +105,10 @@ document.addEventListener("DOMContentLoaded", () => {
       if (panel) panel.hidden = true; bell?.setAttribute("aria-expanded", "false"); location.hash = "#report";
     }));
   }
+  let reportsLoading = false;
   async function loadReports() {
+    if (reportsLoading) return;
+    reportsLoading = true;
     try {
       const response = await fetch("/api/reports", { credentials: "include", cache: "no-store" });
       if (!response.ok) throw new Error("Not signed in");
@@ -115,6 +118,8 @@ document.addEventListener("DOMContentLoaded", () => {
       reportCache = null; renderNotifications();
       const recent = $("home-recent-report-list"); if (recent) recent.innerHTML = `<p class="empty-state compact">Sign in to view your submitted reports</p>`;
       const stats = $("report-stats"); if (stats) stats.hidden = true;
+    } finally {
+      reportsLoading = false;
     }
   }
   bell?.addEventListener("click", async () => {
@@ -221,6 +226,15 @@ document.addEventListener("DOMContentLoaded", () => {
     if (event.key === "Escape") document.querySelectorAll(".settings-dialog.open").forEach(dialog => dialog.classList.remove("open"));
   });
   window.addEventListener("hysacam:reports-updated", loadReports);
+
+  // Refresh report notifications promptly while the page is in use.
+  // Pause polling in background tabs to avoid unnecessary requests.
+  window.setInterval(() => {
+    if (!document.hidden) loadReports();
+  }, 12000);
+  document.addEventListener("visibilitychange", () => {
+    if (!document.hidden) loadReports();
+  });
 
   loadAccount(); loadReports();
 });
