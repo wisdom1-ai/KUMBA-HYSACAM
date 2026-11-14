@@ -37,4 +37,38 @@
 // Remove sentence-ending full stops from interface copy as requested
 (function(){const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);const nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);for(const node of nodes){if(node.parentElement&&/^(SCRIPT|STYLE|TEXTAREA)$/i.test(node.parentElement.tagName))continue;node.nodeValue=node.nodeValue.replace(/\.(?=\s|$)/g,"");}})();
 </script>
+
+<script>
+/* Accessible responsive navigation for the main HYSACAM dashboard */
+(function () {
+  "use strict";
+  const toggle = document.getElementById("menu-toggle");
+  const nav = document.getElementById("main-nav");
+  const closeButton = document.getElementById("menu-close");
+  const backdrop = document.getElementById("nav-backdrop");
+  if (!toggle || !nav || !backdrop) return;
+
+  function setMenu(open, returnFocus) {
+    nav.classList.toggle("open", open);
+    backdrop.classList.toggle("open", open);
+    document.body.classList.toggle("nav-open", open);
+    toggle.setAttribute("aria-expanded", String(open));
+    toggle.setAttribute("aria-label", open ? "Close navigation" : "Open navigation");
+    if (open && closeButton) closeButton.focus();
+    if (!open && returnFocus && window.matchMedia("(max-width: 680px)").matches) toggle.focus();
+  }
+
+  toggle.addEventListener("click", () => setMenu(toggle.getAttribute("aria-expanded") !== "true", false));
+  closeButton && closeButton.addEventListener("click", () => setMenu(false, true));
+  backdrop.addEventListener("click", () => setMenu(false, true));
+  nav.querySelectorAll('a[href^="#"]').forEach(link => link.addEventListener("click", () => setMenu(false, false)));
+  document.addEventListener("keydown", event => {
+    if (event.key === "Escape" && nav.classList.contains("open")) setMenu(false, true);
+  });
+  window.addEventListener("resize", () => {
+    if (window.matchMedia("(min-width: 681px)").matches) setMenu(false, false);
+  });
+})();
+</script>
+
 </body></html>

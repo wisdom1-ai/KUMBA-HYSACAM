@@ -127,30 +127,31 @@
 </script>
 
 <script>
+/* Responsive administrator navigation drawer */
 (function () {
-  const side = document.querySelector('.admin-side-pro');
-  const toggle = document.getElementById('admin-menu-toggle');
-  const backdrop = document.getElementById('admin-drawer-backdrop');
+  "use strict";
+  const side = document.querySelector(".admin-side-pro");
+  const toggle = document.getElementById("admin-menu-toggle");
+  const backdrop = document.getElementById("admin-drawer-backdrop");
   if (!side || !toggle || !backdrop) return;
-  const closeMenu = () => {
-    side.classList.remove('drawer-open');
-    backdrop.classList.remove('visible');
-    toggle.setAttribute('aria-expanded', 'false');
-    document.body.classList.remove('admin-drawer-lock');
-  };
-  const openMenu = () => {
-    side.classList.add('drawer-open');
-    backdrop.classList.add('visible');
-    toggle.setAttribute('aria-expanded', 'true');
-    document.body.classList.add('admin-drawer-lock');
-  };
-  toggle.addEventListener('click', () => {
-    side.classList.contains('drawer-open') ? closeMenu() : openMenu();
+
+  function setMenu(open, returnFocus) {
+    side.classList.toggle("drawer-open", open);
+    backdrop.classList.toggle("visible", open);
+    document.body.classList.toggle("admin-drawer-lock", open);
+    toggle.setAttribute("aria-expanded", String(open));
+    toggle.setAttribute("aria-label", open ? "Close navigation menu" : "Open navigation menu");
+    if (!open && returnFocus && window.matchMedia("(max-width: 760px)").matches) toggle.focus();
+  }
+
+  toggle.addEventListener("click", () => setMenu(toggle.getAttribute("aria-expanded") !== "true", false));
+  backdrop.addEventListener("click", () => setMenu(false, true));
+  side.querySelectorAll('a[href^="#"]').forEach(link => link.addEventListener("click", () => setMenu(false, false)));
+  document.addEventListener("keydown", event => {
+    if (event.key === "Escape" && side.classList.contains("drawer-open")) setMenu(false, true);
   });
-  backdrop.addEventListener('click', closeMenu);
-  side.querySelectorAll('a').forEach(link => link.addEventListener('click', closeMenu));
-  document.addEventListener('keydown', event => {
-    if (event.key === 'Escape') closeMenu();
+  window.addEventListener("resize", () => {
+    if (window.matchMedia("(min-width: 761px)").matches) setMenu(false, false);
   });
 })();
 </script>
