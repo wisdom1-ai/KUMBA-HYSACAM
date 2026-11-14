@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     return "available";
   }
 
-  function selectBin(bin, { fromMap = false } = {}) {
+  function selectBin(bin) {
     if (!bin) return;
     $("detail-name").textContent = bin.name || `Dustbin ${bin.bin_code || bin.id}`;
     $("detail-area").textContent = `${bin.area || "Area not specified"}, Kumba`;
@@ -53,20 +53,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         `;
       }
     }
-    if (!fromMap) {
-      // The details page is a routed section and may currently be hidden.
-      // Navigate first so the selected record is actually visible on mobile.
-      if (typeof window.hysacamNavigate === "function") {
-        window.hysacamNavigate("details");
-      } else {
-        $("details")?.classList.remove("route-hidden");
-        if (location.hash !== "#details") location.hash = "#details";
-        requestAnimationFrame(() => $("details")?.scrollIntoView({behavior:"smooth", block:"start"}));
-      }
-      document.dispatchEvent(new CustomEvent("hysacam:show-bin", {
-        detail: { latitude:Number(bin.latitude), longitude:Number(bin.longitude), binId:String(bin.id) }
-      }));
-    }
+    $("details")?.scrollIntoView({behavior:"smooth", block:"start"});
+    document.dispatchEvent(new CustomEvent("hysacam:show-bin", {
+      detail: { latitude:Number(bin.latitude), longitude:Number(bin.longitude), binId:String(bin.id) }
+    }));
   }
 
   function renderDirectory() {
@@ -110,7 +100,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   document.addEventListener("hysacam:bin-selected", event => {
     if (event.detail?.bin) {
       const bin = bins.find(b => String(b.id) === String(event.detail.bin.id)) || event.detail.bin;
-      selectBin(bin, { fromMap: true });
+      selectBin(bin);
     }
   });
   table?.addEventListener("click", e => {
