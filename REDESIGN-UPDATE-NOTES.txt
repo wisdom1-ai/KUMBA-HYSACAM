@@ -1,0 +1,21 @@
+HYSACAM KUMBA TRACKER — REDESIGN UPDATE
+
+Included updates
+- Reordered the resident header actions: notification bell first, hamburger menu second.
+- Replaced rendered HYSACAM logo images with the requested ♻ symbol on the dashboard, sign-in, sign-up, password recovery, email verification, OAuth callback and administrator screens.
+- Added a fixed five-item bottom navigation bar: Home, Map, Reports, Settings and Profile, with safe-area spacing for iPhone screens.
+- Kept the original Supabase setup, authenticated API routes, resident report submission, directory, cleaning-record query and map database query.
+- Kept the recycling-symbol map markers and status colour states.
+- Notifications are built from the signed-in resident's actual report records returned by /api/reports. Unread/read state is stored locally in the browser. No artificial report entries or notification rows are inserted into Supabase.
+- Added report status totals using the resident's real reports.
+- Added functional menu open/close, notification open/close and mark-as-read actions, account sign-out, comfortable-view preference, and a privacy/security dialog linking to the existing password-recovery page.
+
+Checks performed
+- Node syntax check passed for every JavaScript file in js/, server/ and api/.
+- HTML parsing checks passed for all root HTML pages: no duplicate IDs and no missing local script/style/image references.
+- Verified the header contains exactly one notification button and one menu button, with the bell before the hamburger.
+- Verified the old hysacam-symbol.svg image is no longer referenced by the HTML pages.
+
+Deployment verification
+- The files were statically checked in this environment. Full live authentication, Supabase queries, email delivery and map tile loading still need a browser test on your deployed domain with your configured backend and network access.
+- No Supabase schema, credentials or existing backend routes were intentionally changed by this redesign.
