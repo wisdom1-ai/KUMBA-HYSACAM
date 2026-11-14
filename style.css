@@ -1789,3 +1789,22 @@ body{padding-bottom:calc(82px + env(safe-area-inset-bottom))}
   }
   .hysacam-popup-details { min-height: 48px; touch-action: manipulation; pointer-events: auto; }
 }
+
+
+/* Refined Directory tab and five-item mobile navigation */
+.bottom-nav a{min-width:0;gap:5px;padding-inline:2px}
+.bottom-nav a b{white-space:nowrap;letter-spacing:-.01em}
+.bottom-nav a .bottom-icon{width:28px;height:28px}
+#directory .directory-list{gap:14px}
+#directory .directory-card{border-radius:16px;transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}
+#directory .directory-card:focus-within,
+#directory .directory-card:hover{border-color:#b8d9c4;box-shadow:0 9px 24px rgba(20,55,34,.075)}
+#directory .directory-view-button{min-height:38px;padding:9px 13px;border-radius:9px;font-size:12px}
+#directory .directory-view-button:focus-visible,
+.bottom-nav a:focus-visible{outline:3px solid #8bc9a1;outline-offset:3px}
+#details .detail-card{scroll-margin-top:84px}
+@media(max-width:680px){
+  .bottom-nav a{max-width:none}
+  .bottom-nav a b{font-size:12px}
+  #directory .directory-card{padding:15px}
+}
