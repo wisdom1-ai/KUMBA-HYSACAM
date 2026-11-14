@@ -48,10 +48,22 @@
   const backdrop = document.getElementById("nav-backdrop");
   if (!toggle || !nav || !backdrop) return;
 
-  // Keep the drawer and backdrop at the document root so they are not
-  // affected by the sticky header's stacking context on mobile browsers.
-  if (nav.parentElement !== document.body) document.body.appendChild(nav);
-  if (backdrop.parentElement !== document.body) document.body.appendChild(backdrop);
+  const header = toggle.closest(".topbar");
+  const mobileViewport = window.matchMedia("(max-width: 680px)");
+
+  // On phones, move the drawer out of the sticky header stacking context.
+  // On larger screens, put it back in the header so desktop navigation keeps
+  // its normal inline layout.
+  function placeNavigation() {
+    if (mobileViewport.matches) {
+      if (nav.parentElement !== document.body) document.body.appendChild(nav);
+      if (backdrop.parentElement !== document.body) document.body.appendChild(backdrop);
+    } else if (header) {
+      if (nav.parentElement !== header) header.insertBefore(nav, backdrop.parentElement === header ? backdrop : null);
+      if (backdrop.parentElement !== header) header.appendChild(backdrop);
+    }
+  }
+  placeNavigation();
 
   function setMenu(open, returnFocus) {
     nav.classList.toggle("open", open);
@@ -71,7 +83,8 @@
     if (event.key === "Escape" && nav.classList.contains("open")) setMenu(false, true);
   });
   window.addEventListener("resize", () => {
-    if (window.matchMedia("(min-width: 681px)").matches) setMenu(false, false);
+    if (!mobileViewport.matches) setMenu(false, false);
+    placeNavigation();
   });
 })();
 </script>
