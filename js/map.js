@@ -263,13 +263,28 @@ document.addEventListener("DOMContentLoaded", async () => {
     const button = popupElement?.querySelector("[data-view-bin]");
     if (!button || button.dataset.bound === "true") return;
     button.dataset.bound = "true";
-    button.addEventListener("click", () => {
+    button.addEventListener("click", event => {
+      event.preventDefault();
+      event.stopPropagation();
       const item = items.get(String(button.dataset.viewBin));
-      if (!item) return;
+      if (!item) {
+        showMessage("This dustbin could not be found. Refresh the map and try again.");
+        return;
+      }
+
+      // Select the exact map record. The platform listener fills the details
+      // panel from this event before the page scrolls to it.
       selectItem(item, false);
       map.closePopup();
       const details = document.getElementById("details");
-      if (details) { location.hash = "#details"; details.scrollIntoView({ behavior: "smooth", block: "start" }); }
+      if (details) {
+        history.replaceState(null, "", "#details");
+        requestAnimationFrame(() => {
+          details.scrollIntoView({ behavior: "smooth", block: "start" });
+          map.invalidateSize({ pan: false });
+        });
+      }
+      showMessage(`Showing details for ${item.bin.name || item.bin.bin_code || "selected dustbin"}`);
     });
   });
 

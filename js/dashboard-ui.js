@@ -143,7 +143,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function renderReportStats(items) {
     const section = $("report"), existing = $("report-stats"); if (!section) return;
     let host = existing;
-    if (!host) { host = document.createElement("div"); host.id = "report-stats"; host.className = "report-stats"; section.insertBefore(host, $("report-auth-gate")); }
+    if (!host) { host = document.createElement("div"); host.id = "report-stats"; host.className = "report-stats"; section.insertBefore(host, $("resident-report-form") || $("resident-my-reports") || null); }
     const pending = items.filter(x => ["submitted", "under_review", "assigned", "in_progress"].includes(String(x.status).toLowerCase())).length;
     const resolved = items.filter(x => String(x.status).toLowerCase() === "resolved").length;
     const closed = items.filter(x => String(x.status).toLowerCase() === "rejected").length;
