@@ -41,11 +41,11 @@ document.addEventListener("DOMContentLoaded", () => {
     <a href="#home" data-tab="home" class="active"><svg class="bottom-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 10.7 12 2.8l9.5 7.9v10a1.3 1.3 0 0 1-1.3 1.3h-5.3v-7.1H9.1V22H3.8a1.3 1.3 0 0 1-1.3-1.3z"/></svg><b>Home</b></a>
     <a href="#map" data-tab="map"><svg class="bottom-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-8.2 8-13.1a8 8 0 1 0-16 0C4 13.8 12 22 12 22Z"/><circle cx="12" cy="8.8" r="2.8" class="icon-cutout"/></svg><b>Map</b></a>
     <a href="#report" data-tab="report"><svg class="bottom-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2.5h9.2L20 7.3v14.2H6a2 2 0 0 1-2-2v-15a2 2 0 0 1 2-2Zm8 1.9v4h4"/><path d="M8 11h8M8 14.5h8M8 18h6" class="icon-lines"/></svg><b>Reports</b></a>
-    <a href="#directory" data-tab="directory"><svg class="bottom-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v18H6.5A2.5 2.5 0 0 0 4 22V4.5Z"/><path d="M4 5h16M8 9h8M8 12.5h8M8 16h5"/></svg><b>Directory</b></a>
+    <a href="#settings" data-tab="settings"><svg class="bottom-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m10 2.5 4 0 .7 2.2 1.8.8 2.1-1 2.1 3.6-1.6 1.7v2l1.6 1.7-2.1 3.6-2.1-1-1.8.8-.7 2.2h-4l-.7-2.2-1.8-.8-2.1 1-2.1-3.6 1.6-1.7v-2L3.3 8.1l2.1-3.6 2.1 1 1.8-.8z"/><circle cx="12" cy="11" r="3.2" class="icon-cutout"/></svg><b>Settings</b></a>
     <a href="#profile" data-tab="profile"><svg class="bottom-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="7.2" r="4.2"/><path d="M3 22c.4-5.1 3.7-8 9-8s8.6 2.9 9 8z"/></svg><b>Profile</b></a>`;
   document.body.append(nav);
 
-  // Reliable mobile menu: one controller owns open/close state and accessibility.
+  // Header controls are authored in index.html so the bell always comes before the menu.
   const menu = $("main-nav"), menuBtn = $("menu-toggle"), panel = $("notification-panel"), bell = $("notification-toggle");
   const backdrop = $("nav-backdrop");
   function closeMenu() {
@@ -57,7 +57,6 @@ document.addEventListener("DOMContentLoaded", () => {
     backdrop?.classList.remove("open");
     backdrop?.setAttribute("hidden", "");
     document.body.classList.remove("menu-is-open");
-    document.body.classList.remove("nav-open");
   }
   function openMenu() {
     if (!menu) return;
@@ -67,24 +66,28 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     menu.removeAttribute("hidden");
     backdrop?.removeAttribute("hidden");
-    menu.classList.add("open");
     backdrop?.classList.add("open");
-    document.body.classList.add("menu-is-open", "nav-open");
+    document.body.classList.add("menu-is-open");
+    requestAnimationFrame(() => menu.classList.add("open"));
     menuBtn?.setAttribute("aria-expanded", "true");
     menuBtn?.setAttribute("aria-label", "Close navigation");
   }
-  if (menuBtn) menuBtn.addEventListener("click", event => {
+  menuBtn?.addEventListener("click", event => {
     event.preventDefault();
     event.stopPropagation();
-    menu.classList.contains("open") ? closeMenu() : openMenu();
+    menu?.classList.contains("open") ? closeMenu() : openMenu();
   });
   $("menu-close")?.addEventListener("click", closeMenu);
   backdrop?.addEventListener("click", closeMenu);
-  menu?.querySelectorAll('a[href^="#"]').forEach(link => link.addEventListener("click", closeMenu));
-  document.addEventListener("keydown", event => { if (event.key === "Escape") closeMenu(); });
-  window.addEventListener("resize", () => { if (window.innerWidth > 900) closeMenu(); }, { passive: true });
+  menu?.querySelectorAll("a").forEach(a => a.addEventListener("click", closeMenu));
+  document.addEventListener("keydown", event => {
+    if (event.key === "Escape") closeMenu();
+  });
+  window.addEventListener("resize", () => {
+    if (window.innerWidth > 900) closeMenu();
+  });
 
-  // A shared navigation entry point lets map popups open the details page reliably.
+  // Navigation shows the existing, database-backed sections without duplicating them.
   const routeSections = [...main.querySelectorAll("section[id]")];
   function route() {
     const target = (location.hash || "#home").slice(1);
@@ -100,24 +103,13 @@ document.addEventListener("DOMContentLoaded", () => {
         : true;
       section.classList.toggle("route-hidden", !visible);
     });
-    nav.querySelectorAll("a").forEach(link => link.classList.toggle("active", link.dataset.tab === page));
+    nav.querySelectorAll("a").forEach(a => a.classList.toggle("active", a.dataset.tab === page));
     closeMenu();
     if (page === "map") setTimeout(() => window.dispatchEvent(new Event("resize")), 180);
-    if (page === "details") {
-      requestAnimationFrame(() => setTimeout(() => $("details")?.scrollIntoView({ behavior: "smooth", block: "start" }), 40));
-    } else if (anchor && target !== page) {
-      setTimeout(() => anchor.scrollIntoView({ behavior: "smooth", block: "start" }), 30);
-    } else {
-      window.scrollTo({ top: 0, behavior: "instant" });
-    }
+    if (anchor && target !== page) setTimeout(() => anchor.scrollIntoView({ behavior: "smooth", block: "start" }), 30);
+    else window.scrollTo({ top: 0, behavior: "instant" });
   }
-  window.hysacamNavigate = function (target) {
-    const next = `#${String(target || "home").replace(/^#/, "")}`;
-    if (location.hash === next) route();
-    else location.hash = next;
-  };
-  window.addEventListener("hashchange", route);
-  route();
+  window.addEventListener("hashchange", route); route();
 
   // Notifications are derived from the signed-in user's real report records.
   // Read state is stored locally per report status update; no fake records/counts are used.

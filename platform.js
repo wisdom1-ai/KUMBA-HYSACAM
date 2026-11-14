@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     return "available";
   }
 
-  function selectBin(bin) {
+  function selectBin(bin, { fromMap = false } = {}) {
     if (!bin) return;
     $("detail-name").textContent = bin.name || `Dustbin ${bin.bin_code || bin.id}`;
     $("detail-area").textContent = `${bin.area || "Area not specified"}, Kumba`;
@@ -53,10 +53,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         `;
       }
     }
-    $("details")?.scrollIntoView({behavior:"smooth", block:"start"});
-    document.dispatchEvent(new CustomEvent("hysacam:show-bin", {
-      detail: { latitude:Number(bin.latitude), longitude:Number(bin.longitude), binId:String(bin.id) }
-    }));
+    if (!fromMap) {
+      $("details")?.scrollIntoView({behavior:"smooth", block:"start"});
+      document.dispatchEvent(new CustomEvent("hysacam:show-bin", {
+        detail: { latitude:Number(bin.latitude), longitude:Number(bin.longitude), binId:String(bin.id) }
+      }));
+    }
   }
 
   function renderDirectory() {
@@ -100,7 +102,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   document.addEventListener("hysacam:bin-selected", event => {
     if (event.detail?.bin) {
       const bin = bins.find(b => String(b.id) === String(event.detail.bin.id)) || event.detail.bin;
-      selectBin(bin);
+      selectBin(bin, { fromMap: true });
     }
   });
   table?.addEventListener("click", e => {
