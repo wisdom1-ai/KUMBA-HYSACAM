@@ -1,21 +1,22 @@
-HYSACAM KUMBA TRACKER — REDESIGN UPDATE
+HYSACAM KUMBA TRACKER - MOBILE APP SHELL UPDATE
 
-Included updates
-- Reordered the resident header actions: notification bell first, hamburger menu second.
-- Replaced rendered HYSACAM logo images with the requested ♻ symbol on the dashboard, sign-in, sign-up, password recovery, email verification, OAuth callback and administrator screens.
-- Added a fixed five-item bottom navigation bar: Home, Map, Reports, Settings and Profile, with safe-area spacing for iPhone screens.
-- Kept the original Supabase setup, authenticated API routes, resident report submission, directory, cleaning-record query and map database query.
-- Kept the recycling-symbol map markers and status colour states.
-- Notifications are built from the signed-in resident's actual report records returned by /api/reports. Unread/read state is stored locally in the browser. No artificial report entries or notification rows are inserted into Supabase.
-- Added report status totals using the resident's real reports.
-- Added functional menu open/close, notification open/close and mark-as-read actions, account sign-out, comfortable-view preference, and a privacy/security dialog linking to the existing password-recovery page.
+What changed:
+- Added a mobile bottom navigation bar for Home, Map, Reports, Settings and Profile.
+- Added an in-app notifications panel populated from the signed-in user's report API and verified cleaning_records in Supabase.
+- Added Settings preferences for in-app notification visibility, reduced motion and compact layout. These preferences are stored locally on the current device only.
+- Added Profile details read from /api/auth/me and administrator status checked through /api/admin/me.
+- Added a Profile sign-out control using the existing /api/auth/logout endpoint. The existing menu sign-out controls are retained.
+- Refined the mobile header, service cards, map layout, account screens and navigation.
+- Kept the existing HYSACAM recycling-symbol SVG consistently throughout the website and authentication screens.
+- Kept all existing backend routes, database setup files, authentication pages, map logic, report logic and administrator files intact.
 
-Checks performed
-- Node syntax check passed for every JavaScript file in js/, server/ and api/.
-- HTML parsing checks passed for all root HTML pages: no duplicate IDs and no missing local script/style/image references.
-- Verified the header contains exactly one notification button and one menu button, with the bell before the hamburger.
-- Verified the old hysacam-symbol.svg image is no longer referenced by the HTML pages.
+Important:
+- Notifications display only report and verified cleaning data available to the current account. No sample notifications are fabricated.
+- Settings toggles for layout and notifications are device-local preferences; they do not change Supabase account data.
+- No database schema or Vercel environment variables were changed.
+- No files were deleted because the remaining scripts, SQL migrations and server files may be required by the deployed site or administrator workflow.
 
-Deployment verification
-- The files were statically checked in this environment. Full live authentication, Supabase queries, email delivery and map tile loading still need a browser test on your deployed domain with your configured backend and network access.
-- No Supabase schema, credentials or existing backend routes were intentionally changed by this redesign.
+Deployment:
+- Keep Vercel Root Directory set to CCAS.
+- Replace the repository's CCAS folder contents with this ZIP's CCAS folder contents, commit and deploy.
+- Test login, sign out, reports, map, directory details and administrator dashboard after deployment.

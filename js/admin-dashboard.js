@@ -21,13 +21,7 @@
       headers: { ...(options.body ? { "Content-Type": "application/json" } : {}), ...(options.headers || {}) }
     });
     const data = await response.json().catch(() => ({}));
-    if (!response.ok) {
-      const diagnostic = data.diagnostic;
-      const diagnosticText = diagnostic
-        ? `\\nDatabase code: ${diagnostic.code || "UNKNOWN"}\\nDatabase message: ${diagnostic.message || "Not provided"}${diagnostic.details ? `\\nDetails: ${diagnostic.details}` : ""}${diagnostic.hint ? `\\nHint: ${diagnostic.hint}` : ""}`
-        : "";
-      throw new Error((data.message || "The request could not be completed.") + diagnosticText);
-    }
+    if (!response.ok) throw new Error(data.message || "The request could not be completed.");
     return data;
   }
   const post = (url, body) => request(url, { method: "POST", body: JSON.stringify(body) });
@@ -112,17 +106,17 @@
 
   function renderBins() {
     const q = ($("admin-bin-search").value || "").toLowerCase();
-    const rows = state.bins.filter(b => [b.bin_code,b.name,b.area,b.status].join(" ").toLowerCase().includes(q));
+    const rows = state.bins.filter(b => [b.id,b.name,b.area,b.status].join(" ").toLowerCase().includes(q));
     $("admin-bin-count").textContent = `${state.bins.length} registered dustbin(s)`;
     $("admin-bins-table").innerHTML = rows.length ? rows.map(b => `<tr>
-      <td><b>${esc(b.bin_code)}</b></td><td>${esc(b.name)}</td><td>${esc(b.area)}</td><td><span class="status">${esc(b.status || "Available")}</span></td>
+      <td><b>${esc(b.id)}</b></td><td>${esc(b.name)}</td><td>${esc(b.area)}</td><td><span class="status">${esc(b.status || "Available")}</span></td>
       <td><div class="admin-row-actions"><button type="button" class="admin-action-link" data-edit-bin="${esc(b.id)}">Edit</button><button type="button" class="admin-action-link danger" data-delete-bin="${esc(b.id)}">Delete</button></div></td></tr>`).join("") : `<tr><td colspan="5">No matching dustbins found</td></tr>`;
-    $("record-bin-id").innerHTML = `<option value="">Select a dustbin</option>${state.bins.map(b=>`<option value="${esc(b.id)}">${esc(b.bin_code)} — ${esc(b.area)}</option>`).join("")}`;
+    $("record-bin-id").innerHTML = `<option value="">Select a dustbin</option>${state.bins.map(b=>`<option value="${esc(b.id)}">${esc(b.id)} — ${esc(b.area)}</option>`).join("")}`;
   }
 
   function renderRecords() {
     $("admin-records-table").innerHTML = state.records.length ? state.records.map(r=>`<tr>
-      <td><b>${esc(state.bins.find(b=>String(b.id)===String(r.bin_id))?.bin_code || r.bin_id)}</b></td><td>${esc(r.area)}</td><td>${esc(localDate(r.cleaned_at))}</td><td>${esc(r.activity || "Cleaning")}</td><td><span class="status">${esc(r.status || "Recorded")}</span></td><td>${r.verified ? "Verified" : "Pending verification"}</td></tr>`).join("") : `<tr><td colspan="6">No cleaning records have been registered</td></tr>`;
+      <td><b>${esc(r.bin_id)}</b></td><td>${esc(r.area)}</td><td>${esc(localDate(r.cleaned_at))}</td><td>${esc(r.activity || "Cleaning")}</td><td><span class="status">${esc(r.status || "Recorded")}</span></td><td>${r.verified ? "Verified" : "Pending verification"}</td></tr>`).join("") : `<tr><td colspan="6">No cleaning records have been registered</td></tr>`;
   }
 
   function renderUsers() {
@@ -175,7 +169,7 @@
   $("admin-bin-form")?.addEventListener("submit", async event => {
     event.preventDefault();
     const editing = Boolean($("bin-edit-id").value);
-    const payload = { bin_code:$("bin-id").value.trim(), id:$("bin-edit-id").value, name:$("bin-name").value.trim(), area:$("bin-area").value.trim(), latitude:$("bin-lat").value, longitude:$("bin-lng").value, status:$("bin-status").value };
+    const payload = { id:$("bin-id").value.trim(), name:$("bin-name").value.trim(), area:$("bin-area").value.trim(), latitude:$("bin-lat").value, longitude:$("bin-lng").value, status:$("bin-status").value };
     const button = $("bin-save"); button.disabled = true;
     try {
       await (editing ? patch("/api/admin/manage",payload) : post("/api/admin/manage",{type:"bin",...payload}));
@@ -190,10 +184,10 @@
     if (edit) {
       const bin = state.bins.find(b=>String(b.id)===edit.dataset.editBin); if (!bin) return;
       $("admin-bin-form").hidden = false; $("bin-edit-id").value = bin.id;
-      $("bin-id").value = bin.bin_code || ""; $("bin-id").disabled = true;
+      $("bin-id").value = bin.id; $("bin-id").disabled = true;
       $("bin-name").value = bin.name || ""; $("bin-area").value = bin.area || "";
       $("bin-lat").value = bin.latitude ?? ""; $("bin-lng").value = bin.longitude ?? "";
-      $("bin-status").value = String(bin.status || "available").toLowerCase(); $("bin-save").textContent = "Update dustbin";
+      $("bin-status").value = bin.status || "Available"; $("bin-save").textContent = "Update dustbin";
       $("admin-bin-form").scrollIntoView({behavior:"smooth",block:"center"});
     }
     if (remove && confirm(`Delete dustbin ${remove.dataset.deleteBin}? This may be blocked if cleaning records reference it.`)) {
@@ -245,103 +239,6 @@
       form.reset(); $("admin-code-stage").hidden=true; $("admin-password-stage").hidden=false;
       $("admin-form-title").textContent="Administrator sign in"; say("You have signed out.");
     }
-  });
-
-
-  // Profile popover and account actions
-  const profileToggle = $("admin-profile-toggle");
-  const profilePopover = $("admin-profile-popover");
-  const closeProfile = () => {
-    if (!profilePopover || !profileToggle) return;
-    profilePopover.hidden = true;
-    profileToggle.setAttribute("aria-expanded", "false");
-  };
-  profileToggle?.addEventListener("click", event => {
-    event.stopPropagation();
-    const open = profilePopover.hidden;
-    profilePopover.hidden = !open;
-    profileToggle.setAttribute("aria-expanded", String(open));
-    $("admin-profile-email").textContent = email || "Administrator account";
-    $("admin-profile-name").textContent = email ? email.split("@")[0] : "Administrator";
-  });
-  document.addEventListener("click", event => {
-    if (profilePopover && !profilePopover.hidden && !event.target.closest(".admin-profile-menu-wrap")) closeProfile();
-  });
-  document.addEventListener("keydown", event => { if (event.key === "Escape") closeProfile(); });
-  $("admin-profile-settings")?.addEventListener("click", () => {
-    closeProfile();
-    location.hash = "#settings";
-    $("settings")?.scrollIntoView({behavior:"smooth",block:"start"});
-  });
-  const signOut = async () => {
-    closeProfile();
-    try { await fetch("/api/admin/logout",{method:"POST",credentials:"include"}); }
-    finally {
-      portal.classList.remove("authorized"); loginPage.style.display="grid";
-      form.reset(); $("admin-code-stage").hidden=true; $("admin-password-stage").hidden=false;
-      $("admin-form-title").textContent="Administrator sign in"; say("You have signed out.");
-      window.scrollTo({top:0,behavior:"smooth"});
-    }
-  };
-  $("admin-profile-logout")?.addEventListener("click", signOut);
-
-  // Mobile drawer: menu button, backdrop, and navigation links all work
-  const sideNav = document.querySelector(".admin-side-pro");
-  const drawerBackdrop = $("admin-drawer-backdrop");
-  const menuButton = $("admin-menu-toggle");
-  const setDrawer = open => {
-    const active = Boolean(open && window.matchMedia("(max-width:560px)").matches);
-    sideNav?.classList.toggle("drawer-open", active);
-    drawerBackdrop?.classList.toggle("open", active);
-    document.body.classList.toggle("admin-drawer-lock", active);
-    menuButton?.setAttribute("aria-expanded", String(active));
-    menuButton?.setAttribute("aria-label", active ? "Close navigation menu" : "Open navigation menu");
-    if (menuButton) menuButton.textContent = active ? "×" : "☰";
-  };
-  menuButton?.addEventListener("click", () => setDrawer(!sideNav?.classList.contains("drawer-open")));
-  drawerBackdrop?.addEventListener("click", () => setDrawer(false));
-  sideNav?.querySelectorAll('a[href^="#"]').forEach(link => link.addEventListener("click", () => {
-    sideNav.querySelectorAll("a").forEach(a => a.classList.toggle("selected", a === link));
-    document.querySelectorAll(".admin-mobile-bottom-nav a").forEach(a => a.classList.toggle("active", a.getAttribute("href") === link.getAttribute("href")));
-    setDrawer(false);
-  }));
-  document.querySelectorAll(".admin-mobile-bottom-nav a").forEach(link => link.addEventListener("click", () => {
-    document.querySelectorAll(".admin-mobile-bottom-nav a").forEach(a => a.classList.toggle("active", a === link));
-    sideNav?.querySelectorAll("a").forEach(a => a.classList.toggle("selected", a.getAttribute("href") === link.getAttribute("href")));
-  }));
-  window.addEventListener("resize", () => { if (!window.matchMedia("(max-width:560px)").matches) setDrawer(false); });
-  setDrawer(false);
-
-  // Device-local dashboard preferences; these do not change account permissions or server data.
-  const prefCompact = $("admin-setting-compact");
-  const prefMotion = $("admin-setting-reduced-motion");
-  const settingFeedback = $("admin-setting-feedback");
-  const prefKey = "hysacam_admin_dashboard_preferences_v1";
-  const applyPreferences = prefs => {
-    $("admin-main-pro")?.classList.toggle("compact-dashboard", Boolean(prefs.compact));
-    $("admin-main-pro")?.classList.toggle("reduce-motion", Boolean(prefs.reduceMotion));
-    if (prefCompact) prefCompact.checked = Boolean(prefs.compact);
-    if (prefMotion) prefMotion.checked = Boolean(prefs.reduceMotion);
-  };
-  let savedPrefs = {compact:false,reduceMotion:false};
-  try { savedPrefs = {...savedPrefs,...JSON.parse(localStorage.getItem(prefKey) || "{}")}; } catch (_) {}
-  applyPreferences(savedPrefs);
-  $("admin-setting-save")?.addEventListener("click", () => {
-    savedPrefs = {compact:Boolean(prefCompact?.checked),reduceMotion:Boolean(prefMotion?.checked)};
-    try { localStorage.setItem(prefKey,JSON.stringify(savedPrefs)); applyPreferences(savedPrefs); if(settingFeedback)settingFeedback.textContent="Preferences saved on this device."; }
-    catch (_) { if(settingFeedback)settingFeedback.textContent="Could not save preferences in this browser."; }
-  });
-  $("admin-setting-reset")?.addEventListener("click", () => {
-    savedPrefs = {compact:false,reduceMotion:false};
-    try { localStorage.removeItem(prefKey); } catch (_) {}
-    applyPreferences(savedPrefs);
-    if(settingFeedback)settingFeedback.textContent="Dashboard preferences reset.";
-  });
-  $("admin-setting-refresh")?.addEventListener("click", async event => {
-    const button=event.currentTarget; button.disabled=true; button.textContent="Refreshing…";
-    try { await loadAll(); if(settingFeedback)settingFeedback.textContent="Dashboard data refreshed successfully."; }
-    catch (_) { if(settingFeedback)settingFeedback.textContent="Refresh failed. Check your administrator session and connection."; }
-    finally { button.disabled=false; button.textContent="Refresh dashboard data"; }
   });
 
   openDashboard().catch(error=>console.warn("[HYSACAM admin]",error));

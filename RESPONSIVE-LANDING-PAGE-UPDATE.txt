@@ -1,0 +1,14 @@
+HYSACAM KUMBA TRACKER - NAVIGATION AND MAP UPDATE
+
+- Replaced the visible notification bell with a Notifications text item inside the menu.
+- Simplified the header to the HYSACAM symbol/wordmark and a single menu button.
+- Menu now checks /api/auth/me and shows Home, Map, Profile, Notifications, Sign Up and Sign In when signed out.
+- When signed in, Sign Up and Sign In are replaced by Sign Out.
+- Sign Out calls the existing /api/auth/logout endpoint and returns to the sign-in page only after the server confirms success.
+- Notifications continue to use report data for the signed-in resident and verified cleaning-record data; no fabricated notifications are added.
+- Removed the separate fixed bottom navigation bar to avoid duplicate navigation.
+- Reduced the map panel to roughly one-third of the viewport height, with responsive limits on phones and larger screens.
+- Preserved the existing Supabase, report, map, directory, cleaning-record and authentication endpoints.
+- All JavaScript files passed Node syntax checks after this update.
+
+No backend schema or Supabase credentials were changed.

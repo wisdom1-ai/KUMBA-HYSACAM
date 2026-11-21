@@ -104,25 +104,3 @@ The user list is read-only and loads up to the first 1,000 Supabase Auth users. 
 ### Deployment verification
 
 After deploying to Vercel, sign in using an authorised administrator account and test: create/edit/delete a dustbin, open a map marker, check the public directory and details, add a cleaning record, update a resident report status, and confirm a non-administrator receives HTTP 403 from `/api/admin/manage`. A successful local syntax check does not replace testing against your actual Supabase project and deployed Vercel environment.
-
-
-## Dustbin registration database compatibility fix
-
-The deployed Supabase database uses UUID values for `public.bins.id` and
-`public.cleaning_records.bin_id`. The admin form's human-readable values
-(e.g. `BIN-008`) must therefore be stored separately in `public.bins.bin_code`.
-
-Before deploying this updated package, run `supabase/uuid-bin-code-migration.sql`
-in the Supabase SQL Editor. This adds `bin_code`, backfills existing rows with
-stable display codes derived from their UUIDs, and preserves all UUID keys and
-cleaning-record relationships. Do not change `bins.id` or
-`cleaning_records.bin_id` to text.
-
-The updated admin API creates bins with the database-generated UUID and saves
-the entered human-readable value in `bin_code`. The public directory, map,
-details, cleaning records, and admin tables display `bin_code` while continuing
-to use UUIDs internally for lookups and relationships.
-
-After running the migration, deploy the contents of the `CCAS` folder as the
-Vercel project root. Test creation with a new code such as `BIN-008`, then
-confirm it appears in the admin list, public directory, and map.
