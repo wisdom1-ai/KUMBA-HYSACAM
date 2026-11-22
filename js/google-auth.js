@@ -12,7 +12,7 @@
   async function client(){
     if(window.supabaseClient)return window.supabaseClient;
     if(!window.supabase)await load(CDN);
-    if(!window.supabaseClient)await load('js/supabase.js');
+    if(!window.supabaseClient)await load('js/supabase.js?v=64119a7a');
     if(!window.supabaseClient)throw new Error(fail);
     return window.supabaseClient;
   }

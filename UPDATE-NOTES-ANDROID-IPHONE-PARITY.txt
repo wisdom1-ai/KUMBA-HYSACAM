@@ -1,0 +1,9 @@
+HYSACAM UPDATE: SAME EXPERIENCE ON ANDROID AND IPHONE
+
+- Sign In and Sign Up buttons now sit in the header on every phone and tablet for visitors (they were hidden before).
+- Every css/js link now carries a version (?v=...) and vercel.json tells browsers to re-check files on each visit,
+  so a phone can never show a new page with an old stylesheet.
+- Hero card no longer grows wider than very small screens (320 px).
+- Removed an inline image from the map search style that some browsers handle badly.
+- Tested identically on iPhone 13, iPhone SE, Pixel 5, Galaxy S8, Galaxy S9+ and Galaxy Tab S4 profiles.
+After you edit any css or js file, the ?v= value must be refreshed (ask for a new build).
