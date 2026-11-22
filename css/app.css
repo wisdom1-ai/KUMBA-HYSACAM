@@ -21,8 +21,8 @@ body.is-authenticated .header-tools{margin-left:auto}
 .back-btn svg{width:26px;height:26px}
 .back-btn:active{background:#edf7f0}
 .mobile-title{margin:0;font-size:21px;font-weight:800;color:#17231d}
-@media(max-width:760px){body.is-inner .topbar .brand{display:none}}
-@media(min-width:761px){.back-btn,.mobile-title{display:none}.topbar .public-nav{margin-left:auto}.header-tools{margin-left:0}.topbar{padding:0 max(4vw,24px)}}
+@media(max-width:900px){body.is-inner .topbar .brand{display:none}}
+@media(min-width:901px){.back-btn,.mobile-title{display:none}.topbar .public-nav{margin-left:auto}.header-tools{margin-left:0}.topbar{padding:0 max(4vw,24px)}}
 
 /* Bottom tab bar */
 .app-tabbar{position:fixed;left:0;right:0;bottom:0;z-index:1100;display:grid;grid-template-columns:repeat(5,1fr);padding:6px 6px calc(8px + env(safe-area-inset-bottom));background:rgba(255,255,255,.97);backdrop-filter:blur(14px);border-top:1px solid #e3ece6;box-shadow:0 -6px 24px rgba(15,60,35,.07)}
@@ -31,8 +31,8 @@ body.is-authenticated .header-tools{margin-left:auto}
 .app-tabbar a.active{color:var(--green)}
 .app-tabbar a.active svg{fill:rgba(8,119,71,.16)}
 .app-tabbar a.active::after{content:"";position:absolute;bottom:-3px;width:44px;height:3px;border-radius:3px;background:var(--green)}
-@media(max-width:760px){body{padding-bottom:calc(86px + env(safe-area-inset-bottom))}.site-footer{display:none}}
-@media(min-width:761px){.app-tabbar{display:none}}
+@media(max-width:900px){body{padding-bottom:calc(86px + env(safe-area-inset-bottom))}.site-footer{display:none}}
+@media(min-width:901px){.app-tabbar{display:none}}
 
 /* Hero card */
 .hero.hero-slider{margin:14px;border-radius:24px;min-height:0;height:auto;max-height:none;aspect-ratio:16/10;box-shadow:0 10px 28px rgba(8,40,24,.16);background:#0b5a35}
@@ -42,7 +42,7 @@ body.is-authenticated .header-tools{margin-left:auto}
 .hero.hero-slider h1{font-size:clamp(23px,6.8vw,30px);line-height:1.12;letter-spacing:-.4px;margin:0 0 10px;color:#fff}
 .hero.hero-slider h1 em{color:#c5f3d3}
 .hero.hero-slider #hero-description{display:block;margin:0;font-size:13px;line-height:1.45;color:#eaf6ee}
-@media(min-width:761px){.hero.hero-slider{aspect-ratio:auto;min-height:360px;margin:20px 14px}.hero.hero-slider .hero-copy{max-width:540px;padding:48px}.hero.hero-slider h1{font-size:44px}.hero.hero-slider #hero-description{font-size:16px}}
+@media(min-width:901px){.hero.hero-slider{aspect-ratio:auto;min-height:360px;margin:20px 14px}.hero.hero-slider .hero-copy{max-width:540px;padding:48px}.hero.hero-slider h1{font-size:44px}.hero.hero-slider #hero-description{font-size:16px}}
 
 /* Quick tiles */
 .tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:0 14px}
@@ -61,7 +61,7 @@ body.is-authenticated .header-tools{margin-left:auto}
 .home-map .map-legend{display:flex;flex-wrap:wrap;gap:6px 16px;margin:10px 4px 0}
 .home-map .map-legend span{padding:0;border:0;background:none;font-size:11.5px;font-weight:600;color:#26372d}
 .home-map .map-message{margin:8px 4px 2px;font-size:12px;color:var(--muted)}
-@media(min-width:761px){.home-map .map-frame{height:420px}}
+@media(min-width:901px){.home-map .map-frame{height:420px}}
 
 /* Section heads and report cards */
 .sec-head{display:flex;justify-content:space-between;align-items:center;margin:22px 16px 10px}
@@ -131,8 +131,6 @@ body.is-authenticated .header-tools{margin-left:auto}
 .signout-btn{border:1.5px solid #e04848;background:#fff1f0;color:#d32f2f}
 .signin-btn{background:var(--green);color:#fff}
 .signout-btn svg,.signin-btn svg{width:24px;height:24px}
-body:not(.is-authenticated) .auth-only{display:none!important}
-body.is-authenticated .visitor-only{display:none!important}
 .settings-note{margin:4px 18px 0;font-size:12px;color:var(--muted)}
 .brand-card{display:flex;align-items:center;gap:16px;margin:18px 14px 6px;padding:18px;background:#eaf6ef;border:1px solid #cfe6d7;border-radius:20px}
 .brand-card img{width:56px;height:56px}
@@ -143,7 +141,46 @@ body.is-authenticated .visitor-only{display:none!important}
 .topbar nav#main-nav{top:76px}
 .app-tabbar a.active{background:none;color:var(--green)}
 .hero.hero-slider .hero-copy{left:0;right:auto;width:auto;margin:0;padding:22px!important;transform:none}
-@media(min-width:761px){.hero.hero-slider .hero-copy{padding:48px!important}}
+@media(min-width:901px){.hero.hero-slider .hero-copy{padding:48px!important}}
 /* Menu card: grow with content (square minimum) so nothing is clipped */
 .topbar nav#main-nav{aspect-ratio:auto;height:auto;min-height:min(86vw,360px);justify-content:flex-start;overflow-y:auto}
 .topbar nav#main-nav .mobile-nav-head{flex:0 0 auto;min-height:56px;padding:2px 0 12px}
+
+/* ===== Account state without flashing (class is set in <head> from remembered session) ===== */
+html.auth-yes .visitor-only,html.auth-yes .menu-auth-row,html.auth-yes .public-signup,html.auth-yes .public-signin,html.auth-yes #report-auth-gate{display:none!important}
+html.auth-no .auth-only{display:none!important}
+html.auth-pending .visitor-only,html.auth-pending .auth-only,html.auth-pending .menu-auth-row,html.auth-pending .public-signup,html.auth-pending .public-signin,html.auth-pending #report-auth-gate{visibility:hidden}
+/* header links stay for everyone; only Sign Up / Sign In depend on the account */
+body.is-authenticated .topbar .public-nav{display:flex!important}
+@media(max-width:900px){.topbar .public-nav,body.is-authenticated .topbar .public-nav{display:none!important}}
+@media(min-width:901px){.topbar .public-nav{display:flex!important}}
+
+/* ===== Older iPhone / Android browser fallbacks ===== */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+.hero-slides,.hero-slide,.hero-shade{top:0;right:0;bottom:0;left:0}
+.nav-backdrop,.nav-backdrop.open{top:0;right:0;bottom:0;left:0}
+.hero.hero-slider{min-height:clamp(210px,58vw,300px)}
+.inner-page{min-height:calc(100vh - 68px)}
+.home-map.big .map-frame{height:calc(100vh - 290px)}
+.hero.hero-slider .hero-copy{top:0;right:auto;bottom:0;left:0}
+input,select,textarea{font-size:16px}
+img{max-width:100%}
+@media(min-width:901px){.hero.hero-slider{min-height:380px}}
+@supports(height:100dvh){.inner-page{min-height:calc(100dvh - 68px)}.home-map.big .map-frame{height:calc(100dvh - 290px)}}
+
+/* ===== Tablet portrait (iPad / Android tablets) ===== */
+@media(min-width:600px) and (max-width:900px){
+  .hero.hero-slider{aspect-ratio:2.1/1;min-height:300px}
+  .hero.hero-slider .hero-copy{max-width:62%;padding:36px!important}
+  .hero.hero-slider h1{font-size:38px}
+  .hero.hero-slider #hero-description{font-size:16px}
+  .tile{min-height:120px;font-size:14px}.tile svg{width:38px;height:38px}
+  .home-map .map-frame{height:380px}
+  .page-wrap.narrow{max-width:640px}
+}
+/* ===== Laptop / desktop: header lines up with the page content ===== */
+@media(min-width:901px){
+  .topbar{padding:0 max(24px,calc((100vw - 1100px)/2 + 14px))}
+  .tile{min-height:120px;font-size:14px}
+}
+body .topbar .header-tools+.menu-toggle,body.is-authenticated .topbar .header-tools+.menu-toggle{margin-left:0}

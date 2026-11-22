@@ -41,6 +41,8 @@
   let timer;
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+  const noStops = text => String(text).replace(/\.(?=\s|$|<)/g, "");
+
   function showSlide(index) {
     current = (index + slides.length) % slides.length;
     slides.forEach((slide, i) => {
@@ -51,9 +53,9 @@
       if (active && image && image.loading === 'lazy') image.loading = 'eager';
     });
     const item = copy[current] || copy[0];
-    if (eyebrow) eyebrow.textContent = item.eyebrow;
-    if (title) title.innerHTML = item.title;
-    if (description) description.textContent = item.description;
+    if (eyebrow) eyebrow.textContent = noStops(item.eyebrow);
+    if (title) title.innerHTML = noStops(item.title);
+    if (description) description.textContent = noStops(item.description);
   }
 
   showSlide(0);

@@ -42,30 +42,26 @@
     try {
       const response = await fetch('/api/auth/logout', {method:'POST',credentials:'include',headers:{Accept:'application/json'}});
       if (!response.ok) throw new Error('Sign out failed');
+      try { localStorage.removeItem('hysacam-auth-cache'); } catch {}
       location.replace('signin.html');
     } catch (error) {
       if (button) { button.disabled = false; button.dataset.busy = '0'; button.textContent = 'Sign Out'; }
       alert('Could not sign out. Please try again.');
     }
   }
-  async function loadAccount() {
-    const links = $('menu-links');
-    const summary = $('menu-account-summary');
-    let authenticated = false, user = null;
-    try {
-      const response = await fetch('/api/auth/me', {credentials:'include', cache:'no-store', headers:{Accept:'application/json'}});
-      if (response.ok) {
-        const data = await response.json();
-        authenticated = !!data.authenticated;
-        user = data.user || data.profile || null;
-      }
-    } catch (error) { console.warn('[HYSACAM] Session check unavailable', error); }
-    // The public header has a single horizontal link row only for visitors.
-    // Signed-in users keep the brand and hamburger; account actions live in the drawer.
+  // ---- Account state: remembered between pages so signed-in users never see Sign In / Sign Up flash ----
+  const CACHE = 'hysacam-auth-cache';
+  const readCache = () => { try { const c = JSON.parse(localStorage.getItem(CACHE) || 'null'); return c && c.a === 1 ? c : null; } catch { return null; } };
+  const writeCache = value => { try { value ? localStorage.setItem(CACHE, JSON.stringify(value)) : localStorage.removeItem(CACHE); } catch {} };
+  const setAuthClass = state => { const r = document.documentElement; r.classList.remove('auth-yes','auth-no','auth-pending'); r.classList.add('auth-' + state); };
+  const displayName = user => user?.name || user?.full_name || user?.email?.split('@')[0] || 'HYSACAM User';
+
+  function paint(authenticated, user, role) {
+    setAuthClass(authenticated ? 'yes' : 'no');
     document.body.classList.toggle('is-authenticated', authenticated);
     document.body.classList.toggle('is-visitor', !authenticated);
-    const publicNav = $('public-nav');
-    if (publicNav) publicNav.hidden = authenticated;
+    const links = $('menu-links');
+    const summary = $('menu-account-summary');
     if (links) {
       const authTop = authenticated ? '' : '<div class="menu-auth-row"><a class="menu-auth-link" href="signup.html">Sign Up</a><a class="menu-auth-link menu-signin" href="signin.html">Sign In</a></div>';
       links.innerHTML = `
@@ -79,26 +75,49 @@
         <a href="settings.html"><span class="nav-item-icon">⚙</span>Settings</a>
         <button type="button" data-open-notifications><span class="nav-item-icon">▣</span>Notifications</button>
         ${authenticated ? '<button type="button" class="menu-signout" id="menu-signout"><span class="nav-item-icon">↪</span>Sign Out</button>' : ''}`;
-      const here=(location.pathname.split('/').pop()||'index.html');links.querySelectorAll('a[href]').forEach(l=>{if(l.getAttribute('href')===here||(here===''&&l.getAttribute('href')==='index.html'))l.setAttribute('aria-current','page');});
+      const here = (location.pathname.split('/').pop() || 'index.html');
+      links.querySelectorAll('a[href]').forEach(l => { if (l.getAttribute('href') === here) l.setAttribute('aria-current','page'); });
       links.querySelector('#menu-signout')?.addEventListener('click', event => signOut(event.currentTarget));
-      links.querySelectorAll('a').forEach(link=>link.addEventListener('click',()=>document.dispatchEvent(new Event('hysacam:close-menu'))));
+      links.querySelectorAll('a').forEach(link => link.addEventListener('click', () => document.dispatchEvent(new Event('hysacam:close-menu'))));
     }
     if (summary) {
-      if (authenticated) {
-        const name = user?.name || user?.full_name || user?.email?.split('@')[0] || 'Signed-in user';
-        summary.innerHTML = `<b>${safeText(name)}</b><small>${safeText(user?.email || 'Signed-in account')}</small>`;
-      } else summary.innerHTML = '<b>Welcome</b><small>Explore HYSACAM Kumba Tracker</small>';
+      summary.innerHTML = authenticated
+        ? `<b>${safeText(displayName(user))}</b><small>${safeText(user?.email || 'Signed-in account')}</small>`
+        : '<b>Welcome</b><small>Explore HYSACAM Kumba Tracker</small>';
     }
+    const set = (id, value) => { if ($(id)) $(id).textContent = value; };
     if (authenticated && user) {
-      const name = user.name || user.full_name || user.email?.split('@')[0] || 'HYSACAM User';
-      const email = user.email || 'Email unavailable';
-      let role = 'Signed-in account';
-      try { const adminResponse = await fetch('/api/admin/me', {credentials:'include',cache:'no-store',headers:{Accept:'application/json'}}); if (adminResponse.ok) { const adminData = await adminResponse.json(); if (adminData.authenticated) role = adminData.role || 'administrator'; } } catch {}
-      [['settings-user-name',name],['profile-user-name',name],['settings-user-email',email],['profile-user-email',email],['settings-user-role',role],['profile-user-role',role]].forEach(([id,value])=>{if($(id))$(id).textContent=value;});
-    } else {
-      ['settings-user-name','profile-user-name'].forEach(id=>{if($(id))$(id).textContent='Sign in to view your profile';});
-      ['settings-user-email','profile-user-email'].forEach(id=>{if($(id))$(id).textContent='Your account details will appear here after sign-in';});
+      const name = displayName(user), email = user.email || 'Email unavailable', r = role || 'Signed-in account';
+      [['settings-user-name',name],['profile-user-name',name],['settings-user-email',email],['profile-user-email',email],['settings-user-role',r],['profile-user-role',r]].forEach(([id,v]) => set(id,v));
+    } else if (!authenticated) {
+      ['settings-user-name','profile-user-name'].forEach(id => set(id,'Sign in to view your profile'));
+      ['settings-user-email','profile-user-email'].forEach(id => set(id,'Your account details will appear here after sign-in'));
+      ['settings-user-role','profile-user-role'].forEach(id => set(id,'Visitor'));
     }
+  }
+
+  async function loadAccount() {
+    const cached = readCache();
+    if (cached) paint(true, cached.user, cached.role);   // instant: no Sign In flash for signed-in users
+    let authenticated = false, user = null, unknown = false;
+    try {
+      const response = await fetch('/api/auth/me', {credentials:'include', cache:'no-store', headers:{Accept:'application/json'}});
+      if (response.ok) {
+        const data = await response.json();
+        authenticated = !!data.authenticated;
+        user = data.user || data.profile || null;
+      } else if (response.status !== 401) unknown = true;
+    } catch (error) { unknown = true; console.warn('[HYSACAM] Session check unavailable', error); }
+    if (unknown && cached) return;                        // network hiccup: keep what the user already sees
+    if (!authenticated) { writeCache(null); paint(false, null); return; }
+    let role = cached?.role || 'Signed-in account';
+    paint(true, user, role);
+    try {
+      const adminResponse = await fetch('/api/admin/me', {credentials:'include', cache:'no-store', headers:{Accept:'application/json'}});
+      if (adminResponse.ok) { const adminData = await adminResponse.json(); if (adminData.authenticated) role = adminData.role || 'administrator'; else role = 'Resident'; }
+    } catch {}
+    writeCache({a:1, user:{name:displayName(user), email:user?.email || ''}, role});
+    paint(true, user, role);
   }
   $('profile-signout')?.addEventListener('click', event => signOut(event.currentTarget));
   loadAccount();

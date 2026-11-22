@@ -3,7 +3,7 @@
   const $=id=>document.getElementById(id);
   const msg=(s,ok=false)=>{const el=$('auth-message');if(el){el.textContent=s;el.className='auth-message'+(ok?' success':'')}};
   const busy=(button,on,label)=>{if(!button)return;button.disabled=on;button.textContent=on?'Please wait…':label};
-  const post=async(path,data)=>{const r=await fetch(API+path,{method:'POST',headers:{'Content-Type':'application/json'},credentials:'include',cache:'no-store',body:JSON.stringify(data)});let d={};try{d=await r.json()}catch{}if(!r.ok)throw new Error(d.message||'We could not complete that request. Please try again.');return d};
+  const post=async(path,data)=>{const r=await fetch(API+path,{method:'POST',headers:{'Content-Type':'application/json'},credentials:'include',cache:'no-store',body:JSON.stringify(data)});let d={};try{d=await r.json()}catch{}if(r.status===405||(r.status===404&&!d.message))throw new Error('Sign-in service not reachable from this address. Open the site from your Vercel link (or run it with vercel dev), not from a local file or a plain static server');if(!r.ok)throw new Error(d.message||'We could not complete that request. Please try again.');return d};
   function setupOtpBoxes(){
     document.querySelectorAll('.otp-source').forEach(input=>{
       const host=document.querySelector(`[data-otp-for="${input.id}"]`);if(!host)return;
