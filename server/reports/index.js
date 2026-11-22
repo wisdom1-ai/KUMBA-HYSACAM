@@ -9,7 +9,7 @@ export default async function handler(req, res) {
     if (!session) return res.status(401).json({ message: 'Please sign in before accessing reports.' });
     const db = adminClient();
     if (req.method === 'GET') {
-      const { data, error } = await db.from('resident_reports').select('id, reference_code, issue_type, location_description, area, description, latitude, longitude, status, created_at, updated_at').eq('resident_id', session.user.id).order('created_at', { ascending: false });
+      const { data, error } = await db.from('resident_reports').select('id, reference_code, issue_type, location_description, area, description, latitude, longitude, status, admin_notes, created_at, updated_at').eq('resident_id', session.user.id).order('created_at', { ascending: false });
       if (error) throw new Error('Could not load your reports.');
       return res.status(200).json({ reports: data || [] });
     }

@@ -1,0 +1,26 @@
+HYSACAM UPDATE: SIGN UP EVERYWHERE, NOTIFICATIONS, INSTANT REPORTS
+
+1. Sign up on every device
+- Sign in and Create account pages now have a visible "Sign in | Create account" switch at the top.
+- Settings and Profile now show "Create account" and "Sign In" for visitors (before, only Sign In).
+- Directory, Cleaning and About show a "Join HYSACAM" card to visitors.
+- Phones: shorter brand banner on the auth pages so the form starts higher; email/enter-key hints for Android keyboards.
+
+2. Notifications
+- Bell badge now counts UNREAD updates (before it counted pending reports, so it never cleared).
+- Tap an update to open its details (status, location, team update, date) and a button to the related page.
+- Opening an update marks it read and the badge goes down; "Mark all as read" clears everything.
+- Read state is remembered on this device per account. A report status change creates a new unread update.
+- Bottom sheet on phones, centred card on tablet and laptop.
+
+3. Reports page speed
+- Last known reports are saved on the device and shown instantly; the list refreshes quietly behind the scenes.
+- First visit shows placeholders instead of a blank screen; the "Sign in to submit" box no longer flashes for signed-in users.
+- Reports/notification requests start before the map and database libraries load (those now load with defer).
+- A submitted report appears immediately at the top of the list.
+- Server: GET /api/reports now also returns admin_notes so residents can see "Team update".
+
+New files: js/shared.js, js/notifications.js. Changed: js/reports.js, js/app-shell.js, css/app.css, css/style.css,
+signin.html, signup.html, settings.html, profile.html, report.html, index.html, map.html, about.html, cleaning.html,
+directory.html, server/reports/index.js.
+Deploy normally to Vercel. No database changes needed.

@@ -22,19 +22,20 @@
     <section class="auth-content-panel">
     <section class="auth-reference-card">
       <a class="auth-reference-logo" href="signin.html" aria-label="HYSACAM Kumba Tracker sign in"><img src="images/hysacam-symbol.svg" alt="HYSACAM logo"></a>
+      <nav class="auth-tabs" aria-label="Account options"><a href="signin.html" aria-current="page">Sign in</a><a href="signup.html">Create account</a></nav>
       <span class="auth-step-label">HYSACAM KUMBA TRACKER</span>
       <h1>Sign in</h1>
       <p class="auth-subtitle">Welcome back. Sign in to continue</p>
       <form class="auth-form auth-form-modern" id="signin-form">
-        <div class="auth-field"><label for="email">Email</label><input id="email" type="email" autocomplete="email" autocapitalize="none" autocorrect="off" spellcheck="false" required placeholder="Enter your email"></div>
-        <div class="auth-field"><label for="password">Password</label><div class="auth-password-wrap"><input id="password" type="password" autocomplete="current-password" required placeholder="Enter your password"><button class="password-toggle password-toggle-icon" type="button" data-toggle-password="password" aria-label="Show password" title="Show password"></button></div></div>
+        <div class="auth-field"><label for="email">Email</label><input id="email" type="email" inputmode="email" enterkeyhint="next" autocomplete="email" autocapitalize="none" autocorrect="off" spellcheck="false" required placeholder="Enter your email"></div>
+        <div class="auth-field"><label for="password">Password</label><div class="auth-password-wrap"><input id="password" type="password" enterkeyhint="go" autocomplete="current-password" required placeholder="Enter your password"><button class="password-toggle password-toggle-icon" type="button" data-toggle-password="password" aria-label="Show password" title="Show password"></button></div></div>
         <div class="auth-reference-forgot"><a class="auth-forgot-link" href="forgot-password.html">Forgot password?</a></div>
         <button class="button auth-primary-button" id="signin-submit" type="submit">Sign in</button>
         <div class="auth-divider"><span>or</span></div>
         <button class="google-auth-button" type="button" data-google-auth="resident"><span class="google-g" aria-hidden="true">G</span>Continue with Google</button>
         <div class="auth-message" id="auth-message" role="alert" aria-live="polite"></div>
       </form>
-      <p class="auth-switch auth-switch-modern">Need an account? <a href="signup.html">Sign up</a></p>
+      <p class="auth-switch auth-switch-modern">New to HYSACAM? <a href="signup.html">Create an account</a></p>
     </section>
     </section>
   </main>

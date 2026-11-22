@@ -22,6 +22,7 @@
     <section class="auth-content-panel">
     <section class="auth-reference-card auth-reference-card-wide">
       <a class="auth-reference-logo" href="signin.html" aria-label="HYSACAM Kumba Tracker sign in"><img src="images/hysacam-symbol.svg" alt="HYSACAM logo"></a>
+      <nav class="auth-tabs" aria-label="Account options"><a href="signin.html">Sign in</a><a href="signup.html" aria-current="page">Create account</a></nav>
       <span class="auth-step-label">HYSACAM KUMBA TRACKER</span>
       <h1>Create an account</h1>
       <p class="auth-subtitle">Join the HYSACAM Kumba Tracker community</p>
@@ -30,14 +31,14 @@
           <div class="auth-field"><label for="first-name">First Name</label><input id="first-name" autocomplete="given-name" required maxlength="40" placeholder="Enter first name"></div>
           <div class="auth-field"><label for="last-name">Last Name</label><input id="last-name" autocomplete="family-name" required maxlength="40" placeholder="Enter last name"></div>
         </div>
-        <div class="auth-field"><label for="email">Email</label><input id="email" type="email" autocomplete="email" autocapitalize="none" autocorrect="off" spellcheck="false" required placeholder="Enter your email"></div>
-        <div class="auth-field"><label for="password">Password</label><div class="auth-password-wrap"><input id="password" type="password" autocomplete="new-password" required minlength="8" placeholder="Create a password"><button class="password-toggle password-toggle-icon" type="button" data-toggle-password="password" aria-label="Show password" title="Show password"></button></div></div>
+        <div class="auth-field"><label for="email">Email</label><input id="email" type="email" inputmode="email" enterkeyhint="next" autocomplete="email" autocapitalize="none" autocorrect="off" spellcheck="false" required placeholder="Enter your email"></div>
+        <div class="auth-field"><label for="password">Password</label><div class="auth-password-wrap"><input id="password" type="password" enterkeyhint="go" autocomplete="new-password" required minlength="8" placeholder="Create a password"><button class="password-toggle password-toggle-icon" type="button" data-toggle-password="password" aria-label="Show password" title="Show password"></button></div></div>
         <button class="button auth-primary-button" id="signup-submit" type="submit">Create account</button>
         <div class="auth-divider"><span>or</span></div>
         <button class="google-auth-button" type="button" data-google-auth="resident"><span class="google-g" aria-hidden="true">G</span>Continue with Google</button>
         <div class="auth-message" id="auth-message" role="alert" aria-live="polite"></div>
       </form>
-      <p class="auth-switch auth-switch-modern">Have an account? <a href="signin.html">Sign in</a></p>
+      <p class="auth-switch auth-switch-modern">Already have an account? <a href="signin.html">Sign in</a></p>
     </section>
     </section>
   </main>

@@ -1594,25 +1594,20 @@ body.is-authenticated .topbar nav#main-nav .menu-account-summary{display:block;m
   .hero.hero-slider .searchbar input{padding:10px 6px;font-size:14px}
   .hero.hero-slider .searchbar button{padding:10px 14px;border-radius:11px;font-size:13px;white-space:nowrap}
   .hero.hero-slider .searchbar>span{font-size:20px;padding-left:8px}
-.hero {
-  position: relative;
-  overflow: hidden;
 }
 
-.bubble {
-  position: absolute;
-  bottom: -60px;
-  left: 20%;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: rgba(8, 119, 71, 0.4);
-  animation: floatUp 6s linear infinite;
-  pointer-events: none;
-}
-
-@keyframes floatUp {
-  from { transform: translateY(0); opacity: 0.8; }
-  to { transform: translateY(-600px); opacity: 0; }
-
+/* ===== Sign in / Create account switch: visible on every phone, tablet and laptop ===== */
+.auth-tabs{display:grid;grid-template-columns:1fr 1fr;gap:4px;max-width:380px;margin:0 auto 24px;padding:4px;background:#eaf2ed;border-radius:14px}
+.auth-tabs a{display:flex;align-items:center;justify-content:center;min-height:46px;padding:0 8px;border-radius:11px;font-size:15px;font-weight:700;color:#4c5d53;text-decoration:none;text-align:center;-webkit-tap-highlight-color:transparent}
+.auth-tabs a[aria-current="page"]{background:#fff;color:#087747;box-shadow:0 2px 8px rgba(13,59,35,.12)}
+.auth-tabs a:not([aria-current="page"]):active{background:#dfeae3}
+.auth-content-panel .auth-tabs{margin-top:0}
+.auth-reference-card .auth-tabs+.auth-step-label{margin-top:4px}
+/* Phones: shorter brand banner so the form (and both account options) sit higher on screen */
+@media(max-width:560px){
+  .auth-split-page:not(.auth-verify-split) .auth-photo-panel{min-height:0;padding:16px 20px 18px}
+  .auth-split-page:not(.auth-verify-split) .auth-photo-copy{margin:14px 0 0}
+  .auth-split-page:not(.auth-verify-split) .auth-photo-copy>span,.auth-split-page:not(.auth-verify-split) .auth-photo-copy p{display:none}
+  .auth-split-page:not(.auth-verify-split) .auth-photo-copy h2{font-size:26px;margin:0}
+  .auth-split-page:not(.auth-verify-split) .auth-content-panel{padding:22px 20px 40px}
 }

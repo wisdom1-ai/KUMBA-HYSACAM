@@ -5,18 +5,6 @@
   const prefKey = 'hysacam-device-preferences-v1';
   let preferences = {};
   try { preferences = JSON.parse(localStorage.getItem(prefKey) || '{}'); } catch { preferences = {}; }
-  const panel = $('notification-panel');
-  const list = $('notification-list');
-  const setNoticeOpen = (open) => { if (panel) panel.hidden = !open; };
-  $('notification-close')?.addEventListener('click', () => setNoticeOpen(false));
-  document.addEventListener('keydown', (event) => { if (event.key === 'Escape') setNoticeOpen(false); });
-  document.addEventListener('click', (event) => {
-    if (panel && !panel.hidden && !panel.contains(event.target) && !event.target.closest('[data-open-notifications]')) setNoticeOpen(false);
-  });
-  document.addEventListener('click', event => {
-    if (event.target.closest('[data-open-notifications]')) { event.preventDefault(); setNoticeOpen(panel?.hidden ?? true); }
-  });
-
   function savePrefs() {
     preferences = {
       notifications: $('pref-notifications')?.checked ?? true,
@@ -43,6 +31,7 @@
       const response = await fetch('/api/auth/logout', {method:'POST',credentials:'include',headers:{Accept:'application/json'}});
       if (!response.ok) throw new Error('Sign out failed');
       try { localStorage.removeItem('hysacam-auth-cache'); } catch {}
+      window.Hys?.clearPrivate();
       location.replace('signin.html');
     } catch (error) {
       if (button) { button.disabled = false; button.dataset.busy = '0'; button.textContent = 'Sign Out'; }
@@ -90,8 +79,8 @@
       const name = displayName(user), email = user.email || 'Email unavailable', r = role || 'Signed-in account';
       [['settings-user-name',name],['profile-user-name',name],['settings-user-email',email],['profile-user-email',email],['settings-user-role',r],['profile-user-role',r]].forEach(([id,v]) => set(id,v));
     } else if (!authenticated) {
-      ['settings-user-name','profile-user-name'].forEach(id => set(id,'Sign in to view your profile'));
-      ['settings-user-email','profile-user-email'].forEach(id => set(id,'Your account details will appear here after sign-in'));
+      ['settings-user-name','profile-user-name'].forEach(id => set(id,'Welcome to HYSACAM'));
+      ['settings-user-email','profile-user-email'].forEach(id => set(id,'Sign in or create an account to manage your profile and reports'));
       ['settings-user-role','profile-user-role'].forEach(id => set(id,'Visitor'));
     }
   }
@@ -109,44 +98,20 @@
       } else if (response.status !== 401) unknown = true;
     } catch (error) { unknown = true; console.warn('[HYSACAM] Session check unavailable', error); }
     if (unknown && cached) return;                        // network hiccup: keep what the user already sees
-    if (!authenticated) { writeCache(null); paint(false, null); return; }
+    if (!authenticated) { writeCache(null); window.Hys?.clearPrivate(); paint(false, null); document.dispatchEvent(new Event('hys:account')); return; }
     let role = cached?.role || 'Signed-in account';
     paint(true, user, role);
     try {
       const adminResponse = await fetch('/api/admin/me', {credentials:'include', cache:'no-store', headers:{Accept:'application/json'}});
       if (adminResponse.ok) { const adminData = await adminResponse.json(); if (adminData.authenticated) role = adminData.role || 'administrator'; else role = 'Resident'; }
     } catch {}
+    const hadEmail = readCache()?.user?.email || '';
     writeCache({a:1, user:{name:displayName(user), email:user?.email || ''}, role});
     paint(true, user, role);
+    if (hadEmail.toLowerCase() !== (user?.email || '').toLowerCase()) document.dispatchEvent(new Event('hys:account'));
   }
   $('profile-signout')?.addEventListener('click', event => signOut(event.currentTarget));
   loadAccount();
-
-  async function loadNotifications() {
-    if (!list) return;
-    if (preferences.notifications === false) {
-      list.innerHTML = '<p class="notification-empty">In-app notifications are turned off in Settings</p>';
-      return;
-    }
-    const items = [];
-    try {
-      const response = await fetch('/api/reports', {credentials:'include',cache:'no-store',headers:{Accept:'application/json'}});
-      if (response.ok) {
-        const data = await response.json();
-        (data.reports || []).slice(0,5).forEach(report => items.push({title:`Report ${report.reference_code || ''}`.trim(), message:`${report.issue_type || 'Waste issue'} · ${report.status || 'Submitted'}`, time:report.created_at}));
-      }
-    } catch (error) { console.warn('[HYSACAM] Report notifications unavailable', error); }
-    try {
-      if (window.supabaseClient) {
-        const {data,error} = await window.supabaseClient.from('cleaning_records').select('id,area,activity,status,cleaned_at').eq('verified',true).order('cleaned_at',{ascending:false}).limit(4);
-        if (!error) (data || []).forEach(record => items.push({title:'Verified cleaning update',message:`${record.activity || 'Cleaning'} · ${record.area || 'Kumba'} · ${record.status || 'Recorded'}`,time:record.cleaned_at}));
-      }
-    } catch (error) { console.warn('[HYSACAM] Cleaning notifications unavailable', error); }
-    items.sort((a,b)=>new Date(b.time || 0)-new Date(a.time || 0));
-    const recent = items.slice(0,7);
-    list.innerHTML = recent.length ? recent.map(item=>`<article class="notification-item"><b>${safeText(item.title)}</b><p>${safeText(item.message)}</p><time>${item.time && !Number.isNaN(new Date(item.time).getTime()) ? safeText(new Date(item.time).toLocaleString()) : 'Recently updated'}</time></article>`).join('') : '<p class="notification-empty">No new report or verified cleaning updates are available yet</p>';
-  }
-  loadNotifications();
 
   document.addEventListener('hysacam:close-menu',()=>{document.querySelector('#main-nav')?.classList.remove('open');document.body.classList.remove('nav-open');document.querySelector('#menu-toggle')?.setAttribute('aria-expanded','false');document.querySelector('#nav-backdrop')?.classList.remove('open');});
   document.querySelectorAll('[data-open-settings]').forEach(a=>a.addEventListener('click',()=>{document.querySelector('#main-nav')?.classList.remove('open');document.body.classList.remove('nav-open');}));
