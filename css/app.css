@@ -83,6 +83,107 @@ body.is-authenticated .header-tools{margin-left:auto}
 .st-resolved.pill{background:#ffedc7;color:#b45309}.st-resolved.r-ico{background:#f59e0b}
 .st-closed.pill{background:#e5e7eb;color:#4b5563}.st-closed.r-ico{background:#6b7280}
 .chev{width:16px;height:16px;color:#17231d;transition:transform .2s}
+
+/* =====================================
+   HYSACAM REPORT SLIDER TEXT OVERLAY
+===================================== */
+
+.report-slider {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* Dark transparent layer over the images */
+.report-slider-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: flex;
+  align-items: flex-end;
+  padding: 28px;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.85) 0%,
+    rgba(0, 0, 0, 0.48) 48%,
+    rgba(0, 0, 0, 0.08) 100%
+  );
+  pointer-events: none;
+}
+
+/* Text container */
+.report-slider-content {
+  width: 100%;
+  max-width: 650px;
+  color: #ffffff;
+}
+
+/* Small brand label */
+.report-slider-label {
+  display: inline-block;
+  margin-bottom: 12px;
+  color: #b9f6ca;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+/* Main heading */
+.report-slider-content h2 {
+  margin: 0 0 10px;
+  color: #ffffff;
+  font-size: clamp(23px, 4vw, 36px);
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.8px;
+}
+
+/* Secondary heading */
+.report-slider-content h3 {
+  margin: 0 0 9px;
+  color: #e5f8e9;
+  font-size: clamp(14px, 2vw, 18px);
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+/* Description */
+.report-slider-content p {
+  max-width: 580px;
+  margin: 0;
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.65;
+}
+
+/* Mobile layout */
+@media (max-width: 600px) {
+  .report-slider-overlay {
+    padding: 18px;
+  }
+
+  .report-slider-label {
+    margin-bottom: 7px;
+    font-size: 9px;
+    letter-spacing: 1.5px;
+  }
+
+  .report-slider-content h2 {
+    font-size: 23px;
+  }
+
+  .report-slider-content h3 {
+    font-size: 14px;
+  }
+
+  .report-slider-content p {
+    font-size: 11px;
+    line-height: 1.5;
+  }
+}
+
 .rcard[open] .chev{transform:rotate(90deg)}
 .r-body{padding:0 16px 14px 58px;font-size:13px;line-height:1.5;color:#45544b}
 .r-body p{margin:4px 0}.team-note{color:var(--deep);font-weight:600}
