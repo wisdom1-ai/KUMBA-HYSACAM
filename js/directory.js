@@ -204,6 +204,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const binId = button.dataset.binId;
 
     const mapSection = document.getElementById("map");
+    if (!mapSection) { if (!document.getElementById("details") && binId) location.href = "map.html?bin=" + encodeURIComponent(binId); return; }
 
     if (mapSection) {
       mapSection.scrollIntoView({

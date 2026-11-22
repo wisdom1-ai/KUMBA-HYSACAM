@@ -113,6 +113,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.error("Could not load dustbin locations", error);
     showMessage("Could not load locations — check the bins table permissions and Supabase connection");
   }
+  const wantedBin = new URLSearchParams(location.search).get("bin");
+  if (wantedBin) document.dispatchEvent(new CustomEvent("hysacam:show-bin", { detail: { binId: wantedBin } }));
   setTimeout(() => map.invalidateSize(), 250);
   window.addEventListener("resize", () => map.invalidateSize());
 });

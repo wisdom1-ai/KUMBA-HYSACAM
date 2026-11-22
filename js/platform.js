@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const grid = $("binGrid");
   const search = $("directorySearch");
   const table = $("cleaning-table");
-  if (!client || !grid) return;
+  if (!client || (!grid && !table)) return;
 
   const esc = (v) => String(v ?? "").replace(/[&<>"']/g, c => ({
     "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
@@ -60,6 +60,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   function renderDirectory() {
+    if (!grid) return;
     const q = (search?.value || "").trim().toLowerCase();
     const filtered = bins.filter(b => [b.id,b.name,b.area,b.status].join(" ").toLowerCase().includes(q));
     const pages = Math.max(1, Math.ceil(filtered.length / pageSize));
@@ -93,7 +94,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }).join("") : `<tr><td colspan="6"><div class="empty-state compact"><h3>No verified cleaning records yet</h3><p>Verified staff cleaning activities will appear here</p></div></td></tr>`;
   }
 
-  grid.addEventListener("click", e => {
+  grid?.addEventListener("click", e => {
     const btn = e.target.closest("[data-bin-id]");
     if (btn) selectBin(bins.find(b => String(b.id) === btn.dataset.binId));
   });
@@ -140,9 +141,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   $("location-search")?.addEventListener("submit", e => {
     e.preventDefault();
     const q = $("location-input")?.value.trim() || "";
+    if (!grid) { location.href = "directory.html" + (q ? "?q=" + encodeURIComponent(q) : ""); return; }
     if (search) search.value = q;
     page = 1; renderDirectory();
-    $("directory")?.scrollIntoView({behavior:"smooth"});
     $("search-message").textContent = q ? `${bins.filter(b => [b.id,b.name,b.area].join(" ").toLowerCase().includes(q.toLowerCase())).length} matching location(s) found` : "Enter a location or dustbin ID";
   });
 
@@ -153,6 +154,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     ]);
     if (binError) throw binError;
     bins = binRows || [];
+    const presetQ = new URLSearchParams(location.search).get("q");
+    if (presetQ && search) search.value = presetQ;
     records = recordError ? [] : (recordRows || []);
     renderDirectory();
     renderRecords();
@@ -160,7 +163,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (!bins.length) $("map-message") && ($("map-message").textContent = "No registered dustbin locations are available yet");
   } catch (error) {
     console.error("[HYSACAM] Could not load public collection data", error);
-    grid.innerHTML = `<div class="directory-empty directory-error"><h3>Unable to load collection points</h3><p>Please refresh and try again</p></div>`;
+    if (grid) grid.innerHTML = `<div class="directory-empty directory-error"><h3>Unable to load collection points</h3><p>Please refresh and try again</p></div>`;
     if (table) table.innerHTML = `<tr><td colspan="6">Cleaning records could not be loaded</td></tr>`;
   }
 });

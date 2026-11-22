@@ -67,14 +67,19 @@
     const publicNav = $('public-nav');
     if (publicNav) publicNav.hidden = authenticated;
     if (links) {
+      const authTop = authenticated ? '' : '<div class="menu-auth-row"><a class="menu-auth-link" href="signup.html">Sign Up</a><a class="menu-auth-link menu-signin" href="signin.html">Sign In</a></div>';
       links.innerHTML = `
-        <a href="#home"><span class="nav-item-icon">⌂</span>Home</a>
-        <a href="#map"><span class="nav-item-icon">⌖</span>Map</a>
-        <a href="#profile"><span class="nav-item-icon">●</span>Profile</a>
+        ${authTop}
+        <a href="index.html"><span class="nav-item-icon">⌂</span>Home</a>
+        <a href="map.html"><span class="nav-item-icon">⌖</span>Map</a>
+        <a href="directory.html"><span class="nav-item-icon">☷</span>Directory</a>
+        <a href="cleaning.html"><span class="nav-item-icon">✓</span>Cleaning</a>
+        <a href="report.html"><span class="nav-item-icon">⚑</span>Report</a>
+        <a href="profile.html"><span class="nav-item-icon">●</span>Profile</a>
+        <a href="settings.html"><span class="nav-item-icon">⚙</span>Settings</a>
         <button type="button" data-open-notifications><span class="nav-item-icon">▣</span>Notifications</button>
-        ${authenticated
-          ? '<button type="button" class="menu-signout" id="menu-signout"><span class="nav-item-icon">↪</span>Sign Out</button>'
-          : '<a class="menu-auth-link" href="signup.html"><span class="nav-item-icon">＋</span>Sign Up</a><a class="menu-auth-link menu-signin" href="signin.html"><span class="nav-item-icon">→</span>Sign In</a>'}`;
+        ${authenticated ? '<button type="button" class="menu-signout" id="menu-signout"><span class="nav-item-icon">↪</span>Sign Out</button>' : ''}`;
+      const here=(location.pathname.split('/').pop()||'index.html');links.querySelectorAll('a[href]').forEach(l=>{if(l.getAttribute('href')===here||(here===''&&l.getAttribute('href')==='index.html'))l.setAttribute('aria-current','page');});
       links.querySelector('#menu-signout')?.addEventListener('click', event => signOut(event.currentTarget));
       links.querySelectorAll('a').forEach(link=>link.addEventListener('click',()=>document.dispatchEvent(new Event('hysacam:close-menu'))));
     }
@@ -126,4 +131,23 @@
 
   document.addEventListener('hysacam:close-menu',()=>{document.querySelector('#main-nav')?.classList.remove('open');document.body.classList.remove('nav-open');document.querySelector('#menu-toggle')?.setAttribute('aria-expanded','false');document.querySelector('#nav-backdrop')?.classList.remove('open');});
   document.querySelectorAll('[data-open-settings]').forEach(a=>a.addEventListener('click',()=>{document.querySelector('#main-nav')?.classList.remove('open');document.body.classList.remove('nav-open');}));
+
+  // Hamburger menu: open, close, backdrop, Escape key and link taps
+  (function(){
+    const toggle=$('menu-toggle'),nav=$('main-nav'),backdrop=$('nav-backdrop'),closeBtn=$('menu-close');
+    if(!toggle||!nav)return;
+    const setOpen=open=>{
+      nav.classList.toggle('open',open);
+      backdrop?.classList.toggle('open',open);
+      document.body.classList.toggle('nav-open',open);
+      toggle.setAttribute('aria-expanded',String(open));
+    };
+    toggle.addEventListener('click',e=>{e.stopPropagation();setOpen(!nav.classList.contains('open'));});
+    closeBtn?.addEventListener('click',()=>setOpen(false));
+    backdrop?.addEventListener('click',()=>setOpen(false));
+    document.addEventListener('keydown',e=>{if(e.key==='Escape')setOpen(false);});
+    nav.addEventListener('click',e=>{if(e.target.closest('a[href]'))setOpen(false);});
+    document.addEventListener('click',e=>{if(nav.classList.contains('open')&&!nav.contains(e.target)&&!toggle.contains(e.target))setOpen(false);});
+    document.addEventListener('click',e=>{if(e.target.closest('[data-open-notifications]'))setOpen(false);});
+  })();
 })();
