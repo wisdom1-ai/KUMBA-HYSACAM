@@ -323,14 +323,18 @@ body.compact-layout .hero.hero-slider{aspect-ratio:2.2/1;min-height:190px}
 /* REPORT IMAGE SLIDER SIZE */
 .report-slider {
   width: 100%;
+  height: auto;
   aspect-ratio: 1.6 / 1;
   overflow: hidden;
   border-radius: 28px;
   position: relative;
   margin: 12px 0 24px;
+  background: #e1ebe4;
 }
 
 .report-slider img {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   display: block;
