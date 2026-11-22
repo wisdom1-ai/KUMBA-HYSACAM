@@ -74,9 +74,11 @@
         ? `<b>${safeText(displayName(user))}</b><small>${safeText(user?.email || 'Signed-in account')}</small>`
         : '<b>Welcome</b><small>Explore HYSACAM Kumba Tracker</small>';
     }
+    const initials = n => { const w = String(n || '').trim().split(/\s+/).filter(Boolean); return ((w[0]?.[0] || '') + (w.length > 1 ? w[w.length - 1][0] : '')).toUpperCase(); };
+    document.querySelectorAll('.avatar').forEach(a => { const t = authenticated ? initials(displayName(user)) : ''; a.dataset.initials = t; a.classList.toggle('has-initials', !!t); });
     const set = (id, value) => { if ($(id)) $(id).textContent = value; };
     if (authenticated && user) {
-      const name = displayName(user), email = user.email || 'Email unavailable', r = role || 'Signed-in account';
+      const name = displayName(user), email = user.email || 'Email unavailable', r = role || 'Resident';
       [['settings-user-name',name],['profile-user-name',name],['settings-user-email',email],['profile-user-email',email],['settings-user-role',r],['profile-user-role',r]].forEach(([id,v]) => set(id,v));
     } else if (!authenticated) {
       ['settings-user-name','profile-user-name'].forEach(id => set(id,'Welcome to HYSACAM'));
@@ -99,7 +101,7 @@
     } catch (error) { unknown = true; console.warn('[HYSACAM] Session check unavailable', error); }
     if (unknown && cached) return;                        // network hiccup: keep what the user already sees
     if (!authenticated) { writeCache(null); window.Hys?.clearPrivate(); paint(false, null); document.dispatchEvent(new Event('hys:account')); return; }
-    let role = cached?.role || 'Signed-in account';
+    let role = cached?.role || 'Resident';
     paint(true, user, role);
     try {
       const adminResponse = await fetch('/api/admin/me', {credentials:'include', cache:'no-store', headers:{Accept:'application/json'}});

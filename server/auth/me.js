@@ -4,6 +4,6 @@ export default async function handler(req, res) {
   try {
     const session = await readSession(req);
     if (!session) return res.status(401).json({ authenticated: false });
-    return res.status(200).json({ authenticated: true, user: { id: session.user.id, name: session.user.user_metadata?.full_name || '', email: session.user.email } });
+    return res.status(200).json({ authenticated: true, user: { id: session.user.id, name: session.user.user_metadata?.full_name || '', email: session.user.email, phone: session.user.user_metadata?.phone || '', created_at: session.user.created_at || null } });
   } catch (e) { return fail(res,e,500); }
 }

@@ -11,7 +11,7 @@
   const form = $('verify-form');
   const button = $('verify-submit');
 
-  button.textContent = purpose === 'signup' ? 'Verify & open dashboard' : 'Verify & sign in';
+  button.textContent = purpose === 'signup' ? 'Verify & continue' : 'Verify & sign in';
 
   form.addEventListener('submit', async event => {
     event.preventDefault();
@@ -28,11 +28,11 @@
       await post('/verify', { email, code, purpose });
       sessionStorage.removeItem('hysacam_pending_email');
       sessionStorage.removeItem('hysacam_pending_purpose');
-      location.replace('index.html');
+      const __nx=sessionStorage.getItem('hysacam_next');sessionStorage.removeItem('hysacam_next');location.replace(__nx&&/^[\w-]+\.html$/.test(__nx)?__nx:'index.html');
     } catch (error) {
       msg(error.message);
     } finally {
-      busy(button, false, purpose === 'signup' ? 'Verify & open dashboard' : 'Verify & sign in');
+      busy(button, false, purpose === 'signup' ? 'Verify & continue' : 'Verify & sign in');
     }
   });
 

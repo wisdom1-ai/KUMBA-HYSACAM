@@ -9,6 +9,7 @@ import auth_verify_reset_code from '../server/auth/verify-reset-code.js';
 import auth_login from '../server/auth/login.js';
 import auth_reset_password from '../server/auth/reset-password.js';
 import auth_me from '../server/auth/me.js';
+import auth_profile from '../server/auth/profile.js';
 import auth_oauth_session from '../server/auth/oauth-session.js';
 import auth_resend_code from '../server/auth/resend-code.js';
 import admin_verify from '../server/admin/verify.js';
@@ -30,6 +31,7 @@ const routes = new Map([
   ['/api/auth/login', auth_login],
   ['/api/auth/reset-password', auth_reset_password],
   ['/api/auth/me', auth_me],
+  ['/api/auth/profile', auth_profile],
   ['/api/auth/oauth-session', auth_oauth_session],
   ['/api/auth/resend-code', auth_resend_code],
   ['/api/admin/verify', admin_verify],

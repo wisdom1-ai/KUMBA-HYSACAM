@@ -43,7 +43,7 @@
  function renderHome(list){
   const host=$('home-recent');if(!host)return;
   if(list===undefined)return;
-  if(list===null)host.innerHTML='<div class="empty-card"><b>Sign in to see your reports</b><p>Track the waste issues you report in Kumba</p><a class="button" href="signin.html">Sign in</a></div>';
+  if(list===null)host.innerHTML='<div class="empty-card"><b>Sign in to see your reports</b><p>Track the waste issues you report in Kumba</p><div class="gate-actions"><a class="button" href="signin.html">Sign in</a><a class="button outline" href="signup.html">Create account</a></div></div>';
   else if(!list.length)host.innerHTML='<div class="empty-card"><b>No reports yet</b><p>Spotted a waste issue in your area? Let HYSACAM know</p><a class="button" href="report.html">Submit a report</a></div>';
   else paintCards(host,list.slice(0,3).map(x=>card(x,'Submitted on ')).join(''));
  }

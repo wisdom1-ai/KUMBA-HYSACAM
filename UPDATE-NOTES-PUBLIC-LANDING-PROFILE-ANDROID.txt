@@ -1,0 +1,22 @@
+HYSACAM UPDATE: PUBLIC LANDING PAGE, SIGN-IN WALLS, PROFILE/SETTINGS, ANDROID SIGN-IN FIX
+
+1. Public landing page
+- vercel.json no longer sends "/" and "/index.html" through api/dashboard.js, so visitors see the landing page before signing in.
+- js/auth-guard.js no longer redirects visitors to the sign-in page.
+
+2. Sign-in wall
+- Map, Directory, Cleaning Records, Reports, Settings and Profile show "Sign in / Create account" to visitors.
+  About stays public. After signing in, the user returns to the page they wanted.
+
+3. Profile and Settings
+- Profile: edit full name and phone (new endpoint POST /api/auth/profile), member-since, role, change password, sign out.
+- Settings: notifications on/off, reduce motion, compact layout (all saved on the device and applied on every page),
+  change password link, clear saved data on this device, about, sign out.
+- GET /api/auth/me now also returns phone and created_at.
+
+4. Android sign-in / sign-up fix
+- The sign-in and sign-up pages no longer wait for the Supabase CDN script. On slow or blocked mobile networks that script
+  stalled every other script, so the buttons did nothing. Supabase now loads only when "Continue with Google" is tapped.
+- Requests time out after 30 seconds with a clear message instead of hanging.
+
+Deploy normally to Vercel. No database or environment changes needed.

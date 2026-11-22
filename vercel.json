@@ -4,19 +4,6 @@
     {
       "source": "/api/:path*",
       "destination": "/api/router?path=:path*"
-    },
-    {
-      "source": "/",
-      "destination": "/api/dashboard"
-    },
-    {
-      "source": "/index.html",
-      "destination": "/api/dashboard"
     }
-  ],
-  "functions": {
-    "api/dashboard.js": {
-      "includeFiles": "index.html"
-    }
-  }
+  ]
 }

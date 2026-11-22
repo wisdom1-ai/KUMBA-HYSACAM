@@ -1,4 +1,5 @@
 (()=> {
+  const __nx=new URLSearchParams(location.search).get('next');if(__nx&&/^[\w-]+\.html$/.test(__nx))sessionStorage.setItem('hysacam_next',__nx);
   const { $, msg, busy, post } = window.HysAuth;
   const form = $('signin-form');
   const button = $('signin-submit');

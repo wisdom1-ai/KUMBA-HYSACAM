@@ -273,3 +273,50 @@ aside#notification-panel.notification-panel[hidden]{display:none}
 #hys-toast.is-visible{opacity:1;transform:translate(-50%,0)}
 #hys-toast.ok{background:#0b6b3c}
 @media(min-width:901px){#hys-toast{bottom:28px}}
+
+/* ===== Sign-in wall for visitors (everything except landing + About) ===== */
+.gate-wall{display:none;min-height:calc(100vh - 150px);align-items:center;justify-content:center;padding:24px 16px}
+html.auth-no body.is-protected .gate-wall{display:flex}
+html.auth-no body.is-protected .page-wrap{display:none!important}
+html.auth-pending body.is-protected .page-wrap{visibility:hidden}
+.gate-card{width:100%;max-width:420px;padding:30px 24px 22px;text-align:center;background:#fff;border:1px solid #e1ebe4;border-radius:26px;box-shadow:0 14px 40px rgba(13,59,35,.1)}
+.gate-ico{display:grid;place-items:center;width:68px;height:68px;margin:0 auto 16px;border-radius:50%;background:#e9f5ee;color:var(--green)}
+.gate-ico svg{width:32px;height:32px}
+.gate-card h2{margin:0 0 8px;font-size:22px;line-height:1.2}
+.gate-card p{margin:0 0 20px;color:var(--muted);font-size:14px;line-height:1.55}
+.gate-card .button{display:flex;align-items:center;justify-content:center;width:100%;min-height:50px;margin:0 0 10px;border-radius:14px;font-size:16px;font-weight:800}
+.gate-card .button.outline{background:#fff;color:var(--green);border:1.5px solid var(--green)}
+.gate-home{display:inline-block;margin-top:6px;font-size:13px;font-weight:700;color:var(--muted)}
+.empty-card .gate-actions{justify-content:center}
+@media(min-width:901px){.gate-wall{min-height:calc(100vh - 220px)}}
+
+/* ===== Profile / settings extras ===== */
+.avatar{position:relative;font-weight:800;font-size:34px;color:#064e35}
+.avatar.has-initials svg{display:none}
+.avatar.has-initials::after{content:attr(data-initials)}
+.info-card{margin:0 14px 12px;padding:18px;background:#fff;border:1px solid #e1ebe4;border-radius:20px;box-shadow:0 3px 12px rgba(13,59,35,.05)}
+.info-card h3{margin:0 0 12px;font-size:18px}
+.info-card.slim{padding:6px 18px}
+.info-line{display:flex;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid #edf2ee;font-size:14px}
+.info-line:last-child{border:0}.info-line span{color:var(--muted)}
+.pf-field{display:block;margin:0 0 12px;font-size:13px;font-weight:700;color:#26372d}
+.pf-field input{display:block;width:100%;margin-top:6px;padding:13px 14px;border:1px solid #d6e3db;border-radius:13px;font-size:16px;font-weight:500;background:#fff;color:#17231d}
+.pf-field input:focus{outline:2px solid rgba(8,119,71,.35);border-color:var(--green)}
+.pf-field input:disabled{background:#f1f5f2;color:#6b7a71}
+.info-card .button{width:100%;min-height:50px;border-radius:14px;font-size:16px;font-weight:800}
+.info-card .auth-message{margin:10px 0 0;min-height:18px}
+.set-hint{margin:2px 0 8px;font-size:12px;color:var(--muted);line-height:1.45}
+.panel-link{display:flex;align-items:center;gap:12px;width:100%;padding:12px 0;border:0;background:none;text-align:left;color:#17231d;font:inherit;cursor:pointer}
+.panel-link svg{flex:0 0 24px;width:24px;height:24px;stroke:var(--green)}
+.panel-link b{display:block;font-size:14px}.panel-link small{display:block;font-size:12px;color:var(--muted)}
+.panel-link.danger-link svg{stroke:#d32f2f}
+.panel-link+.panel-link{border-top:1px solid #edf2ee}
+.account-role{display:inline-block;padding:4px 12px;border-radius:999px;background:#e5f5ea;color:var(--deep);font-size:12px;font-weight:800;text-transform:capitalize}
+
+/* ===== Compact layout preference ===== */
+body.compact-layout .tile{min-height:84px;padding:10px 4px}
+body.compact-layout .tile svg{width:28px;height:28px}
+body.compact-layout .set-row,body.compact-layout .rcard summary{padding-top:10px;padding-bottom:10px}
+body.compact-layout .set-profile,body.compact-layout .info-card,body.compact-layout .home-map{padding:12px}
+body.compact-layout .sec-head{margin-top:14px;margin-bottom:6px}
+body.compact-layout .hero.hero-slider{aspect-ratio:2.2/1;min-height:190px}

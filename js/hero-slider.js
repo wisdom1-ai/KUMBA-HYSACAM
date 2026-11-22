@@ -39,7 +39,8 @@
 
   let current = 0;
   let timer;
-  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let savedMotion = false; try { savedMotion = !!JSON.parse(localStorage.getItem('hysacam-device-preferences-v1') || '{}').reduceMotion; } catch {}
+  const reducedMotion = savedMotion || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   const noStops = text => String(text).replace(/\.(?=\s|$|<)/g, "");
 
