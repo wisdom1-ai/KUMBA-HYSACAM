@@ -320,13 +320,14 @@ body.compact-layout .set-row,body.compact-layout .rcard summary{padding-top:10px
 body.compact-layout .set-profile,body.compact-layout .info-card,body.compact-layout .home-map{padding:12px}
 body.compact-layout .sec-head{margin-top:14px;margin-bottom:6px}
 body.compact-layout .hero.hero-slider{aspect-ratio:2.2/1;min-height:190px}
+/* REPORT IMAGE SLIDER SIZE */
 .report-slider {
-  width: calc(100% - 70px);
+  width: 100%;
   aspect-ratio: 1.6 / 1;
   overflow: hidden;
   border-radius: 28px;
   position: relative;
-  margin: 24px auto;
+  margin: 12px 0 24px;
 }
 
 .report-slider img {
