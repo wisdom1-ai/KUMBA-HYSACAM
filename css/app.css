@@ -320,35 +320,20 @@ body.compact-layout .set-row,body.compact-layout .rcard summary{padding-top:10px
 body.compact-layout .set-profile,body.compact-layout .info-card,body.compact-layout .home-map{padding:12px}
 body.compact-layout .sec-head{margin-top:14px;margin-bottom:6px}
 body.compact-layout .hero.hero-slider{aspect-ratio:2.2/1;min-height:190px}
+/* REPORT IMAGE SLIDER SIZE */
 .report-slider {
-  position: relative;
   width: 100%;
-  height: 220px;
-  border-radius: 12px;
+  aspect-ratio: 1.6 / 1;
   overflow: hidden;
-  margin-bottom: 16px;
+  border-radius: 28px;
+  position: relative;
+  margin: 12px 0 24px;
 }
 
 .report-slider img {
-  position: absolute;
-  inset: 0;
   width: 100%;
   height: 100%;
+  display: block;
   object-fit: cover;
-  opacity: 0;
-  animation: slideFade 20s infinite;
-}
-
-.report-slider img:nth-child(1) { animation-delay: 0s; }
-.report-slider img:nth-child(2) { animation-delay: 4s; }
-.report-slider img:nth-child(3) { animation-delay: 8s; }
-.report-slider img:nth-child(4) { animation-delay: 12s; }
-.report-slider img:nth-child(5) { animation-delay: 16s; }
-
-@keyframes slideFade {
-  0% { opacity: 0; }
-  4% { opacity: 1; }
-  20% { opacity: 1; }
-  24% { opacity: 0; }
-  100% { opacity: 0; }
+  object-position: center;
 }
