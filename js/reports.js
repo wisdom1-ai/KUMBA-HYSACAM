@@ -142,3 +142,36 @@
  paintLoading();
  refresh();
 })();
+// Automatic Report Image Slider
+document.addEventListener("DOMContentLoaded", () => {
+  const slider = document.querySelector(".report-slider");
+
+  if (!slider) return;
+
+  const images = slider.querySelectorAll("img");
+
+  if (images.length < 2) return;
+
+  let currentIndex = 0;
+
+  images.forEach((img, index) => {
+    img.style.position = "absolute";
+    img.style.inset = "0";
+    img.style.width = "100%";
+    img.style.height = "100%";
+    img.style.objectFit = "cover";
+    img.style.opacity = index === 0 ? "1" : "0";
+    img.style.transition = "opacity 0.8s ease";
+  });
+
+  slider.style.position = "relative";
+  slider.style.overflow = "hidden";
+
+  setInterval(() => {
+    images[currentIndex].style.opacity = "0";
+
+    currentIndex = (currentIndex + 1) % images.length;
+
+    images[currentIndex].style.opacity = "1";
+  }, 3500);
+});
