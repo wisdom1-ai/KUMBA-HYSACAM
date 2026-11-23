@@ -29,7 +29,7 @@
     const current = page === 'profile.html' ? 'settings.html' : page;
     bar.innerHTML = tabs.map(([href, label, icon, full]) => {
       const on = href === current;
-      return `<a href="${href}" aria-label="${full}"${on ? ' class="active" aria-current="page"' : ''}><svg viewBox="0 0 24 24" aria-hidden="true">${icons[icon]}</svg><span>${label}</span></a>`;
+      return `<a href="${href}" aria-label="${full}"${on ? ' class="active" aria-current="page"' : ''}>${icon === 'settings' ? '<i class="tab-emoji" aria-hidden="true">⚙️</i>' : `<svg viewBox="0 0 24 24" aria-hidden="true">${icons[icon]}</svg>`}<span>${label}</span></a>`;
     }).join('');
   })();
 
