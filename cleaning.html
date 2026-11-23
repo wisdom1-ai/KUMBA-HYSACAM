@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"><meta name="theme-color" content="#087747"><meta name="description" content="HYSACAM Kumba Tracker helps residents find waste collection points and follow community cleaning activity."><title>Cleaning Records | HYSACAM Kumba Tracker</title><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"><script>(function(){var s="pending";try{var c=JSON.parse(localStorage.getItem("hysacam-auth-cache")||"null");if(c&&c.a===1)s="yes"}catch(e){}document.documentElement.className+=" auth-"+s})();</script><link rel="stylesheet" href="css/style.css?v=5b2ca3b6"><link rel="stylesheet" href="css/app.css?v=12"></head><body id="top" class="is-inner is-protected is-cleaning">
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"><meta name="theme-color" content="#087747"><meta name="description" content="HYSACAM Kumba Tracker helps residents find waste collection points and follow community cleaning activity."><title>Cleaning Records | HYSACAM Kumba Tracker</title><link rel="preconnect" href="https://edylcpvigtmyuehjeibe.supabase.co" crossorigin><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"><script>(function(){var s="pending";try{var c=JSON.parse(localStorage.getItem("hysacam-auth-cache")||"null");if(c&&c.a===1)s="yes"}catch(e){}document.documentElement.className+=" auth-"+s})();</script><link rel="stylesheet" href="css/style.css?v=5b2ca3b6"><link rel="stylesheet" href="css/app.css?v=15"></head><body id="top" class="is-inner is-protected is-cleaning">
 <header class="topbar">
   <a class="back-btn" href="index.html" aria-label="Back" onclick="if(history.length>1&&document.referrer.indexOf(location.origin)===0){history.back();return false}"><svg viewBox="0 0 24 24" aria-hidden="true" ><path d="m15 6-6 6 6 6"/></svg></a><h1 class="mobile-title">Cleaning Records</h1>
   <a class="brand" href="index.html" aria-label="HYSACAM Kumba Tracker home">
@@ -24,9 +24,52 @@
   </nav>
   <button class="nav-backdrop" id="nav-backdrop" type="button" aria-label="Close navigation"></button>
 </header>
-<main class="inner-page"><section class="gate-wall" aria-label="Cleaning records"><div class="gate-card"><div class="gate-ico"><svg viewBox="0 0 24 24" aria-hidden="true" ><path d="M6 11h12v10H6zM8 11V8a4 4 0 0 1 8 0v3"/></svg></div><h2>Cleaning records</h2><p>Cleaning records are available to signed-in accounts</p><a class="gate-home" href="index.html">‹ Back to home</a></div></section><div class="page-wrap"><section id="cleaning" class="page-section"><div class="section-head"><div><span class="eyebrow">COMMUNITY CLEANLINESS</span><h2>Cleaning Records</h2><p>View verified cleaning activities across Kumba</p></div></div><div class="table-wrap"><table><thead><tr><th>#</th><th>Dustbin ID</th><th>Location</th><th>Date &amp; Time</th><th>Status</th><th>Action</th></tr></thead><tbody id="cleaning-table"></tbody></table></div></section></div></main><footer class="site-footer"><span>© HYSACAM Kumba Tracker</span><a href="index.html">Back to top ↑</a></footer>
+<main class="inner-page"><section class="gate-wall" aria-label="Cleaning records"><div class="gate-card"><div class="gate-ico"><svg viewBox="0 0 24 24" aria-hidden="true" ><path d="M6 11h12v10H6zM8 11V8a4 4 0 0 1 8 0v3"/></svg></div><h2>Cleaning records</h2><p>Cleaning records are available to signed-in accounts</p><a class="gate-home" href="index.html">‹ Back to home</a></div></section><div class="page-wrap"><section id="cleaning" class="page-section"><div class="section-head"><div><span class="eyebrow">COMMUNITY CLEANLINESS</span><h2>Cleaning Records</h2><p>View verified cleaning activities across Kumba</p></div></div><div class="table-wrap"><table><thead><tr><th>#</th><th>Dustbin ID</th><th>Location</th><th>Date &amp; Time</th><th>Status</th><th>Action</th></tr></thead><tbody id="cleaning-table"><tr><td colspan="6"><div class="sk-lines"><i></i><i></i></div></td></tr><tr><td colspan="6"><div class="sk-lines"><i></i><i></i></div></td></tr><tr><td colspan="6"><div class="sk-lines"><i></i><i></i></div></td></tr><tr><td colspan="6"><div class="sk-lines"><i></i><i></i></div></td></tr></tbody></table></div></section></div>
+<dialog id="record-dialog" class="record-detail-dialog"><div class="record-detail-head"><div><span class="eyebrow">CLEANING RECORD</span><h3 id="rd-title">Record</h3></div><button class="record-detail-close" id="rd-close" type="button" aria-label="Close">×</button></div><dl class="record-detail-fields" id="rd-fields"></dl></dialog></main><footer class="site-footer"><span>© HYSACAM Kumba Tracker</span><a href="index.html">Back to top ↑</a></footer>
 <aside id="notification-panel" class="notification-panel" hidden aria-label="Notifications"><div class="notification-head"><div><span class="eyebrow">LATEST UPDATES</span><h3>Notifications</h3></div><button id="notification-close" type="button" aria-label="Close notifications">×</button></div><div id="notification-list" class="notification-list"><p class="notification-empty">Loading your latest updates…</p></div><p class="notification-foot">Updates are based on records available to your signed-in account</p></aside>
 <nav class="app-tabbar" aria-label="Primary"><a href="index.html"><svg viewBox="0 0 24 24" aria-hidden="true" ><path d="M3 11 12 3l9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg><span>Home</span></a><a href="map.html"><svg viewBox="0 0 24 24" aria-hidden="true" ><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg><span>Map</span></a><a href="report.html"><svg viewBox="0 0 24 24" aria-hidden="true" ><path d="M6 3h9l4 4v14H6z"/><path d="M9 12h7M9 16h7M9 8h3"/></svg><span>Reports</span></a><a href="cleaning.html" class="active" aria-current="page" aria-label="Cleaning Records"><svg viewBox="0 0 24 24" aria-hidden="true" ><path d="M9 4h6v3H9zM7 5H5v16h14V5h-2"/><path d="m9 14 2 2 4-4"/></svg><span>Cleaning</span></a><a href="settings.html"><svg viewBox="0 0 24 24" aria-hidden="true" ><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span>Settings</span></a></nav>
-<script src="js/shared.js?v=ee0d6659"></script><script src="js/app-shell.js?v=12"></script><script src="js/notifications.js?v=5ca408c2"></script><script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script defer src="js/supabase.js?v=64119a7a"></script><script defer src="js/platform.js?v=b48c6775"></script><script defer src="js/auth-guard.js?v=b4032a17"></script>
+<script src="js/shared.js?v=ee0d6659"></script><script src="js/app-shell.js?v=15"></script><script src="js/notifications.js?v=5ca408c2"></script><script defer src="js/auth-guard.js?v=b4032a17"></script>
+<script>
+/* Cleaning records: show saved records instantly, then refresh straight from the database (no library to wait for) */
+(function(){
+  var API="https://edylcpvigtmyuehjeibe.supabase.co/rest/v1/",KEY="sb_publishable_M2JBYBmf8mLJbUS88et3Ww_K3spt6Bh",CK="hysacam-cleaning-cache-v2";
+  var tb=document.getElementById("cleaning-table");if(!tb)return;
+  var dlg=document.getElementById("record-dialog"),fields=document.getElementById("rd-fields"),title=document.getElementById("rd-title");
+  var rows=[],bins={};
+  var esc=function(v){return String(v==null?"":v).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})};
+  var cls=function(v){v=String(v||"").toLowerCase();return v.indexOf("clean")>-1?"cleaned":(v.indexOf("pending")>-1||v.indexOf("collect")>-1)?"pending":(v.indexOf("full")>-1||v.indexOf("overflow")>-1)?"full":(v.indexOf("maint")>-1||v.indexOf("broken")>-1||v.indexOf("damage")>-1)?"maintenance":"available"};
+  var when=function(x){var d=new Date(x);return isNaN(d.getTime())?"—":d.toLocaleDateString("en-US",{month:"short",day:"2-digit",year:"numeric"})+" • "+d.toLocaleTimeString("en-US",{hour:"2-digit",minute:"2-digit"})};
+  function render(){
+    if(!rows.length){tb.innerHTML='<tr><td colspan="6"><div class="empty-state compact"><h3>No verified cleaning records yet</h3><p>Verified staff cleaning activities will appear here</p></div></td></tr>';return}
+    tb.innerHTML=rows.map(function(r,i){var b=bins[String(r.bin_id)]||{};return'<tr><td>'+(i+1)+'</td><td><b>'+esc(b.bin_code||r.bin_id||"—")+'</b></td><td>'+esc(r.area||b.area||"Location not specified")+'</td><td>'+esc(when(r.cleaned_at))+'</td><td><span class="status '+cls(r.status)+'">'+esc(r.status||"Recorded")+'</span></td><td><button type="button" class="cl-row-view" data-i="'+i+'">View</button></td></tr>'}).join("");
+  }
+  function setData(r,b){rows=r||[];bins={};(b||[]).forEach(function(x){bins[String(x.id)]=x});render()}
+  try{var c=JSON.parse(localStorage.getItem(CK)||"null");if(c&&c.rows&&c.rows.length)setData(c.rows,c.bins)}catch(e){}
+  function get(path){return fetch(API+path,{headers:{apikey:KEY,Accept:"application/json"}}).then(function(r){if(!r.ok)throw new Error("HTTP "+r.status);return r.json()})}
+  function load(){
+    Promise.all([
+      get("cleaning_records?select=id,bin_id,area,cleaned_at,activity,status,notes&verified=eq.true&order=cleaned_at.desc&limit=100"),
+      get("bins?select=id,bin_code,name,area&limit=1000").catch(function(){return[]})
+    ]).then(function(res){
+      setData(res[0],res[1]);
+      try{localStorage.setItem(CK,JSON.stringify({rows:res[0],bins:res[1]}))}catch(e){}
+    }).catch(function(){
+      if(!rows.length)tb.innerHTML='<tr><td colspan="6"><div class="cl-error">Cleaning records could not be loaded<br><button type="button" id="cl-retry">Try again</button></div></td></tr>';
+    });
+  }
+  tb.addEventListener("click",function(e){
+    if(e.target.id==="cl-retry"){tb.innerHTML='<tr><td colspan="6"><div class="sk-lines"><i></i><i></i></div></td></tr>';load();return}
+    var btn=e.target.closest(".cl-row-view");if(!btn)return;
+    var r=rows[+btn.dataset.i];if(!r)return;var b=bins[String(r.bin_id)]||{};
+    title.textContent=b.name||b.bin_code||"Cleaning record";
+    var items=[["Dustbin ID",b.bin_code||r.bin_id||"—"],["Location",r.area||b.area||"Not specified"],["Cleaned on",when(r.cleaned_at)],["Activity",r.activity||"—"],["Status",r.status||"Recorded"],["Notes",r.notes||"—"]];
+    fields.innerHTML=items.map(function(p){return"<dt>"+esc(p[0])+"</dt><dd>"+esc(p[1])+"</dd>"}).join("");
+    if(dlg.showModal)dlg.showModal();else dlg.setAttribute("open","");
+  });
+  document.getElementById("rd-close").addEventListener("click",function(){dlg.close?dlg.close():dlg.removeAttribute("open")});
+  dlg.addEventListener("click",function(e){if(e.target===dlg)dlg.close()});
+  load();
+})();
+</script>
 <script>(function(){const w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);const n=[];while(w.nextNode())n.push(w.currentNode);for(const x of n){if(x.parentElement&&/^(SCRIPT|STYLE|TEXTAREA)$/i.test(x.parentElement.tagName))continue;x.nodeValue=x.nodeValue.replace(/\.(?=\s|$)/g,"");}})();</script>
 </body></html>
