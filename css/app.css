@@ -560,8 +560,12 @@ body.nav-open .topbar{z-index:1400}
 .topbar nav#main-nav .menu-links .menu-auth-link{min-height:46px;padding:0 10px;border-radius:14px;font-size:15px;flex-direction:row}
 
 /* ===== Cleaning Records: show the page at once (no waiting for the account check) ===== */
-html.auth-pending body.is-cleaning .page-wrap{visibility:visible!important}
 .cl-row-view{border:1px solid var(--green);color:var(--green);background:#fff;border-radius:8px;padding:7px 14px;font-weight:700;font-size:12px;cursor:pointer}
 .cl-row-view:active{background:#e6f4ec}
 .cl-error{padding:22px 12px;text-align:center;color:var(--muted)}
 .cl-error button{margin-top:10px;border:0;border-radius:10px;background:var(--green);color:#fff;font-weight:700;padding:10px 18px}
+
+/* ===== Notification bell: tidy badge, never shown to visitors ===== */
+.notification-toggle{position:relative}
+.notification-count{position:absolute;top:2px;right:0;display:grid;place-items:center;min-width:18px;height:18px;padding:0 5px;border-radius:999px;background:#d83b3b;color:#fff;font-size:10.5px;font-weight:800;line-height:1;box-shadow:0 0 0 2px #fff}
+.notification-count[hidden],html.auth-no .notification-count{display:none!important}
