@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#087747">
+  <meta name="description" content="Sign up for a HYSACAM Kumba Tracker account.">
+  <title>Sign Up | HYSACAM Kumba Tracker</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css?v=5b2ca3b6">
+<script>try{localStorage.removeItem("hysacam-auth-cache")}catch(e){}</script></head>
+<body class="auth-body">
+  <main class="auth-reference-page auth-split-page">
+    <aside class="auth-photo-panel">
+      <a class="auth-brand-lockup" href="index.html" aria-label="HYSACAM Kumba Tracker home">
+        <img src="images/hysacam-symbol.svg" alt="HYSACAM logo">
+        <span><strong>HYSACAM</strong><small>KUMBA TRACKER</small></span>
+      </a>
+      <div class="auth-photo-copy"><span>A CLEANER KUMBA</span><h2>Kumba Tracker</h2><p>A Cleaner Kumba<br>A Healthier Community</p></div>
+      <div class="auth-photo-bottom">Working together for a cleaner Kumba</div>
+    </aside>
+    <section class="auth-content-panel">
+    <section class="auth-reference-card">
+      <a class="auth-reference-logo" href="index.html" aria-label="HYSACAM Kumba Tracker home"><img src="images/hysacam-symbol.svg" alt="HYSACAM logo"></a>
+      <nav class="auth-tabs" aria-label="Account options"><a href="signin.html">Sign In</a><a href="signup.html" aria-current="page">Sign Up</a></nav>
+      <span class="auth-step-label">HYSACAM KUMBA TRACKER</span>
+      <h1>Sign Up</h1>
+      <p class="auth-subtitle">Join in a minute to report waste issues and follow their progress</p>
+      <form class="auth-form auth-form-modern" id="signup-form" novalidate>
+        <div class="auth-reference-name-grid">
+          <div class="auth-field"><label for="first-name">First name</label><input id="first-name" type="text" enterkeyhint="next" autocomplete="given-name" maxlength="40" required placeholder="First name"></div>
+          <div class="auth-field"><label for="last-name">Last name</label><input id="last-name" type="text" enterkeyhint="next" autocomplete="family-name" maxlength="40" required placeholder="Last name"></div>
+        </div>
+        <div class="auth-field"><label for="email">Email</label><input id="email" type="email" inputmode="email" enterkeyhint="next" autocomplete="email" autocapitalize="none" autocorrect="off" spellcheck="false" required placeholder="Enter your email"></div>
+        <div class="auth-field"><label for="password">Password</label><div class="auth-password-wrap"><input id="password" type="password" enterkeyhint="next" autocomplete="new-password" minlength="8" required placeholder="At least 8 characters"><button class="password-toggle password-toggle-icon" type="button" data-toggle-password="password" aria-label="Show password" title="Show password"></button></div></div>
+        <div class="auth-field"><label for="confirm-password">Confirm password</label><div class="auth-password-wrap"><input id="confirm-password" type="password" enterkeyhint="go" autocomplete="new-password" minlength="8" required placeholder="Type your password again"><button class="password-toggle password-toggle-icon" type="button" data-toggle-password="confirm-password" aria-label="Show password" title="Show password"></button></div></div>
+        <button class="button auth-primary-button" id="signup-submit" type="submit">Sign Up</button>
+        <div class="auth-divider"><span>or</span></div>
+        <button class="google-auth-button" type="button" data-google-auth="resident"><span class="google-g" aria-hidden="true">G</span>Continue with Google</button>
+        <div class="auth-message" id="auth-message" role="alert" aria-live="polite"></div>
+      </form>
+      <p class="auth-switch auth-switch-modern">Already have an account? <a href="signin.html">Sign In</a></p>
+    </section>
+    </section>
+  </main>
+  <script src="js/auth-common.js?v=22d621ef"></script>
+  <script src="js/signup.js?v=1"></script>
+  <script src="js/auth-ui.js?v=fd0f4ec6"></script>
+  <script src="js/google-auth.js?v=55942b78"></script>
+</body>
+</html>
