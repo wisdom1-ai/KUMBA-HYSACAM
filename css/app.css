@@ -37,6 +37,7 @@ body.is-authenticated .header-tools{margin-left:auto}
 /* Hero card */
 .hero.hero-slider{margin:14px;border-radius:24px;min-height:0;height:auto;max-height:none;aspect-ratio:16/10;box-shadow:0 10px 28px rgba(8,40,24,.16);background:#0b5a35}
 .hero.hero-slider .hero-shade{background:linear-gradient(90deg,rgba(4,60,30,.82) 0%,rgba(4,60,30,.45) 55%,rgba(4,60,30,0) 100%)}
+<div class="bubbles" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
 .hero.hero-slider .hero-copy{position:absolute;inset:0;height:auto;max-width:68%;padding:22px;display:flex;flex-direction:column;justify-content:center}
 .hero.hero-slider .eyebrow{display:none}
 .hero.hero-slider h1{font-size:clamp(23px,6.8vw,30px);line-height:1.12;letter-spacing:-.4px;margin:0 0 10px;color:#fff}
