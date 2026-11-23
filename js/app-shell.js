@@ -5,6 +5,34 @@
   const prefKey = 'hysacam-device-preferences-v1';
   let preferences = {};
   try { preferences = JSON.parse(localStorage.getItem(prefKey) || '{}'); } catch { preferences = {}; }
+
+  // ---- Bottom tab bar: one place for every page (Home, Map, Reports, Cleaning Records, Settings) ----
+  (function buildTabbar() {
+    const bar = document.querySelector('.app-tabbar');
+    const page = location.pathname.split('/').pop() || 'index.html';
+    if (page === 'cleaning.html') document.body.classList.add('is-cleaning');
+    if (!bar) return;
+    const icons = {
+      home: '<path d="M3 11 12 3l9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',
+      map: '<path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/>',
+      reports: '<path d="M6 3h9l4 4v14H6z"/><path d="M9 12h7M9 16h7M9 8h3"/>',
+      cleaning: '<path d="M9 4h6v3H9zM7 5H5v16h14V5h-2"/><path d="m9 14 2 2 4-4"/>',
+      settings: '<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9 7 7M17 17l2.1 2.1M4.9 19.1 7 17M17 7l2.1-2.1"/>'
+    };
+    const tabs = [
+      ['index.html', 'Home', 'home', 'Home'],
+      ['map.html', 'Map', 'map', 'Map'],
+      ['report.html', 'Reports', 'reports', 'Reports'],
+      ['cleaning.html', 'Cleaning', 'cleaning', 'Cleaning Records'],
+      ['settings.html', 'Settings', 'settings', 'Settings']
+    ];
+    const current = page === 'profile.html' ? 'settings.html' : page;
+    bar.innerHTML = tabs.map(([href, label, icon, full]) => {
+      const on = href === current;
+      return `<a href="${href}" aria-label="${full}"${on ? ' class="active" aria-current="page"' : ''}><svg viewBox="0 0 24 24" aria-hidden="true">${icons[icon]}</svg><span>${label}</span></a>`;
+    }).join('');
+  })();
+
   function savePrefs() {
     preferences = {
       notifications: $('pref-notifications')?.checked ?? true,
@@ -58,9 +86,8 @@
         <a href="index.html"><span class="nav-item-icon">⌂</span>Home</a>
         <a href="map.html"><span class="nav-item-icon">⌖</span>Map</a>
         <a href="directory.html"><span class="nav-item-icon">☷</span>Directory</a>
-        <a href="cleaning.html"><span class="nav-item-icon">✓</span>Cleaning</a>
+        <a href="cleaning.html"><span class="nav-item-icon">✓</span>Cleaning Records</a>
         <a href="report.html"><span class="nav-item-icon">⚑</span>Report</a>
-        <a href="profile.html"><span class="nav-item-icon">●</span>Profile</a>
         <a href="settings.html"><span class="nav-item-icon">⚙</span>Settings</a>
         <button type="button" data-open-notifications><span class="nav-item-icon">▣</span>Notifications</button>
         ${authenticated ? '<button type="button" class="menu-signout" id="menu-signout"><span class="nav-item-icon">↪</span>Sign Out</button>' : ''}`;
