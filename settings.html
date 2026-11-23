@@ -1,445 +1,55 @@
-
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-<meta name="theme-color" content="#087747">
-<meta name="description" content="HYSACAM Kumba Tracker helps residents find waste collection points and follow community cleaning activity.">
-<title>Settings | HYSACAM Kumba Tracker</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<script>
-(function(){
-var s="pending";
-try{
-var c=JSON.parse(localStorage.getItem("hysacam-auth-cache")||"null");
-if(c&&c.a===1)s="yes"
-}catch(e){}
-document.documentElement.className+=" auth-"+s
-})();
-</script>
-<link rel="stylesheet" href="css/style.css?v=5b2ca3b6">
-<link rel="stylesheet" href="css/app.css?v=10">
-<script src="js/dark.js"></script>
-</head>
-
-<body id="top" class="is-inner">
-
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"><meta name="theme-color" content="#087747"><meta name="description" content="HYSACAM Kumba Tracker helps residents find waste collection points and follow community cleaning activity."><title>Settings | HYSACAM Kumba Tracker</title><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"><script>(function(){var s="no";try{var c=JSON.parse(localStorage.getItem("hysacam-auth-cache")||"null");if(c&&c.a===1)s="yes"}catch(e){}document.documentElement.className+=" auth-"+s})();</script><link rel="stylesheet" href="css/style.css?v=5b2ca3b6"><link rel="stylesheet" href="css/app.css?v=16"></head><body id="top" class="is-inner">
 <header class="topbar">
-<a class="back-btn" href="index.html" aria-label="Back" onclick="if(history.length>1&&document.referrer.indexOf(location.origin)===0){history.back();return false}">
-<svg viewBox="0 0 24 24" aria-hidden="true">
-<path d="m15 6-6 6 6 6"/>
-</svg>
-</a>
-
-<h1 class="mobile-title">Settings</h1>
-
-<a class="brand" href="index.html" aria-label="HYSACAM Kumba Tracker home">
-<img class="hysacam-logo" src="images/hysacam-symbol.svg" alt="HYSACAM symbol">
-<span class="brand-wordmark">
-<b>HYSACAM</b>
-<small>Kumba Tracker</small>
-</span>
-</a>
-
-<nav id="public-nav" class="public-nav" aria-label="Quick links for visitors">
-<a href="index.html">Home</a>
-<a href="map.html">Map</a>
-<a href="directory.html">Directory</a>
-<a href="report.html">Reports</a>
-<a href="settings.html">Settings</a>
-</nav>
-
-<div class="header-tools">
-<button class="notification-toggle" type="button" data-open-notifications aria-label="Notifications">
-<svg viewBox="0 0 24 24" aria-hidden="true">
-<path d="M6 9a6 6 0 0 1 12 0c0 6 2 7 2 7H4s2-1 2-7"/>
-<path d="M10 20a2 2 0 0 0 4 0"/>
-</svg>
-<span class="notification-count" hidden>0</span>
-</button>
-</div>
-
-<button id="menu-toggle" class="menu-toggle" type="button" aria-label="Open navigation" aria-controls="main-nav" aria-expanded="false">
-<span></span><span></span><span></span>
-</button>
-
-<nav id="main-nav" aria-label="Main navigation">
-<div class="mobile-nav-head">
-<a class="mobile-nav-brand" href="index.html">
-<img src="images/hysacam-symbol.svg" alt="">
-<span><b>HYSACAM</b><small>KUMBA TRACKER</small></span>
-</a>
-<button id="menu-close" type="button" aria-label="Close navigation">×</button>
-</div>
-
-<div id="menu-account-summary" class="menu-account-summary">
-<b>Welcome</b>
-<small>Explore HYSACAM Kumba Tracker</small>
-</div>
-
-<div id="menu-links" class="menu-links">
-<a href="index.html">Home</a>
-<a href="map.html">Map</a>
-<a href="settings.html">Settings</a>
-<button type="button" data-open-notifications>Notifications</button>
-</div>
-
-<div class="mobile-nav-footer">HYSACAM Kumba Tracker</div>
-</nav>
-
-<button class="nav-backdrop" id="nav-backdrop" type="button" aria-label="Close navigation"></button>
+  <a class="back-btn" href="index.html" aria-label="Back" onclick="if(history.length>1&&document.referrer.indexOf(location.origin)===0){history.back();return false}"><svg viewBox="0 0 24 24" aria-hidden="true" ><path d="m15 6-6 6 6 6"/></svg></a><h1 class="mobile-title">Settings</h1>
+  <a class="brand" href="index.html" aria-label="HYSACAM Kumba Tracker home">
+    <img class="hysacam-logo" src="images/hysacam-symbol.svg" alt="HYSACAM symbol">
+    <span class="brand-wordmark"><b>HYSACAM</b><small>Kumba Tracker</small></span>
+  </a>
+  <nav id="public-nav" class="public-nav" aria-label="Quick links for visitors">
+    <a href="index.html">Home</a><a href="map.html">Map</a><a href="directory.html">Directory</a><a href="report.html">Reports</a><a href="settings.html">Settings</a>
+  </nav>
+  <div class="header-tools"><button class="notification-toggle" type="button" data-open-notifications aria-label="Notifications"><svg viewBox="0 0 24 24" aria-hidden="true" ><path d="M6 9a6 6 0 0 1 12 0c0 6 2 7 2 7H4s2-1 2-7"/><path d="M10 20a2 2 0 0 0 4 0"/></svg><span class="notification-count" hidden>0</span></button></div>
+  <button id="menu-toggle" class="menu-toggle" type="button" aria-label="Open navigation" aria-controls="main-nav" aria-expanded="false"><span></span><span></span><span></span></button>
+  <nav id="main-nav" aria-label="Main navigation">
+    <div class="mobile-nav-head">
+      <a class="mobile-nav-brand" href="index.html"><img src="images/hysacam-symbol.svg" alt=""><span><b>HYSACAM</b><small>KUMBA TRACKER</small></span></a>
+      <button id="menu-close" type="button" aria-label="Close navigation">×</button>
+    </div>
+    <div id="menu-account-summary" class="menu-account-summary"><b>Welcome</b><small>Explore HYSACAM Kumba Tracker</small></div>
+    <div id="menu-links" class="menu-links">
+      <a href="index.html">Home</a><a href="map.html">Map</a><a href="settings.html">Settings</a>
+      <button type="button" data-open-notifications>Notifications</button>
+    </div>
+    <div class="mobile-nav-footer">HYSACAM Kumba Tracker</div>
+  </nav>
+  <button class="nav-backdrop" id="nav-backdrop" type="button" aria-label="Close navigation"></button>
 </header>
+<main class="inner-page"><div class="page-wrap narrow">
 
-<main class="inner-page">
-<div class="page-wrap narrow">
+<section class="set-hero"><div class="avatar" id="settings-avatar"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></div><div><h2 id="settings-user-name">Loading account…</h2><p id="settings-user-email">Checking your account</p><span id="settings-user-role" class="account-role">Account</span></div></section>
 
-<!-- PROFILE HERO WITH CAMERA BADGE -->
-<section class="set-hero">
-<div class="avatar-wrap">
+<div class="join-card visitor-only"><div><b>Join HYSACAM Kumba Tracker</b><p>Sign in to manage your profile and track your reports</p></div><div class="join-actions"><a class="button" href="signin.html">Sign In</a><a class="button outline" href="signup.html">Sign Up</a></div></div>
 
-<div class="avatar" id="settings-avatar">
-<svg viewBox="0 0 24 24" aria-hidden="true">
-<circle cx="12" cy="8" r="4"/>
-<path d="M4 21a8 8 0 0 1 16 0"/>
-</svg>
-</div>
-
-<label for="avatar-input" class="avatar-cam auth-only" aria-label="Change photo">
-<svg viewBox="0 0 24 24" aria-hidden="true">
-<path d="M4 8h3l2-3h6l2 3h3v11H4z"/>
-<circle cx="12" cy="13" r="3.5"/>
-</svg>
-</label>
-
-<input type="file" id="avatar-input" accept="image/*" hidden>
-
-</div>
-
-<div>
-<h2 id="settings-user-name">Loading account…</h2>
-<p id="settings-user-email">Checking your account</p>
-<span id="settings-user-role" class="account-role">Account</span>
-</div>
-</section>
-
-<!-- VISITOR JOIN CARD -->
-<div class="join-card visitor-only">
-<div>
-<b>Join HYSACAM Kumba Tracker</b>
-<p>Sign in to manage your profile and track your reports</p>
-</div>
-<div class="join-actions">
-<a class="button" href="signin.html">Sign in</a>
-<a class="button outline" href="signup.html">Create account</a>
-</div>
-</div>
-
-<!-- ACCOUNT -->
 <h3 class="set-group auth-only">Account</h3>
+<details class="set-row set-details auth-only" id="profile-section"><summary><svg viewBox="0 0 24 24" aria-hidden="true" class="lead"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><span><b>My Profile</b><small>Name, phone and account details</small></span><svg viewBox="0 0 24 24" aria-hidden="true" class="chev"><path d="m9 6 6 6-6 6"/></svg></summary><div class="set-panel">
+<form id="profile-form" class="pf-inline" novalidate><label class="pf-field">Full name<input id="pf-name" name="name" maxlength="80" autocomplete="name" enterkeyhint="next" placeholder="Your full name" required></label><label class="pf-field">Email<input id="pf-email" type="email" disabled></label><p class="set-hint">Your email is your sign-in and cannot be changed here</p><label class="pf-field">Phone (optional)<input id="pf-phone" name="phone" type="tel" inputmode="tel" maxlength="25" autocomplete="tel" enterkeyhint="done" placeholder="e.g. +237 6XX XXX XXX"></label><button class="button" id="pf-save" type="submit">Save changes</button><p id="pf-msg" class="auth-message" role="status" aria-live="polite"></p></form>
+<div class="info-card slim"><div class="info-line"><span>Member since</span><b id="pf-since">—</b></div><div class="info-line"><span>Account type</span><b id="pf-role">Resident</b></div></div>
+</div></details>
 
-<details class="set-row set-details auth-only" id="profile-section">
-<summary>
-<svg viewBox="0 0 24 24" aria-hidden="true" class="lead">
-<circle cx="12" cy="8" r="4"/>
-<path d="M4 21a8 8 0 0 1 16 0"/>
-</svg>
-<span>
-<b>My Profile</b>
-<small>Name, phone and account details</small>
-</span>
-<svg viewBox="0 0 24 24" aria-hidden="true" class="chev">
-<path d="m9 6 6 6-6 6"/>
-</svg>
-</summary>
-
-<div class="set-panel">
-<form id="profile-form" class="pf-inline" novalidate>
-
-<label class="pf-field">
-Full name
-<input id="pf-name" name="name" maxlength="80" autocomplete="name" enterkeyhint="next" placeholder="Your full name" required>
-</label>
-
-<label class="pf-field">
-Email
-<input id="pf-email" type="email" disabled>
-</label>
-
-<p class="set-hint">Your email is your sign-in and cannot be changed here</p>
-
-<label class="pf-field">
-Phone (optional)
-<input id="pf-phone" name="phone" type="tel" inputmode="tel" maxlength="25" autocomplete="tel" enterkeyhint="done" placeholder="e.g. +237 6XX XXX XXX">
-</label>
-
-<button class="button" id="pf-save" type="submit">Save changes</button>
-<p id="pf-msg" class="auth-message" role="status" aria-live="polite"></p>
-</form>
-
-<div class="info-card slim">
-<div class="info-line">
-<span>Member since</span>
-<b id="pf-since">—</b>
-</div>
-<div class="info-line">
-<span>Account type</span>
-<b id="pf-role">Resident</b>
-</div>
-</div>
-</div>
-</details>
-
-<!-- PREFERENCES -->
 <h3 class="set-group">Preferences</h3>
+<details class="set-row set-details"><summary><svg viewBox="0 0 24 24" aria-hidden="true" class="lead"><path d="M6 9a6 6 0 0 1 12 0c0 6 2 7 2 7H4s2-1 2-7"/><path d="M10 20a2 2 0 0 0 4 0"/></svg><span><b>Notifications</b><small>Choose how updates appear</small></span><svg viewBox="0 0 24 24" aria-hidden="true" class="chev"><path d="m9 6 6 6-6 6"/></svg></summary><div class="set-panel"><label class="toggle-line"><span><b>In-app notifications</b><small>Show report updates on the bell</small></span><input id="pref-notifications" type="checkbox" checked></label><p class="set-hint">Turn this off to hide the bell badge and updates on this device</p></div></details>
+<details class="set-row set-details"><summary><svg viewBox="0 0 24 24" aria-hidden="true" class="lead"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg><span><b>App Preferences</b><small>Motion and layout</small></span><svg viewBox="0 0 24 24" aria-hidden="true" class="chev"><path d="m9 6 6 6-6 6"/></svg></summary><div class="set-panel"><label class="toggle-line"><span><b>Reduce motion</b><small>Stop the slideshow and animations</small></span><input id="pref-reduce-motion" type="checkbox"></label><label class="toggle-line"><span><b>Compact layout</b><small>Tighter spacing to see more on screen</small></span><input id="pref-compact" type="checkbox"></label></div></details>
 
-<details class="set-row set-details">
-<summary>
-<svg viewBox="0 0 24 24" aria-hidden="true" class="lead">
-<path d="M6 9a6 6 0 0 1 12 0c0 6 2 7 2 7H4s2-1 2-7"/>
-<path d="M10 20a2 2 0 0 0 4 0"/>
-</svg>
-<span>
-<b>Notifications</b>
-<small>Choose how updates appear</small>
-</span>
-<svg viewBox="0 0 24 24" aria-hidden="true" class="chev">
-<path d="m9 6 6 6-6 6"/>
-</svg>
-</summary>
-
-<div class="set-panel">
-<label class="toggle-line">
-<span>
-<b>In-app notifications</b>
-<small>Show report updates on the bell</small>
-</span>
-<input id="pref-notifications" type="checkbox" checked>
-</label>
-<p class="set-hint">Turn this off to hide the bell badge and updates on this device</p>
-</div>
-</details>
-
-<details class="set-row set-details">
-<summary>
-<svg viewBox="0 0 24 24" aria-hidden="true" class="lead">
-<path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12"/>
-<circle cx="16" cy="6" r="2"/>
-<circle cx="10" cy="12" r="2"/>
-<circle cx="18" cy="18" r="2"/>
-</svg>
-<span>
-<b>App Preferences</b>
-<small>Motion and layout</small>
-</span>
-<svg viewBox="0 0 24 24" aria-hidden="true" class="chev">
-<path d="m9 6 6 6-6 6"/>
-</svg>
-</summary>
-
-<div class="set-panel">
-<label class="toggle-line">
-<span><b>Reduce motion</b><small>Stop the slideshow and animations</small></span>
-<input id="pref-reduce-motion" type="checkbox">
-</label>
-
-<label class="toggle-line">
-<span><b>Compact layout</b><small>Tighter spacing to see more on screen</small></span>
-<input id="pref-compact" type="checkbox">
-</label>
-
-<label class="toggle-line">
-<span><b>Dark mode</b><small>Easier on the eyes at night</small></span>
-<input id="pref-dark" type="checkbox">
-</label>
-</div>
-</details>
-
-<!-- PRIVACY AND SECURITY -->
 <h3 class="set-group">Privacy &amp; Security</h3>
+<details class="set-row set-details"><summary><svg viewBox="0 0 24 24" aria-hidden="true" class="lead"><path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/><path d="m9 12 2 2 4-4"/></svg><span><b>Password &amp; Data</b><small>Password and saved data</small></span><svg viewBox="0 0 24 24" aria-hidden="true" class="chev"><path d="m9 6 6 6-6 6"/></svg></summary><div class="set-panel"><a class="panel-link auth-only" href="forgot-password.html"><svg viewBox="0 0 24 24" aria-hidden="true" ><circle cx="8" cy="15" r="4"/><path d="m11 12 9-9M16 7l3 3"/></svg><span><b>Change password</b><small>We email you a 6-digit code to confirm it is you</small></span></a><button class="panel-link danger-link" id="clear-local-data" type="button"><svg viewBox="0 0 24 24" aria-hidden="true" ><path d="M4 7h16M9 7V4h6v3M6 7l1 14h10l1-14"/></svg><span><b>Clear saved data on this device</b><small>Removes cached reports and read updates; you stay signed in</small></span></button><p id="clear-data-message" class="set-hint" role="status" aria-live="polite"></p></div></details>
 
-<details class="set-row set-details">
-<summary>
-<svg viewBox="0 0 24 24" aria-hidden="true" class="lead">
-<path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/>
-<path d="m9 12 2 2 4-4"/>
-</svg>
-<span>
-<b>Password &amp; Data</b>
-<small>Password and saved data</small>
-</span>
-<svg viewBox="0 0 24 24" aria-hidden="true" class="chev">
-<path d="m9 6 6 6-6 6"/>
-</svg>
-</summary>
-
-<div class="set-panel">
-
-<a class="panel-link auth-only" href="forgot-password.html">
-<svg viewBox="0 0 24 24" aria-hidden="true">
-<circle cx="8" cy="15" r="4"/>
-<path d="m11 12 9-9M16 7l3 3"/>
-</svg>
-<span>
-<b>Change password</b>
-<small>We email you a 6-digit code to confirm it is you</small>
-</span>
-</a>
-
-<button class="panel-link danger-link" id="clear-local-data" type="button">
-<svg viewBox="0 0 24 24" aria-hidden="true">
-<path d="M4 7h16M9 7V4h6v3M6 7l1 14h10l1-14"/>
-</svg>
-<span>
-<b>Clear saved data on this device</b>
-<small>Removes cached reports and read updates; you stay signed in</small>
-</span>
-</button>
-
-<p id="clear-data-message" class="set-hint" role="status" aria-live="polite"></p>
-</div>
-</details>
-
-<!-- SUPPORT -->
 <h3 class="set-group">Support</h3>
+<a class="set-row" href="about.html"><svg viewBox="0 0 24 24" aria-hidden="true" class="lead"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg><span><b>About HYSACAM</b><small>Version 1.0.0</small></span><svg viewBox="0 0 24 24" aria-hidden="true" class="chev"><path d="m9 6 6 6-6 6"/></svg></a>
 
-<a class="set-row" href="about.html">
-<svg viewBox="0 0 24 24" aria-hidden="true" class="lead">
-<circle cx="12" cy="12" r="9"/>
-<path d="M12 11v6M12 7.5v.5"/>
-</svg>
-<span>
-<b>About HYSACAM</b>
-<small>Version 1.0.0</small>
-</span>
-<svg viewBox="0 0 24 24" aria-hidden="true" class="chev">
-<path d="m9 6 6 6-6 6"/>
-</svg>
-</a>
-
-<button id="profile-signout" class="signout-btn auth-only" type="button">
-<svg viewBox="0 0 24 24" aria-hidden="true">
-<path d="M9 21H5V3h4M16 7l5 5-5 5M21 12H9"/>
-</svg>
-Sign Out
-</button>
-
-<p id="settings-save-message" class="settings-note" role="status" aria-live="polite">
-Preferences are saved on this device only
-</p>
-
-<div class="brand-card">
-<img src="images/hysacam-symbol.svg" alt="">
-<div>
-<b>HYSACAM Kumba Tracker</b>
-<span>Cleaner City. Healthier Community.</span>
-<small>© 2026 HYSACAM. All rights reserved</small>
-</div>
-</div>
-
-</div>
-</main>
-
-<footer class="site-footer">
-<span>© HYSACAM Kumba Tracker</span>
-<a href="index.html">Back to top ↑</a>
-</footer>
-
-<aside id="notification-panel" class="notification-panel" hidden aria-label="Notifications">
-<div class="notification-head">
-<div>
-<span class="eyebrow">LATEST UPDATES</span>
-<h3>Notifications</h3>
-</div>
-<button id="notification-close" type="button" aria-label="Close notifications">×</button>
-</div>
-
-<div id="notification-list" class="notification-list">
-<p class="notification-empty">Loading your latest updates…</p>
-</div>
-
-<p class="notification-foot">Updates are based on records available to your signed-in account</p>
-</aside>
-
-<!-- BOTTOM NAVIGATION -->
-<nav class="app-tabbar" aria-label="Primary">
-
-<a href="index.html">
-<svg viewBox="0 0 24 24" aria-hidden="true">
-<path d="M3 11 12 3l9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>
-</svg>
-<span>Home</span>
-</a>
-
-<a href="map.html">
-<svg viewBox="0 0 24 24" aria-hidden="true">
-<path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/>
-<circle cx="12" cy="10" r="2.5"/>
-</svg>
-<span>Map</span>
-</a>
-
-<a href="report.html">
-<svg viewBox="0 0 24 24" aria-hidden="true">
-<path d="M6 3h9l4 4v14H6z"/>
-<path d="M9 12h7M9 16h7M9 8h3"/>
-</svg>
-<span>Reports</span>
-</a>
-
-<a href="cleaning.html" aria-label="Cleaning Records">
-<svg viewBox="0 0 24 24" aria-hidden="true">
-<path d="M9 4h6v3H9zM7 5H5v16h14V5h-2"/>
-<path d="m9 14 2 2 4-4"/>
-</svg>
-<span>Cleaning</span>
-</a>
-
-<a href="settings.html" class="active" aria-current="page">
-<svg viewBox="0 0 24 24" aria-hidden="true">
-<circle cx="12" cy="12" r="3"/>
-<path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a2 2 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a2 2 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a2 2 0 0 0-1.51 1z"/>
-</svg>
-<span>Settings</span>
-</a>
-
-</nav>
-
-<!-- EXISTING SCRIPTS -->
-<script src="js/shared.js?v=ee0d6659"></script>
-<script src="js/app-shell.js?v=10"></script>
-<script src="js/notifications.js?v=5ca408c2"></script>
-<script src="js/account-pages.js?v=aa903d17"></script>
-<script src="js/avatar.js"></script>
-
-<script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script defer src="js/supabase.js?v=64119a7a"></script>
-<script defer src="js/platform.js?v=b48c6775"></script>
-<script defer src="js/auth-guard.js?v=b4032a17"></script>
-
-<script>
-if(location.hash==="#profile"){
-var p=document.getElementById("profile-section");
-if(p){
-p.open=true;
-setTimeout(function(){
-p.scrollIntoView({block:"start"})
-},80)
-}
-}
-</script>
-
-<script>
-(function(){
-const w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);
-const n=[];
-while(w.nextNode())n.push(w.currentNode);
-for(const x of n){
-if(x.parentElement&&/^(SCRIPT|STYLE|TEXTAREA)$/i.test(x.parentElement.tagName))continue;
-x.nodeValue=x.nodeValue.replace(/\.(?=\s|$)/g,"");
-}
-})();
-</script>
-
-</body>
-</html>
+<button id="profile-signout" class="signout-btn auth-only" type="button"><svg viewBox="0 0 24 24" aria-hidden="true" ><path d="M9 21H5V3h4M16 7l5 5-5 5M21 12H9"/></svg>Sign Out</button><p id="settings-save-message" class="settings-note" role="status" aria-live="polite">Preferences are saved on this device only</p><div class="brand-card"><img src="images/hysacam-symbol.svg" alt=""><div><b>HYSACAM Kumba Tracker</b><span>Cleaner City. Healthier Community.</span><small>© 2026 HYSACAM. All rights reserved</small></div></div></div></main><footer class="site-footer"><span>© HYSACAM Kumba Tracker</span><a href="index.html">Back to top ↑</a></footer>
+<aside id="notification-panel" class="notification-panel" hidden aria-label="Notifications"><div class="notification-head"><div><span class="eyebrow">LATEST UPDATES</span><h3>Notifications</h3></div><button id="notification-close" type="button" aria-label="Close notifications">×</button></div><div id="notification-list" class="notification-list"><p class="notification-empty">Loading your latest updates…</p></div><p class="notification-foot">Updates are based on records available to your signed-in account</p></aside>
+<nav class="app-tabbar" aria-label="Primary"><a href="index.html"><svg viewBox="0 0 24 24" aria-hidden="true" ><path d="M3 11 12 3l9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg><span>Home</span></a><a href="map.html"><svg viewBox="0 0 24 24" aria-hidden="true" ><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg><span>Map</span></a><a href="report.html"><svg viewBox="0 0 24 24" aria-hidden="true" ><path d="M6 3h9l4 4v14H6z"/><path d="M9 12h7M9 16h7M9 8h3"/></svg><span>Reports</span></a><a href="cleaning.html" aria-label="Cleaning Records"><svg viewBox="0 0 24 24" aria-hidden="true" ><path d="M9 4h6v3H9zM7 5H5v16h14V5h-2"/><path d="m9 14 2 2 4-4"/></svg><span>Cleaning</span></a><a href="settings.html" class="active" aria-current="page"><svg viewBox="0 0 24 24" aria-hidden="true" ><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span>Settings</span></a></nav>
+<script src="js/shared.js?v=ee0d6659"></script><script src="js/app-shell.js?v=16"></script><script src="js/notifications.js?v=5ca408c2"></script><script src="js/account-pages.js?v=aa903d17"></script><script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script defer src="js/supabase.js?v=64119a7a"></script><script defer src="js/platform.js?v=b48c6775"></script><script defer src="js/auth-guard.js?v=b4032a17"></script>
+<script>if(location.hash==="#profile"){var p=document.getElementById("profile-section");if(p){p.open=true;setTimeout(function(){p.scrollIntoView({block:"start"})},80)}}</script>
+<script>(function(){const w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);const n=[];while(w.nextNode())n.push(w.currentNode);for(const x of n){if(x.parentElement&&/^(SCRIPT|STYLE|TEXTAREA)$/i.test(x.parentElement.tagName))continue;x.nodeValue=x.nodeValue.replace(/\.(?=\s|$)/g,"");}})();</script>
+</body></html>
