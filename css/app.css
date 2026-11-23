@@ -450,10 +450,10 @@ body.compact-layout .hero.hero-slider{aspect-ratio:2.2/1;min-height:190px}
 
 /* Slide 1 is visible from the very first paint, before the animation starts */
 .report-slider .report-slide:nth-child(1) { opacity: 1; animation-delay: -0.8s; }
-.report-slider .report-slide:nth-child(2) { animation-delay: 4s; }
-.report-slider .report-slide:nth-child(3) { animation-delay: 8s; }
-.report-slider .report-slide:nth-child(4) { animation-delay: 12s; }
-.report-slider .report-slide:nth-child(5) { animation-delay: 16s; }
+.report-slider .report-slide:nth-child(2) { animation-delay: 3.2s; }
+.report-slider .report-slide:nth-child(3) { animation-delay: 7.2s; }
+.report-slider .report-slide:nth-child(4) { animation-delay: 11.2s; }
+.report-slider .report-slide:nth-child(5) { animation-delay: 15.2s; }
 
 @keyframes reportFade {
   0% { opacity: 0; }
