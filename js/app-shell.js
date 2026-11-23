@@ -75,7 +75,7 @@
       if (!response.ok) throw new Error('Sign out failed');
       try { localStorage.removeItem('hysacam-auth-cache'); } catch {}
       window.Hys?.clearPrivate();
-      location.replace('signin.html');
+      location.replace('index.html');
     } catch (error) {
       if (button) { button.disabled = false; button.dataset.busy = '0'; button.textContent = 'Sign Out'; }
       alert('Could not sign out. Please try again.');
