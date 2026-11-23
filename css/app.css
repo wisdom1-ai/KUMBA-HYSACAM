@@ -486,3 +486,6 @@ body.is-cleaning .join-card,body.is-cleaning .join-actions,body.is-cleaning .gat
 .set-panel .pf-inline{margin:0;padding:12px 0 0;border:0;box-shadow:none;background:none}
 .set-panel .info-card.slim{margin:12px 0;padding:2px 14px;background:#f5f9f6;border-radius:14px;box-shadow:none}
 .set-details[open]{border-color:#bfe0cb;box-shadow:0 6px 18px rgba(13,59,35,.08)}
+
+/* ===== Settings tab emoji ===== */
+.app-tabbar .tab-emoji{display:grid;place-items:center;width:25px;height:25px;font-style:normal;font-size:22px;line-height:1}
