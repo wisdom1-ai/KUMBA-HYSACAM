@@ -1,0 +1,37 @@
+/* ===== Settings page extras (add after app.css) ===== */
+.set-row[hidden]{display:none!important}
+.set-row.as-btn{width:calc(100% - 28px);text-align:left;font:inherit;cursor:pointer;-webkit-appearance:none;appearance:none}
+.set-hero-text{flex:1;min-width:0}
+
+/* Hero: no flash of placeholder text while the account loads */
+html:not(.auth-no) .set-hero:not(.is-ready) .set-hero-text h2,
+html:not(.auth-no) .set-hero:not(.is-ready) .set-hero-text p,
+html:not(.auth-no) .set-hero:not(.is-ready) .set-hero-text .account-role{color:transparent!important;border-radius:8px;background:linear-gradient(90deg,rgba(255,255,255,.14) 25%,rgba(255,255,255,.3) 45%,rgba(255,255,255,.14) 65%);background-size:220% 100%;animation:skShimmer 1.25s linear infinite;pointer-events:none;user-select:none}
+html:not(.auth-no) .set-hero:not(.is-ready) .set-hero-text h2{width:62%;min-height:1.2em}
+html:not(.auth-no) .set-hero:not(.is-ready) .set-hero-text p{width:82%;min-height:1em}
+html:not(.auth-no) .set-hero:not(.is-ready) .set-hero-text .account-role{min-width:74px;min-height:1.5em}
+
+/* Quick links */
+.set-quick{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:0 14px}
+.set-quick a{display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 4px 12px;background:#fff;border:1px solid #e1ebe4;border-radius:18px;box-shadow:0 3px 12px rgba(13,59,35,.05);text-align:center;font-size:12.5px;font-weight:700;line-height:1.2;color:#17231d;text-decoration:none}
+.set-quick a:active{transform:scale(.97);border-color:var(--green)}
+.set-quick svg{width:28px;height:28px;stroke:var(--green)}
+
+/* Segmented control */
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:12px 0 4px;padding:4px;background:#eef5f0;border-radius:14px}
+.seg button{min-height:44px;border:0;border-radius:11px;background:transparent;font:inherit;font-size:14px;font-weight:700;color:#33453a;cursor:pointer}
+.seg button[aria-pressed="true"]{background:#fff;color:#075f3d;box-shadow:0 2px 8px rgba(13,59,35,.14)}
+.set-label{margin:12px 0 0;font-size:13px;font-weight:700;color:#26372d}
+
+/* Status badge and inline action */
+.set-status{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0 4px}
+.set-status b{font-size:14px;color:#17231d}
+.badge{padding:4px 11px;border-radius:999px;font-size:11.5px;font-weight:800;background:#e5e7eb;color:#4b5563}
+.badge.ok{background:#d9f5e3;color:#0b7a3e}
+.badge.bad{background:#fde0de;color:#c62828}
+.badge.warn{background:#ffedc7;color:#b45309}
+.set-btn{display:flex;align-items:center;justify-content:center;width:100%;min-height:46px;margin:10px 0 0;border:1.5px solid var(--green);border-radius:14px;background:#fff;color:var(--green);font:inherit;font-size:15px;font-weight:800;cursor:pointer}
+.set-btn:active{background:#e6f4ec}
+.set-btn:disabled{opacity:.6}
+.set-flash{min-height:18px;margin:8px 0 0;font-size:12.5px;font-weight:600;color:#0b6b3c}
+.set-flash.err{color:#c62828}
