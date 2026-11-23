@@ -90,7 +90,7 @@ body.is-authenticated .header-tools{margin-left:auto}
 
 .report-slider,
 .report-slide {
-  background: #1f2a24; /* dark neutral, not bright green */
+  background: transparent; /* no dark or green box while the image loads */
 }
 /* Dark transparent layer over the images */
 .report-slider-overlay {
@@ -428,7 +428,7 @@ body.compact-layout .hero.hero-slider{aspect-ratio:2.2/1;min-height:190px}
   border-radius: 28px;
   position: relative;
   margin: 12px 0 24px;
-  background: #1f2a24; /* was #0b5a35 (green), caused the green flash */
+  background: #f4f8f5; /* same as the page, so no dark or green box shows */
 }
 
 .report-slider img {
