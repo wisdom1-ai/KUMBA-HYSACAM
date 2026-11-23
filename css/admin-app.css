@@ -208,3 +208,40 @@
   .admin-portal thead th{position:sticky;top:0}
 }
 @media(prefers-reduced-motion:reduce){.admin-portal *{transition:none!important}}
+/* FLOATING BUBBLES ON THE HOME HERO */
+.hero.hero-slider { position: relative; overflow: hidden; }
+
+.bubbles {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.bubbles span {
+  position: absolute;
+  bottom: -80px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.22);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  animation: bubbleUp linear infinite;
+}
+
+.bubbles span:nth-child(1) { left: 6%;  width: 28px; height: 28px; animation-duration: 8s;  animation-delay: 0s; }
+.bubbles span:nth-child(2) { left: 18%; width: 50px; height: 50px; animation-duration: 11s; animation-delay: 2s; }
+.bubbles span:nth-child(3) { left: 30%; width: 20px; height: 20px; animation-duration: 7s;  animation-delay: 1s; }
+.bubbles span:nth-child(4) { left: 44%; width: 40px; height: 40px; animation-duration: 10s; animation-delay: 3.5s; }
+.bubbles span:nth-child(5) { left: 57%; width: 24px; height: 24px; animation-duration: 8.5s; animation-delay: 0.5s; }
+.bubbles span:nth-child(6) { left: 70%; width: 56px; height: 56px; animation-duration: 12s; animation-delay: 1.5s; }
+.bubbles span:nth-child(7) { left: 82%; width: 32px; height: 32px; animation-duration: 9s;  animation-delay: 4s; }
+.bubbles span:nth-child(8) { left: 92%; width: 18px; height: 18px; animation-duration: 7.5s; animation-delay: 2.5s; }
+
+@keyframes bubbleUp {
+  0%   { transform: translateY(0) translateX(0); opacity: 0; }
+  15%  { opacity: 1; }
+  100% { transform: translateY(-420px) translateX(20px); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bubbles { display: none; }
+  }
