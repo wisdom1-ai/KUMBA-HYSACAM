@@ -1,4 +1,5 @@
-/* HYSACAM notifications: unread badge, tap an update to read it, badge clears once it is viewed. */
+/* HYSACAM notifications: unread badge, tap an update to read it, badge clears once it is viewed.
+   Visitors (not signed in) never get a badge or updates; they see a Sign In / Sign Up prompt instead. */
 (() => {
   'use strict';
   const H = window.Hys;
@@ -11,7 +12,8 @@
   const MAX_REPORTS = 8, MAX_CLEANING = 3, MAX_TOTAL = 10, MAX_READ_IDS = 300;
 
   const esc = (v) => String(v ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-  const enabled = () => (H.read(PREF_KEY) || {}).notifications !== false;
+  const signedIn = () => !!H.authCache();
+  const enabled = () => signedIn() && (H.read(PREF_KEY) || {}).notifications !== false;
   const scope = () => H.userKey() || 'visitor';
 
   const ICON = {
@@ -54,7 +56,7 @@
     items = [...parts.report, ...parts.cleaning]
       .sort((a, b) => new Date(b.time || 0) - new Date(a.time || 0))
       .slice(0, MAX_TOTAL);
-    H.write(CACHE_KEY, { scope: scope(), items });
+    if (signedIn()) H.write(CACHE_KEY, { scope: scope(), items });
   }
 
   function reportItems(list) {
@@ -126,6 +128,12 @@
 
   function renderList() {
     const list = $('notification-list');
+    if (!signedIn()) {
+      list.innerHTML = `<div class="notification-empty"><span class="n-empty-ico">${ICON.bell}</span><b>Sign in to see your updates</b><p>Report updates and cleaning activity appear here after you sign in</p><div class="gate-actions"><a class="button" href="signin.html">Sign In</a><a class="button outline" href="signup.html">Sign Up</a></div></div>`;
+      $('notif-summary').textContent = ''; $('notif-markall').hidden = true; $('notif-foot').hidden = true;
+      return;
+    }
+    $('notif-foot').hidden = false;
     if (!enabled()) {
       list.innerHTML = '<div class="notification-empty"><b>Notifications are turned off</b><p>You can turn them back on in <a href="settings.html">Settings</a></p></div>';
       $('notif-summary').textContent = ''; $('notif-markall').hidden = true;
@@ -168,7 +176,7 @@
     const detail = next === 'detail';
     $('notification-list').hidden = detail;
     $('notif-toolbar').hidden = detail;
-    $('notif-foot').hidden = detail;
+    $('notif-foot').hidden = detail || !signedIn();
     $('notification-detail').hidden = !detail;
     $('notif-back').hidden = !detail;
     $('notif-eyebrow').textContent = detail ? 'UPDATE' : 'LATEST UPDATES';
@@ -223,7 +231,7 @@
     if (row) openItem(row.dataset.notif);
   });
 
-  /* ---------- data ---------- */
+  /* ---------- data (signed-in accounts only) ---------- */
   function whenDatabase() {
     return new Promise((resolve) => {
       const check = () => window.supabaseClient || null;
@@ -236,20 +244,22 @@
 
   let cleaningAt = 0;
   async function loadCleaning(force) {
+    if (!signedIn()) return;
     if (!force && Date.now() - cleaningAt < 30000) return;
     const client = await whenDatabase();
-    if (!client) return;
+    if (!client || !signedIn()) return;
     try {
       const { data, error } = await client.from('cleaning_records').select('id,area,activity,status,notes,cleaned_at').eq('verified', true).order('cleaned_at', { ascending: false }).limit(MAX_CLEANING);
-      if (error) return;
+      if (error || !signedIn()) return;
       cleaningAt = Date.now();
       parts.cleaning = cleaningItems(data);
       merge(); render();
     } catch (error) { console.warn('[HYSACAM] Cleaning updates unavailable', error); }
   }
   async function loadReports() {
+    if (!signedIn()) return;
     const list = await H.reports();
-    if (list === undefined) return;          // offline: keep what is shown
+    if (list === undefined || !signedIn()) return;          // offline or signed out: keep what is shown
     parts.report = reportItems(list || []);
     merge(); render();
   }
@@ -276,6 +286,7 @@
   $('pref-notifications')?.addEventListener('change', () => setTimeout(() => { render(); if (enabled()) refresh(true); }, 0));
 
   function loadFromCache() {
+    if (!signedIn()) { items = []; parts.report = []; parts.cleaning = []; return; }
     const cache = H.read(CACHE_KEY);
     items = cache && cache.scope === scope() && Array.isArray(cache.items) ? cache.items : [];
     parts.report = items.filter(i => i.kind === 'report');
@@ -283,6 +294,6 @@
   }
 
   loadFromCache();
-  render();      // badge appears immediately from the last known updates
+  render();      // badge appears immediately from the last known updates (never for visitors)
   refresh();
 })();
