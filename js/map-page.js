@@ -396,6 +396,9 @@
       e.currentTarget.setAttribute("aria-label", sat ? "Switch to street map" : "Switch to satellite view");
     });
 
+    /* Honour the default map view chosen in Settings */
+    try { if (localStorage.getItem("hysacam-pref-map-view") === "satellite") $("hm-layers").click(); } catch {}
+
     const compass = $("hm-compass");
     if (hasRotate && compass) {
       map.on("rotate", () => {
