@@ -48,6 +48,20 @@
     if (main) new MutationObserver(strip).observe(main, {childList: true, subtree: true});
   })();
 
+  // ---- One wording everywhere: "Sign Up" and "Sign In" (never "Create account" or "Login") ----
+  (function sameWords() {
+    const rules = [[/^create\s+(a\s+)?(free\s+)?account$/i, 'Sign Up'], [/^register$/i, 'Sign Up'], [/^sign\s*up$/i, 'Sign Up'], [/^(log\s*in|login|sign\s*in)$/i, 'Sign In']];
+    const fix = () => document.querySelectorAll('a, button').forEach(el => {
+      if (el.children.length) return;
+      const t = el.textContent.trim();
+      for (const [re, value] of rules) { if (re.test(t)) { if (t !== value) el.textContent = value; break; } }
+    });
+    let queued = false;
+    const later = () => { if (queued) return; queued = true; requestAnimationFrame(() => { queued = false; fix(); }); };
+    fix();
+    if (window.MutationObserver) new MutationObserver(later).observe(document.body, { childList: true, subtree: true });
+  })();
+
   function savePrefs() {
     preferences = {
       notifications: $('pref-notifications')?.checked ?? true,
@@ -73,9 +87,12 @@
     try {
       const response = await fetch('/api/auth/logout', {method:'POST',credentials:'include',headers:{Accept:'application/json'}});
       if (!response.ok) throw new Error('Sign out failed');
-      try { localStorage.removeItem('hysacam-auth-cache'); } catch {}
+      try {
+        localStorage.removeItem('hysacam-auth-cache');
+        Object.keys(localStorage).filter(k => /^hysacam-(notif|reports)/.test(k)).forEach(k => localStorage.removeItem(k));
+      } catch {}
       window.Hys?.clearPrivate();
-      location.replace('index.html');
+      location.replace('/');
     } catch (error) {
       if (button) { button.disabled = false; button.dataset.busy = '0'; button.textContent = 'Sign Out'; }
       alert('Could not sign out. Please try again.');
@@ -109,6 +126,7 @@
     setAuthClass(authenticated ? 'yes' : 'no');
     document.body.classList.toggle('is-authenticated', authenticated);
     document.body.classList.toggle('is-visitor', !authenticated);
+    if (!authenticated) document.querySelectorAll('.notification-count').forEach(c => { c.textContent = '0'; c.hidden = true; });
     const links = $('menu-links');
     const summary = $('menu-account-summary');
     if (links) {
@@ -121,10 +139,8 @@
         ${mnLink('directory.html','dir','Directory')}
         ${mnLink('cleaning.html','clean','Cleaning Records')}
         ${mnLink('report.html','report','Reports')}
-        ${mnLink('about.html','about','About HYSACAM')}
         <p class="mn-label">Account</p>
         ${mnLink('settings.html','settings','Settings')}
-        <button type="button" class="mn-item" data-open-notifications>${mnIcon('bell')}<span>Notifications</span>${CHEV}</button>
         ${authenticated ? `<button type="button" class="mn-item menu-signout" id="menu-signout">${mnIcon('out')}<span>Sign Out</span></button>` : ''}`;
       const here = (location.pathname.split('/').pop() || 'index.html');
       links.querySelectorAll('a[href]').forEach(l => { if (l.getAttribute('href') === here) l.setAttribute('aria-current','page'); });
