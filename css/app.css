@@ -430,7 +430,7 @@ body.compact-layout .hero.hero-slider{aspect-ratio:2.2/1;min-height:190px}
   border-radius: 28px;
   position: relative;
   margin: 12px 0 24px;
-  background: #e1ebe4;
+  background: #0b5a35;
 }
 
 .report-slider img {
@@ -448,7 +448,7 @@ body.compact-layout .hero.hero-slider{aspect-ratio:2.2/1;min-height:190px}
   animation: reportFade 20s infinite;
 }
 
-.report-slider img:nth-child(1) { animation-delay: 0s; }
+.report-slider img:nth-child(1) { animation-delay: -0.8s; }
 .report-slider img:nth-child(2) { animation-delay: 4s; }
 .report-slider img:nth-child(3) { animation-delay: 8s; }
 .report-slider img:nth-child(4) { animation-delay: 12s; }
