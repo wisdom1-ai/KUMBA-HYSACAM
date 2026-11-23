@@ -1,80 +1,4 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"><meta name="theme-color" content="#087747"><meta name="description" content="Browse and search every HYSACAM dustbin collection point in Kumba."><title>Directory | HYSACAM Kumba Tracker</title><link rel="preconnect" href="https://edylcpvigtmyuehjeibe.supabase.co" crossorigin><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"><script>(function(){var s="no";try{var c=JSON.parse(localStorage.getItem("hysacam-auth-cache")||"null");if(c&&c.a===1)s="yes"}catch(e){}document.documentElement.className+=" auth-"+s})();</script><link rel="stylesheet" href="css/style.css?v=5b2ca3b6"><link rel="stylesheet" href="css/app.css?v=17">
-<style>
-.dx{padding-bottom:12px}
-.dx-hero{position:relative;overflow:hidden;display:flex;align-items:center;gap:16px;margin:14px;padding:22px 20px;border-radius:24px;color:#fff;background:linear-gradient(135deg,#0b7a45 0%,#064e35 100%);box-shadow:0 12px 28px rgba(6,78,53,.26)}
-.dx-hero:after{content:"";position:absolute;right:-60px;top:-60px;width:190px;height:190px;border:30px solid rgba(255,255,255,.07);border-radius:50%}
-.dx-hero-ico{flex:0 0 54px;width:54px;height:54px;display:grid;place-items:center;border-radius:16px;background:rgba(255,255,255,.16)}
-.dx-hero-ico svg{width:28px;height:28px;stroke:#fff}
-.dx-hero .eyebrow{color:#b9f0cf;font-size:10px;letter-spacing:1.6px}
-.dx-hero h2{margin:4px 0 4px;font-size:23px;color:#fff;letter-spacing:-.4px}
-.dx-hero p{margin:0;font-size:13px;color:#d7f2e1}
-.dx-tools{margin:0 14px}
-.dx-search{position:relative}
-.dx-search svg{position:absolute;left:15px;top:50%;width:20px;height:20px;transform:translateY(-50%);stroke:#6b7c72;pointer-events:none}
-.dx-search input{width:100%;min-height:54px;padding:0 48px 0 46px;border:1.5px solid #d9e5dd;border-radius:16px;background:#fff;font:inherit;font-size:16px;color:#17231d;box-shadow:0 3px 12px rgba(13,59,35,.05);outline:none}
-.dx-search input:focus{border-color:var(--green);box-shadow:0 0 0 4px rgba(8,119,71,.1)}
-.dx-clear{position:absolute;right:8px;top:50%;width:38px;height:38px;transform:translateY(-50%);display:none;place-items:center;border:0;border-radius:50%;background:#eef5f0;color:#42584b;font-size:20px;line-height:1;cursor:pointer}
-.dx-clear.on{display:grid}
-.dx-chips{display:flex;gap:8px;margin:12px -14px 0;padding:2px 14px 4px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
-.dx-chips::-webkit-scrollbar{display:none}
-.dx-chip{flex:0 0 auto;display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:0 14px;border:1.5px solid #dbe6df;border-radius:999px;background:#fff;color:#2f4338;font:inherit;font-size:13.5px;font-weight:700;cursor:pointer;white-space:nowrap}
-.dx-chip b{display:inline-grid;place-items:center;min-width:22px;height:22px;padding:0 6px;border-radius:999px;background:#eef5f0;font-size:12px;font-weight:800;color:#42584b}
-.dx-chip i{width:8px;height:8px;border-radius:50%;background:currentColor}
-.dx-chip.on{border-color:var(--green);background:var(--green);color:#fff}
-.dx-chip.on b{background:rgba(255,255,255,.22);color:#fff}
-.dx-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
-.dx-select{position:relative}
-.dx-select label{position:absolute;left:14px;top:7px;font-size:10px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:#7a897f;pointer-events:none}
-.dx-select select{width:100%;min-height:54px;padding:20px 34px 4px 14px;border:1.5px solid #d9e5dd;border-radius:14px;background:#fff;font:inherit;font-size:14px;font-weight:700;color:#17231d;-webkit-appearance:none;appearance:none;outline:none}
-.dx-select:after{content:"";position:absolute;right:15px;top:50%;width:8px;height:8px;margin-top:-6px;border:solid #6b7c72;border-width:0 2px 2px 0;transform:rotate(45deg);pointer-events:none}
-.dx-count{margin:14px 18px 8px;font-size:13px;font-weight:700;color:#5c6b62}
-.dx-list{display:grid;gap:12px;margin:0 14px}
-.dx-card{display:flex;gap:14px;padding:16px;background:#fff;border:1px solid #e1ebe4;border-radius:20px;box-shadow:0 4px 16px rgba(13,59,35,.06);min-width:0}
-.dx-ico{flex:0 0 46px;width:46px;height:46px;display:grid;place-items:center;border-radius:14px;background:#e4f5e9;color:#168653}
-.dx-ico svg{width:24px;height:24px}
-.dx-card.k-full .dx-ico{background:#ffe7e4;color:#c0392b}
-.dx-card.k-maintenance .dx-ico{background:#fff0dc;color:#b86e14}
-.dx-card.k-pending .dx-ico{background:#fff2ce;color:#a07400}
-.dx-body{flex:1;min-width:0}
-.dx-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
-.dx-top h3{margin:0;font-size:16px;line-height:1.25;color:#17231d;overflow-wrap:anywhere}
-.dx-id{flex:0 0 auto;padding:4px 8px;border-radius:7px;background:#f0f5f1;font-size:11px;font-weight:800;color:#4a6455;letter-spacing:.3px}
-.dx-area,.dx-meta{display:flex;align-items:center;gap:6px;margin:6px 0 0;font-size:13px;color:#4c5d53}
-.dx-area svg,.dx-meta svg{flex:0 0 15px;width:15px;height:15px;stroke:#7a897f}
-.dx-meta{font-size:12px;color:#7a897f}
-.dx-bottom{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:13px;flex-wrap:wrap}
-.dx-pill{display:inline-flex;align-items:center;gap:7px;padding:6px 11px;border-radius:999px;font-size:12px;font-weight:800;background:#e4f5e9;color:#167044}
-.dx-pill i{width:7px;height:7px;border-radius:50%;background:currentColor}
-.dx-pill.k-full{background:#ffe7e4;color:#a93428}
-.dx-pill.k-maintenance{background:#fff0dc;color:#9a5b12}
-.dx-pill.k-pending{background:#fff2ce;color:#8a6500}
-.dx-actions{display:flex;gap:8px}
-.dx-btn{display:inline-flex;align-items:center;justify-content:center;min-height:38px;padding:0 14px;border:1.5px solid var(--green);border-radius:11px;background:#fff;color:var(--green);font:inherit;font-size:13px;font-weight:800;cursor:pointer;text-decoration:none}
-.dx-btn.solid{background:var(--green);color:#fff}
-.dx-btn:active{transform:scale(.97)}
-.dx-more{margin:16px 14px 6px}
-.dx-more button{width:100%;min-height:52px;border:1.5px solid var(--green);border-radius:15px;background:#fff;color:var(--green);font:inherit;font-size:15px;font-weight:800;cursor:pointer}
-.dx-empty{padding:34px 20px;text-align:center;background:#fff;border:1px dashed #cfe0d5;border-radius:20px}
-.dx-empty b{display:block;font-size:17px;color:#173b29}
-.dx-empty p{margin:7px 0 16px;font-size:13px;color:#718078}
-.dx-empty button{border:0;border-radius:12px;background:var(--green);color:#fff;font:inherit;font-weight:800;padding:12px 22px;cursor:pointer}
-.dx-sk{height:136px;border-radius:20px;background:linear-gradient(90deg,#e6eee8 25%,#f4f8f5 45%,#e6eee8 65%);background-size:220% 100%;animation:skShimmer 1.25s linear infinite}
-.dx-dialog{width:min(94vw,520px);max-height:88vh;padding:0;border:0;border-radius:26px;overflow:auto;background:#fff;color:#17231d;box-shadow:0 24px 80px rgba(12,45,28,.28)}
-.dx-dialog::backdrop{background:rgba(8,28,18,.5);backdrop-filter:blur(3px)}
-.dx-dhead{display:flex;align-items:flex-start;gap:14px;padding:22px 20px 14px}
-.dx-dhead .dx-ico{flex:0 0 52px;width:52px;height:52px}
-.dx-dhead h3{margin:0 0 7px;font-size:20px;line-height:1.2}
-.dx-dclose{margin-left:auto;flex:0 0 38px;width:38px;height:38px;border:0;border-radius:50%;background:#eef5f0;color:#185f3c;font-size:24px;cursor:pointer}
-.dx-rows{margin:0;padding:0 20px}
-.dx-rows div{display:flex;justify-content:space-between;gap:16px;padding:13px 0;border-bottom:1px solid #edf2ee;font-size:14px}
-.dx-rows dt{color:#6a796f;font-weight:600}
-.dx-rows dd{margin:0;text-align:right;font-weight:700;overflow-wrap:anywhere}
-.dx-dactions{display:grid;gap:10px;padding:18px 20px calc(20px + env(safe-area-inset-bottom))}
-.dx-dactions .dx-btn{min-height:50px;font-size:15px;border-radius:14px}
-@media(max-width:600px){.dx-dialog{margin:auto 0 0;width:100%;max-width:none;border-radius:26px 26px 0 0}}
-@media(min-width:760px){.dx-list{grid-template-columns:1fr 1fr}.dx-row{max-width:520px}}
-@media(min-width:901px){.dx-hero,.dx-tools,.dx-count,.dx-list,.dx-more{margin-left:0;margin-right:0}.dx-chips{margin-left:0;margin-right:0;padding-left:0}}
-</style></head><body id="top" class="is-inner">
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"><meta name="theme-color" content="#087747"><meta name="description" content="Browse and search every HYSACAM dustbin collection point in Kumba."><title>Directory | HYSACAM Kumba Tracker</title><link rel="preconnect" href="https://edylcpvigtmyuehjeibe.supabase.co" crossorigin><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"><script>(function(){var s="no";try{var c=JSON.parse(localStorage.getItem("hysacam-auth-cache")||"null");if(c&&c.a===1)s="yes"}catch(e){}document.documentElement.className+=" auth-"+s})();</script><link rel="stylesheet" href="css/style.css?v=5b2ca3b6"><link rel="stylesheet" href="css/app.css?v=17"><link rel="stylesheet" href="css/directory-pro.css?v=1"></head><body id="top" class="is-inner">
 <header class="topbar">
   <a class="back-btn" href="index.html" aria-label="Back" onclick="if(history.length>1&&document.referrer.indexOf(location.origin)===0){history.back();return false}"><svg viewBox="0 0 24 24" aria-hidden="true" ><path d="m15 6-6 6 6 6"/></svg></a><h1 class="mobile-title">Directory</h1>
   <a class="brand" href="index.html" aria-label="HYSACAM Kumba Tracker home">
@@ -99,134 +23,55 @@
   </nav>
   <button class="nav-backdrop" id="nav-backdrop" type="button" aria-label="Close navigation"></button>
 </header>
-<main class="inner-page"><div class="page-wrap dx">
-  <section class="dx-hero" aria-label="Dustbin directory">
-    <span class="dx-hero-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 14h10l1-14M10 11v6M14 11v6"/></svg></span>
-    <div><span class="eyebrow">BROWSE COLLECTION POINTS</span><h2>Dustbin Directory</h2><p id="dx-hero-text">Find every HYSACAM collection point in Kumba</p></div>
-  </section>
-  <div class="dx-tools">
-    <div class="dx-search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="dx-search" type="search" inputmode="search" enterkeyhint="search" autocomplete="off" placeholder="Search by name, ID or area" aria-label="Search collection points"><button class="dx-clear" id="dx-clear" type="button" aria-label="Clear search">×</button></div>
-    <div class="dx-chips" id="dx-chips" role="group" aria-label="Filter by status"></div>
-    <div class="dx-row">
-      <div class="dx-select"><label for="dx-area">Area</label><select id="dx-area"><option value="all">All areas</option></select></div>
-      <div class="dx-select"><label for="dx-sort">Sort by</label><select id="dx-sort"><option value="name">Name</option><option value="area">Area</option><option value="status">Status</option><option value="cleaned">Recently cleaned</option></select></div>
+<main class="inner-page"><div class="page-wrap dp">
+  <section class="dp-hero" aria-label="Dustbin directory overview">
+    <div class="dp-hero-top">
+      <span class="dp-hero-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 14h10l1-14M10 11v6M14 11v6"/></svg></span>
+      <div><span class="eyebrow">BROWSE COLLECTION POINTS</span><h2>Dustbin Directory</h2><p id="dp-sub">Find every HYSACAM collection point in Kumba</p></div>
     </div>
+    <div class="dp-stats" id="dp-stats" aria-label="Summary"></div>
+    <div class="dp-health" id="dp-health" aria-hidden="true"></div>
+    <div class="dp-legend" id="dp-legend"></div>
+  </section>
+
+  <div class="dp-layout">
+    <aside class="dp-tools" aria-label="Search and filters">
+      <div class="dp-search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="dp-search" type="search" inputmode="search" enterkeyhint="search" autocomplete="off" placeholder="Search name, ID or area" aria-label="Search collection points"><button class="dp-clear" id="dp-clear" type="button" aria-label="Clear search">×</button><span class="dp-kbd" aria-hidden="true">/</span></div>
+      <div class="dp-chips" id="dp-chips" role="group" aria-label="Filter by status"></div>
+      <button class="dp-ft" id="dp-ft" type="button" aria-expanded="false" aria-controls="dp-panel"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg>Filters and tools<b id="dp-fcount" hidden>0</b></button>
+      <div class="dp-panel" id="dp-panel">
+        <div class="dp-row">
+          <div class="dp-select"><label for="dp-area">Area</label><select id="dp-area"><option value="all">All areas</option></select></div>
+          <div class="dp-select"><label for="dp-sort">Sort by</label><select id="dp-sort"><option value="name">Name</option><option value="area">Area</option><option value="status">Status</option><option value="cleaned">Recently cleaned</option><option value="nearest">Nearest to me</option></select></div>
+        </div>
+        <div class="dp-seg" role="group" aria-label="View"><button type="button" data-view="cards" aria-pressed="true">Cards</button><button type="button" data-view="compact" aria-pressed="false">Compact</button></div>
+        <div class="dp-tool-row">
+          <button type="button" class="dp-tbtn" id="dp-near"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="8"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>Near me</button>
+          <button type="button" class="dp-tbtn" id="dp-export"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 11l5 5 5-5M5 20h14"/></svg>Export CSV</button>
+          <button type="button" class="dp-tbtn" id="dp-refresh"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7M20 4v7h-7"/></svg>Refresh</button>
+        </div>
+        <div class="dp-areas" id="dp-areas" hidden><h4>Top areas</h4><div id="dp-areas-list"></div></div>
+      </div>
+    </aside>
+    <section class="dp-results" aria-label="Results">
+      <div class="dp-bar"><p class="dp-count" id="dp-count" role="status" aria-live="polite"></p><span class="dp-updated" id="dp-updated"></span></div>
+      <div class="dp-banner" id="dp-offline" role="status" hidden>You are offline or the update failed. Showing your saved list</div>
+      <div class="dp-list" id="dp-list"><div class="dp-sk"></div><div class="dp-sk"></div><div class="dp-sk"></div><div class="dp-sk"></div></div>
+      <div class="dp-more" id="dp-more" hidden><button type="button" id="dp-more-btn">Show more</button></div>
+    </section>
   </div>
-  <p class="dx-count" id="dx-count" role="status" aria-live="polite"></p>
-  <div class="dx-list" id="dx-list"><div class="dx-sk"></div><div class="dx-sk"></div><div class="dx-sk"></div><div class="dx-sk"></div></div>
-  <div class="dx-more" id="dx-more" hidden><button type="button" id="dx-more-btn">Show more</button></div>
-</div>
-<dialog id="dx-dialog" class="dx-dialog" aria-labelledby="dx-dtitle"><div class="dx-dhead"><span class="dx-ico" id="dx-dico"></span><div><h3 id="dx-dtitle">Collection point</h3><span id="dx-dpill"></span></div><button class="dx-dclose" id="dx-dclose" type="button" aria-label="Close">×</button></div><dl class="dx-rows" id="dx-rows"></dl><div class="dx-dactions" id="dx-dactions"></div></dialog></main><footer class="site-footer"><span>© HYSACAM Kumba Tracker</span><a href="index.html">Back to top ↑</a></footer>
+
+  <dialog id="dp-dialog" class="dp-dialog" aria-labelledby="dp-dtitle">
+    <div class="dp-dhead" id="dp-dhead"><span class="dp-ico" id="dp-dico"></span><div><h3 id="dp-dtitle">Collection point</h3><span id="dp-dpill"></span></div><button class="dp-dclose" id="dp-dclose" type="button" aria-label="Close">×</button></div>
+    <div class="dp-dstats" id="dp-dstats"></div>
+    <dl class="dp-rows" id="dp-rows"></dl>
+    <div class="dp-dactions" id="dp-dactions"></div>
+  </dialog>
+  <div class="dp-toast" id="dp-toast" role="status" aria-live="polite" hidden></div>
+</div></main><footer class="site-footer"><span>© HYSACAM Kumba Tracker</span><a href="index.html">Back to top ↑</a></footer>
 <aside id="notification-panel" class="notification-panel" hidden aria-label="Notifications"><div class="notification-head"><div><span class="eyebrow">LATEST UPDATES</span><h3>Notifications</h3></div><button id="notification-close" type="button" aria-label="Close notifications">×</button></div><div id="notification-list" class="notification-list"><p class="notification-empty">Loading your latest updates…</p></div><p class="notification-foot">Updates are based on records available to your signed-in account</p></aside>
 <nav class="app-tabbar" aria-label="Primary"><a href="index.html"><svg viewBox="0 0 24 24" aria-hidden="true" ><path d="M3 11 12 3l9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg><span>Home</span></a><a href="map.html"><svg viewBox="0 0 24 24" aria-hidden="true" ><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg><span>Map</span></a><a href="report.html"><svg viewBox="0 0 24 24" aria-hidden="true" ><path d="M6 3h9l4 4v14H6z"/><path d="M9 12h7M9 16h7M9 8h3"/></svg><span>Reports</span></a><a href="cleaning.html" aria-label="Cleaning Records"><svg viewBox="0 0 24 24" aria-hidden="true" ><path d="M9 4h6v3H9zM7 5H5v16h14V5h-2"/><path d="m9 14 2 2 4-4"/></svg><span>Cleaning</span></a><a href="settings.html"><svg viewBox="0 0 24 24" aria-hidden="true" ><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span>Settings</span></a></nav>
 <script src="js/shared.js?v=ee0d6659"></script><script src="js/app-shell.js?v=16"></script><script src="js/notifications.js?v=2"></script>
-<script>
-/* Dustbin directory: instant (saved) list, live data straight from the database, filters, sorting and a detail sheet */
-(function(){
-  'use strict';
-  var API='https://edylcpvigtmyuehjeibe.supabase.co/rest/v1/',KEY='sb_publishable_M2JBYBmf8mLJbUS88et3Ww_K3spt6Bh',CK='hysacam-directory-cache-v1',PAGE=8;
-  var $=function(id){return document.getElementById(id)};
-  var listEl=$('dx-list'),moreEl=$('dx-more'),countEl=$('dx-count'),searchEl=$('dx-search'),clearEl=$('dx-clear'),areaEl=$('dx-area'),sortEl=$('dx-sort'),chipsEl=$('dx-chips'),dlg=$('dx-dialog');
-  var bins=[],last={},st={q:'',status:'all',area:'all',sort:'name',shown:PAGE},timer=0;
-  var LABEL={available:'Available',full:'Full',pending:'Pending collection',maintenance:'Maintenance'};
-  var ORDER={full:0,maintenance:1,pending:2,available:3};
-  var PIN='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg>';
-  var CLOCK='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>';
-  var esc=function(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})};
-  var kind=function(s){var v=String(s||'').toLowerCase();return /full|overflow/.test(v)?'full':/maint|broken|damage/.test(v)?'maintenance':/pending|collect/.test(v)?'pending':'available'};
-  var hasGeo=function(b){return b.latitude!=null&&b.longitude!=null&&b.latitude!==''&&b.longitude!==''&&isFinite(+b.latitude)&&isFinite(+b.longitude)&&Math.abs(+b.latitude)<=90&&Math.abs(+b.longitude)<=180};
-  var code=function(b){return b.bin_code||String(b.id||'').slice(0,8)||'ID'};
-  function cleaned(b){
-    var x=last[String(b.id)];if(!x)return'No cleaning record yet';
-    var d=new Date(x);if(isNaN(d))return'No cleaning record yet';
-    var days=Math.floor((Date.now()-d.getTime())/864e5);
-    return'Cleaned '+(days<1?'today':days===1?'yesterday':days<30?days+' days ago':'on '+d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}));
-  }
-  function filtered(){
-    var q=st.q.toLowerCase();
-    var out=bins.filter(function(b){
-      if(st.status!=='all'&&kind(b.status)!==st.status)return false;
-      if(st.area!=='all'&&(b.area||'')!==st.area)return false;
-      return !q||[b.name,b.bin_code,b.area,b.status,b.id].join(' ').toLowerCase().indexOf(q)>-1;
-    });
-    var by={name:function(a,b){return String(a.name||'').localeCompare(String(b.name||''))},area:function(a,b){return String(a.area||'').localeCompare(String(b.area||''))||String(a.name||'').localeCompare(String(b.name||''))},status:function(a,b){return ORDER[kind(a.status)]-ORDER[kind(b.status)]||String(a.name||'').localeCompare(String(b.name||''))},cleaned:function(a,b){return new Date(last[String(b.id)]||0)-new Date(last[String(a.id)]||0)}};
-    return out.sort(by[st.sort]||by.name);
-  }
-  function drawChips(){
-    var n={all:bins.length,available:0,full:0,pending:0,maintenance:0};
-    bins.forEach(function(b){n[kind(b.status)]++});
-    var defs=[['all','All'],['available','Available'],['full','Full'],['pending','Pending'],['maintenance','Maintenance']];
-    chipsEl.innerHTML=defs.map(function(d){return'<button type="button" class="dx-chip'+(st.status===d[0]?' on':'')+'" data-status="'+d[0]+'" aria-pressed="'+(st.status===d[0])+'">'+d[1]+'<b>'+n[d[0]]+'</b></button>'}).join('');
-  }
-  function drawAreas(){
-    var areas=Array.from(new Set(bins.map(function(b){return b.area}).filter(Boolean))).sort();
-    areaEl.innerHTML='<option value="all">All areas</option>'+areas.map(function(a){return'<option value="'+esc(a)+'"'+(st.area===a?' selected':'')+'>'+esc(a)+'</option>'}).join('');
-    $('dx-hero-text').textContent=bins.length?bins.length+' collection points across '+(areas.length||1)+(areas.length===1?' area':' areas')+' in Kumba':'Find every HYSACAM collection point in Kumba';
-  }
-  function card(b){
-    var k=kind(b.status);
-    return'<article class="dx-card k-'+k+'"><div class="dx-ico" aria-hidden="true">'+PIN+'</div><div class="dx-body">'
-      +'<div class="dx-top"><h3>'+esc(b.name||'Collection point')+'</h3><span class="dx-id">'+esc(code(b))+'</span></div>'
-      +'<p class="dx-area">'+PIN+esc(b.area||'Area not specified')+', Kumba</p>'
-      +'<p class="dx-meta">'+CLOCK+esc(cleaned(b))+'</p>'
-      +'<div class="dx-bottom"><span class="dx-pill k-'+k+'"><i></i>'+LABEL[k]+'</span><div class="dx-actions"><button type="button" class="dx-btn" data-open="'+esc(b.id)+'">Details</button>'+(hasGeo(b)?'<a class="dx-btn solid" href="map.html?bin='+encodeURIComponent(b.id)+'">Map</a>':'')+'</div></div>'
-      +'</div></article>';
-  }
-  function render(){
-    drawChips();clearEl.classList.toggle('on',!!st.q);
-    var all=filtered(),shown=all.slice(0,st.shown);
-    if(!all.length){
-      var none=!bins.length;
-      listEl.innerHTML='<div class="dx-empty"><b>'+(none?'No dustbins registered yet':'No matching locations')+'</b><p>'+(none?'Registered collection points will appear here when available':'Try another name, ID or area, or clear the filters')+'</p>'+(none?'':'<button type="button" id="dx-reset">Clear filters</button>')+'</div>';
-      moreEl.hidden=true;countEl.textContent=none?'':'0 collection points found';return;
-    }
-    listEl.innerHTML=shown.map(card).join('');
-    countEl.textContent='Showing '+shown.length+' of '+all.length+(all.length===1?' collection point':' collection points');
-    moreEl.hidden=all.length<=shown.length;
-    if(!moreEl.hidden)$('dx-more-btn').textContent='Show more ('+(all.length-shown.length)+' left)';
-  }
-  function setData(b,l){bins=b||[];last=l||{};drawAreas();render()}
-  function open(id){
-    var b=bins.filter(function(x){return String(x.id)===String(id)})[0];if(!b)return;
-    var k=kind(b.status);
-    $('dx-dtitle').textContent=b.name||'Collection point';
-    $('dx-dico').className='dx-ico';$('dx-dico').style.cssText='';$('dx-dico').innerHTML=PIN;
-    $('dx-dico').parentNode.className='dx-dhead k-'+k;
-    $('dx-dpill').innerHTML='<span class="dx-pill k-'+k+'"><i></i>'+LABEL[k]+'</span>';
-    var rows=[['Dustbin ID',code(b)],['Area',(b.area||'Not specified')+', Kumba'],['Status',LABEL[k]],['Coordinates',hasGeo(b)?(+b.latitude).toFixed(5)+', '+(+b.longitude).toFixed(5):'Not available'],['Last cleaned',cleaned(b).replace(/^Cleaned /,'')]];
-    $('dx-rows').innerHTML=rows.map(function(r){return'<div><dt>'+esc(r[0])+'</dt><dd>'+esc(r[1])+'</dd></div>'}).join('');
-    $('dx-dactions').innerHTML=(hasGeo(b)?'<a class="dx-btn solid" href="map.html?bin='+encodeURIComponent(b.id)+'">View on map</a><a class="dx-btn" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination='+(+b.latitude)+','+(+b.longitude)+'">Get directions</a>':'')+'<a class="dx-btn" href="report.html">Report an issue</a>';
-    if(dlg.showModal)dlg.showModal();else dlg.setAttribute('open','');
-  }
-  function get(path){return fetch(API+path,{headers:{apikey:KEY,Accept:'application/json'}}).then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json()})}
-  function load(){
-    Promise.all([
-      get('bins?select=id,bin_code,name,area,latitude,longitude,status&order=name.asc&limit=1000'),
-      get('cleaning_records?select=bin_id,cleaned_at&verified=eq.true&order=cleaned_at.desc&limit=1000').catch(function(){return[]})
-    ]).then(function(res){
-      var l={};res[1].forEach(function(r){var k=String(r.bin_id);if(!l[k])l[k]=r.cleaned_at});
-      setData(res[0],l);
-      try{localStorage.setItem(CK,JSON.stringify({bins:res[0],last:l}))}catch(e){}
-    }).catch(function(){
-      if(!bins.length){listEl.innerHTML='<div class="dx-empty"><b>Unable to load locations</b><p>Please check your connection and try again</p><button type="button" id="dx-retry">Try again</button></div>';countEl.textContent=''}
-    });
-  }
-  try{var c=JSON.parse(localStorage.getItem(CK)||'null');if(c&&c.bins&&c.bins.length)setData(c.bins,c.last)}catch(e){}
-  searchEl.addEventListener('input',function(){clearTimeout(timer);timer=setTimeout(function(){st.q=searchEl.value.trim();st.shown=PAGE;render()},120)});
-  clearEl.addEventListener('click',function(){searchEl.value='';st.q='';st.shown=PAGE;render();searchEl.focus()});
-  chipsEl.addEventListener('click',function(e){var b=e.target.closest('[data-status]');if(!b)return;st.status=b.dataset.status;st.shown=PAGE;render()});
-  areaEl.addEventListener('change',function(){st.area=areaEl.value;st.shown=PAGE;render()});
-  sortEl.addEventListener('change',function(){st.sort=sortEl.value;st.shown=PAGE;render()});
-  $('dx-more-btn').addEventListener('click',function(){st.shown+=PAGE;render()});
-  listEl.addEventListener('click',function(e){
-    var o=e.target.closest('[data-open]');if(o){open(o.dataset.open);return}
-    if(e.target.id==='dx-retry'){listEl.innerHTML='<div class="dx-sk"></div><div class="dx-sk"></div>';load();return}
-    if(e.target.id==='dx-reset'){st={q:'',status:'all',area:'all',sort:st.sort,shown:PAGE};searchEl.value='';areaEl.value='all';render()}
-  });
-  $('dx-dclose').addEventListener('click',function(){dlg.close?dlg.close():dlg.removeAttribute('open')});
-  dlg.addEventListener('click',function(e){if(e.target===dlg)dlg.close()});
-  load();
-})();
-</script>
+<script src="js/directory-pro.js?v=1"></script>
 <script>(function(){const w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);const n=[];while(w.nextNode())n.push(w.currentNode);for(const x of n){if(x.parentElement&&/^(SCRIPT|STYLE|TEXTAREA)$/i.test(x.parentElement.tagName))continue;x.nodeValue=x.nodeValue.replace(/\.(?=\s|$)/g,"");}})();</script>
 </body></html>
