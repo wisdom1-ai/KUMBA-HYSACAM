@@ -88,6 +88,23 @@
   const setAuthClass = state => { const r = document.documentElement; r.classList.remove('auth-yes','auth-no','auth-pending'); r.classList.add('auth-' + state); };
   const displayName = user => user?.name || user?.full_name || user?.email?.split('@')[0] || 'HYSACAM User';
 
+  const MI = {
+    home: '<path d="M3 11 12 3l9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',
+    map: '<path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/>',
+    dir: '<path d="M4 6h16M4 12h16M4 18h10"/>',
+    clean: '<path d="M9 4h6v3H9zM7 5H5v16h14V5h-2"/><path d="m9 14 2 2 4-4"/>',
+    report: '<path d="M6 3h9l4 4v14H6z"/><path d="M9 12h7M9 16h7M9 8h3"/>',
+    about: '<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>',
+    settings: '<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>',
+    bell: '<path d="M6 9a6 6 0 0 1 12 0c0 6 2 7 2 7H4s2-1 2-7"/><path d="M10 20a2 2 0 0 0 4 0"/>',
+    out: '<path d="M9 21H5V3h4M16 7l5 5-5 5M21 12H9"/>',
+    user: '<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>'
+  };
+  const CHEV = '<svg class="mn-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>';
+  const mnIcon = key => `<i class="mn-ico"><svg viewBox="0 0 24 24" aria-hidden="true">${MI[key]}</svg></i>`;
+  const mnLink = (href, key, label) => `<a href="${href}">${mnIcon(key)}<span>${label}</span>${CHEV}</a>`;
+  const mnInitials = n => { const w = String(n || '').trim().split(/\s+/).filter(Boolean); return ((w[0]?.[0] || '') + (w.length > 1 ? w[w.length - 1][0] : '')).toUpperCase() || 'U'; };
+
   function paint(authenticated, user, role) {
     setAuthClass(authenticated ? 'yes' : 'no');
     document.body.classList.toggle('is-authenticated', authenticated);
@@ -98,14 +115,17 @@
       const authTop = authenticated ? '' : '<div class="menu-auth-row"><a class="menu-auth-link" href="signup.html">Sign Up</a><a class="menu-auth-link menu-signin" href="signin.html">Sign In</a></div>';
       links.innerHTML = `
         ${authTop}
-        <a href="index.html"><span class="nav-item-icon">⌂</span>Home</a>
-        <a href="map.html"><span class="nav-item-icon">⌖</span>Map</a>
-        <a href="directory.html"><span class="nav-item-icon">☷</span>Directory</a>
-        <a href="cleaning.html"><span class="nav-item-icon">✓</span>Cleaning Records</a>
-        <a href="report.html"><span class="nav-item-icon">⚑</span>Report</a>
-        <a href="settings.html"><span class="nav-item-icon">⚙</span>Settings</a>
-        <button type="button" data-open-notifications><span class="nav-item-icon">▣</span>Notifications</button>
-        ${authenticated ? '<button type="button" class="menu-signout" id="menu-signout"><span class="nav-item-icon">↪</span>Sign Out</button>' : ''}`;
+        <p class="mn-label">Explore</p>
+        ${mnLink('index.html','home','Home')}
+        ${mnLink('map.html','map','Dustbin Map')}
+        ${mnLink('directory.html','dir','Directory')}
+        ${mnLink('cleaning.html','clean','Cleaning Records')}
+        ${mnLink('report.html','report','Reports')}
+        ${mnLink('about.html','about','About HYSACAM')}
+        <p class="mn-label">Account</p>
+        ${mnLink('settings.html','settings','Settings')}
+        <button type="button" class="mn-item" data-open-notifications>${mnIcon('bell')}<span>Notifications</span>${CHEV}</button>
+        ${authenticated ? `<button type="button" class="mn-item menu-signout" id="menu-signout">${mnIcon('out')}<span>Sign Out</span></button>` : ''}`;
       const here = (location.pathname.split('/').pop() || 'index.html');
       links.querySelectorAll('a[href]').forEach(l => { if (l.getAttribute('href') === here) l.setAttribute('aria-current','page'); });
       links.querySelector('#menu-signout')?.addEventListener('click', event => signOut(event.currentTarget));
@@ -113,8 +133,8 @@
     }
     if (summary) {
       summary.innerHTML = authenticated
-        ? `<b>${safeText(displayName(user))}</b><small>${safeText(user?.email || 'Signed-in account')}</small>`
-        : '<b>Welcome</b><small>Explore HYSACAM Kumba Tracker</small>';
+        ? `<span class="mn-avatar">${safeText(mnInitials(displayName(user)))}</span><span class="mn-who"><b>${safeText(displayName(user))}</b><small>${safeText(user?.email || 'Signed-in account')}</small></span><em class="mn-role">${safeText(role || 'Resident')}</em>`
+        : `<span class="mn-avatar"><svg viewBox="0 0 24 24" aria-hidden="true">${MI.user}</svg></span><span class="mn-who"><b>Welcome</b><small>Explore HYSACAM Kumba Tracker</small></span>`;
     }
     const initials = n => { const w = String(n || '').trim().split(/\s+/).filter(Boolean); return ((w[0]?.[0] || '') + (w.length > 1 ? w[w.length - 1][0] : '')).toUpperCase(); };
     document.querySelectorAll('.avatar').forEach(a => { const t = authenticated ? initials(displayName(user)) : ''; a.dataset.initials = t; a.classList.toggle('has-initials', !!t); });
