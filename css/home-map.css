@@ -1,0 +1,71 @@
+/* ===== Landing page: professional dustbin map card (add after app.css) ===== */
+.hmc{margin:14px;padding:16px;background:#fff;border:1px solid #e1ebe4;border-radius:24px;box-shadow:0 8px 26px rgba(13,59,35,.08)}
+.hmc-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin:0 0 14px}
+.hmc-head h2{margin:0;font-size:19px;line-height:1.2;color:#17231d}
+.hmc-sub{margin:4px 0 0;font-size:12.5px;font-weight:600;color:#5c6b62}
+.hmc-open{flex:0 0 auto;display:inline-flex;align-items:center;gap:6px;padding:9px 14px;border-radius:999px;background:#e6f4ec;color:#075f3d;font-size:13px;font-weight:800;text-decoration:none;white-space:nowrap}
+.hmc-open:active{background:#d3ebdc}
+
+/* Status counters */
+.hmc-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:0 0 14px}
+.hmc-stat{display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 4px;border-radius:14px;background:var(--bg,#f5f9f6);text-align:center}
+.hmc-stat b{font-size:20px;line-height:1.1;font-weight:800;color:var(--fg,#17231d)}
+.hmc-stat span{display:flex;align-items:center;gap:5px;font-size:11px;font-weight:700;color:#45544b}
+.hmc-stat i{display:block;width:8px;height:8px;border-radius:50%;background:var(--c,#9aa8a0)}
+.hmc-stat.is-loading b{color:#b8c4bc}
+
+/* Map frame */
+.hmc-frame{position:relative;isolation:isolate;height:320px;border-radius:18px;overflow:hidden;background:#e8efe9;border:1px solid #dbe6df}
+@media(min-width:760px){.hmc-frame{height:440px}}
+.hmc-frame #dustbin-map{position:absolute;top:0;right:0;bottom:0;left:0;width:100%;height:100%;z-index:1;border-radius:0;background:#e8efe9}
+.hmc-frame .leaflet-control-attribution{margin:0;padding:2px 8px;border-top-left-radius:10px;background:rgba(255,255,255,.85);font-size:10.5px}
+.hmc-ctl{position:absolute;z-index:800;right:10px;top:10px;display:flex;flex-direction:column;gap:8px}
+.hmc-btn{display:grid;place-items:center;width:42px;height:42px;padding:0;border:0;border-radius:12px;background:#fff;color:#17231d;box-shadow:0 4px 14px rgba(8,40,24,.22);cursor:pointer;text-decoration:none;font-size:22px;font-weight:500;line-height:1}
+.hmc-btn svg{width:20px;height:20px}
+.hmc-btn:active{background:#e6f4ec}
+.hmc-btn.busy svg{animation:hmcSpin 1s linear infinite}
+.hmc-grp{display:flex;flex-direction:column;overflow:hidden;border-radius:12px;box-shadow:0 4px 14px rgba(8,40,24,.22)}
+.hmc-grp .hmc-btn{border-radius:0;box-shadow:none}
+.hmc-grp .hmc-btn+.hmc-btn{border-top:1px solid #e6eee9}
+.hmc-hint{position:absolute;z-index:800;left:10px;top:10px;max-width:calc(100% - 76px);padding:6px 11px;border-radius:999px;background:rgba(255,255,255,.94);box-shadow:0 3px 12px rgba(8,40,24,.16);font-size:12px;font-weight:700;color:#33453a;pointer-events:none}
+
+/* Selected dustbin bar */
+.hmc-info{position:absolute;z-index:850;left:10px;right:10px;bottom:10px;padding:12px 14px;border-radius:16px;background:#fff;box-shadow:0 10px 28px rgba(8,40,24,.28);animation:hmcUp .22s ease}
+.hmc-info[hidden]{display:none}
+.hmc-i-top{display:flex;align-items:center;gap:8px;margin:0 30px 6px 0;flex-wrap:wrap}
+.hmc-code{padding:3px 9px;border-radius:7px;background:#eef2f0;font-size:11px;font-weight:800;letter-spacing:.4px;color:#33453a}
+.hmc-pill{padding:3px 10px;border-radius:999px;background:var(--bg);color:var(--fg);font-size:11px;font-weight:800}
+.hmc-info h3{margin:0;font-size:16px;line-height:1.25;color:#17231d;overflow-wrap:anywhere}
+.hmc-info p{margin:3px 0 10px;font-size:12.5px;color:#45544b}
+.hmc-info p b{color:#087747}
+.hmc-x{position:absolute;top:8px;right:8px;width:30px;height:30px;display:grid;place-items:center;border:0;border-radius:50%;background:#eef5f0;color:#17231d;font-size:19px;line-height:1;cursor:pointer}
+.hmc-i-act{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.hmc-a{display:flex;align-items:center;justify-content:center;min-height:42px;border:1.5px solid #087747;border-radius:12px;background:#fff;color:#087747;font-size:14px;font-weight:800;text-decoration:none}
+.hmc-a.primary{background:#087747;color:#fff}
+
+/* Loading shimmer over the map until the first pins arrive */
+.hmc-load{position:absolute;z-index:900;top:0;right:0;bottom:0;left:0;display:grid;place-items:center;background:rgba(232,239,233,.8)}
+.hmc-load[hidden]{display:none}
+.hmc-load div{padding:16px 20px;border-radius:16px;background:#fff;box-shadow:0 8px 24px rgba(8,40,24,.18);text-align:center;font-size:13px;font-weight:700;color:#26372d}
+.hmc-load button{display:block;margin:10px auto 0;padding:9px 20px;border:0;border-radius:10px;background:#087747;color:#fff;font:inherit;font-size:13px;font-weight:800;cursor:pointer}
+.hmc-spin{display:block;width:28px;height:28px;margin:0 auto 10px;border:3px solid #cfe6d7;border-top-color:#087747;border-radius:50%;animation:hmcSpin .8s linear infinite}
+
+/* Pins (same look as the full map) */
+.hm-pin-wrap,.hm-me-wrap{background:none;border:0}
+.hm-pin{position:relative;display:block;width:34px;height:44px;transform-origin:50% 100%;transition:transform .18s ease;filter:drop-shadow(0 3px 4px rgba(0,0,0,.35))}
+.hm-pin svg{display:block;width:100%;height:100%;fill:none}
+.hm-pin path{fill:var(--c);stroke:#fff;stroke-width:2.5;stroke-linejoin:round}
+.hm-pin circle{fill:#fff;stroke:none}
+.hm-pin.sel{transform:scale(1.24)}
+.hm-me{display:block;width:20px;height:20px;border-radius:50%;background:#2875d8;border:3px solid #fff;animation:hmcMe 2s ease-out infinite}
+.g-available{--c:#16a34a;--bg:#d9f5e3;--fg:#0b7a3e}
+.g-full{--c:#dc2626;--bg:#fde0de;--fg:#c62828}
+.g-pending{--c:#f59e0b;--bg:#ffedc7;--fg:#b45309}
+.g-maintenance{--c:#2563eb;--bg:#dbeafe;--fg:#1d4ed8}
+.hm-tip{padding:7px 10px;border:0;border-radius:10px;box-shadow:0 6px 18px rgba(8,40,24,.25);font-family:inherit;font-size:12.5px;line-height:1.35;color:#17231d}
+.hm-tip::before{display:none}
+
+@keyframes hmcSpin{to{transform:rotate(360deg)}}
+@keyframes hmcUp{from{transform:translateY(14px);opacity:0}to{transform:none;opacity:1}}
+@keyframes hmcMe{0%{box-shadow:0 0 0 0 rgba(40,117,216,.55)}100%{box-shadow:0 0 0 18px rgba(40,117,216,0)}}
+@media(prefers-reduced-motion:reduce){.hmc-info,.hm-me,.hmc-spin,.hmc-btn.busy svg{animation:none}}
