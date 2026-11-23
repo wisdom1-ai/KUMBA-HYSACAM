@@ -89,12 +89,10 @@ body.is-authenticated .header-tools{margin-left:auto}
    HYSACAM REPORT SLIDER TEXT OVERLAY
 ===================================== */
 
-.report-slider {
-  position: relative;
-  overflow: hidden;
-  isolation: isolate;
+.report-slider,
+.report-slide {
+  background: #1f2a24; /* dark neutral, not bright green */
 }
-
 /* Dark transparent layer over the images */
 .report-slider-overlay {
   position: absolute;
