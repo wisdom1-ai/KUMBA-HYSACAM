@@ -467,3 +467,22 @@ body.compact-layout .hero.hero-slider{aspect-ratio:2.2/1;min-height:190px}
   .report-slider .report-slide { animation: none; }
   .report-slider .report-slide:nth-child(1) { opacity: 1; }
 }
+
+/* ===== Tab bar: 5 tabs (Home, Map, Reports, Cleaning, Settings) ===== */
+.app-tabbar a{min-width:0;font-size:11px;white-space:nowrap}
+.app-tabbar a.active::after{width:34px}
+
+/* ===== Cleaning Records page: no Sign In / Sign Up cards ===== */
+body.is-cleaning .join-card,body.is-cleaning .join-actions,body.is-cleaning .gate-actions,body.is-cleaning .visitor-only{display:none!important}
+
+/* ===== Settings (Profile now lives here) ===== */
+.set-hero{display:flex;align-items:center;gap:16px;margin:14px;padding:22px 18px;border-radius:24px;color:#fff;background:linear-gradient(135deg,#0b7a45 0%,#064e35 100%);box-shadow:0 12px 28px rgba(6,78,53,.28)}
+.set-hero .avatar{flex:0 0 76px;width:76px;height:76px;background:rgba(255,255,255,.16);border:2px solid rgba(255,255,255,.55);color:#fff;font-size:28px}
+.set-hero .avatar svg{width:40px;height:40px;stroke:#fff;fill:none}
+.set-hero h2{margin:0 0 3px;font-size:21px;color:#fff;overflow-wrap:anywhere}
+.set-hero p{margin:0 0 9px;font-size:13px;color:#d7f2e1;overflow-wrap:anywhere}
+.set-hero .account-role{background:rgba(255,255,255,.18);color:#fff}
+.set-group{margin:22px 18px 8px;font-size:12px;font-weight:800;letter-spacing:1.4px;text-transform:uppercase;color:#5c6b62}
+.set-panel .pf-inline{margin:0;padding:12px 0 0;border:0;box-shadow:none;background:none}
+.set-panel .info-card.slim{margin:12px 0;padding:2px 14px;background:#f5f9f6;border-radius:14px;box-shadow:none}
+.set-details[open]{border-color:#bfe0cb;box-shadow:0 6px 18px rgba(13,59,35,.08)}
