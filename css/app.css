@@ -572,3 +572,28 @@ body.nav-open .topbar{z-index:1400}
   margin: 14px 16px;
 }
 }
+html.dark {
+  color-scheme: dark;
+}
+html.dark body {
+  background: #0e1612;
+  color: #e6efe9;
+}
+html.dark .topbar,
+html.dark .app-tabbar {
+  background: #13201a;
+}
+html.dark .set-row,
+html.dark .set-panel,
+html.dark .info-card,
+html.dark .join-card,
+html.dark .brand-card {
+  background: #16251e;
+  border-color: #24382f;
+  color: #e6efe9;
+}
+html.dark small,
+html.dark .set-hint,
+html.dark .set-group {
+  color: #9db3a8;
+}
