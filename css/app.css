@@ -558,3 +558,16 @@ body.nav-open .topbar{z-index:1400}
 .topbar nav#main-nav .menu-account-summary{display:flex!important;align-items:center;gap:12px;margin:4px 16px 8px!important;padding:14px!important;border:0!important;background:linear-gradient(135deg,#0b7a45 0%,#064e35 100%)!important}
 .topbar nav#main-nav .menu-auth-row{display:grid!important;grid-template-columns:1fr 1fr!important;gap:10px!important;margin:6px 2px!important}
 .topbar nav#main-nav .menu-links .menu-auth-link{min-height:46px;padding:0 10px;border-radius:14px;font-size:15px;flex-direction:row}
+#settings-avatar {
+  overflow: hidden;
+  border-radius: 50%;
+}
+#settings-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.avatar-edit {
+  margin: 12px 0;
+}
