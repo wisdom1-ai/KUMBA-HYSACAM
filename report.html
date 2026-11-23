@@ -1,4 +1,11 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"><meta name="theme-color" content="#087747"><meta name="description" content="HYSACAM Kumba Tracker helps residents find waste collection points and follow community cleaning activity."><title>Reports | HYSACAM Kumba Tracker</title><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"><script>(function(){var s="pending";try{var c=JSON.parse(localStorage.getItem("hysacam-auth-cache")||"null");if(c&&c.a===1)s="yes"}catch(e){}document.documentElement.className+=" auth-"+s})();</script><link rel="preload" as="image" href="images/report-1.jpg" fetchpriority="high"><link rel="stylesheet" href="css/style.css?v=5b2ca3b6"><link rel="stylesheet" href="css/app.css?v=6f283627"></head><body id="top" class="is-inner">
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"><meta name="theme-color" content="#087747"><meta name="description" content="HYSACAM Kumba Tracker helps residents find waste collection points and follow community cleaning activity."><title>Reports | HYSACAM Kumba Tracker</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"><script>(function(){var s="pending";try{var c=JSON.parse(localStorage.getItem("hysacam-auth-cache")||"null");if(c&&c.a===1)s="yes"}catch(e){}document.documentElement.className+=" auth-"+s})();</script><link rel="preload" as="image" href="images/report-1.jpg" fetchpriority="high"><link rel="stylesheet" href="css/style.css?v=5b2ca3b6"><link rel="stylesheet" href="css/app.css?v=6f283627">
+<style>
+/* "Track Your Reports" is static content: it must paint immediately, never wait for scripts or animations */
+.track-card{opacity:1!important;visibility:visible!important;transform:none!important;animation:none!important;transition:none!important;content-visibility:visible!important;min-height:210px}
+/* Signed-in layout placeholder so nothing jumps when "Your Reports" arrives */
+.skel-yes{display:none}
+html.auth-yes .skel-yes{display:block}
+</style></head><body id="top" class="is-inner">
 <header class="topbar">
   <a class="back-btn" href="index.html" aria-label="Back" onclick="if(history.length>1&&document.referrer.indexOf(location.origin)===0){history.back();return false}"><svg viewBox="0 0 24 24" aria-hidden="true" ><path d="m15 6-6 6 6 6"/></svg></a><h1 class="mobile-title">Reports</h1>
   <a class="brand" href="index.html" aria-label="HYSACAM Kumba Tracker home">
@@ -29,7 +36,7 @@
 <!-- REPORT IMAGE SLIDER -->
 <div class="report-slider">
 <div class="report-slide">
-<img src="images/report-1.jpg" alt="Waste heaps by a Kumba roadside" fetchpriority="high" loading="eager" decoding="sync">
+<img src="images/report-1.jpg" alt="Waste heaps by a Kumba roadside" fetchpriority="high" loading="eager" decoding="async">
 <div class="report-slider-overlay"><div class="report-slider-content">
 <span class="report-slider-label">REPORT WASTE</span>
 <h2>Waste piling up on your street?</h2>
@@ -38,7 +45,7 @@
 </div></div>
 </div>
 <div class="report-slide">
-<img src="images/report-2.jpg" alt="Collection team beside a full dustbin">
+<img src="images/report-2.jpg" alt="Collection team beside a full dustbin" loading="lazy" decoding="async">
 <div class="report-slider-overlay"><div class="report-slider-content">
 <span class="report-slider-label">FULL DUSTBINS</span>
 <h2>Overflowing dustbins</h2>
@@ -47,7 +54,7 @@
 </div></div>
 </div>
 <div class="report-slide">
-<img src="images/report-3.jpg" alt="Waste dumped beside the road">
+<img src="images/report-3.jpg" alt="Waste dumped beside the road" loading="lazy" decoding="async">
 <div class="report-slider-overlay"><div class="report-slider-content">
 <span class="report-slider-label">ILLEGAL DUMPING</span>
 <h2>Waste dumped by the roadside</h2>
@@ -56,7 +63,7 @@
 </div></div>
 </div>
 <div class="report-slide">
-<img src="images/report-4.jpg" alt="Waste along a muddy road">
+<img src="images/report-4.jpg" alt="Waste along a muddy road" loading="lazy" decoding="async">
 <div class="report-slider-overlay"><div class="report-slider-content">
 <span class="report-slider-label">MISSED COLLECTION</span>
 <h2>Collection did not come?</h2>
@@ -65,7 +72,7 @@
 </div></div>
 </div>
 <div class="report-slide">
-<img src="images/report-5.jpg" alt="Waste pile near houses">
+<img src="images/report-5.jpg" alt="Waste pile near houses" loading="lazy" decoding="async">
 <div class="report-slider-overlay"><div class="report-slider-content">
 <span class="report-slider-label">A CLEANER KUMBA</span>
 <h2>Together we keep Kumba clean</h2>
@@ -78,11 +85,16 @@
 
 <button id="open-report-form" class="submit-big" type="button"><svg viewBox="0 0 24 24" aria-hidden="true" ><path d="M21 3 3 10l7 3 3 7z"/><path d="m10 13 11-10"/></svg>Submit a Report</button>
 <form id="resident-report-form" class="report-form panel" hidden><h3>Submit a waste issue</h3><p class="hint">Fields marked * are required. Please provide an accurate location</p><div class="report-form-grid"><label>Issue type *<select name="issue_type" required><option value="">Choose an issue</option><option>Overflowing dustbin</option><option>Missed waste collection</option><option>Illegal dumping</option><option>Damaged dustbin</option><option>Other</option></select></label><label>Area in Kumba *<input name="area" required maxlength="100" placeholder="Enter area in Kumba"></label><label class="wide">Specific location *<input name="location_description" required maxlength="150" placeholder="Street, landmark or nearby building"></label><label class="wide">Description *<textarea name="description" required maxlength="800" rows="4" placeholder="Describe the issue..."></textarea></label><label>Contact phone (optional)<input name="phone" maxlength="40" placeholder="Phone number"></label></div><button class="button" type="submit" id="submit-resident-report">Submit report</button><p id="resident-report-message" class="auth-message" role="status" aria-live="polite"></p></form>
+
+<!-- Placeholder for signed-in residents (removed as soon as the real list appears) -->
+<div id="my-reports-skel" class="skel-yes" aria-hidden="true"><div class="sec-head"><h2>Your Reports</h2></div><div style="margin:0 14px"><div class="rcard skeleton"><div class="sk-row"><span class="sk-dot"></span><div class="sk-lines"><i></i><i></i></div><span class="sk-pill"></span></div></div><div class="rcard skeleton"><div class="sk-row"><span class="sk-dot"></span><div class="sk-lines"><i></i><i></i></div><span class="sk-pill"></span></div></div></div></div>
+
 <div id="resident-my-reports" hidden><div class="sec-head"><h2>Your Reports</h2><button class="link-btn" id="refresh-my-reports" type="button">Refresh</button></div><div id="my-reports-list"></div>
 <div class="stats-card"><h3><svg viewBox="0 0 24 24" aria-hidden="true" ><path d="M5 20v-8M12 20V5M19 20v-6"/></svg>Report Statistics</h3><div class="stats-row"><div><b id="stat-total">–</b><span>Total</span></div><div><b id="stat-pending">–</b><span>Pending</span></div><div><b id="stat-resolved">–</b><span>Resolved</span></div><div><b id="stat-closed">–</b><span>Closed</span></div></div></div></div>
 <div class="track-card"><svg viewBox="0 0 200 110" aria-hidden="true"><path d="M30 80c0-22 14-34 34-30-4 22-16 32-34 30z" fill="#bfe6cc"/><path d="M170 80c0-22-14-34-34-30 4 22 16 32 34 30z" fill="#bfe6cc"/><rect x="68" y="8" width="64" height="82" rx="8" fill="#fff" stroke="#6b7c8a" stroke-width="3"/><path d="M80 28h40M80 40h40M80 52h24" stroke="#9aa9b4" stroke-width="4" stroke-linecap="round"/><circle cx="118" cy="72" r="17" fill="#16a34a"/><path d="m109 72 7 7 12-13" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg><h3>Track Your Reports</h3><p>Keep an eye on the status of your submitted reports</p></div></div></main><footer class="site-footer"><span>© HYSACAM Kumba Tracker</span><a href="index.html">Back to top ↑</a></footer>
 <aside id="notification-panel" class="notification-panel" hidden aria-label="Notifications"><div class="notification-head"><div><span class="eyebrow">LATEST UPDATES</span><h3>Notifications</h3></div><button id="notification-close" type="button" aria-label="Close notifications">×</button></div><div id="notification-list" class="notification-list"><p class="notification-empty">Loading your latest updates…</p></div><p class="notification-foot">Updates are based on records available to your signed-in account</p></aside>
-<nav class="app-tabbar" aria-label="Primary"><a href="index.html"><svg viewBox="0 0 24 24" aria-hidden="true" ><path d="M3 11 12 3l9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg><span>Home</span></a><a href="map.html"><svg viewBox="0 0 24 24" aria-hidden="true" ><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg><span>Map</span></a><a href="report.html" class="active" aria-current="page"><svg viewBox="0 0 24 24" aria-hidden="true" ><path d="M6 3h9l4 4v14H6z"/><path d="M9 12h7M9 16h7M9 8h3"/></svg><span>Reports</span></a><a href="settings.html"><svg viewBox="0 0 24 24" aria-hidden="true" ><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9 7 7M17 17l2.1 2.1M4.9 19.1 7 17M17 7l2.1-2.1"/></svg><span>Settings</span></a><a href="profile.html"><svg viewBox="0 0 24 24" aria-hidden="true" ><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><span>Profile</span></a></nav>
+<nav class="app-tabbar" aria-label="Primary"><a href="index.html"><svg viewBox="0 0 24 24" aria-hidden="true" ><path d="M3 11 12 3l9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg><span>Home</span></a><a href="map.html"><svg viewBox="0 0 24 24" aria-hidden="true" ><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg><span>Map</span></a><a href="report.html" class="active" aria-current="page"><svg viewBox="0 0 24 24" aria-hidden="true" ><path d="M6 3h9l4 4v14H6z"/><path d="M9 12h7M9 16h7M9 8h3"/></svg><span>Reports</span></a><a href="directory.html" aria-label="Directory"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h12a2 2 0 0 1 2 2v14H7a2 2 0 0 1-2-2z"/><circle cx="12" cy="10" r="2.5"/><path d="M8.5 16.5a3.5 3.5 0 0 1 7 0"/></svg><span>Directory</span></a><a href="settings.html"><svg viewBox="0 0 24 24" aria-hidden="true" ><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9 7 7M17 17l2.1 2.1M4.9 19.1 7 17M17 7l2.1-2.1"/></svg><span>Settings</span></a></nav>
 <script src="js/shared.js?v=ee0d6659"></script><script src="js/reports.js?v=fc9f6de6"></script><script src="js/app-shell.js?v=de0e398e"></script><script src="js/notifications.js?v=5ca408c2"></script><script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script defer src="js/supabase.js?v=64119a7a"></script><script defer src="js/platform.js?v=b48c6775"></script><script defer src="js/auth-guard.js?v=b4032a17"></script>
+<script>(function(){var s=document.getElementById("my-reports-skel"),m=document.getElementById("resident-my-reports");if(!s||!m)return;function done(){if(s.parentNode)s.parentNode.removeChild(s)}if(!m.hidden){done();return}var o=new MutationObserver(function(){if(!m.hidden){done();o.disconnect()}});o.observe(m,{attributes:true,attributeFilter:["hidden"]});setTimeout(done,6000)})();</script>
 <script>(function(){const w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);const n=[];while(w.nextNode())n.push(w.currentNode);for(const x of n){if(x.parentElement&&/^(SCRIPT|STYLE|TEXTAREA)$/i.test(x.parentElement.tagName))continue;x.nodeValue=x.nodeValue.replace(/\.(?=\s|$)/g,"");}})();</script>
 </body></html>
