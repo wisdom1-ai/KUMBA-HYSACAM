@@ -1,4 +1,114 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"><meta name="theme-color" content="#087747"><meta name="description" content="HYSACAM Kumba Tracker helps residents find waste collection points and follow community cleaning activity."><title>Cleaning Records | HYSACAM Kumba Tracker</title><link rel="preconnect" href="https://edylcpvigtmyuehjeibe.supabase.co" crossorigin><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"><script>(function(){var s="no";try{var c=JSON.parse(localStorage.getItem("hysacam-auth-cache")||"null");if(c&&c.a===1)s="yes"}catch(e){}document.documentElement.className+=" auth-"+s})();</script><link rel="stylesheet" href="css/style.css?v=5b2ca3b6"><link rel="stylesheet" href="css/app.css?v=16"></head><body id="top" class="is-inner is-protected is-cleaning">
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"><meta name="theme-color" content="#087747"><meta name="description" content="HYSACAM Kumba Tracker helps residents find waste collection points and follow community cleaning activity."><title>Cleaning Records | HYSACAM Kumba Tracker</title><link rel="preconnect" href="https://edylcpvigtmyuehjeibe.supabase.co" crossorigin><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"><script>(function(){var s="no";try{var c=JSON.parse(localStorage.getItem("hysacam-auth-cache")||"null");if(c&&c.a===1)s="yes"}catch(e){}document.documentElement.className+=" auth-"+s})();</script><link rel="stylesheet" href="css/style.css?v=5b2ca3b6"><link rel="stylesheet" href="css/app.css?v=16">
+<style>
+/* ===== Cleaning Records page ===== */
+.cl-head{margin:18px 16px 4px}
+.cl-head h2{margin:4px 0 4px;font-size:26px;line-height:1.15;color:#17231d}
+.cl-head p{margin:0;font-size:14px;color:var(--muted)}
+
+/* Summary cards */
+.cl-stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:14px}
+.cl-stat{padding:14px 14px 12px;background:#fff;border:1px solid #e1ebe4;border-radius:18px;box-shadow:0 3px 12px rgba(13,59,35,.05)}
+.cl-stat b{display:block;font-size:26px;line-height:1.1;color:#17231d;font-weight:800}
+.cl-stat span{display:block;margin-top:4px;font-size:12.5px;font-weight:600;color:#5c6b62}
+.cl-stat.accent{background:linear-gradient(135deg,#0b7a45 0%,#064e35 100%);border-color:transparent}
+.cl-stat.accent b,.cl-stat.accent span{color:#fff}
+.cl-stat.accent span{color:#d3efdd}
+.cl-stat b.sm{font-size:18px;padding-top:5px}
+@media(min-width:760px){.cl-stats{grid-template-columns:repeat(4,1fr)}}
+
+/* Toolbar */
+.cl-tools{margin:0 14px 10px;padding:12px;background:#fff;border:1px solid #e1ebe4;border-radius:20px;box-shadow:0 3px 12px rgba(13,59,35,.05)}
+.cl-search{position:relative;display:block;margin-bottom:10px}
+.cl-search svg{position:absolute;left:13px;top:50%;width:20px;height:20px;margin-top:-10px;stroke:#5c6b62}
+.cl-search input{width:100%;padding:13px 40px 13px 42px;border:1px solid #d6e3db;border-radius:14px;background:#fff;font-size:16px;color:#17231d}
+.cl-search input:focus,.cl-selects select:focus{outline:2px solid rgba(8,119,71,.35);border-color:var(--green)}
+.cl-clear{position:absolute;right:6px;top:50%;width:32px;height:32px;margin-top:-16px;display:grid;place-items:center;border:0;border-radius:50%;background:#eef5f0;color:#17231d;font-size:18px;line-height:1;cursor:pointer}
+.cl-clear[hidden]{display:none}
+.cl-selects{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.cl-selects select{width:100%;min-width:0;padding:11px 8px;border:1px solid #d6e3db;border-radius:12px;background:#fff;font-size:14px;font-weight:600;color:#17231d}
+@media(max-width:520px){.cl-selects{grid-template-columns:1fr 1fr}.cl-selects select:last-child{grid-column:1/-1}}
+
+/* Status chips */
+.cl-chips{display:flex;gap:8px;margin:0 14px 10px;padding:2px 0 4px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.cl-chips::-webkit-scrollbar{display:none}
+.cl-chip{flex:0 0 auto;padding:8px 14px;border:1px solid #d6e3db;border-radius:999px;background:#fff;font:inherit;font-size:13px;font-weight:700;color:#26372d;cursor:pointer;white-space:nowrap}
+.cl-chip[aria-pressed="true"]{background:var(--green);border-color:var(--green);color:#fff}
+.cl-chip i{font-style:normal;margin-left:5px;opacity:.75;font-weight:600}
+
+/* Status line */
+.cl-meta{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:2px 18px 10px;font-size:12.5px;color:var(--muted)}
+.cl-meta b{color:#17231d}
+.cl-refresh{display:inline-flex;align-items:center;gap:6px;border:0;background:none;padding:4px 0;font:inherit;font-size:12.5px;font-weight:700;color:var(--green);cursor:pointer}
+.cl-refresh svg{width:16px;height:16px}
+.cl-refresh.spin svg{animation:clSpin .8s linear infinite}
+@keyframes clSpin{to{transform:rotate(360deg)}}
+.cl-banner{margin:0 14px 10px;padding:10px 14px;border-radius:12px;background:#fff7e6;border:1px solid #f6dca4;font-size:12.5px;color:#8a5a0b}
+.cl-banner[hidden]{display:none}
+
+/* Record cards */
+.cl-list{display:grid;grid-template-columns:1fr;gap:10px;margin:0 14px}
+@media(min-width:760px){.cl-list{grid-template-columns:1fr 1fr}}
+@media(min-width:1000px){.cl-list{grid-template-columns:1fr 1fr 1fr}}
+.cl-card{position:relative;display:flex;flex-direction:column;gap:8px;width:100%;padding:14px 14px 12px 18px;text-align:left;background:#fff;border:1px solid #e1ebe4;border-radius:18px;box-shadow:0 3px 12px rgba(13,59,35,.05);font:inherit;color:inherit;cursor:pointer;overflow:hidden;-webkit-appearance:none;appearance:none}
+.cl-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--c,#16a34a)}
+.cl-card:active{transform:scale(.985);border-color:var(--green)}
+.cl-card:focus-visible{outline:2px solid var(--green);outline-offset:2px}
+.cl-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.cl-code{display:block;font-size:16px;font-weight:800;color:#17231d;overflow-wrap:anywhere}
+.cl-area{display:flex;align-items:center;gap:5px;margin-top:3px;font-size:13px;color:#45544b}
+.cl-area svg{flex:0 0 15px;width:15px;height:15px;stroke:var(--green)}
+.cl-pill{flex:0 0 auto;padding:5px 10px;border-radius:999px;font-size:11px;font-weight:800;white-space:nowrap;background:var(--bg);color:var(--fg)}
+.cl-act{margin:0;font-size:13px;line-height:1.45;color:#33453a;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.cl-foot{display:flex;align-items:center;justify-content:space-between;gap:8px;padding-top:8px;border-top:1px solid #edf2ee;font-size:12px;color:var(--muted)}
+.cl-foot time{display:flex;align-items:center;gap:5px}
+.cl-foot svg{width:14px;height:14px}
+.cl-more-link{display:inline-flex;align-items:center;gap:2px;font-weight:800;color:var(--green)}
+.cl-more-link svg{width:14px;height:14px}
+.g-cleaned{--c:#16a34a;--bg:#d9f5e3;--fg:#0b7a3e}
+.g-pending{--c:#f59e0b;--bg:#ffedc7;--fg:#b45309}
+.g-full{--c:#e04848;--bg:#fde0de;--fg:#c62828}
+.g-maintenance{--c:#2563eb;--bg:#dbeafe;--fg:#1d4ed8}
+.g-available{--c:#6b7280;--bg:#e5e7eb;--fg:#4b5563}
+
+/* Loading skeletons */
+.cl-skel{height:128px;border-radius:18px;border:1px solid #e1ebe4;background:linear-gradient(90deg,#e6eee8 25%,#f4f8f5 45%,#e6eee8 65%);background-size:220% 100%;animation:skShimmer 1.25s linear infinite}
+
+/* Empty and error states */
+.cl-empty{grid-column:1/-1;padding:34px 20px;text-align:center;background:#fff;border:1px dashed #cfe0d5;border-radius:20px}
+.cl-empty .ico{display:grid;place-items:center;width:56px;height:56px;margin:0 auto 12px;border-radius:50%;background:#e9f5ee;color:var(--green)}
+.cl-empty .ico svg{width:26px;height:26px}
+.cl-empty b{display:block;font-size:16px;color:#17231d}
+.cl-empty p{margin:6px 0 0;font-size:13px;color:var(--muted)}
+.cl-empty button{margin-top:14px;padding:11px 20px;border:0;border-radius:12px;background:var(--green);color:#fff;font:inherit;font-size:14px;font-weight:800;cursor:pointer}
+.cl-showmore{display:block;width:calc(100% - 28px);margin:14px;padding:14px;border:1.5px solid var(--green);border-radius:16px;background:#fff;font:inherit;font-size:15px;font-weight:800;color:var(--green);cursor:pointer}
+.cl-showmore[hidden]{display:none}
+.cl-showmore:active{background:#e6f4ec}
+
+/* Detail sheet */
+dialog.cl-dialog{width:min(480px,calc(100vw - 28px));max-height:86vh;margin:auto;padding:0;border:0;border-radius:24px;background:#fff;color:#17231d;box-shadow:0 24px 70px rgba(8,40,24,.3);overflow:hidden}
+dialog.cl-dialog[open]{display:flex;flex-direction:column;animation:clIn .22s ease}
+dialog.cl-dialog::backdrop{background:rgba(8,26,17,.45)}
+.cl-d-head{flex:0 0 auto;display:flex;align-items:flex-start;gap:12px;padding:18px 16px 12px 18px;border-bottom:1px solid #edf2ee}
+.cl-d-head>div{flex:1;min-width:0}
+.cl-d-head h3{margin:3px 0 0;font-size:20px;overflow-wrap:anywhere}
+.cl-d-close{flex:0 0 36px;width:36px;height:36px;display:grid;place-items:center;border:0;border-radius:50%;background:#eef5f0;color:#17231d;font-size:22px;line-height:1;cursor:pointer}
+.cl-d-body{flex:1 1 auto;min-height:0;overflow-y:auto;padding:16px 18px 20px;-webkit-overflow-scrolling:touch}
+.cl-d-status{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.cl-d-status small{font-size:12.5px;color:var(--muted)}
+.cl-d-rows{display:grid;grid-template-columns:106px minmax(0,1fr);gap:10px 12px;margin:0;padding:14px;background:#f5f9f6;border-radius:16px;font-size:13.5px}
+.cl-d-rows dt{color:#6a796f;font-weight:600}
+.cl-d-rows dd{margin:0;color:#17231d;overflow-wrap:anywhere}
+.cl-d-note{margin-top:14px;padding:14px;background:#eaf6ef;border:1px solid #cfe6d7;border-radius:14px}
+.cl-d-note b{font-size:13px;color:var(--deep)}
+.cl-d-note p{margin:5px 0 0;font-size:13.5px;line-height:1.55;color:#33453a;overflow-wrap:anywhere}
+@keyframes clIn{from{opacity:0;transform:translateY(14px) scale(.98)}to{opacity:1;transform:none}}
+@media(max-width:600px){
+  dialog.cl-dialog{width:100%;max-width:100%;margin:auto 0 0;max-height:88vh;border-radius:24px 24px 0 0}
+  dialog.cl-dialog[open]{animation:clSheet .26s ease}
+}
+@keyframes clSheet{from{transform:translateY(40px);opacity:.6}to{transform:none;opacity:1}}
+@media(prefers-reduced-motion:reduce){.cl-skel,.cl-refresh.spin svg,dialog.cl-dialog[open]{animation:none}}
+</style></head><body id="top" class="is-inner is-protected is-cleaning">
 <header class="topbar">
   <a class="back-btn" href="index.html" aria-label="Back" onclick="if(history.length>1&&document.referrer.indexOf(location.origin)===0){history.back();return false}"><svg viewBox="0 0 24 24" aria-hidden="true" ><path d="m15 6-6 6 6 6"/></svg></a><h1 class="mobile-title">Cleaning Records</h1>
   <a class="brand" href="index.html" aria-label="HYSACAM Kumba Tracker home">
@@ -24,50 +134,200 @@
   </nav>
   <button class="nav-backdrop" id="nav-backdrop" type="button" aria-label="Close navigation"></button>
 </header>
-<main class="inner-page"><section class="gate-wall" aria-label="Cleaning records"><div class="gate-card"><div class="gate-ico"><svg viewBox="0 0 24 24" aria-hidden="true" ><path d="M6 11h12v10H6zM8 11V8a4 4 0 0 1 8 0v3"/></svg></div><h2>Cleaning records</h2><p>Cleaning records are available to signed-in accounts</p><a class="gate-home" href="index.html">‹ Back to home</a></div></section><div class="page-wrap"><section id="cleaning" class="page-section"><div class="section-head"><div><span class="eyebrow">COMMUNITY CLEANLINESS</span><h2>Cleaning Records</h2><p>View verified cleaning activities across Kumba</p></div></div><div class="table-wrap"><table><thead><tr><th>#</th><th>Dustbin ID</th><th>Location</th><th>Date &amp; Time</th><th>Status</th><th>Action</th></tr></thead><tbody id="cleaning-table"><tr><td colspan="6"><div class="sk-lines"><i></i><i></i></div></td></tr><tr><td colspan="6"><div class="sk-lines"><i></i><i></i></div></td></tr><tr><td colspan="6"><div class="sk-lines"><i></i><i></i></div></td></tr><tr><td colspan="6"><div class="sk-lines"><i></i><i></i></div></td></tr></tbody></table></div></section></div>
-<dialog id="record-dialog" class="record-detail-dialog"><div class="record-detail-head"><div><span class="eyebrow">CLEANING RECORD</span><h3 id="rd-title">Record</h3></div><button class="record-detail-close" id="rd-close" type="button" aria-label="Close">×</button></div><dl class="record-detail-fields" id="rd-fields"></dl></dialog></main><footer class="site-footer"><span>© HYSACAM Kumba Tracker</span><a href="index.html">Back to top ↑</a></footer>
+<main class="inner-page"><section class="gate-wall" aria-label="Cleaning records"><div class="gate-card"><div class="gate-ico"><svg viewBox="0 0 24 24" aria-hidden="true" ><path d="M6 11h12v10H6zM8 11V8a4 4 0 0 1 8 0v3"/></svg></div><h2>Cleaning records</h2><p>Cleaning records are available to signed-in accounts</p><a class="gate-home" href="index.html">‹ Back to home</a></div></section>
+
+<div class="page-wrap">
+  <div class="cl-head"><span class="eyebrow">COMMUNITY CLEANLINESS</span><h2>Cleaning Records</h2><p>Verified cleaning activities across Kumba</p></div>
+
+  <section class="cl-stats" aria-label="Summary">
+    <div class="cl-stat accent"><b id="st-total">–</b><span>Verified records</span></div>
+    <div class="cl-stat"><b id="st-week">–</b><span>Last 7 days</span></div>
+    <div class="cl-stat"><b id="st-areas">–</b><span>Areas covered</span></div>
+    <div class="cl-stat"><b class="sm" id="st-last">–</b><span>Latest cleaning</span></div>
+  </section>
+
+  <section class="cl-tools" aria-label="Find records">
+    <label class="cl-search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="cl-q" type="search" placeholder="Search by dustbin, area or activity" autocomplete="off" aria-label="Search cleaning records"><button type="button" class="cl-clear" id="cl-q-clear" aria-label="Clear search" hidden>×</button></label>
+    <div class="cl-selects">
+      <select id="cl-area" aria-label="Filter by area"><option value="all">All areas</option></select>
+      <select id="cl-range" aria-label="Filter by date"><option value="all">Any date</option><option value="1">Today</option><option value="7">Last 7 days</option><option value="30">Last 30 days</option></select>
+      <select id="cl-sort" aria-label="Sort records"><option value="new">Newest first</option><option value="old">Oldest first</option></select>
+    </div>
+  </section>
+
+  <div class="cl-chips" id="cl-chips" role="group" aria-label="Filter by status"></div>
+
+  <div class="cl-meta"><span id="cl-count" role="status" aria-live="polite">Loading records…</span><button type="button" class="cl-refresh" id="cl-refresh"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 1 1-3-6.7M21 4v5h-5"/></svg><span id="cl-updated">Refresh</span></button></div>
+  <div class="cl-banner" id="cl-banner" hidden>Showing saved records because the latest could not be loaded</div>
+
+  <div class="cl-list" id="cl-list" aria-live="polite"><div class="cl-skel"></div><div class="cl-skel"></div><div class="cl-skel"></div></div>
+  <button type="button" class="cl-showmore" id="cl-showmore" hidden>Show more</button>
+</div>
+
+<dialog id="cl-dialog" class="cl-dialog" aria-labelledby="cl-d-title"><div class="cl-d-head"><div><span class="eyebrow">CLEANING RECORD</span><h3 id="cl-d-title">Record</h3></div><button class="cl-d-close" id="cl-d-close" type="button" aria-label="Close">×</button></div><div class="cl-d-body" id="cl-d-body"></div></dialog>
+</main><footer class="site-footer"><span>© HYSACAM Kumba Tracker</span><a href="index.html">Back to top ↑</a></footer>
 <aside id="notification-panel" class="notification-panel" hidden aria-label="Notifications"><div class="notification-head"><div><span class="eyebrow">LATEST UPDATES</span><h3>Notifications</h3></div><button id="notification-close" type="button" aria-label="Close notifications">×</button></div><div id="notification-list" class="notification-list"><p class="notification-empty">Loading your latest updates…</p></div><p class="notification-foot">Updates are based on records available to your signed-in account</p></aside>
-<nav class="app-tabbar" aria-label="Primary"><a href="index.html"><svg viewBox="0 0 24 24" aria-hidden="true" ><path d="M3 11 12 3l9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg><span>Home</span></a><a href="map.html"><svg viewBox="0 0 24 24" aria-hidden="true" ><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg><span>Map</span></a><a href="report.html"><svg viewBox="0 0 24 24" aria-hidden="true" ><path d="M6 3h9l4 4v14H6z"/><path d="M9 12h7M9 16h7M9 8h3"/></svg><span>Reports</span></a><a href="cleaning.html" class="active" aria-current="page" aria-label="Cleaning Records"><svg viewBox="0 0 24 24" aria-hidden="true" ><path d="M9 4h6v3H9zM7 5H5v16h14V5h-2"/><path d="m9 14 2 2 4-4"/></svg><span>Cleaning</span></a><a href="settings.html"><svg viewBox="0 0 24 24" aria-hidden="true" ><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span>Settings</span></a></nav>
-<script src="js/shared.js?v=ee0d6659"></script><script src="js/app-shell.js?v=16"></script><script src="js/notifications.js?v=5ca408c2"></script><script defer src="js/auth-guard.js?v=b4032a17"></script>
+<nav class="app-tabbar" aria-label="Primary"><a href="index.html"><svg viewBox="0 0 24 24" aria-hidden="true" ><path d="M3 11 12 3l9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg><span>Home</span></a><a href="map.html"><svg viewBox="0 0 24 24" aria-hidden="true" ><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg><span>Map</span></a><a href="report.html"><svg viewBox="0 0 24 24" aria-hidden="true" ><path d="M6 3h9l4 4v14H6z"/><path d="M9 12h7M9 16h7M9 8h3"/></svg><span>Reports</span></a><a href="directory.html" aria-label="Directory"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h12a2 2 0 0 1 2 2v14H7a2 2 0 0 1-2-2z"/><circle cx="12" cy="10" r="2.5"/><path d="M8.5 16.5a3.5 3.5 0 0 1 7 0"/></svg><span>Directory</span></a><a href="settings.html"><svg viewBox="0 0 24 24" aria-hidden="true" ><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span>Settings</span></a></nav>
+<script src="js/shared.js?v=ee0d6659"></script><script src="js/app-shell.js?v=17"></script><script src="js/notifications.js?v=5ca408c2"></script><script defer src="js/auth-guard.js?v=b4032a17"></script>
 <script>
-/* Cleaning records: show saved records instantly, then refresh straight from the database (no library to wait for) */
+/* Cleaning records: saved records show instantly, then refresh straight from the database */
 (function(){
-  var API="https://edylcpvigtmyuehjeibe.supabase.co/rest/v1/",KEY="sb_publishable_M2JBYBmf8mLJbUS88et3Ww_K3spt6Bh",CK="hysacam-cleaning-cache-v2";
-  var tb=document.getElementById("cleaning-table");if(!tb)return;
-  var dlg=document.getElementById("record-dialog"),fields=document.getElementById("rd-fields"),title=document.getElementById("rd-title");
-  var rows=[],bins={};
+  "use strict";
+  var API="https://edylcpvigtmyuehjeibe.supabase.co/rest/v1/",KEY="sb_publishable_M2JBYBmf8mLJbUS88et3Ww_K3spt6Bh",CK="hysacam-cleaning-cache-v3",PAGE=12;
+  var $=function(id){return document.getElementById(id)};
+  var list=$("cl-list");if(!list)return;
+  var ICON_PIN='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>';
+  var ICON_CLOCK='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>';
+  var ICON_NEXT='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>';
+  var ICON_EMPTY='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4h6v3H9zM7 5H5v16h14V5h-2"/><path d="m9 14 2 2 4-4"/></svg>';
+  var GROUPS=[["all","All"],["cleaned","Cleaned"],["pending","Pending"],["full","Full"],["maintenance","Maintenance"],["available","Other"]];
+  var GLABEL={cleaned:"Cleaned",pending:"Pending",full:"Full",maintenance:"Maintenance",available:"Recorded"};
+
+  var all=[],bins={},view=[],shown=PAGE,updatedAt=0,loading=false;
+  var f={q:"",group:"all",area:"all",range:"all",sort:"new"};
+
   var esc=function(v){return String(v==null?"":v).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})};
-  var cls=function(v){v=String(v||"").toLowerCase();return v.indexOf("clean")>-1?"cleaned":(v.indexOf("pending")>-1||v.indexOf("collect")>-1)?"pending":(v.indexOf("full")>-1||v.indexOf("overflow")>-1)?"full":(v.indexOf("maint")>-1||v.indexOf("broken")>-1||v.indexOf("damage")>-1)?"maintenance":"available"};
-  var when=function(x){var d=new Date(x);return isNaN(d.getTime())?"—":d.toLocaleDateString("en-US",{month:"short",day:"2-digit",year:"numeric"})+" • "+d.toLocaleTimeString("en-US",{hour:"2-digit",minute:"2-digit"})};
-  function render(){
-    if(!rows.length){tb.innerHTML='<tr><td colspan="6"><div class="empty-state compact"><h3>No verified cleaning records yet</h3><p>Verified staff cleaning activities will appear here</p></div></td></tr>';return}
-    tb.innerHTML=rows.map(function(r,i){var b=bins[String(r.bin_id)]||{};return'<tr><td>'+(i+1)+'</td><td><b>'+esc(b.bin_code||r.bin_id||"—")+'</b></td><td>'+esc(r.area||b.area||"Location not specified")+'</td><td>'+esc(when(r.cleaned_at))+'</td><td><span class="status '+cls(r.status)+'">'+esc(r.status||"Recorded")+'</span></td><td><button type="button" class="cl-row-view" data-i="'+i+'">View</button></td></tr>'}).join("");
-  }
-  function setData(r,b){rows=r||[];bins={};(b||[]).forEach(function(x){bins[String(x.id)]=x});render()}
-  try{var c=JSON.parse(localStorage.getItem(CK)||"null");if(c&&c.rows&&c.rows.length)setData(c.rows,c.bins)}catch(e){}
-  function get(path){return fetch(API+path,{headers:{apikey:KEY,Accept:"application/json"}}).then(function(r){if(!r.ok)throw new Error("HTTP "+r.status);return r.json()})}
-  function load(){
-    Promise.all([
-      get("cleaning_records?select=id,bin_id,area,cleaned_at,activity,status,notes&verified=eq.true&order=cleaned_at.desc&limit=100"),
-      get("bins?select=id,bin_code,name,area&limit=1000").catch(function(){return[]})
-    ]).then(function(res){
-      setData(res[0],res[1]);
-      try{localStorage.setItem(CK,JSON.stringify({rows:res[0],bins:res[1]}))}catch(e){}
-    }).catch(function(){
-      if(!rows.length)tb.innerHTML='<tr><td colspan="6"><div class="cl-error">Cleaning records could not be loaded<br><button type="button" id="cl-retry">Try again</button></div></td></tr>';
+  var groupOf=function(v){v=String(v||"").toLowerCase();return v.indexOf("clean")>-1?"cleaned":(v.indexOf("pending")>-1||v.indexOf("collect")>-1)?"pending":(v.indexOf("full")>-1||v.indexOf("overflow")>-1)?"full":(v.indexOf("maint")>-1||v.indexOf("broken")>-1||v.indexOf("damage")>-1)?"maintenance":"available"};
+  var fmtDate=function(ms){return ms?new Date(ms).toLocaleDateString("en-US",{month:"short",day:"2-digit",year:"numeric"}):"–"};
+  var fmtTime=function(ms){return ms?new Date(ms).toLocaleTimeString("en-US",{hour:"2-digit",minute:"2-digit"}):""};
+  var ago=function(ms){
+    if(!ms)return"–";var s=Math.max(0,Math.round((Date.now()-ms)/1000));
+    if(s<60)return"Just now";var m=Math.round(s/60);if(m<60)return m+" min ago";
+    var h=Math.round(m/60);if(h<24)return h+(h===1?" hour ago":" hours ago");
+    var d=Math.round(h/24);if(d<30)return d+(d===1?" day ago":" days ago");
+    var mo=Math.round(d/30);if(mo<12)return mo+(mo===1?" month ago":" months ago");
+    var y=Math.round(d/365);return y+(y===1?" year ago":" years ago")
+  };
+
+  /* Turn raw database rows into display records */
+  function build(rows,binList){
+    bins={};(binList||[]).forEach(function(b){bins[String(b.id)]=b});
+    all=(rows||[]).map(function(r){
+      var b=bins[String(r.bin_id)]||{},t=new Date(r.cleaned_at).getTime();
+      return{id:r.id,code:b.bin_code||r.bin_id||"Dustbin",name:b.name||"",area:r.area||b.area||"Location not specified",
+        t:isNaN(t)?0:t,status:r.status||"Recorded",group:groupOf(r.status),activity:r.activity||"",notes:r.notes||""}
     });
   }
-  tb.addEventListener("click",function(e){
-    if(e.target.id==="cl-retry"){tb.innerHTML='<tr><td colspan="6"><div class="sk-lines"><i></i><i></i></div></td></tr>';load();return}
-    var btn=e.target.closest(".cl-row-view");if(!btn)return;
-    var r=rows[+btn.dataset.i];if(!r)return;var b=bins[String(r.bin_id)]||{};
-    title.textContent=b.name||b.bin_code||"Cleaning record";
-    var items=[["Dustbin ID",b.bin_code||r.bin_id||"—"],["Location",r.area||b.area||"Not specified"],["Cleaned on",when(r.cleaned_at)],["Activity",r.activity||"—"],["Status",r.status||"Recorded"],["Notes",r.notes||"—"]];
-    fields.innerHTML=items.map(function(p){return"<dt>"+esc(p[0])+"</dt><dd>"+esc(p[1])+"</dd>"}).join("");
+
+  /* Summary cards */
+  function stats(){
+    var week=Date.now()-7*864e5,areas={},latest=0,w=0;
+    all.forEach(function(r){areas[r.area]=1;if(r.t>latest)latest=r.t;if(r.t>=week)w++});
+    $("st-total").textContent=all.length;
+    $("st-week").textContent=w;
+    $("st-areas").textContent=Object.keys(areas).filter(function(a){return a!=="Location not specified"}).length;
+    $("st-last").textContent=latest?ago(latest):"–";
+  }
+
+  /* Area dropdown and status chips are built from the data */
+  function filtersUi(){
+    var sel=$("cl-area"),cur=f.area,seen={};
+    all.forEach(function(r){seen[r.area]=1});
+    var names=Object.keys(seen).sort();
+    sel.innerHTML='<option value="all">All areas</option>'+names.map(function(a){return'<option value="'+esc(a)+'">'+esc(a)+"</option>"}).join("");
+    sel.value=names.indexOf(cur)>-1?cur:"all";f.area=sel.value;
+    var counts={all:all.length};all.forEach(function(r){counts[r.group]=(counts[r.group]||0)+1});
+    $("cl-chips").innerHTML=GROUPS.filter(function(g){return g[0]==="all"||counts[g[0]]}).map(function(g){
+      return'<button type="button" class="cl-chip" data-g="'+g[0]+'" aria-pressed="'+(f.group===g[0])+'">'+g[1]+"<i>"+(counts[g[0]]||0)+"</i></button>"}).join("");
+  }
+
+  function apply(){
+    var q=f.q.trim().toLowerCase(),min=0;
+    if(f.range!=="all"){var d=+f.range;min=d===1?new Date().setHours(0,0,0,0):Date.now()-d*864e5}
+    view=all.filter(function(r){
+      if(f.group!=="all"&&r.group!==f.group)return false;
+      if(f.area!=="all"&&r.area!==f.area)return false;
+      if(min&&r.t<min)return false;
+      if(q&&(r.code+" "+r.name+" "+r.area+" "+r.activity+" "+r.status).toLowerCase().indexOf(q)<0)return false;
+      return true
+    }).sort(function(a,b){return f.sort==="old"?a.t-b.t:b.t-a.t});
+    draw();
+  }
+
+  function card(r,i){
+    return'<button type="button" class="cl-card g-'+r.group+'" data-i="'+i+'">'
+      +'<span class="cl-top"><span><b class="cl-code">'+esc(r.code)+'</b><span class="cl-area">'+ICON_PIN+esc(r.area)+'</span></span><span class="cl-pill">'+esc(r.status)+'</span></span>'
+      +(r.activity?'<p class="cl-act">'+esc(r.activity)+"</p>":"")
+      +'<span class="cl-foot"><time>'+ICON_CLOCK+esc(fmtDate(r.t))+(r.t?" • "+esc(fmtTime(r.t)):"")+'</time><span class="cl-more-link">Details'+ICON_NEXT+"</span></span></button>"
+  }
+
+  function draw(){
+    var filtered=f.q||f.group!=="all"||f.area!=="all"||f.range!=="all";
+    if(!view.length){
+      list.innerHTML='<div class="cl-empty"><span class="ico">'+ICON_EMPTY+"</span><b>"+(all.length?"No records match your search":"No verified cleaning records yet")+"</b><p>"+(all.length?"Try a different area, date or status":"Verified staff cleaning activities will appear here")+"</p>"+(filtered?'<button type="button" id="cl-reset">Clear filters</button>':"")+"</div>";
+      $("cl-showmore").hidden=true;
+      $("cl-count").innerHTML=all.length?"<b>0</b> of "+all.length+" records":"No records";
+      return;
+    }
+    var slice=view.slice(0,shown);
+    list.innerHTML=slice.map(card).join("");
+    $("cl-showmore").hidden=view.length<=shown;
+    $("cl-showmore").textContent="Show more ("+(view.length-shown)+" left)";
+    $("cl-count").innerHTML="Showing <b>"+slice.length+"</b> of "+view.length+(filtered&&view.length!==all.length?" matching":"")+" records";
+  }
+
+  function updatedLabel(){$("cl-updated").textContent=updatedAt?"Updated "+ago(updatedAt):"Refresh"}
+
+  function paint(){stats();filtersUi();apply();updatedLabel()}
+
+  /* Data */
+  function get(path){return fetch(API+path,{headers:{apikey:KEY,Accept:"application/json"}}).then(function(r){if(!r.ok)throw new Error("HTTP "+r.status);return r.json()})}
+  function load(){
+    if(loading)return;loading=true;
+    var btn=$("cl-refresh");btn.classList.add("spin");
+    Promise.all([
+      get("cleaning_records?select=id,bin_id,area,cleaned_at,activity,status,notes&verified=eq.true&order=cleaned_at.desc&limit=200"),
+      get("bins?select=id,bin_code,name,area&limit=1000").catch(function(){return[]})
+    ]).then(function(res){
+      build(res[0],res[1]);updatedAt=Date.now();$("cl-banner").hidden=true;shown=PAGE;paint();
+      try{localStorage.setItem(CK,JSON.stringify({t:updatedAt,rows:res[0],bins:res[1]}))}catch(e){}
+    }).catch(function(){
+      if(all.length){$("cl-banner").hidden=false;return}
+      list.innerHTML='<div class="cl-empty"><span class="ico">'+ICON_EMPTY+'</span><b>Cleaning records could not be loaded</b><p>Check your connection and try again</p><button type="button" id="cl-retry">Try again</button></div>';
+      $("cl-count").textContent="Could not load records";
+    }).then(function(){loading=false;btn.classList.remove("spin")});
+  }
+
+  /* Show saved records straight away */
+  try{var c=JSON.parse(localStorage.getItem(CK)||"null");if(c&&c.rows&&c.rows.length){build(c.rows,c.bins);updatedAt=c.t||0;paint()}}catch(e){}
+
+  /* Detail sheet */
+  var dlg=$("cl-dialog");
+  function open(r){
+    $("cl-d-title").textContent=r.name||r.code;
+    var rows=[["Dustbin ID",r.code],["Dustbin name",r.name],["Location",r.area],["Cleaned on",r.t?fmtDate(r.t)+" • "+fmtTime(r.t):"–"],["Activity",r.activity||"–"]].filter(function(p){return p[1]});
+    $("cl-d-body").innerHTML='<div class="cl-d-status g-'+r.group+'"><span class="cl-pill">'+esc(r.status)+"</span><small>"+esc(ago(r.t))+"</small></div>"
+      +'<dl class="cl-d-rows">'+rows.map(function(p){return"<dt>"+esc(p[0])+"</dt><dd>"+esc(p[1])+"</dd>"}).join("")+"</dl>"
+      +(r.notes?'<div class="cl-d-note"><b>Notes from the team</b><p>'+esc(r.notes)+"</p></div>":"");
     if(dlg.showModal)dlg.showModal();else dlg.setAttribute("open","");
+  }
+  var shut=function(){if(dlg.close)dlg.close();else dlg.removeAttribute("open")};
+  $("cl-d-close").addEventListener("click",shut);
+  dlg.addEventListener("click",function(e){if(e.target===dlg)shut()});
+
+  /* Events */
+  list.addEventListener("click",function(e){
+    if(e.target.closest("#cl-retry")){list.innerHTML='<div class="cl-skel"></div><div class="cl-skel"></div><div class="cl-skel"></div>';load();return}
+    if(e.target.closest("#cl-reset")){reset();return}
+    var b=e.target.closest(".cl-card");if(b&&view[+b.dataset.i])open(view[+b.dataset.i]);
   });
-  document.getElementById("rd-close").addEventListener("click",function(){dlg.close?dlg.close():dlg.removeAttribute("open")});
-  dlg.addEventListener("click",function(e){if(e.target===dlg)dlg.close()});
+  function reset(){f={q:"",group:"all",area:"all",range:"all",sort:f.sort};$("cl-q").value="";$("cl-q-clear").hidden=true;$("cl-range").value="all";shown=PAGE;filtersUi();apply()}
+  var timer;
+  $("cl-q").addEventListener("input",function(e){f.q=e.target.value;$("cl-q-clear").hidden=!f.q;clearTimeout(timer);timer=setTimeout(function(){shown=PAGE;apply()},180)});
+  $("cl-q-clear").addEventListener("click",function(){$("cl-q").value="";f.q="";$("cl-q-clear").hidden=true;shown=PAGE;apply();$("cl-q").focus()});
+  $("cl-area").addEventListener("change",function(e){f.area=e.target.value;shown=PAGE;apply()});
+  $("cl-range").addEventListener("change",function(e){f.range=e.target.value;shown=PAGE;apply()});
+  $("cl-sort").addEventListener("change",function(e){f.sort=e.target.value;shown=PAGE;apply()});
+  $("cl-chips").addEventListener("click",function(e){
+    var b=e.target.closest(".cl-chip");if(!b)return;
+    f.group=b.dataset.g;shown=PAGE;
+    Array.prototype.forEach.call($("cl-chips").children,function(x){x.setAttribute("aria-pressed",String(x===b))});
+    apply();
+  });
+  $("cl-showmore").addEventListener("click",function(){shown+=PAGE;draw()});
+  $("cl-refresh").addEventListener("click",load);
+  document.addEventListener("visibilitychange",function(){if(document.visibilityState==="visible"){updatedLabel();if(Date.now()-updatedAt>60000)load()}});
+  setInterval(updatedLabel,30000);
   load();
 })();
 </script>
