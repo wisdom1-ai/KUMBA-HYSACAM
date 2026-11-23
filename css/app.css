@@ -569,3 +569,8 @@ body.nav-open .topbar{z-index:1400}
 .notification-toggle{position:relative}
 .notification-count{position:absolute;top:2px;right:0;display:grid;place-items:center;min-width:18px;height:18px;padding:0 5px;border-radius:999px;background:#d83b3b;color:#fff;font-size:10.5px;font-weight:800;line-height:1;box-shadow:0 0 0 2px #fff}
 .notification-count[hidden],html.auth-no .notification-count{display:none!important}
+
+/* ===== Notification panel: Sign In / Sign Up prompt for visitors ===== */
+.notification-empty .gate-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+.notification-empty .gate-actions .button{display:flex;align-items:center;justify-content:center;min-height:46px;margin:0;padding:0 10px;color:#fff!important}
+.notification-empty .gate-actions .button.outline{color:var(--green)!important}
