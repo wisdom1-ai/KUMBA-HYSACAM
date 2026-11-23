@@ -24,7 +24,27 @@
   </nav>
   <button class="nav-backdrop" id="nav-backdrop" type="button" aria-label="Close navigation"></button>
 </header>
-<main class="inner-page"><div class="page-wrap narrow"><button id="open-report-form" class="submit-big" type="button"><svg viewBox="0 0 24 24" aria-hidden="true" ><path d="M21 3 3 10l7 3 3 7z"/><path d="m10 13 11-10"/></svg>Submit a Report</button>
+<main class="inner-page"><div class="page-wrap narrow">
+
+<!-- REPORT IMAGE SLIDER -->
+<div class="report-slider">
+<img src="images/report-1.png" alt="Waste reported by residents">
+<img src="images/report-2.png" alt="Photo of a full dustbin">
+<img src="images/report-3.png" alt="Cleaning team at work">
+<img src="images/report-4.png" alt="Waste collection point">
+<img src="images/report-5.png" alt="Waste along a Kumba street">
+<div class="report-slider-overlay">
+<div class="report-slider-content">
+<span class="report-slider-label">HYSACAM KUMBA TRACKER</span>
+<h2>Environmental Monitoring &amp; Reporting</h2>
+<h3>Help Keep Kumba Clean and Healthy</h3>
+<p>Report waste accumulation, overflowing dustbins, missed collections and other sanitation concerns. Your reports support better monitoring and a cleaner Kumba.</p>
+</div>
+</div>
+</div>
+<!-- END REPORT IMAGE SLIDER -->
+
+<button id="open-report-form" class="submit-big" type="button"><svg viewBox="0 0 24 24" aria-hidden="true" ><path d="M21 3 3 10l7 3 3 7z"/><path d="m10 13 11-10"/></svg>Submit a Report</button>
 <form id="resident-report-form" class="report-form panel" hidden><h3>Submit a waste issue</h3><p class="hint">Fields marked * are required. Please provide an accurate location</p><div class="report-form-grid"><label>Issue type *<select name="issue_type" required><option value="">Choose an issue</option><option>Overflowing dustbin</option><option>Missed waste collection</option><option>Illegal dumping</option><option>Damaged dustbin</option><option>Other</option></select></label><label>Area in Kumba *<input name="area" required maxlength="100" placeholder="Enter area in Kumba"></label><label class="wide">Specific location *<input name="location_description" required maxlength="150" placeholder="Street, landmark or nearby building"></label><label class="wide">Description *<textarea name="description" required maxlength="800" rows="4" placeholder="Describe the issue..."></textarea></label><label>Contact phone (optional)<input name="phone" maxlength="40" placeholder="Phone number"></label></div><button class="button" type="submit" id="submit-resident-report">Submit report</button><p id="resident-report-message" class="auth-message" role="status" aria-live="polite"></p></form>
 <div id="resident-my-reports" hidden><div class="sec-head"><h2>Your Reports</h2><button class="link-btn" id="refresh-my-reports" type="button">Refresh</button></div><div id="my-reports-list"></div>
 <div class="stats-card"><h3><svg viewBox="0 0 24 24" aria-hidden="true" ><path d="M5 20v-8M12 20V5M19 20v-6"/></svg>Report Statistics</h3><div class="stats-row"><div><b id="stat-total">–</b><span>Total</span></div><div><b id="stat-pending">–</b><span>Pending</span></div><div><b id="stat-resolved">–</b><span>Resolved</span></div><div><b id="stat-closed">–</b><span>Closed</span></div></div></div></div>
