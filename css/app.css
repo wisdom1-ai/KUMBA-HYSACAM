@@ -54,7 +54,7 @@ body.is-authenticated .header-tools{margin-left:auto}
 .home-map{margin:14px;padding:10px;background:#fff;border:1px solid #e1ebe4;border-radius:22px;box-shadow:0 6px 20px rgba(13,59,35,.07)}
 .home-map .map-toolbar{margin:0 0 10px}
 .map-search{display:flex;gap:8px}
-.map-search input{flex:1;min-width:0;padding:12px 12px 12px 40px;border:1px solid #dbe6df;border-radius:14px;font-size:14px;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23334' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='m20 20-3.5-3.5'/%3E%3C/svg%3E") no-repeat 12px center/20px}
+.map-search input{flex:1;min-width:0;padding:12px 14px;border:1px solid #dbe6df;border-radius:14px;font-size:14px;background:#fff}
 .map-search button{padding:0 18px;border:0;border-radius:14px;background:var(--green);color:#fff;font-weight:700;font-size:14px}
 .home-map .map-frame{height:300px;border-radius:16px;margin:0}
 .home-map.big .map-frame{height:calc(100dvh - 290px);min-height:340px}
@@ -83,107 +83,6 @@ body.is-authenticated .header-tools{margin-left:auto}
 .st-resolved.pill{background:#ffedc7;color:#b45309}.st-resolved.r-ico{background:#f59e0b}
 .st-closed.pill{background:#e5e7eb;color:#4b5563}.st-closed.r-ico{background:#6b7280}
 .chev{width:16px;height:16px;color:#17231d;transition:transform .2s}
-
-/* =====================================
-   HYSACAM REPORT SLIDER TEXT OVERLAY
-===================================== */
-
-.report-slider {
-  position: relative;
-  overflow: hidden;
-  isolation: isolate;
-}
-
-/* Dark transparent layer over the images */
-.report-slider-overlay {
-  position: absolute;
-  inset: 0;
-  z-index: 5;
-  display: flex;
-  align-items: flex-end;
-  padding: 28px;
-  background: linear-gradient(
-    to top,
-    rgba(0, 0, 0, 0.85) 0%,
-    rgba(0, 0, 0, 0.48) 48%,
-    rgba(0, 0, 0, 0.08) 100%
-  );
-  pointer-events: none;
-}
-
-/* Text container */
-.report-slider-content {
-  width: 100%;
-  max-width: 650px;
-  color: #ffffff;
-}
-
-/* Small brand label */
-.report-slider-label {
-  display: inline-block;
-  margin-bottom: 12px;
-  color: #b9f6ca;
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-}
-
-/* Main heading */
-.report-slider-content h2 {
-  margin: 0 0 10px;
-  color: #ffffff;
-  font-size: clamp(23px, 4vw, 36px);
-  font-weight: 800;
-  line-height: 1.15;
-  letter-spacing: -0.8px;
-}
-
-/* Secondary heading */
-.report-slider-content h3 {
-  margin: 0 0 9px;
-  color: #e5f8e9;
-  font-size: clamp(14px, 2vw, 18px);
-  font-weight: 700;
-  line-height: 1.4;
-}
-
-/* Description */
-.report-slider-content p {
-  max-width: 580px;
-  margin: 0;
-  color: rgba(255, 255, 255, 0.92);
-  font-size: 13px;
-  font-weight: 500;
-  line-height: 1.65;
-}
-
-/* Mobile layout */
-@media (max-width: 600px) {
-  .report-slider-overlay {
-    padding: 18px;
-  }
-
-  .report-slider-label {
-    margin-bottom: 7px;
-    font-size: 9px;
-    letter-spacing: 1.5px;
-  }
-
-  .report-slider-content h2 {
-    font-size: 23px;
-  }
-
-  .report-slider-content h3 {
-    font-size: 14px;
-  }
-
-  .report-slider-content p {
-    font-size: 11px;
-    line-height: 1.5;
-  }
-}
-
 .rcard[open] .chev{transform:rotate(90deg)}
 .r-body{padding:0 16px 14px 58px;font-size:13px;line-height:1.5;color:#45544b}
 .r-body p{margin:4px 0}.team-note{color:var(--deep);font-weight:600}
@@ -421,48 +320,29 @@ body.compact-layout .set-row,body.compact-layout .rcard summary{padding-top:10px
 body.compact-layout .set-profile,body.compact-layout .info-card,body.compact-layout .home-map{padding:12px}
 body.compact-layout .sec-head{margin-top:14px;margin-bottom:6px}
 body.compact-layout .hero.hero-slider{aspect-ratio:2.2/1;min-height:190px}
-/* REPORT IMAGE SLIDER SIZE */
-.report-slider {
-  width: 100%;
-  height: auto;
-  aspect-ratio: 1.6 / 1;
-  overflow: hidden;
-  border-radius: 28px;
-  position: relative;
-  margin: 12px 0 24px;
-  background: #0b5a35;
+
+/* ===== Phones: visible Sign In / Sign Up for visitors ===== */
+.hdr-auth{display:none;align-items:center;gap:6px;margin-left:auto}
+.hdr-auth a{padding:8px 13px;border:1.5px solid var(--green);border-radius:11px;background:#fff;color:var(--green);font-size:13px;font-weight:800;line-height:1;white-space:nowrap}
+.hdr-auth a.solid{background:var(--green);color:#fff}
+@media(max-width:900px){
+  html.auth-no .hdr-auth{display:flex}
+  html.auth-pending .hdr-auth{display:flex;visibility:hidden}
+  html.auth-no .header-tools{display:none}
+  html.auth-no .topbar .menu-toggle{margin-left:0}
+}
+@media(max-width:420px){
+  .topbar{padding:0 12px;gap:6px}
+  .topbar .brand-wordmark small{display:none}
+  .topbar .brand-wordmark b{font-size:19px}
+  .topbar .brand .hysacam-logo{width:38px;height:38px}
+  .hdr-auth{gap:5px}.hdr-auth a{padding:8px 10px;font-size:12.5px}
+  body.is-inner .mobile-title{font-size:18px}
 }
 
-.report-slider img {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  display: block;
-  object-fit: cover;
-  object-position: center;
-}
-/* REPORT SLIDER ANIMATION (5 pictures, 4 seconds each) */
-.report-slider img {
-  opacity: 0;
-  animation: reportFade 20s infinite;
-}
-
-.report-slider img:nth-child(1) { animation-delay: -0.8s; }
-.report-slider img:nth-child(2) { animation-delay: 4s; }
-.report-slider img:nth-child(3) { animation-delay: 8s; }
-.report-slider img:nth-child(4) { animation-delay: 12s; }
-.report-slider img:nth-child(5) { animation-delay: 16s; }
-
-@keyframes reportFade {
-  0% { opacity: 0; }
-  4% { opacity: 1; }
-  20% { opacity: 1; }
-  24% { opacity: 0; }
-  100% { opacity: 0; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .report-slider img { animation: none; }
-  .report-slider img:nth-child(1) { opacity: 1; }
-}
+/* ===== Hero: fixed height instead of aspect-ratio (aspect-ratio + min-height widened the card past narrow screens) ===== */
+.hero.hero-slider{aspect-ratio:auto;min-height:0;height:clamp(210px,62vw,300px);width:auto;max-width:100%}
+@media(min-width:600px) and (max-width:900px){.hero.hero-slider{aspect-ratio:auto;min-height:0;height:clamp(300px,42vw,380px)}}
+@media(min-width:901px){.hero.hero-slider{aspect-ratio:auto;height:auto;min-height:380px}}
+body.compact-layout .hero.hero-slider{aspect-ratio:auto;min-height:0;height:190px}
+@media(max-width:360px){html.auth-no .topbar .brand-wordmark{display:none}}
