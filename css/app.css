@@ -489,3 +489,6 @@ body.is-cleaning .join-card,body.is-cleaning .join-actions,body.is-cleaning .gat
 
 /* ===== Settings tab emoji ===== */
 .app-tabbar .tab-emoji{display:grid;place-items:center;width:25px;height:25px;font-style:normal;font-size:22px;line-height:1}
+
+/* ===== Cleaning Records: no Sign In / Sign Up anywhere on this page ===== */
+body.is-cleaning .menu-auth-row,body.is-cleaning .hdr-auth,body.is-cleaning .public-signup,body.is-cleaning .public-signin{display:none!important}
