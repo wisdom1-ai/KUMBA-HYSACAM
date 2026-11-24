@@ -574,18 +574,22 @@ body.nav-open .topbar{z-index:1400}
 .notification-empty .gate-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
 .notification-empty .gate-actions .button{display:flex;align-items:center;justify-content:center;min-height:46px;margin:0;padding:0 10px;color:#fff!important}
 .notification-empty .gate-actions .button.outline{color:var(--green)!important}
-.tile {
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+/* 1. Tiles and stat boxes: lift on hover, press on tap */
+.tile,
+.hmc-stat {
+  transition: opacity 0.7s ease, transform 0.3s ease, box-shadow 0.3s ease;
 }
-
-.tile:hover {
+.tile:hover,
+.hmc-stat:hover {
   transform: translateY(-6px);
   box-shadow: 0 12px 24px rgba(8, 119, 71, 0.25);
 }
-
-.tile:active {
+.tile:active,
+.hmc-stat:active {
   transform: scale(0.95);
 }
+
+/* 2. Floating bubbles in the hero */
 .bubbles {
   position: absolute;
   inset: 0;
@@ -593,7 +597,6 @@ body.nav-open .topbar{z-index:1400}
   pointer-events: none;
   z-index: 1;
 }
-
 .bubbles span {
   position: absolute;
   bottom: -60px;
@@ -604,7 +607,6 @@ body.nav-open .topbar{z-index:1400}
   border: 1px solid rgba(255, 255, 255, 0.4);
   animation: floatUp 9s linear infinite;
 }
-
 .bubbles span:nth-child(1) { left: 8%;  animation-duration: 8s; }
 .bubbles span:nth-child(2) { left: 20%; width: 18px; height: 18px; animation-duration: 11s; animation-delay: 2s; }
 .bubbles span:nth-child(3) { left: 35%; width: 40px; height: 40px; animation-duration: 10s; animation-delay: 1s; }
@@ -613,9 +615,43 @@ body.nav-open .topbar{z-index:1400}
 .bubbles span:nth-child(6) { left: 75%; width: 36px; height: 36px; animation-duration: 13s; }
 .bubbles span:nth-child(7) { left: 88%; width: 16px; height: 16px; animation-duration: 8s; animation-delay: 2s; }
 .bubbles span:nth-child(8) { left: 93%; animation-duration: 11s; animation-delay: 5s; }
-
 @keyframes floatUp {
   0%   { transform: translateY(0) scale(1); opacity: 0; }
   15%  { opacity: 1; }
   100% { transform: translateY(-480px) scale(1.3); opacity: 0; }
 }
+
+/* 3. Hero text slides in when the page opens */
+.hero-copy .eyebrow,
+.hero-copy h1,
+.hero-copy p {
+  animation: heroIn 0.9s ease both;
+}
+.hero-copy h1 { animation-delay: 0.15s; }
+.hero-copy p  { animation-delay: 0.3s; }
+@keyframes heroIn {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* 4. Pulsing glow on the map pins */
+.hysacam-green-dot {
+  animation: pinPulse 2s ease-out infinite;
+}
+@keyframes pinPulse {
+  0%   { box-shadow: 0 0 0 0 rgba(8, 119, 71, 0.55); }
+  70%  { box-shadow: 0 0 0 14px rgba(8, 119, 71, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(8, 119, 71, 0); }
+}
+
+/* 5. Respect people who turn animations off on their phone */
+@media (prefers-reduced-motion: reduce) {
+  .bubbles span,
+  .hysacam-green-dot,
+  .hero-copy .eyebrow,
+  .hero-copy h1,
+  .hero-copy p { animation: none; }
+  .reveal { opacity: 1; transform: none; transition: none; }
+}
+  
+   
