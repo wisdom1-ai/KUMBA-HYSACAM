@@ -229,3 +229,16 @@
     if (window.ResizeObserver) new ResizeObserver(invalidate).observe(mapEl);
   }
 })();
+function countUp(el, target) {
+  let current = 0;
+  const step = Math.ceil(target / 40);
+
+  const timer = setInterval(() => {
+    current += step;
+    if (current >= target) {
+      current = target;
+      clearInterval(timer);
+    }
+    el.textContent = current;
+  }, 30);
+}
