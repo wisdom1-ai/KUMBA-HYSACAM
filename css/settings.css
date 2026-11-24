@@ -35,3 +35,6 @@ html:not(.auth-no) .set-hero:not(.is-ready) .set-hero-text .account-role{min-wid
 .set-btn:disabled{opacity:.6}
 .set-flash{min-height:18px;margin:8px 0 0;font-size:12.5px;font-weight:600;color:#0b6b3c}
 .set-flash.err{color:#c62828}
+#clear-local-data.armed{background:#fff1f0;border-radius:12px}
+#clear-local-data.armed small{color:#d32f2f;font-weight:700}
+.set-hero .avatar.has-initials{font-size:26px}
