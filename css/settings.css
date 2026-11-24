@@ -1,7 +1,8 @@
-/* ===== Settings page extras (add after app.css) ===== */
+/* ===== Settings page (load after app.css) ===== */
 .set-row[hidden]{display:none!important}
 .set-row.as-btn{width:calc(100% - 28px);text-align:left;font:inherit;cursor:pointer;-webkit-appearance:none;appearance:none}
 .set-hero-text{flex:1;min-width:0}
+.set-hero .avatar.has-initials{font-size:26px}
 
 /* Hero: no flash of placeholder text while the account loads */
 html:not(.auth-no) .set-hero:not(.is-ready) .set-hero-text h2,
@@ -17,11 +18,18 @@ html:not(.auth-no) .set-hero:not(.is-ready) .set-hero-text .account-role{min-wid
 .set-quick a:active{transform:scale(.97);border-color:var(--green)}
 .set-quick svg{width:28px;height:28px;stroke:var(--green)}
 
+/* Labels, hints, messages */
+.set-label{margin:16px 0 0;font-size:13px;font-weight:700;color:#26372d}
+.set-label.first{margin-top:4px}
+.set-flash{min-height:18px;margin:8px 0 0;font-size:12.5px;font-weight:600;color:#0b6b3c}
+.set-flash.err,.auth-message.err{color:#c62828}
+.set-flash.ok,.auth-message.ok{color:#0b6b3c}
+a.set-hint.link{display:block;margin-top:10px;color:#075f3d;font-weight:700;text-decoration:underline;text-underline-offset:3px}
+
 /* Segmented control */
 .seg{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:12px 0 4px;padding:4px;background:#eef5f0;border-radius:14px}
 .seg button{min-height:44px;border:0;border-radius:11px;background:transparent;font:inherit;font-size:14px;font-weight:700;color:#33453a;cursor:pointer}
 .seg button[aria-pressed="true"]{background:#fff;color:#075f3d;box-shadow:0 2px 8px rgba(13,59,35,.14)}
-.set-label{margin:12px 0 0;font-size:13px;font-weight:700;color:#26372d}
 
 /* Status badge and inline action */
 .set-status{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0 4px}
@@ -33,8 +41,19 @@ html:not(.auth-no) .set-hero:not(.is-ready) .set-hero-text .account-role{min-wid
 .set-btn{display:flex;align-items:center;justify-content:center;width:100%;min-height:46px;margin:10px 0 0;border:1.5px solid var(--green);border-radius:14px;background:#fff;color:var(--green);font:inherit;font-size:15px;font-weight:800;cursor:pointer}
 .set-btn:active{background:#e6f4ec}
 .set-btn:disabled{opacity:.6}
-.set-flash{min-height:18px;margin:8px 0 0;font-size:12.5px;font-weight:600;color:#0b6b3c}
-.set-flash.err{color:#c62828}
+
+/* Security forms */
+.pf-inline.sep{margin-top:18px;padding-top:6px;border-top:1px solid #e1ebe4}
+.check-line{display:flex;align-items:center;gap:10px;min-height:40px;font-size:13.5px;font-weight:600;color:#26372d;cursor:pointer}
+.check-line input{width:18px;height:18px;accent-color:var(--green)}
+#pw-strength[data-level="weak"]{color:#c62828;font-weight:700}
+#pw-strength[data-level="fair"]{color:#b45309;font-weight:700}
+#pw-strength[data-level="good"],#pw-strength[data-level="strong"]{color:#0b7a3e;font-weight:700}
+
+/* Danger rows */
 #clear-local-data.armed{background:#fff1f0;border-radius:12px}
 #clear-local-data.armed small{color:#d32f2f;font-weight:700}
-.set-hero .avatar.has-initials{font-size:26px}
+
+/* Keyboard focus */
+.set-row:focus-visible,.set-btn:focus-visible,.seg button:focus-visible,.set-quick a:focus-visible,.panel-link:focus-visible,.check-line input:focus-visible{outline:3px solid #2aa86a;outline-offset:2px}
+@media (prefers-reduced-motion:reduce){.set-quick a:active{transform:none}}
