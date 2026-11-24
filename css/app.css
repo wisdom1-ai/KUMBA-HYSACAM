@@ -574,3 +574,15 @@ body.nav-open .topbar{z-index:1400}
 .notification-empty .gate-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
 .notification-empty .gate-actions .button{display:flex;align-items:center;justify-content:center;min-height:46px;margin:0;padding:0 10px;color:#fff!important}
 .notification-empty .gate-actions .button.outline{color:var(--green)!important}
+.tile {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.tile:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 24px rgba(8, 119, 71, 0.25);
+}
+
+.tile:active {
+  transform: scale(0.95);
+}
