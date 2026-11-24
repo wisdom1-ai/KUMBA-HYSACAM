@@ -11,6 +11,7 @@ function countUp(el, target) {
     el.textContent = current;
   }, 30);
 }
+
 const statNumbers = document.querySelectorAll("#hmc-stats .hmc-stat b");
 
 statNumbers.forEach((el) => {
@@ -29,6 +30,7 @@ statNumbers.forEach((el) => {
 
   watcher.observe(el, { childList: true, characterData: true, subtree: true });
 });
+
 const revealTargets = document.querySelectorAll(
   ".tile, .hmc-head, .hmc-stat, .sec-head, .home-recent, .site-footer"
 );
@@ -38,6 +40,9 @@ const revealObserver = new IntersectionObserver((entries) => {
     if (entry.isIntersecting) {
       entry.target.classList.add("show");
       revealObserver.unobserve(entry.target);
+      setTimeout(() => {
+        entry.target.style.transitionDelay = "0s";
+      }, 1200);
     }
   });
 }, { threshold: 0.15 });
