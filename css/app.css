@@ -586,3 +586,36 @@ body.nav-open .topbar{z-index:1400}
 .tile:active {
   transform: scale(0.95);
 }
+.bubbles {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.bubbles span {
+  position: absolute;
+  bottom: -60px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  animation: floatUp 9s linear infinite;
+}
+
+.bubbles span:nth-child(1) { left: 8%;  animation-duration: 8s; }
+.bubbles span:nth-child(2) { left: 20%; width: 18px; height: 18px; animation-duration: 11s; animation-delay: 2s; }
+.bubbles span:nth-child(3) { left: 35%; width: 40px; height: 40px; animation-duration: 10s; animation-delay: 1s; }
+.bubbles span:nth-child(4) { left: 50%; animation-duration: 12s; animation-delay: 3s; }
+.bubbles span:nth-child(5) { left: 63%; width: 22px; height: 22px; animation-duration: 9s; animation-delay: 4s; }
+.bubbles span:nth-child(6) { left: 75%; width: 36px; height: 36px; animation-duration: 13s; }
+.bubbles span:nth-child(7) { left: 88%; width: 16px; height: 16px; animation-duration: 8s; animation-delay: 2s; }
+.bubbles span:nth-child(8) { left: 93%; animation-duration: 11s; animation-delay: 5s; }
+
+@keyframes floatUp {
+  0%   { transform: translateY(0) scale(1); opacity: 0; }
+  15%  { opacity: 1; }
+  100% { transform: translateY(-480px) scale(1.3); opacity: 0; }
+}
