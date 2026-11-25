@@ -4,8 +4,18 @@
   const $ = (id) => document.getElementById(id);
   const reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const form = $("resident-report-form");
+  const H = window.Hys || {};
 
-  /* ---------- Scroll reveal for report cards (they are drawn later by reports.js) ---------- */
+  const toast = (msg, type) => { try { if (H.toast) H.toast(msg, type); } catch (e) { /* ignore */ } };
+  const store = {
+    get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
+    set(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* ignore */ } },
+    del(k) { try { localStorage.removeItem(k); } catch (e) { /* ignore */ } }
+  };
+
+  /* =========================================================
+     1. Scroll reveal
+     ========================================================= */
   const revealIO = "IntersectionObserver" in window && !reduce
     ? new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
@@ -27,7 +37,9 @@
     });
   }
 
-  /* ---------- Status timeline inside each report card ---------- */
+  /* =========================================================
+     2. Report cards: timeline + copy-code button
+     ========================================================= */
   const STEP_NAMES = ["Submitted", "In Review", "Resolved"];
 
   function timelineHTML(label) {
@@ -41,9 +53,8 @@
 
     let html = '<div class="r-timeline" aria-label="Report progress">';
     STEP_NAMES.forEach((name, i) => {
-      const isDone = i <= cur;
       let cls = "tl-step";
-      if (isDone) cls += " done";
+      if (i <= cur) cls += " done";
       if (i === cur && cur < 2) cls += " current";
       let text = name;
       if (i === 2 && closed) { cls = "tl-step closed"; text = "Closed"; }
@@ -58,9 +69,16 @@
       const body = card.querySelector(".r-body");
       const pill = card.querySelector(".pill");
       if (!body || !pill || body.querySelector(".r-timeline")) return;
-      body.insertAdjacentHTML("afterbegin", timelineHTML(pill.textContent));
+      let extra = timelineHTML(pill.textContent);
+      const code = card.dataset.code;
+      if (code) {
+        const safe = code.replace(/[&<>"']/g, "");
+        extra += '<button type="button" class="copy-code" data-code="' + safe + '">Copy code</button>';
+      }
+      body.insertAdjacentHTML("afterbegin", extra);
     });
     revealCards(host);
+    if (host.id === "my-reports-list") applyFilter();
   }
 
   function watchCards() {
@@ -72,7 +90,121 @@
     });
   }
 
-  /* ---------- Count-up for Report Statistics ---------- */
+  function fallbackCopy(text) {
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    ta.style.position = "fixed";
+    ta.style.opacity = "0";
+    document.body.appendChild(ta);
+    ta.select();
+    let ok = false;
+    try { ok = document.execCommand("copy"); } catch (e) { ok = false; }
+    ta.remove();
+    return ok;
+  }
+
+  function copyText(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      return navigator.clipboard.writeText(text).then(() => true, () => fallbackCopy(text));
+    }
+    return Promise.resolve(fallbackCopy(text));
+  }
+
+  document.addEventListener("click", (e) => {
+    const btn = e.target.closest(".copy-code");
+    if (!btn) return;
+    copyText(btn.dataset.code || "").then((ok) => {
+      btn.textContent = ok ? "Copied \u2713" : "Could not copy";
+      setTimeout(() => { btn.textContent = "Copy code"; }, 1600);
+    });
+  });
+
+  /* =========================================================
+     3. Your Reports: filter tabs + search (shows from 3 reports up)
+     ========================================================= */
+  const filterState = { status: "all", q: "" };
+  let filterUI = null;
+
+  function cardKey(card) {
+    const p = card.querySelector(".pill");
+    if (!p) return "pending";
+    if (p.classList.contains("st-resolved")) return "resolved";
+    if (p.classList.contains("st-closed")) return "closed";
+    return "pending";
+  }
+
+  function initFilter() {
+    const host = $("my-reports-list");
+    if (!host) return;
+
+    const root = document.createElement("div");
+    root.className = "rfilter";
+    root.hidden = true;
+    root.innerHTML =
+      '<input type="search" class="rf-search" placeholder="Search by code or area" aria-label="Search your reports" autocomplete="off">' +
+      '<div class="rf-tabs" role="group" aria-label="Filter reports by status">' +
+      '<button type="button" class="rf-tab is-on" data-f="all" aria-pressed="true">All <b>0</b></button>' +
+      '<button type="button" class="rf-tab" data-f="pending" aria-pressed="false">Pending <b>0</b></button>' +
+      '<button type="button" class="rf-tab" data-f="resolved" aria-pressed="false">Resolved <b>0</b></button>' +
+      '<button type="button" class="rf-tab" data-f="closed" aria-pressed="false">Closed <b>0</b></button>' +
+      "</div>" +
+      '<p class="rf-empty" hidden>No reports match your search</p>';
+    host.insertAdjacentElement("beforebegin", root);
+
+    filterUI = {
+      root,
+      tabs: [...root.querySelectorAll(".rf-tab")],
+      empty: root.querySelector(".rf-empty"),
+      search: root.querySelector(".rf-search")
+    };
+
+    filterUI.tabs.forEach((tab) => {
+      tab.addEventListener("click", () => {
+        filterState.status = tab.dataset.f;
+        applyFilter();
+      });
+    });
+    filterUI.search.addEventListener("input", () => {
+      filterState.q = filterUI.search.value;
+      applyFilter();
+    });
+  }
+
+  function applyFilter() {
+    const host = $("my-reports-list");
+    if (!filterUI || !host) return;
+    const cards = [...host.querySelectorAll("details.rcard")];
+    const useFilter = cards.length >= 3;
+    const q = filterState.q.trim().toLowerCase();
+    const counts = { all: cards.length, pending: 0, resolved: 0, closed: 0 };
+    let shown = 0;
+
+    cards.forEach((card) => {
+      const key = cardKey(card);
+      counts[key]++;
+      let show = true;
+      if (useFilter) {
+        const okStatus = filterState.status === "all" || filterState.status === key;
+        const okText = !q || card.textContent.toLowerCase().includes(q);
+        show = okStatus && okText;
+      }
+      card.classList.toggle("rf-hide", !show);
+      if (show) shown++;
+    });
+
+    filterUI.root.hidden = !useFilter;
+    filterUI.tabs.forEach((tab) => {
+      const on = tab.dataset.f === filterState.status;
+      tab.classList.toggle("is-on", on);
+      tab.setAttribute("aria-pressed", on ? "true" : "false");
+      tab.querySelector("b").textContent = counts[tab.dataset.f];
+    });
+    filterUI.empty.hidden = !(useFilter && shown === 0);
+  }
+
+  /* =========================================================
+     4. Report Statistics count-up
+     ========================================================= */
   function tick(el, target) {
     let current = 0;
     const step = Math.max(1, Math.ceil(target / 30));
@@ -111,33 +243,83 @@
     obs.observe(card);
   }
 
-  /* ---------- Everything below needs the form ---------- */
+  /* =========================================================
+     5. The report form
+     ========================================================= */
+  const REQUIRED = ["issue_type", "area", "location_description", "description"];
+  const DRAFT_KEY = "hysacam-report-draft-v1";   // phone number is never saved in the draft
+  const QUICK_DETAILS = [
+    "Strong smell",
+    "Blocking the road",
+    "Near a market",
+    "There for several days",
+    "Spreading onto the street"
+  ];
+
   function initForm() {
     if (!form) return;
 
-    const REQUIRED = ["issue_type", "area", "location_description", "description"];
-    const sel = form.querySelector('select[name="issue_type"]');
-    const textarea = form.querySelector('textarea[name="description"]');
+    const opener = $("open-report-form");
+    const sel = form.elements["issue_type"];
+    const textarea = form.elements["description"];
 
-    /* Progress bar */
+    /* --- progress bar + draft status --- */
     const progress = document.createElement("div");
     progress.className = "form-progress";
-    progress.innerHTML = '<div class="fp-track"><div class="fp-bar"></div></div><div class="fp-text"></div>';
+    progress.innerHTML =
+      '<div class="fp-track"><div class="fp-bar"></div></div>' +
+      '<div class="fp-row"><span class="fp-text"></span><span class="draft-status"></span></div>';
     const hint = form.querySelector(".hint");
     if (hint) hint.insertAdjacentElement("afterend", progress);
     else form.insertAdjacentElement("afterbegin", progress);
     const bar = progress.querySelector(".fp-bar");
     const barText = progress.querySelector(".fp-text");
+    const draftStatus = progress.querySelector(".draft-status");
 
-    /* Character counter */
+    /* --- restored-draft banner --- */
+    const banner = document.createElement("div");
+    banner.className = "draft-banner";
+    banner.hidden = true;
+    banner.innerHTML = '<span>Draft restored. You can carry on where you stopped</span><button type="button">Discard</button>';
+    progress.insertAdjacentElement("afterend", banner);
+
+    /* --- character counter + short-description hint --- */
     let counter = null;
+    let counterHint = null;
+    let counterNum = null;
     if (textarea) {
       counter = document.createElement("small");
       counter.className = "char-count";
+      counter.innerHTML = '<span class="cc-hint"></span><span class="cc-num"></span>';
       textarea.insertAdjacentElement("afterend", counter);
+      counterHint = counter.querySelector(".cc-hint");
+      counterNum = counter.querySelector(".cc-num");
+
+      /* quick-detail chips that add a ready sentence */
+      const qd = document.createElement("div");
+      qd.className = "qd";
+      qd.innerHTML = '<span class="qd-label">Tap to add a detail</span>';
+      QUICK_DETAILS.forEach((text) => {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = "qd-chip";
+        b.textContent = "+ " + text;
+        b.addEventListener("click", () => {
+          const current = textarea.value.trim();
+          if (current.toLowerCase().includes(text.toLowerCase())) return;
+          const joined = current
+            ? current + (/[.!?]$/.test(current) ? " " : ". ") + text + "."
+            : text + ".";
+          if (textarea.maxLength > 0 && joined.length > textarea.maxLength) return;
+          textarea.value = joined;
+          textarea.dispatchEvent(new Event("input", { bubbles: true }));
+        });
+        qd.appendChild(b);
+      });
+      counter.insertAdjacentElement("afterend", qd);
     }
 
-    /* Issue-type chips */
+    /* --- issue-type chips --- */
     const chips = [];
     if (sel) {
       const icons = {
@@ -169,8 +351,22 @@
       sel.insertAdjacentElement("afterend", wrap);
     }
 
+    /* --- offline notice above the submit button --- */
+    const net = document.createElement("div");
+    net.className = "net-banner";
+    net.setAttribute("role", "status");
+    net.textContent = "You are offline. Your draft is saved on this phone, so you can send it when you are back online";
+    net.hidden = navigator.onLine !== false;
+    const submitBtn = $("submit-resident-report");
+    if (submitBtn) submitBtn.insertAdjacentElement("beforebegin", net);
+    window.addEventListener("offline", () => { net.hidden = false; });
+    window.addEventListener("online", () => { net.hidden = true; toast("Back online", "ok"); });
+
+    /* --- suggestions from the resident's own earlier reports --- */
+    initSuggest();
+
+    /* --- refresh the progress bar, counter and chips --- */
     function refresh() {
-      /* progress */
       let done = 0;
       REQUIRED.forEach((name) => {
         const f = form.elements[name];
@@ -184,13 +380,15 @@
         barText.textContent = done + " of " + REQUIRED.length + " required fields complete";
         barText.classList.remove("ready");
       }
-      /* counter */
+
       if (counter && textarea) {
+        const len = textarea.value.length;
         const max = textarea.maxLength > 0 ? textarea.maxLength : 800;
-        counter.textContent = textarea.value.length + " / " + max;
-        counter.classList.toggle("warn", textarea.value.length > max * 0.9);
+        counterNum.textContent = len + " / " + max;
+        counterNum.classList.toggle("warn", len > max * 0.9);
+        counterHint.textContent = len > 0 && len < 20 ? "Add a little more detail so the team can find the problem" : "";
       }
-      /* chips */
+
       if (sel) {
         chips.forEach(([btn, val]) => {
           const on = sel.value === val;
@@ -200,12 +398,81 @@
       }
     }
 
-    form.addEventListener("input", refresh);
-    form.addEventListener("change", refresh);
-    form.addEventListener("reset", () => setTimeout(refresh, 0));
+    /* --- draft: save while typing, restore on return --- */
+    let saveTimer;
+    function setDraftPill(on) {
+      if (!opener) return;
+      const old = opener.querySelector(".draft-pill");
+      if (on && !old) {
+        const s = document.createElement("span");
+        s.className = "draft-pill";
+        s.textContent = "Draft saved";
+        opener.appendChild(s);
+      } else if (!on && old) old.remove();
+    }
+
+    function saveDraft() {
+      clearTimeout(saveTimer);
+      saveTimer = setTimeout(() => {
+        const d = {};
+        let any = false;
+        REQUIRED.forEach((name) => {
+          const f = form.elements[name];
+          const v = f ? String(f.value) : "";
+          if (v.trim()) any = true;
+          d[name] = v;
+        });
+        if (any) {
+          store.set(DRAFT_KEY, JSON.stringify({ t: Date.now(), d }));
+          draftStatus.textContent = "Draft saved on this phone";
+          setDraftPill(true);
+        } else {
+          store.del(DRAFT_KEY);
+          draftStatus.textContent = "";
+          setDraftPill(false);
+        }
+      }, 500);
+    }
+
+    function restoreDraft() {
+      const raw = store.get(DRAFT_KEY);
+      if (!raw) return;
+      let obj;
+      try { obj = JSON.parse(raw); } catch (e) { store.del(DRAFT_KEY); return; }
+      if (!obj || !obj.d) return;
+      let restored = false;
+      REQUIRED.forEach((name) => {
+        const f = form.elements[name];
+        const v = obj.d[name];
+        if (!f || typeof v !== "string" || !v.trim()) return;
+        if (String(f.value).trim() !== "") return;
+        f.value = v;
+        if (f.value) restored = true;
+      });
+      if (restored) {
+        banner.hidden = false;
+        draftStatus.textContent = "Draft saved on this phone";
+        setDraftPill(true);
+      }
+    }
+
+    banner.querySelector("button").addEventListener("click", () => form.reset());
+
+    form.addEventListener("input", () => { refresh(); saveDraft(); });
+    form.addEventListener("change", () => { refresh(); saveDraft(); });
+    form.addEventListener("reset", () => {
+      clearTimeout(saveTimer);
+      store.del(DRAFT_KEY);
+      banner.hidden = true;
+      draftStatus.textContent = "";
+      setDraftPill(false);
+      setTimeout(refresh, 0);
+    });
+
+    restoreDraft();
     refresh();
 
-    /* Photo preview (preview only: the photo is not sent to the server) */
+    /* --- photo preview (preview only: the photo is not sent to the server) --- */
     const input = $("report-photo");
     const img = $("report-photo-preview");
     if (input && img) {
@@ -238,7 +505,7 @@
       form.addEventListener("reset", () => setTimeout(clear, 0));
     }
 
-    /* Success celebration */
+    /* --- success celebration --- */
     let justSubmitted = false;
     let resetTimer;
     form.addEventListener("submit", () => {
@@ -257,38 +524,28 @@
     }).observe(form, { attributes: true, attributeFilter: ["hidden"] });
   }
 
-  function celebrate() {
-    const old = document.querySelector(".celebrate");
-    if (old) old.remove();
+  /* Suggest areas and places the resident used before */
+  function initSuggest() {
+    const area = form.elements["area"];
+    const loc = form.elements["location_description"];
+    if (!area || !loc) return;
 
-    const codeEl = document.querySelector("#my-reports-list .r-code");
-    const code = codeEl ? codeEl.textContent : "";
+    const dlArea = document.createElement("datalist");
+    dlArea.id = "past-areas";
+    const dlLoc = document.createElement("datalist");
+    dlLoc.id = "past-locations";
+    form.appendChild(dlArea);
+    form.appendChild(dlLoc);
+    area.setAttribute("list", "past-areas");
+    loc.setAttribute("list", "past-locations");
 
-    const overlay = document.createElement("div");
-    overlay.className = "celebrate";
-    overlay.setAttribute("role", "status");
-    overlay.innerHTML =
-      '<div class="celebrate-box">' +
-      '<div class="celebrate-check"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></div>' +
-      "<h4>Report sent!</h4>" +
-      "<p>Thank you for helping keep Kumba clean." + (code ? "<br>Your code: <b>" + code + "</b>" : "") + "</p>" +
-      "</div>";
-
-    const close = () => {
-      overlay.classList.add("out");
-      setTimeout(() => overlay.remove(), 300);
+    const fill = (dl, values) => {
+      dl.innerHTML = "";
+      values.forEach((v) => {
+        const o = document.createElement("option");
+        o.value = v;
+        dl.appendChild(o);
+      });
     };
-    overlay.addEventListener("click", close);
-    document.body.appendChild(overlay);
-    setTimeout(close, 2600);
-  }
 
-  function start() {
-    watchCards();
-    initStats();
-    initForm();
-  }
-
-  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start);
-  else start();
-})();
+    const
