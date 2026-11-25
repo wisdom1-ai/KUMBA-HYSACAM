@@ -1,0 +1,180 @@
+/* ===== Report page extras: chips, progress, counter, photo, timeline, badges, celebration ===== */
+
+/* Safety copy of the scroll-reveal rules (same as app.css) */
+.reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.7s ease, transform 0.7s ease; }
+.reveal.show { opacity: 1; transform: translateY(0); }
+
+/* 1. Pulsing Submit button */
+.submit-big { animation: btnPulse 2.6s ease-out infinite; }
+@keyframes btnPulse {
+  0%   { box-shadow: 0 0 0 0 rgba(8, 119, 71, 0.45); }
+  70%  { box-shadow: 0 0 0 14px rgba(8, 119, 71, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(8, 119, 71, 0); }
+}
+
+/* 2. Issue-type chips (the real <select> stays hidden but still works) */
+.chip-select-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.chip {
+  border: 1.5px solid #cfe5d8;
+  background: #fff;
+  color: #12372a;
+  border-radius: 999px;
+  padding: 9px 14px;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.chip:hover { border-color: #087747; }
+.chip:active { transform: scale(0.94); }
+.chip.is-on {
+  background: #087747;
+  color: #fff;
+  border-color: #087747;
+  transform: scale(1.04);
+  box-shadow: 0 6px 14px rgba(8, 119, 71, 0.3);
+}
+
+/* 3. Form progress bar */
+.form-progress { margin: 10px 0 14px; }
+.fp-track { height: 8px; background: #e3efe8; border-radius: 99px; overflow: hidden; }
+.fp-bar {
+  height: 100%;
+  width: 0;
+  background: linear-gradient(90deg, #16a34a, #087747);
+  border-radius: 99px;
+  transition: width 0.4s ease;
+}
+.fp-text { font-size: 12px; color: #5b6b63; margin-top: 4px; }
+.fp-text.ready { color: #087747; font-weight: 700; }
+
+/* 4. Character counter */
+.char-count { display: block; text-align: right; font-size: 12px; color: #6b7c8a; margin-top: 4px; }
+.char-count.warn { color: #d97706; font-weight: 700; }
+
+/* 5. Photo preview */
+.photo-preview {
+  display: block;
+  width: 100%;
+  max-height: 220px;
+  object-fit: cover;
+  border-radius: 14px;
+  margin-top: 10px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  animation: photoIn 0.4s ease both;
+}
+.photo-preview[hidden], .photo-remove[hidden] { display: none; }
+.photo-remove {
+  margin-top: 8px;
+  border: 0;
+  background: #fee2e2;
+  color: #b91c1c;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 7px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+@keyframes photoIn { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: none; } }
+
+/* 6. Colour status badges */
+.rcard .pill.st-submitted { background: #e8f1ff; color: #1d4ed8; }
+.rcard .pill.st-review    { background: #fff4d6; color: #b45309; }
+.rcard .pill.st-resolved  { background: #dcfce7; color: #166534; }
+.rcard .pill.st-closed    { background: #eceff1; color: #475569; }
+
+/* 7. Status timeline inside each report card */
+.r-timeline { display: flex; align-items: flex-start; margin: 6px 0 14px; }
+.tl-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #8a9a93;
+  min-width: 62px;
+  text-align: center;
+}
+.tl-dot { width: 14px; height: 14px; border-radius: 50%; background: #dfe9e3; border: 2px solid #dfe9e3; }
+.tl-step.done { color: #087747; }
+.tl-step.done .tl-dot { background: #16a34a; border-color: #16a34a; }
+.tl-step.current .tl-dot { animation: tlPulse 1.8s ease-out infinite; }
+.tl-step.closed { color: #475569; }
+.tl-step.closed .tl-dot { background: #6b7c8a; border-color: #6b7c8a; }
+.tl-line { flex: 1; height: 3px; background: #dfe9e3; margin: 6px 4px 0; border-radius: 2px; }
+.tl-line.done { background: #16a34a; }
+@keyframes tlPulse {
+  0%   { box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.5); }
+  70%  { box-shadow: 0 0 0 8px rgba(22, 163, 74, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(22, 163, 74, 0); }
+}
+
+/* 8. Success celebration */
+.celebrate {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(6, 40, 27, 0.55);
+  z-index: 10000;
+  opacity: 0;
+  animation: celFade 0.3s ease forwards;
+}
+.celebrate.out { animation: celOut 0.3s ease forwards; }
+.celebrate-box {
+  background: #fff;
+  border-radius: 22px;
+  padding: 28px 26px;
+  text-align: center;
+  max-width: 300px;
+  margin: 0 16px;
+  animation: celPop 0.55s cubic-bezier(0.2, 1.4, 0.4, 1) both;
+}
+.celebrate-check {
+  width: 78px;
+  height: 78px;
+  margin: 0 auto 14px;
+  border-radius: 50%;
+  background: #16a34a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: btnPulse 1.6s ease-out 2;
+}
+.celebrate-check svg { width: 44px; height: 44px; fill: none; stroke: #fff; stroke-width: 3.5; stroke-linecap: round; stroke-linejoin: round; }
+.celebrate-check path { stroke-dasharray: 40; stroke-dashoffset: 40; animation: drawCheck 0.5s ease 0.3s forwards; }
+.celebrate-box h4 { margin: 0 0 6px; font-size: 20px; color: #12372a; }
+.celebrate-box p { margin: 0; font-size: 14px; color: #5b6b63; }
+.celebrate-box b { color: #087747; }
+@keyframes celFade { to { opacity: 1; } }
+@keyframes celOut { from { opacity: 1; } to { opacity: 0; } }
+@keyframes celPop { from { opacity: 0; transform: scale(0.7); } to { opacity: 1; transform: none; } }
+@keyframes drawCheck { to { stroke-dashoffset: 0; } }
+
+/* 9. Slider polish: slow zoom and text that fades in */
+.report-slide { overflow: hidden; }
+.report-slide img { animation: slowZoom 16s ease-in-out infinite alternate; transform-origin: center; }
+@keyframes slowZoom { from { transform: scale(1); } to { transform: scale(1.08); } }
+.report-slider-content > * { animation: fadeUp 0.9s ease both; }
+.report-slider-content > *:nth-child(2) { animation-delay: 0.12s; }
+.report-slider-content > *:nth-child(3) { animation-delay: 0.24s; }
+.report-slider-content > *:nth-child(4) { animation-delay: 0.36s; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: none; } }
+
+/* 10. Respect people who turn animations off */
+@media (prefers-reduced-motion: reduce) {
+  .submit-big, .report-slide img, .report-slider-content > *,
+  .tl-step.current .tl-dot, .celebrate-check, .photo-preview { animation: none; }
+  .reveal { opacity: 1; transform: none; transition: none; }
+}
