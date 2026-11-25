@@ -653,5 +653,40 @@ body.nav-open .topbar{z-index:1400}
   .hero-copy p { animation: none; }
   .reveal { opacity: 1; transform: none; transition: none; }
 }
+.touch-glow {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(8, 119, 71, 0.35), rgba(8, 119, 71, 0) 70%);
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0;
+  transition: transform 0.08s linear, opacity 0.3s ease;
+}
+.touch-glow.on {
+  opacity: 1;
+}
+
+.tap-ripple {
+  position: fixed;
+  width: 20px;
+  height: 20px;
+  margin: -10px 0 0 -10px;
+  border-radius: 50%;
+  border: 2px solid rgba(8, 119, 71, 0.7);
+  pointer-events: none;
+  z-index: 9999;
+  animation: rippleOut 0.7s ease-out forwards;
+}
+@keyframes rippleOut {
+  to { transform: scale(5); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .touch-glow, .tap-ripple { display: none; }
+}
   
    
