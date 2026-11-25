@@ -52,3 +52,33 @@ revealTargets.forEach((el, i) => {
   el.style.transitionDelay = (i % 4) * 0.1 + "s";
   revealObserver.observe(el);
 });
+const glow = document.createElement("div");
+glow.className = "touch-glow";
+document.body.appendChild(glow);
+
+function moveGlow(x, y) {
+  glow.style.transform = "translate(" + (x - 45) + "px, " + (y - 45) + "px)";
+  glow.classList.add("on");
+}
+
+function ripple(x, y) {
+  const r = document.createElement("span");
+  r.className = "tap-ripple";
+  r.style.left = x + "px";
+  r.style.top = y + "px";
+  document.body.appendChild(r);
+  setTimeout(() => r.remove(), 700);
+}
+
+document.addEventListener("pointermove", (e) => moveGlow(e.clientX, e.clientY));
+
+document.addEventListener("pointerdown", (e) => {
+  moveGlow(e.clientX, e.clientY);
+  ripple(e.clientX, e.clientY);
+});
+
+document.addEventListener("pointerup", (e) => {
+  if (e.pointerType === "touch") {
+    setTimeout(() => glow.classList.remove("on"), 400);
+  }
+});
