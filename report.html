@@ -86,7 +86,7 @@ html.auth-yes .skel-yes{display:block}
 
 <div class="trust-row"><span><i>✔</i>Simple form</span><span><i>🔔</i>Status updates</span><span><i>🌿</i>A cleaner Kumba</span></div>
 
-<button id="open-report-form" class="submit-big" type="button"><svg viewBox="0 0 24 24" aria-hidden="true" ><path d="M21 3 3 10l7 3 3 7z"/><path d="m10 13 11-10"/></svg>Submit a Report</button>
+<button id="open-report-form" class="submit-big" type="button"><span class="sb-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 3 3 10l7 3 3 7z"/><path d="m10 13 11-10"/></svg></span><span class="sb-text"><b>Submit a Report</b><small>Tell HYSACAM where the problem is</small></span><span class="sb-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></button>
 <form id="resident-report-form" class="report-form panel" hidden><h3>Submit a waste issue</h3><p class="hint">Fields marked * are required. Please provide an accurate location</p><div class="report-form-grid"><label>Issue type *<select name="issue_type" required><option value="">Choose an issue</option><option>Overflowing dustbin</option><option>Missed waste collection</option><option>Illegal dumping</option><option>Damaged dustbin</option><option>Other</option></select></label><label>Area in Kumba *<input name="area" required maxlength="100" placeholder="Enter area in Kumba"></label><label class="wide">Specific location *<input name="location_description" required maxlength="150" placeholder="Street, landmark or nearby building"></label><label class="wide">Description *<textarea name="description" required maxlength="800" rows="4" placeholder="Describe the issue..."></textarea></label><label class="wide">Photo preview (not uploaded yet)<input type="file" id="report-photo" accept="image/*"><img id="report-photo-preview" class="photo-preview" alt="Preview of the selected photo" hidden></label><label>Contact phone (optional)<input name="phone" maxlength="40" placeholder="Phone number"></label></div><button class="button" type="submit" id="submit-resident-report">Submit report</button><p id="resident-report-message" class="auth-message" role="status" aria-live="polite"></p></form>
 
 <!-- HOW TO SUBMIT A REPORT -->
@@ -98,37 +98,19 @@ html.auth-yes .skel-yes{display:block}
   </div>
 
   <ol class="guide-steps">
-    <li class="guide-step"><span class="gs-num">1</span><div><h3>Sign in</h3><p>You need an account so you can follow your reports later. If you are not signed in, tapping Submit a Report takes you to the sign-in page first</p></div></li>
+    <li class="guide-step"><span class="gs-num">1</span><div><h3>Sign in</h3><p>You need an account to follow your reports, so tapping Submit a Report takes you to sign in first</p></div></li>
     <li class="guide-step"><span class="gs-num">2</span><div><h3>Tap Submit a Report</h3><p>The form opens right on this page, with a progress bar that shows how much is left to fill in</p></div></li>
     <li class="guide-step"><span class="gs-num">3</span><div><h3>Fill in the details</h3><p>Choose the issue type, enter your area, the exact spot (street, landmark or building) and describe what you see</p></div></li>
-    <li class="guide-step"><span class="gs-num">4</span><div><h3>Send and track</h3><p>Tap Submit report. Your report appears under Your Reports with a reference code. Open it to see its status and any update from the team</p></div></li>
+    <li class="guide-step"><span class="gs-num">4</span><div><h3>Send and track</h3><p>Tap Submit report and it appears under Your Reports with a reference code, where you can open it to see its status and any update from the team</p></div></li>
   </ol>
-
-  <div class="guide-card guide-tips">
-    <h3>Tips for a faster response</h3>
-    <ul>
-      <li>Name a landmark or a nearby building</li>
-      <li>Say how big the problem is and how long it has been there</li>
-      <li>Send one issue per report</li>
-      <li>Add a phone number so the team can reach you</li>
-    </ul>
-  </div>
 
   <div class="guide-card guide-status">
     <h3>What the statuses mean</h3>
     <div class="gs-row"><span class="gs-badge b-submitted">Submitted</span><p>We received your report</p></div>
     <div class="gs-row"><span class="gs-badge b-review">In Review</span><p>The team is reviewing, assigning or working on it</p></div>
     <div class="gs-row"><span class="gs-badge b-resolved">Resolved</span><p>The issue has been dealt with</p></div>
-    <div class="gs-row"><span class="gs-badge b-closed">Closed</span><p>The report was closed. Check the team update on the card for details</p></div>
+    <div class="gs-row"><span class="gs-badge b-closed">Closed</span><p>The report was closed, so check the team update on the card for details</p></div>
   </div>
-
-  <div class="guide-faq">
-    <details><summary>Do I need an account?</summary><p>Yes. An account lets you submit reports and follow them from this page</p></details>
-    <details><summary>Where do I see updates?</summary><p>Under Your Reports on this page, and in the Notifications bell at the top of the screen</p></details>
-    <details><summary>Can I report more than one problem?</summary><p>Yes. Submit a separate report for each problem so each one can be tracked on its own</p></details>
-  </div>
-
-  <button type="button" class="button guide-cta" data-guide-start>Start a report</button>
 </section>
 <!-- END HOW TO SUBMIT A REPORT -->
 
