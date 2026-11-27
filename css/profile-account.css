@@ -1,0 +1,179 @@
+/* ===== Profile section (moved from Settings): premium design ===== */
+#profile-account-root { display: block; margin: 0 0 18px; }
+
+/* Green profile card */
+.pa-hero {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin: 14px;
+  padding: 22px 18px;
+  border-radius: 28px;
+  background: linear-gradient(135deg, #0d9a5c 0%, #065f3c 100%);
+  color: #fff;
+  box-shadow: 0 30px 54px -26px rgba(6, 95, 60, 0.9);
+  animation: paIn 0.55s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+.pa-hero::before,
+.pa-hero::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  pointer-events: none;
+}
+.pa-hero::before { width: 190px; height: 190px; right: -50px; top: -70px; }
+.pa-hero::after { width: 110px; height: 110px; right: 60px; bottom: -60px; background: rgba(255, 255, 255, 0.07); }
+.pa-avatar {
+  position: relative;
+  z-index: 1;
+  flex: 0 0 68px;
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: rgba(255, 255, 255, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.55);
+  color: #fff;
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+.pa-avatar svg { width: 32px; height: 32px; fill: none; stroke: #fff; stroke-width: 2; stroke-linecap: round; }
+.pa-hero-text { position: relative; z-index: 1; flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.pa-hero-text b {
+  font-size: 20px;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  color: #fff;
+  overflow-wrap: anywhere;
+}
+.pa-hero-text small { margin-top: 3px; font-size: 13px; color: rgba(255, 255, 255, 0.88); overflow-wrap: anywhere; }
+.pa-hero-text i {
+  align-self: flex-start;
+  margin-top: 10px;
+  font-style: normal;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 999px;
+  padding: 4px 12px;
+  color: #fff;
+}
+.pa-guest .pa-actions { position: relative; z-index: 1; display: flex; gap: 10px; width: 100%; }
+.pa-btn {
+  flex: 1;
+  text-align: center;
+  padding: 13px 10px;
+  border-radius: 14px;
+  font-size: 15px;
+  font-weight: 800;
+  text-decoration: none;
+}
+.pa-btn.light { background: #fff; color: #065f3c; box-shadow: 0 14px 24px -12px rgba(0, 0, 0, 0.5); }
+.pa-btn.ghost { border: 1.5px solid rgba(255, 255, 255, 0.7); color: #fff; }
+
+/* Cards */
+.pa-card {
+  margin: 0 14px 14px;
+  padding: 18px 16px;
+  background: #fff;
+  border: 1px solid #e4eee8;
+  border-radius: 24px;
+  box-shadow: 0 20px 38px -28px rgba(6, 60, 40, 0.6);
+  animation: paIn 0.55s cubic-bezier(0.2, 0.8, 0.2, 1) 0.08s both;
+}
+.pa-card h3 { margin: 0 0 4px; font-size: 18px; letter-spacing: -0.02em; color: #12372a; }
+.pa-field { display: block; margin-top: 14px; font-size: 12.5px; font-weight: 700; color: #26372d; }
+.pa-field input {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: 6px;
+  padding: 13px 14px;
+  border: 1.5px solid #d5eadd;
+  border-radius: 13px;
+  background: #fbfdfc;
+  font: inherit;
+  font-size: 15px;
+  color: #12372a;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.pa-field input:focus { outline: none; border-color: #087747; box-shadow: 0 0 0 4px rgba(8, 119, 71, 0.15); }
+.pa-field input:disabled { background: #f1f5f3; color: #6b7c74; }
+.pa-note { margin: 8px 0 0; font-size: 12.5px; color: #6b7c74; line-height: 1.45; }
+.pa-save {
+  display: block;
+  width: 100%;
+  height: 52px;
+  margin-top: 18px;
+  border: 0;
+  border-radius: 15px;
+  background: linear-gradient(135deg, #1fbf63, #087747);
+  color: #fff;
+  font: inherit;
+  font-size: 15.5px;
+  font-weight: 800;
+  box-shadow: 0 16px 28px -14px rgba(8, 119, 71, 0.8);
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+.pa-save:active { transform: scale(0.98); }
+.pa-save:disabled { opacity: 0.7; }
+.pa-msg { min-height: 18px; margin: 10px 0 0; font-size: 13px; font-weight: 700; }
+.pa-msg.ok { color: #0b6b3c; }
+.pa-msg.err { color: #c62828; }
+
+/* Account details */
+.pa-info { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 13px 0; border-top: 1px solid #edf3ef; font-size: 14px; }
+.pa-info:first-of-type { margin-top: 10px; }
+.pa-info span { color: #6b7c74; font-weight: 600; }
+.pa-info b { color: #12372a; font-weight: 800; }
+
+/* Links to settings */
+.pa-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 14px 12px;
+  padding: 15px 16px;
+  background: #fff;
+  border: 1px solid #e4eee8;
+  border-radius: 20px;
+  box-shadow: 0 16px 30px -26px rgba(6, 60, 40, 0.6);
+  text-decoration: none;
+  color: #12372a;
+  transition: transform 0.15s ease;
+}
+.pa-link:active { transform: scale(0.985); }
+.pa-link > span { flex: 1; min-width: 0; }
+.pa-link b { display: block; font-size: 15px; color: #12372a; }
+.pa-link small { display: block; margin-top: 2px; font-size: 12.5px; color: #6b7c74; }
+.pa-link svg { width: 18px; height: 18px; fill: none; stroke: #9db1a6; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+
+/* Loading skeleton */
+.pa-skel .pa-avatar { background: rgba(255, 255, 255, 0.18); border-color: transparent; }
+.pa-skel .pa-hero-text b,
+.pa-skel .pa-hero-text small,
+.pa-skel .pa-hero-text i { display: block; border-radius: 8px; background: rgba(255, 255, 255, 0.2); border: 0; }
+.pa-skel .pa-hero-text b { width: 60%; height: 20px; }
+.pa-skel .pa-hero-text small { width: 80%; height: 14px; }
+.pa-skel .pa-hero-text i { width: 80px; height: 22px; }
+.pa-skel-card { padding: 22px 16px; }
+.pa-line { height: 14px; margin-bottom: 14px; border-radius: 8px; background: linear-gradient(90deg, #e6efe9 25%, #f5faf7 45%, #e6efe9 65%); background-size: 220% 100%; animation: paShimmer 1.25s linear infinite; }
+.pa-line.short { width: 55%; margin-bottom: 0; }
+
+@keyframes paIn { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+@keyframes paShimmer { from { background-position: 100% 0; } to { background-position: -100% 0; } }
+@media (prefers-reduced-motion: reduce) {
+  .pa-hero, .pa-card, .pa-line { animation: none; }
+}
