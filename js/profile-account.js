@@ -1,211 +1,352 @@
+
 "use strict";
 
-/* HYSACAM Kumba Tracker: the full profile (moved here from Settings).
-   Needs: a <div id="profile-account-root"></div> on profile.html,
-   supabase.js loaded (defines supabaseClient), and css/profile-account.css. */
 (function () {
   const root = document.getElementById("profile-account-root");
   if (!root) return;
 
-  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-  const withTimeout = (p, ms) =>
-    Promise.race([Promise.resolve(p), new Promise((_, rej) => setTimeout(() => rej(new Error("timeout")), ms))]);
-  async function waitFor(test, ms) {
-    const end = Date.now() + ms;
-    while (Date.now() < end) {
-      try { const v = test(); if (v) return v; } catch (e) { /* keep waiting */ }
-      await sleep(100);
+  const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+  async function getClient() {
+    for (let i = 0; i < 80; i++) {
+      const client = window.supabaseClient;
+      if (client) return client;
+      await wait(100);
     }
-    try { return test(); } catch (e) { return null; }
+    return null;
   }
-  const getClient = () => {
-    try { return (typeof supabaseClient !== "undefined" && supabaseClient) || window.supabaseClient || null; }
-    catch (e) { return window.supabaseClient || null; }
+
+  let client, user, profile = {};
+  let selectedPhoto = null;
+  let original = {};
+  const BUCKET = "profile-photos";
+
+  const esc = value => String(value || "").replace(/[&<>"']/g, c => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;",
+    '"': "&quot;", "'": "&#39;"
+  }[c]));
+
+  const initials = name => {
+    const parts = String(name || "User").trim().split(/\s+/);
+    return parts.length > 1
+      ? (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
+      : parts[0].slice(0, 2).toUpperCase();
   };
 
-  const NAME_KEYS = ["full_name", "name", "display_name"];
-  const PHONE_KEYS = ["phone", "phone_number", "telephone"];
-  const ROLE_KEYS = ["role", "account_type", "user_role"];
-  const pick = (o, keys) => {
-    if (!o) return "";
-    for (const k of keys) if (o[k] != null && String(o[k]).trim() !== "") return String(o[k]).trim();
-    return "";
-  };
-  const titleCase = (s) => String(s || "").replace(/[_-]+/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
-  const initials = (name, email) => {
-    const p = String(name || "").trim().split(/\s+/).filter(Boolean);
-    if (p.length >= 2) return (p[0][0] + p[p.length - 1][0]).toUpperCase();
-    if (p.length === 1) return p[0].slice(0, 2).toUpperCase();
-    return String(email || "?").charAt(0).toUpperCase();
-  };
-  const fmtDate = (iso) => {
-    const d = new Date(iso);
-    return isNaN(d.getTime()) ? "—" : d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+  const dateText = value => {
+    if (!value) return "—";
+    const date = new Date(value);
+    return isNaN(date) ? "—" : date.toLocaleDateString("en-GB", {
+      day: "numeric", month: "long", year: "numeric"
+    });
   };
 
-  let client = null, user = null, row = null, dirty = false;
-
-  /* ---------- screens ---------- */
-  function showLoading() {
-    root.innerHTML =
-      '<section class="pa-hero pa-skel"><div class="pa-avatar"></div><div class="pa-hero-text"><b></b><small></small><i></i></div></section>' +
-      '<section class="pa-card pa-skel-card"><div class="pa-line"></div><div class="pa-line"></div><div class="pa-line short"></div></section>';
-  }
-
-  function showGuest() {
-    root.innerHTML =
-      '<section class="pa-hero pa-guest">' +
-      '<div class="pa-avatar"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></div>' +
-      '<div class="pa-hero-text"><b>Join HYSACAM Kumba Tracker</b><small>Sign in to manage your profile and track your reports</small></div>' +
-      '<div class="pa-actions"><a class="pa-btn light" href="signin.html">Sign In</a><a class="pa-btn ghost" href="signup.html">Sign Up</a></div>' +
-      "</section>";
-  }
-
-  function showError(msg) {
-    root.innerHTML = '<section class="pa-card"><h3>Profile unavailable</h3><p class="pa-note"></p></section>';
-    root.querySelector(".pa-note").textContent = msg;
-  }
-
-  function accountValues() {
-    const meta = user.user_metadata || {};
-    const name = pick(row, NAME_KEYS) || pick(meta, NAME_KEYS) || "";
-    const phone = pick(row, PHONE_KEYS) || pick(meta, PHONE_KEYS) || String(user.phone || "");
-    const role = pick(row, ROLE_KEYS) || pick(user.app_metadata, ["role"]) || pick(meta, ROLE_KEYS) || "resident";
-    return { name, phone, role };
-  }
-
-  function showProfile() {
-    root.innerHTML =
-      '<section class="pa-hero">' +
-      '<div class="pa-avatar" id="pa-avatar"></div>' +
-      '<div class="pa-hero-text"><b id="pa-name"></b><small id="pa-email"></small><i id="pa-role-pill"></i></div>' +
-      "</section>" +
-
-      '<section class="pa-card">' +
-      "<h3>Edit profile</h3>" +
-      '<form id="pa-form" novalidate>' +
-      '<label class="pa-field">Full name<input id="pa-in-name" maxlength="80" autocomplete="name" enterkeyhint="next" placeholder="Your full name" required></label>' +
-      '<label class="pa-field">Email<input id="pa-in-email" type="email" disabled></label>' +
-      '<p class="pa-note">To use a different email, go to Security in Settings</p>' +
-      '<label class="pa-field">Phone (optional)<input id="pa-in-phone" type="tel" inputmode="tel" maxlength="25" autocomplete="tel" enterkeyhint="done" placeholder="e.g. +237 6XX XXX XXX"></label>' +
-      '<button class="pa-save" id="pa-save" type="submit">Save changes</button>' +
-      '<p class="pa-msg" id="pa-msg" role="status" aria-live="polite"></p>' +
-      "</form></section>" +
-
-      '<section class="pa-card">' +
-      "<h3>Account details</h3>" +
-      '<div class="pa-info"><span>Member since</span><b id="pa-since">—</b></div>' +
-      '<div class="pa-info"><span>Email status</span><b id="pa-verified">—</b></div>' +
-      '<div class="pa-info"><span>Account type</span><b id="pa-role">Resident</b></div>' +
-      "</section>" +
-
-      '<a class="pa-link" href="settings.html#security"><span><b>Password and security</b><small>Change password, email and devices</small></span>' +
-      '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></a>' +
-      '<a class="pa-link" href="settings.html"><span><b>All settings</b><small>Notifications, map and privacy</small></span>' +
-      '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></a>';
-
-    fill(true);
-    wireForm();
-  }
-
-  function fill(withForm) {
-    const v = accountValues();
-    const email = user.email || "";
-    const $ = (id) => document.getElementById(id);
-    $("pa-name").textContent = v.name || (email ? email.split("@")[0] : "Your account");
-    $("pa-email").textContent = email || String(user.phone || "");
-    $("pa-role-pill").textContent = titleCase(v.role);
-    $("pa-avatar").textContent = initials(v.name, email);
-    $("pa-since").textContent = fmtDate(user.created_at || (row && row.created_at));
-    $("pa-verified").textContent = user.email_confirmed_at || user.confirmed_at ? "Verified" : "Not verified";
-    $("pa-role").textContent = titleCase(v.role);
-    if (withForm) {
-      $("pa-in-name").value = v.name;
-      $("pa-in-email").value = email;
-      $("pa-in-phone").value = v.phone;
-    }
-  }
-
-  function say(text, kind) {
-    const el = document.getElementById("pa-msg");
+  function message(text, type = "") {
+    const el = document.getElementById("pa-message");
     if (!el) return;
     el.textContent = text;
-    el.classList.toggle("err", kind === "err");
-    el.classList.toggle("ok", kind === "ok");
+    el.className = "pa-message " + type;
   }
 
-  function wireForm() {
+  function values() {
+    const meta = user.user_metadata || {};
+    return {
+      full_name: profile.full_name || meta.full_name || meta.name || "",
+      phone: profile.phone || meta.phone || user.phone || "",
+      town: profile.town || meta.town || "",
+      area: profile.area || meta.area || "",
+      avatar_url: profile.avatar_url || meta.avatar_url || ""
+    };
+  }
+
+  function render() {
+    const v = values();
+    const name = v.full_name || "Your name";
+    const photo = v.avatar_url;
+
+    root.innerHTML = `
+      <div class="pa-page">
+        <header class="pa-heading">
+          <div>
+            <span class="pa-eyebrow">YOUR ACCOUNT</span>
+            <h2>My Profile</h2>
+            <p>Manage your personal information and account details.</p>
+          </div>
+          <span class="pa-status">● Account active</span>
+        </header>
+
+        <section class="pa-profile-hero">
+          <div class="pa-photo-wrap">
+            <div class="pa-photo" id="pa-photo">
+              ${photo
+                ? `<img src="${esc(photo)}" alt="Profile picture">`
+                : `<span>${esc(initials(name))}</span>`}
+            </div>
+            <label class="pa-camera" for="pa-photo-input" title="Change profile picture">＋</label>
+            <input id="pa-photo-input" type="file" accept="image/png,image/jpeg,image/webp" hidden>
+          </div>
+
+          <div class="pa-hero-info">
+            <h3 id="pa-display-name">${esc(name)}</h3>
+            <p>${esc(user.email || "No email address")}</p>
+            <span class="pa-role">${esc(profile.role || user.app_metadata?.role || "Resident")}</span>
+          </div>
+          <div class="pa-photo-actions">
+            <label for="pa-photo-input" class="pa-outline-btn">Change photo</label>
+            <button type="button" class="pa-text-btn" id="pa-remove-photo">Remove</button>
+          </div>
+        </section>
+
+        <section class="pa-progress-card">
+          <div class="pa-progress-top">
+            <div><strong>Profile completion</strong><p>Complete your details to improve your account.</p></div>
+            <strong id="pa-progress-number">0%</strong>
+          </div>
+          <div class="pa-progress-track"><div id="pa-progress-fill"></div></div>
+          <small id="pa-progress-caption"></small>
+        </section>
+
+        <form id="pa-form">
+          <section class="pa-card">
+            <div class="pa-section-heading">
+              <div><span>01</span><h3>Personal information</h3></div>
+              <p>Keep your details up to date.</p>
+            </div>
+
+            <div class="pa-fields">
+              <label class="pa-field">
+                Full name
+                <input id="pa-name" maxlength="80" autocomplete="name" placeholder="Enter your full name" required>
+              </label>
+              <label class="pa-field">
+                Email address
+                <input value="${esc(user.email || "")}" type="email" disabled>
+                <small>Email changes are managed through account security.</small>
+              </label>
+              <label class="pa-field">
+                Phone number
+                <input id="pa-phone" type="tel" maxlength="25" autocomplete="tel" placeholder="+237 6XX XXX XXX">
+              </label>
+              <label class="pa-field">
+                Town / City
+                <input id="pa-town" maxlength="80" placeholder="e.g. Kumba">
+              </label>
+              <label class="pa-field pa-full">
+                Residential area
+                <input id="pa-area" maxlength="120" placeholder="e.g. Fiango, Mbonge Road">
+              </label>
+            </div>
+          </section>
+
+          <section class="pa-card">
+            <div class="pa-section-heading">
+              <div><span>02</span><h3>Account information</h3></div>
+              <p>Your HYSACAM account details.</p>
+            </div>
+            <div class="pa-account-details">
+              <div><span>Member since</span><strong>${dateText(user.created_at)}</strong></div>
+              <div><span>Email verification</span><strong>${user.email_confirmed_at ? "Verified" : "Not verified"}</strong></div>
+              <div><span>Account type</span><strong>${esc(profile.role || user.app_metadata?.role || "Resident")}</strong></div>
+            </div>
+          </section>
+
+          <div class="pa-save-area">
+            <p id="pa-message" class="pa-message" role="status" aria-live="polite"></p>
+            <button type="button" class="pa-cancel-btn" id="pa-cancel">Cancel</button>
+            <button type="submit" class="pa-save-btn" id="pa-save">Save changes</button>
+          </div>
+        </form>
+
+        <section class="pa-security-link">
+          <div><strong>Account security</strong><p>Manage your password and sign-in settings.</p></div>
+          <a href="settings.html#security">Manage security →</a>
+        </section>
+      </div>
+    `;
+
+    document.getElementById("pa-name").value = v.full_name;
+    document.getElementById("pa-phone").value = v.phone;
+    document.getElementById("pa-town").value = v.town;
+    document.getElementById("pa-area").value = v.area;
+
+    original = {
+      full_name: v.full_name,
+      phone: v.phone,
+      town: v.town,
+      area: v.area,
+      avatar_url: v.avatar_url
+    };
+
+    updateProgress();
+    wire();
+  }
+
+  function updateProgress() {
+    const ids = ["pa-name", "pa-phone", "pa-town", "pa-area"];
+    const completed = ids.filter(id => document.getElementById(id)?.value.trim()).length;
+    const percent = Math.round((completed / ids.length) * 100);
+    document.getElementById("pa-progress-number").textContent = percent + "%";
+    document.getElementById("pa-progress-fill").style.width = percent + "%";
+    document.getElementById("pa-progress-caption").textContent =
+      completed === 4 ? "Your personal information is complete." :
+      `${completed} of ${ids.length} personal details completed.`;
+  }
+
+  function previewPhoto(file) {
+    const photo = document.getElementById("pa-photo");
+    if (selectedPhoto?.preview) URL.revokeObjectURL(selectedPhoto.preview);
+    selectedPhoto = { file, preview: URL.createObjectURL(file) };
+    photo.innerHTML = `<img src="${selectedPhoto.preview}" alt="New profile picture preview">`;
+    message("Photo ready. Save your changes to upload it.", "info");
+  }
+
+  function wire() {
     const form = document.getElementById("pa-form");
-    const nameIn = document.getElementById("pa-in-name");
-    const phoneIn = document.getElementById("pa-in-phone");
-    const saveBtn = document.getElementById("pa-save");
+    const photoInput = document.getElementById("pa-photo-input");
 
-    [nameIn, phoneIn].forEach((el) => el.addEventListener("input", () => { dirty = true; say(""); }));
-
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      if (!user || !client) return say("Please sign in again", "err");
-      const name = nameIn.value.trim().replace(/\s+/g, " ");
-      const phone = phoneIn.value.trim();
-      if (name.length < 2) { say("Please enter your full name", "err"); nameIn.focus(); return; }
-      if (phone && !/^\+?[\d\s().-]{7,25}$/.test(phone)) { say("Enter a valid phone number", "err"); phoneIn.focus(); return; }
-      const cur = accountValues();
-      if (name === cur.name && phone === cur.phone) return say("No changes to save", "ok");
-
-      saveBtn.disabled = true;
-      const old = saveBtn.textContent;
-      saveBtn.textContent = "Saving…";
-      say("");
-      try {
-        const { data, error } = await withTimeout(
-          client.auth.updateUser({ data: { full_name: name, name: name, phone: phone } }), 15000);
-        if (error) throw error;
-        if (data && data.user) user = data.user;
-        if (row) {
-          const patch = {};
-          const nk = NAME_KEYS.find((k) => k in row), pk = PHONE_KEYS.find((k) => k in row);
-          if (nk) patch[nk] = name;
-          if (pk) patch[pk] = phone || null;
-          if (Object.keys(patch).length) {
-            const res = await withTimeout(client.from("profiles").update(patch).eq("id", user.id), 15000);
-            if (res.error) throw res.error;
-            Object.assign(row, patch);
-          }
-        }
-        dirty = false;
-        fill(true);
-        say("Profile saved", "ok");
-        document.dispatchEvent(new CustomEvent("hysacam:profile-updated", { detail: { name, phone } }));
-      } catch (err) {
-        console.error("Profile save failed:", err);
-        say(err && err.message === "timeout"
-          ? "Saving took too long. Check your connection and try again"
-          : "Could not save your profile. Please try again", "err");
-      } finally {
-        saveBtn.disabled = false;
-        saveBtn.textContent = old;
-      }
+    ["pa-name", "pa-phone", "pa-town", "pa-area"].forEach(id => {
+      document.getElementById(id).addEventListener("input", updateProgress);
     });
 
-    window.addEventListener("beforeunload", (e) => { if (dirty) { e.preventDefault(); e.returnValue = ""; } });
+    photoInput.addEventListener("change", () => {
+      const file = photoInput.files?.[0];
+      if (!file) return;
+      if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+        message("Please choose a JPG, PNG or WEBP image.", "error");
+        photoInput.value = "";
+        return;
+      }
+      if (file.size > 3 * 1024 * 1024) {
+        message("Your picture must be smaller than 3 MB.", "error");
+        photoInput.value = "";
+        return;
+      }
+      previewPhoto(file);
+    });
+
+    document.getElementById("pa-remove-photo").addEventListener("click", () => {
+      selectedPhoto = { remove: true };
+      document.getElementById("pa-photo").innerHTML =
+        `<span>${esc(initials(document.getElementById("pa-name").value))}</span>`;
+      message("Photo removal will be applied when you save.", "info");
+    });
+
+    document.getElementById("pa-cancel").addEventListener("click", () => {
+      selectedPhoto = null;
+      render();
+      message("Changes cancelled.");
+    });
+
+    form.addEventListener("submit", async e => {
+      e.preventDefault();
+
+      const full_name = document.getElementById("pa-name").value.trim().replace(/\s+/g, " ");
+      const phone = document.getElementById("pa-phone").value.trim();
+      const town = document.getElementById("pa-town").value.trim();
+      const area = document.getElementById("pa-area").value.trim();
+
+      if (full_name.length < 2) return message("Please enter your full name.", "error");
+      if (phone && !/^\+?[\d\s().-]{7,25}$/.test(phone))
+        return message("Please enter a valid phone number.", "error");
+
+      const button = document.getElementById("pa-save");
+      button.disabled = true;
+      button.textContent = "Saving…";
+      message("Saving your profile…", "info");
+
+      try {
+        let avatar_url = values().avatar_url;
+
+        if (selectedPhoto?.file) {
+          const file = selectedPhoto.file;
+          const ext = file.name.split(".").pop().toLowerCase();
+          const path = `${user.id}/${Date.now()}.${ext}`;
+
+          const upload = await client.storage.from(BUCKET).upload(path, file, {
+            upsert: true,
+            contentType: file.type,
+            cacheControl: "3600"
+          });
+          if (upload.error) throw upload.error;
+
+          const publicResult = client.storage.from(BUCKET).getPublicUrl(path);
+          avatar_url = publicResult.data.publicUrl;
+        } else if (selectedPhoto?.remove) {
+          avatar_url = null;
+        }
+
+        const metadata = { full_name, name: full_name, phone, town, area, avatar_url };
+        const authUpdate = await client.auth.updateUser({ data: metadata });
+        if (authUpdate.error) throw authUpdate.error;
+        user = authUpdate.data.user || user;
+
+        const dbUpdate = await client.from("profiles").upsert({
+          id: user.id,
+          full_name,
+          phone: phone || null,
+          town: town || null,
+          area: area || null,
+          avatar_url
+        }, { onConflict: "id" });
+
+        if (dbUpdate.error) throw dbUpdate.error;
+
+        profile = { ...profile, ...metadata };
+        selectedPhoto = null;
+        render();
+        message("Your profile has been saved successfully.", "success");
+
+        document.dispatchEvent(new CustomEvent("hysacam:profile-updated", {
+          detail: { full_name, phone, town, area, avatar_url }
+        }));
+      } catch (error) {
+        console.error("Profile update error:", error);
+        message(error.message || "Could not save your profile. Please try again.", "error");
+      } finally {
+        const save = document.getElementById("pa-save");
+        if (save) {
+          save.disabled = false;
+          save.textContent = "Save changes";
+        }
+      }
+    });
   }
 
-  /* ---------- start ---------- */
-  (async function init() {
-    showLoading();
-    client = await waitFor(getClient, 8000);
-    if (!client) return showError("Could not connect. Check your internet connection and refresh");
-    try {
-      const res = await withTimeout(client.auth.getSession(), 10000);
-      user = res && res.data && res.data.session ? res.data.session.user : null;
-    } catch (e) {
-      return showError("Could not check your account. Check your connection and refresh");
+  async function init() {
+    root.innerHTML = '<div class="pa-loading"><span></span><p>Loading your profile…</p></div>';
+    client = await getClient();
+
+    if (!client) {
+      root.innerHTML = '<div class="pa-error">Unable to connect. Please refresh the page.</div>';
+      return;
     }
-    if (!user) return showGuest();
-    try {
-      const res = await withTimeout(client.from("profiles").select("*").eq("id", user.id).maybeSingle(), 10000);
-      row = res && res.data ? res.data : null;
-    } catch (e) { row = null; }
-    showProfile();
-  })();
+
+    const session = await client.auth.getSession();
+    if (session.error || !session.data.session) {
+      root.innerHTML = `
+        <div class="pa-guest">
+          <h2>Sign in to manage your profile</h2>
+          <p>Your profile information is available after you sign in.</p>
+          <a href="signin.html">Sign in</a>
+          <a href="signup.html">Create account</a>
+        </div>`;
+      return;
+    }
+
+    user = session.data.session.user;
+
+    const result = await client.from("profiles")
+      .select("*").eq("id", user.id).maybeSingle();
+
+    if (result.error) {
+      root.innerHTML = '<div class="pa-error">Could not load your profile. Please refresh and try again.</div>';
+      console.error(result.error);
+      return;
+    }
+
+    profile = result.data || {};
+    render();
+  }
+
+  init();
 })();
