@@ -7,6 +7,7 @@
   const message = $("auth-message");
   let email = "";
   let state = { bins: [], records: [], users: [] };
+  let reports = [], events = [];
 
   const esc = v => String(v ?? "").replace(/[&<>"']/g, c => ({
     "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
@@ -18,7 +19,7 @@
   const label = v => { const t = String(v ?? "").replaceAll("_", " "); return t.charAt(0).toUpperCase() + t.slice(1); };
   const TONES = { available:"good", cleaned:"good", resolved:"good", success:"good", pending:"warn", full:"bad", maintenance:"warn", inactive:"muted", "in progress":"info", in_progress:"info", assigned:"info", under_review:"warn", submitted:"info", rejected:"muted" };
   const tone = v => TONES[lower(v)] || "muted";
-  const pill = v => `<span class="status" data-tone="${tone(v)}">${esc(label(v))}</span>`;
+  const pill = v => `<span class="hx-pill" data-tone="${tone(v)}">${esc(label(v))}</span>`;
   const row = (labels, cells) => `<tr>${cells.map((c, i) => `<td data-label="${labels[i]}">${c}</td>`).join("")}</tr>`;
   const emptyRow = (span, text) => `<tr><td colspan="${span}">${esc(text)}</td></tr>`;
   const setBadge = (name, count) => document.querySelectorAll(`[data-badge="${name}"]`).forEach(b => {
@@ -28,6 +29,7 @@
   function toast(text, kind = "good") {
     let box = $("admin-toast");
     if (!box) { box = document.createElement("div"); box.id = "admin-toast"; box.setAttribute("role", "status"); document.body.appendChild(box); }
+    box.hidden = false;
     box.textContent = text; box.dataset.tone = kind; box.classList.add("show");
     clearTimeout(toast.timer); toast.timer = setTimeout(() => box.classList.remove("show"), 4000);
   }
@@ -36,28 +38,20 @@
     if (typeof HTMLDialogElement !== "function") return Promise.resolve(window.confirm(`${title}\n${text}`));
     return new Promise(resolve => {
       const dialog = document.createElement("dialog");
-      dialog.className = "admin-confirm";
-      dialog.innerHTML = `<form method="dialog"><h3>${esc(title)}</h3><p>${esc(text)}</p><div><button value="no" autofocus>Cancel</button><button value="yes" class="danger">Delete</button></div></form>`;
+      dialog.className = "hx-confirm";
+      dialog.innerHTML = `<form method="dialog"><h2>${esc(title)}</h2><p>${esc(text)}</p><div><button class="hx-btn" value="no" autofocus>Cancel</button><button value="yes" class="hx-btn hx-destroy">Delete</button></div></form>`;
       dialog.addEventListener("close", () => { resolve(dialog.returnValue === "yes"); dialog.remove(); });
-      document.body.appendChild(dialog); dialog.showModal();
+      portal.appendChild(dialog); dialog.showModal();
     });
   }
 
-  function showCodeStage(on) {
-    $("admin-code-stage").hidden = !on; $("admin-password-stage").hidden = on;
-    $("admin-code").required = on; $("admin-code").value = "";
-    $("admin-code").dispatchEvent(new Event("input", { bubbles: true }));
-    document.querySelectorAll(".otp-boxes input").forEach(i => { i.value = ""; });
-    form.classList.toggle("admin-verifying", on);
-    $("admin-form-title").textContent = on ? "Verify Your Email" : "Administrator sign in";
-    $("admin-form-copy").textContent = on ? "Enter the 6 digit code sent to your email" : "Enter your authorised account credentials to continue";
-  }
-
   function showLogin(text) {
-    portal.classList.remove("authorized"); loginPage.style.display = "";
-    form.reset(); showCodeStage(false); say(text);
-    state = { bins: [], records: [], users: [] };
-    ["admin-bins-table","admin-records-table","admin-users-table","admin-reports-table","admin-audit-table"].forEach(id => { $(id).innerHTML = ""; });
+    portal.querySelectorAll("dialog[open]").forEach(d => d.close());
+    portal.classList.remove("authorized"); loginPage.style.display="grid";
+    form.reset(); $("admin-code-stage").hidden=true; $("admin-password-stage").hidden=false;
+    $("admin-form-title").textContent="Administrator sign in"; say(text);
+    state = { bins: [], records: [], users: [] }; reports = []; events = [];
+    portal.querySelectorAll("tbody").forEach(t => { t.innerHTML = ""; });
     window.scrollTo(0, 0);
   }
 
@@ -89,7 +83,7 @@
     email = auth.email || email;
     $("admin-welcome").textContent = email || "Welcome, Admin";
     const initial = (email || "A").charAt(0).toUpperCase();
-    $("admin-avatar").textContent = initial; $("admin-avatar-big").textContent = initial;
+    $("admin-avatar").textContent = initial;
     loginPage.style.display = "none";
     portal.classList.add("authorized");
     await loadAll();
@@ -98,15 +92,17 @@
 
   form?.addEventListener("submit", async event => {
     event.preventDefault();
-    if (!$("admin-code-stage").hidden) { $("admin-verify").click(); return; }
     say("");
     email = $("admin-email").value.trim().toLowerCase();
-    if (!$("admin-email").checkValidity() || !$("admin-password").value) { say("Enter a valid email address and your password"); return; }
     const button = $("admin-submit");
     button.disabled = true; button.textContent = "Checking account…";
     try {
       await post("/api/admin/login", { email, password: $("admin-password").value });
-      showCodeStage(true);
+      $("admin-password-stage").hidden = true;
+      $("admin-code-stage").hidden = false;
+      $("admin-code").required = true;
+      $("admin-form-title").textContent = "Verify Your Email";
+      $("admin-form-copy").textContent = "Enter the 6 digit code sent to your email";
       $("admin-code").focus();
     } catch (error) { say(error.message); }
     finally { button.disabled = false; button.textContent = "Continue securely"; }
@@ -115,39 +111,59 @@
   $("admin-verify")?.addEventListener("click", async () => {
     say("");
     const code = $("admin-code").value.trim();
-    if (!/^\d{6}$/.test(code)) { say("Enter the complete six-digit code"); return; }
+    if (!/^\d{6}$/.test(code)) { say("Enter the complete six-digit code."); return; }
     const button = $("admin-verify"); button.disabled = true; button.textContent = "Verifying…";
     try {
       await post("/api/admin/verify", { email, code });
-      if (!await openDashboard()) throw new Error("Your administrator session could not be confirmed");
+      if (!await openDashboard()) throw new Error("Your administrator session could not be confirmed.");
     } catch (error) { say(error.message); }
     finally { button.disabled = false; button.textContent = "Verify Code"; }
   });
 
-  $("admin-back")?.addEventListener("click", () => { showCodeStage(false); say(""); });
+  $("admin-back")?.addEventListener("click", () => {
+    $("admin-code-stage").hidden = true;
+    $("admin-password-stage").hidden = false;
+    $("admin-code").value = ""; $("admin-code").required = false;
+    $("admin-form-title").textContent = "Administrator sign in";
+    $("admin-form-copy").textContent = "Enter your authorised account credentials to continue.";
+    say("");
+  });
 
   function renderStats() {
     const today = new Date().toDateString(); // local day, not UTC
-    const cleanedToday = state.records.filter(r => r.verified && dayKey(r.cleaned_at) === today && String(r.status || "").toLowerCase().includes("clean")).length;
-    const pending = state.bins.filter(b => /pending|full|maintenance|inactive/i.test(b.status || "")).length;
-    $("admin-total-bins").textContent = state.bins.length.toLocaleString();
-    $("admin-cleaned-today").textContent = cleanedToday.toLocaleString();
-    $("admin-pending").textContent = pending.toLocaleString();
-    const available = state.bins.filter(b => lower(b.status || "available") === "available").length;
-    const pct = state.bins.length ? Math.round(available / state.bins.length * 100) : 0;
-    $("admin-cleaned-percent").textContent = state.bins.length ? `${pct}%` : "—";
-    $("admin-bin-donut").style.setProperty("--cleaned", `${pct}%`);
-    const counts = Array.from({length:5}, (_,i) => {
+    const total = state.bins.length;
+    const countStatus = s => state.bins.filter(b => lower(b.status || "available") === lower(s)).length;
+    const available = countStatus("Available");
+    $("admin-total-bins").textContent = total.toLocaleString();
+    $("admin-cleaned-today").textContent = state.records.filter(r => r.verified && dayKey(r.cleaned_at) === today && lower(r.status).includes("clean")).length.toLocaleString();
+    $("admin-pending").textContent = state.bins.filter(b => /pending|full|maintenance|inactive/i.test(b.status || "")).length.toLocaleString();
+    $("admin-cleaned-percent").textContent = total ? `${Math.round(available / total * 100)}%` : "—";
+    const colors = { Available:"#087747", Pending:"#d08a0c", Full:"#c93227", Maintenance:"#2e62c9", Inactive:"#8a948e" };
+    $("admin-status-list").innerHTML = Object.entries(colors).map(([name, color]) => {
+      const n = countStatus(name);
+      return `<li><div><span>${name}</span><b>${n}</b></div><span class="hx-track"><i style="--c:${color};width:${total ? n / total * 100 : 0}%"></i></span></li>`;
+    }).join("");
+    const months = Array.from({length:5}, (_, i) => {
       const d = new Date(); d.setDate(1); d.setMonth(d.getMonth() - 4 + i);
       return { label:d.toLocaleString("en",{month:"short"}), count:state.records.filter(r => {
-        const dt = new Date(r.cleaned_at); return r.verified && dt.getFullYear()===d.getFullYear() && dt.getMonth()===d.getMonth();
+        const t = new Date(r.cleaned_at); return r.verified && t.getFullYear() === d.getFullYear() && t.getMonth() === d.getMonth();
       }).length };
     });
-    const max = Math.max(1, ...counts.map(x=>x.count));
-    const points = counts.map((x,i)=>({x:42+i*105,y:164-(x.count/max)*118,...x}));
-    const path = points.map((p,i)=>(i?"L":"M")+` ${p.x} ${p.y}`).join(" ");
-    const area = `${path} L 462 180 L 42 180 Z`;
-    $("admin-cleaning-chart").innerHTML = `<div class="admin-line-chart"><svg viewBox="0 0 500 220" role="img" aria-label="Monthly verified cleaning activity"><line x1="42" y1="28" x2="462" y2="28" class="chart-grid"/><line x1="42" y1="104" x2="462" y2="104" class="chart-grid"/><line x1="42" y1="180" x2="462" y2="180" class="chart-grid"/><text x="8" y="32" class="chart-axis">${max}</text><text x="8" y="184" class="chart-axis">0</text><path d="${area}" fill="#16a66a" opacity=".12"/><path d="${path}" class="chart-line"/>${points.map(p=>`<circle cx="${p.x}" cy="${p.y}" r="6" class="chart-point"><title>${p.count} verified in ${p.label}</title></circle><text x="${p.x}" y="${p.y-13}" text-anchor="middle" class="chart-value">${p.count}</text><text x="${p.x}" y="207" text-anchor="middle" class="chart-month">${p.label}</text>`).join("")}</svg></div>`;
+    const max = Math.max(1, ...months.map(m => m.count));
+    $("admin-cleaning-chart").innerHTML = months.map(m => `<div class="hx-col" title="${m.count} verified in ${m.label}"><div class="hx-plot"><b>${m.count}</b><i style="height:${m.count / max * 100}%"></i></div><small>${m.label}</small></div>`).join("");
+    const latest = [...state.records].sort((a, b) => new Date(b.cleaned_at) - new Date(a.cleaned_at)).slice(0, 4);
+    $("admin-recent-records").innerHTML = latest.length ? latest.map(r => `<li><div><b>${esc(binCode(r))} · ${esc(r.area)}</b><small>${esc(localDate(r.cleaned_at))}</small></div>${pill(r.status || "Recorded")}</li>`).join("") : `<li class="hx-empty">No cleaning records yet</li>`;
+  }
+
+  // Ten rows per page
+  const PAGE_SIZE = 10;
+  const pageNo = { bins:1, records:1, users:1, reports:1, audit:1 };
+  function paginate(key, rows) {
+    const pages = Math.max(1, Math.ceil(rows.length / PAGE_SIZE));
+    pageNo[key] = Math.min(Math.max(1, pageNo[key]), pages);
+    const start = (pageNo[key] - 1) * PAGE_SIZE;
+    portal.querySelector(`[data-pager="${key}"]`).innerHTML = rows.length ? `<span>Showing ${start + 1} to ${Math.min(start + PAGE_SIZE, rows.length)} of ${rows.length}</span>${pages > 1 ? `<div><button type="button" class="hx-btn" data-step="-1" ${pageNo[key] === 1 ? "disabled" : ""}>Previous</button><button type="button" class="hx-btn" data-step="1" ${pageNo[key] === pages ? "disabled" : ""}>Next</button></div>` : ""}` : "";
+    return rows.slice(start, start + PAGE_SIZE);
   }
 
   function renderBinOptions() {
@@ -158,12 +174,13 @@
 
   function renderBins() {
     const q = lower($("admin-bin-search").value).trim();
-    const rows = state.bins.filter(b => lower([b.bin_code,b.name,b.area,b.status].join(" ")).includes(q));
-    $("admin-bin-count").textContent = `${state.bins.length} registered ${state.bins.length === 1 ? "dustbin" : "dustbins"}`;
-    $("admin-bins-table").innerHTML = rows.length ? rows.map(b => row(["ID","Name","Area","Status","Actions"], [
+    const wanted = $("admin-bin-filter").value;
+    const rows = state.bins.filter(b => lower([b.bin_code,b.name,b.area,b.status].join(" ")).includes(q) && (!wanted || lower(b.status || "available") === lower(wanted)));
+    const shown = paginate("bins", rows);
+    $("admin-bins-table").innerHTML = rows.length ? shown.map(b => row(["ID","Name","Area","Status","Actions"], [
       `<b>${esc(b.bin_code)}</b>`, esc(b.name), esc(b.area), pill(b.status || "Available"),
-      `<div class="admin-row-actions"><button type="button" class="admin-action-link" data-edit-bin="${esc(b.id)}">Edit</button><button type="button" class="admin-action-link danger" data-delete-bin="${esc(b.id)}">Delete</button></div>`
-    ])).join("") : emptyRow(5, q ? "No matching dustbins found" : "No dustbins registered yet");
+      `<div class="hx-rowactions"><button type="button" class="hx-link" data-edit-bin="${esc(b.id)}">Edit</button><button type="button" class="hx-link hx-dangertext" data-delete-bin="${esc(b.id)}">Delete</button></div>`
+    ])).join("") : emptyRow(5, q || wanted ? "No matching dustbins found" : "No dustbins registered yet");
   }
 
   const binCode = r => state.bins.find(b=>String(b.id)===String(r.bin_id))?.bin_code || r.bin_id;
@@ -174,8 +191,8 @@
 
   function renderRecords() {
     const rows = filteredRecords();
-    $("admin-record-count").textContent = $("admin-record-search").value.trim() ? `${rows.length} of ${state.records.length} records shown` : `${state.records.length} ${state.records.length === 1 ? "record" : "records"}`;
-    $("admin-records-table").innerHTML = rows.length ? rows.map(r => row(["Dustbin ID","Location","Date & time","Activity","Status","Verification"], [
+    const shown = paginate("records", rows);
+    $("admin-records-table").innerHTML = rows.length ? shown.map(r => row(["Dustbin ID","Location","Date & time","Activity","Status","Verification"], [
       `<b>${esc(binCode(r))}</b>`, esc(r.area), esc(localDate(r.cleaned_at)), esc(r.activity || "Cleaning"), pill(r.status || "Recorded"), r.verified ? "Verified" : "Pending verification"
     ])).join("") : emptyRow(6, state.records.length ? "No matching records found" : "No cleaning records have been registered");
     setBadge("records", state.records.filter(r => !r.verified).length);
@@ -199,36 +216,54 @@
   function renderUsers() {
     const q = lower($("admin-user-search").value).trim();
     const rows = state.users.filter(u => lower(`${u.name || ""} ${u.email} ${u.role}`).includes(q));
-    $("admin-user-count").textContent = `${state.users.length} ${state.users.length === 1 ? "account" : "accounts"}`;
-    $("admin-users-table").innerHTML = rows.length ? rows.map(u => row(["Name","Email","Role","Email verified","Joined"], [
-      esc(u.name || "—"), esc(u.email), `<span class="status" data-tone="info">${esc(label(u.role))}</span>`, u.email_confirmed ? "Verified" : "Not verified", esc(localDate(u.created_at))
+    const shown = paginate("users", rows);
+    $("admin-users-table").innerHTML = rows.length ? shown.map(u => row(["Name","Email","Role","Email verified","Joined"], [
+      esc(u.name || "—"), esc(u.email), `<span class="hx-pill" data-tone="info">${esc(label(u.role))}</span>`, u.email_confirmed ? "Verified" : "Not verified", esc(localDate(u.created_at))
     ])).join("") : emptyRow(5, "No matching users found");
   }
 
   const OPEN_REPORTS = ["submitted","under_review"];
-  let reports = [];
-  const updateReportBadge = () => setBadge("reports", reports.filter(r => OPEN_REPORTS.includes(r.status)).length);
+  function updateReportSummary() {
+    const open = reports.filter(r => OPEN_REPORTS.includes(r.status));
+    setBadge("reports", open.length);
+    $("admin-open-reports").textContent = open.length.toLocaleString();
+    $("admin-recent-reports").innerHTML = open.length ? open.slice(0, 4).map(r => `<li><div><b>${esc(r.issue_type)}</b><small>${esc(r.reference_code)} · ${esc(r.area)}</small></div>${pill(r.status)}</li>`).join("") : `<li class="hx-empty">No reports waiting for review</li>`;
+  }
+
+  function renderReports() {
+    const q = lower($("admin-report-search").value).trim(), wanted = $("admin-report-filter").value;
+    const rows = reports.filter(r => lower([r.reference_code,r.issue_type,r.area,r.reporter_name,r.reporter_email].join(" ")).includes(q) && (!wanted || r.status === wanted));
+    const shown = paginate("reports", rows);
+    $("admin-reports-table").innerHTML = rows.length ? shown.map(r => row(["Reference","Issue","Area","Submitted by","Status","Update"], [
+      `<b>${esc(r.reference_code)}</b>`, esc(r.issue_type), esc(r.area), esc(r.reporter_name || r.reporter_email || "Resident"),
+      `<select aria-label="Status for report ${esc(r.reference_code)}" data-tone="${tone(r.status)}" data-report-status="${esc(r.id)}">${["submitted","under_review","assigned","in_progress","resolved","rejected"].map(v=>`<option value="${v}" ${r.status===v?"selected":""}>${label(v)}</option>`).join("")}</select>`,
+      `<button class="hx-link" type="button" data-save-report="${esc(r.id)}" disabled>Save</button>`
+    ])).join("") : emptyRow(6, reports.length ? "No matching reports found" : "No resident reports yet");
+  }
 
   async function loadReports() {
     try {
-      const data = await request("/api/admin/reports");
-      reports = data.reports || [];
-      $("admin-reports-table").innerHTML = reports.length ? reports.map(r => row(["Reference","Issue","Area","Submitted by","Status","Update"], [
-        `<b>${esc(r.reference_code)}</b>`, esc(r.issue_type), esc(r.area), esc(r.reporter_name || r.reporter_email || "Resident"),
-        `<select class="admin-report-status" aria-label="Status for report ${esc(r.reference_code)}" data-tone="${tone(r.status)}" data-report-status="${esc(r.id)}">${["submitted","under_review","assigned","in_progress","resolved","rejected"].map(v=>`<option value="${v}" ${r.status===v?"selected":""}>${label(v)}</option>`).join("")}</select>`,
-        `<button class="admin-action-link" type="button" data-save-report="${esc(r.id)}" disabled>Save</button>`
-      ])).join("") : emptyRow(6, "No resident reports yet");
-      updateReportBadge();
+      reports = (await request("/api/admin/reports")).reports || [];
+      renderReports(); updateReportSummary();
       return true;
-    } catch (error) { if (portal.classList.contains("authorized")) $("admin-reports-table").innerHTML = emptyRow(6, error.message); return false; }
+    } catch (error) {
+      if (portal.classList.contains("authorized")) {
+        $("admin-reports-table").innerHTML = emptyRow(6, error.message);
+        $("admin-open-reports").textContent = "—";
+        $("admin-recent-reports").innerHTML = `<li class="hx-empty">Reports could not be loaded</li>`;
+      }
+      return false;
+    }
+  }
+
+  function renderAudit() {
+    const shown = paginate("audit", events);
+    $("admin-audit-table").innerHTML = events.length ? shown.map(x => row(["Time","Administrator","Event","Outcome"], [esc(localDate(x.created_at)), esc(x.email), esc(x.event), esc(x.outcome)])).join("") : emptyRow(4, "No audit events available");
   }
 
   async function loadAudit() {
-    try {
-      const data = await request("/api/admin/audit");
-      $("admin-audit-table").innerHTML = (data.events || []).length ? data.events.map(x => row(["Time","Administrator","Event","Outcome"], [esc(localDate(x.created_at)), esc(x.email), esc(x.event), esc(x.outcome)])).join("") : emptyRow(4, "No audit events available");
-      return true;
-    } catch (error) { if (portal.classList.contains("authorized")) $("admin-audit-table").innerHTML = emptyRow(4, error.message); return false; }
+    try { events = (await request("/api/admin/audit")).events || []; renderAudit(); return true; }
+    catch (error) { if (portal.classList.contains("authorized")) $("admin-audit-table").innerHTML = emptyRow(4, error.message); return false; }
   }
 
   // Resolves to true only when every part of the dashboard loaded
@@ -236,7 +271,7 @@
     try {
       const data = await request("/api/admin/manage");
       state = { bins:data.bins || [], records:data.records || [], users:data.users || [] };
-      renderStats(); renderBinOptions(); renderBins(); renderRecords(); renderUsers();
+      renderBinOptions(); renderStats(); renderBins(); renderRecords(); renderUsers();
       const results = await Promise.all([loadReports(),loadAudit()]);
       const ok = results.every(Boolean);
       if (ok) $("admin-updated").textContent = `Updated ${new Date().toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"})}`;
@@ -250,16 +285,14 @@
     }
   }
 
+  const binDialog = $("admin-bin-dialog"), recordDialog = $("admin-record-dialog");
   function resetBinForm() {
-    $("admin-bin-form").hidden = true; $("admin-bin-form").reset();
-    $("bin-edit-id").value = ""; $("bin-id").disabled = false;
+    $("admin-bin-form").reset(); $("bin-edit-id").value = ""; $("bin-id").disabled = false;
+    $("bin-dialog-title").textContent = "Add dustbin";
     $("bin-save").textContent = "Save dustbin"; $("bin-form-message").textContent = "";
   }
-  $("admin-add-bin")?.addEventListener("click", () => {
-    resetBinForm(); $("admin-bin-form").hidden = false;
-    $("admin-bin-form").scrollIntoView({behavior:"smooth",block:"center"});
-  });
-  $("bin-cancel")?.addEventListener("click", resetBinForm);
+  $("admin-add-bin")?.addEventListener("click", () => { resetBinForm(); binDialog.showModal(); });
+  portal.querySelectorAll("[data-close]").forEach(b => b.addEventListener("click", () => b.closest("dialog").close()));
   $("admin-bin-form")?.addEventListener("submit", async event => {
     event.preventDefault();
     const editing = Boolean($("bin-edit-id").value);
@@ -267,7 +300,7 @@
     const button = $("bin-save"); button.disabled = true;
     try {
       await (editing ? patch("/api/admin/manage",payload) : post("/api/admin/manage",{type:"bin",...payload}));
-      resetBinForm(); toast(editing ? "Dustbin updated" : "Dustbin added"); await loadAll();
+      binDialog.close(); toast(editing ? "Dustbin updated" : "Dustbin added"); await loadAll();
     } catch (error) { $("bin-form-message").textContent = error.message; }
     finally { button.disabled = false; }
   });
@@ -277,13 +310,13 @@
     const remove = event.target.closest("[data-delete-bin]");
     if (edit) {
       const bin = state.bins.find(b=>String(b.id)===edit.dataset.editBin); if (!bin) return;
-      $("admin-bin-form").hidden = false; $("bin-edit-id").value = bin.id;
+      resetBinForm(); $("bin-dialog-title").textContent = "Edit dustbin"; $("bin-edit-id").value = bin.id;
       $("bin-id").value = bin.bin_code || ""; $("bin-id").disabled = true;
       $("bin-name").value = bin.name || ""; $("bin-area").value = bin.area || "";
       $("bin-lat").value = bin.latitude ?? ""; $("bin-lng").value = bin.longitude ?? "";
       const option = [...$("bin-status").options].find(o => lower(o.value) === lower(bin.status || "available"));
       $("bin-status").value = option ? option.value : "Available"; $("bin-save").textContent = "Update dustbin";
-      $("admin-bin-form").scrollIntoView({behavior:"smooth",block:"center"});
+      binDialog.showModal();
     }
     if (remove) {
       const bin = state.bins.find(b=>String(b.id)===remove.dataset.deleteBin);
@@ -293,18 +326,21 @@
       catch (error) { toast(error.message, "bad"); remove.disabled = false; }
     }
   });
-  $("admin-bin-search")?.addEventListener("input",renderBins);
+  const renderers = { bins:renderBins, records:renderRecords, users:renderUsers, reports:renderReports, audit:renderAudit };
+  [["admin-bin-search","bins"],["admin-bin-filter","bins"],["admin-record-search","records"],["admin-user-search","users"],["admin-report-search","reports"],["admin-report-filter","reports"]]
+    .forEach(([id,key]) => $(id).addEventListener("input", () => { pageNo[key] = 1; renderers[key](); }));
+  portal.addEventListener("click", event => {
+    const step = event.target.closest("[data-step]"); if (!step) return;
+    const key = step.closest("[data-pager]").dataset.pager;
+    pageNo[key] += Number(step.dataset.step); renderers[key]();
+  });
 
   function resetRecordForm() {
-    $("admin-record-form").hidden = true; $("admin-record-form").reset();
+    $("admin-record-form").reset();
     $("record-cleaned-at").value = new Date(Date.now()-new Date().getTimezoneOffset()*60000).toISOString().slice(0,16);
     $("record-form-message").textContent = "";
   }
-  $("admin-add-record")?.addEventListener("click", () => {
-    resetRecordForm(); $("admin-record-form").hidden = false;
-    $("admin-record-form").scrollIntoView({behavior:"smooth",block:"center"});
-  });
-  $("record-cancel")?.addEventListener("click",resetRecordForm);
+  $("admin-add-record")?.addEventListener("click", () => { resetRecordForm(); recordDialog.showModal(); });
   $("record-bin-id")?.addEventListener("change",() => {
     const bin = state.bins.find(b=>String(b.id)===$("record-bin-id").value);
     if (bin) $("record-area").value = bin.area || "";
@@ -313,13 +349,11 @@
     event.preventDefault(); const button=$("record-save");button.disabled=true;
     try {
       await post("/api/admin/manage",{type:"record",bin_id:$("record-bin-id").value,area:$("record-area").value.trim(),cleaned_at:new Date($("record-cleaned-at").value).toISOString(),activity:$("record-activity").value.trim(),status:$("record-status").value,notes:$("record-notes").value.trim()});
-      resetRecordForm(); toast("Cleaning record saved"); await loadAll();
+      recordDialog.close(); toast("Cleaning record saved"); await loadAll();
     } catch(error) { $("record-form-message").textContent=error.message; }
     finally { button.disabled=false; }
   });
 
-  $("admin-user-search")?.addEventListener("input",renderUsers);
-  $("admin-record-search")?.addEventListener("input",renderRecords);
   $("admin-export-records")?.addEventListener("click",exportRecords);
   $("admin-refresh-reports")?.addEventListener("click",async event=>{
     const button=event.currentTarget; button.disabled=true;
@@ -340,7 +374,7 @@
     try {
       await patch("/api/admin/reports",{id,status}); button.textContent="Saved";
       const report=reports.find(r=>String(r.id)===id); if(report)report.status=status;
-      updateReportBadge(); toast("Report status updated");
+      updateReportSummary(); renderReports(); toast("Report status updated");
     }
     catch(error) { toast(error.message,"bad"); button.disabled=false; }
   });
@@ -359,10 +393,9 @@
     profilePopover.hidden = !open;
     profileToggle.setAttribute("aria-expanded", String(open));
     $("admin-profile-email").textContent = email || "Administrator account";
-    $("admin-profile-name").textContent = email ? email.split("@")[0] : "Administrator";
-  });
+      });
   document.addEventListener("click", event => {
-    if (profilePopover && !profilePopover.hidden && !event.target.closest(".admin-profile-menu-wrap")) closeProfile();
+    if (profilePopover && !profilePopover.hidden && !event.target.closest(".hx-profile")) closeProfile();
   });
   document.addEventListener("keydown", event => { if (event.key === "Escape") closeProfile(); });
   $("admin-profile-settings")?.addEventListener("click", () => {
@@ -390,19 +423,19 @@
   });
 
   // One page at a time, driven by the address so Back, Forward, refresh and bookmarks work
-  const PAGES = { "overview":"Dashboard", "manage-bins":"Dustbins", "manage-records":"Cleaning Records", "users":"Users", "reports":"Resident Reports", "settings":"Settings" };
-  const navLinks = [...document.querySelectorAll('.admin-side a[href^="#"], .admin-tabbar a')];
+  const PAGES = {
+    "overview":["Dashboard","Kumba waste collection at a glance"], "manage-bins":["Dustbins","Manage collection points"],
+    "manage-records":["Cleaning records","Track cleaning activity"], "users":["Users","Registered accounts"],
+    "reports":["Resident reports","Review and update waste issues"], "settings":["Settings","Preferences and security activity"]
+  };
+  const navLinks = [...portal.querySelectorAll("[data-nav]")];
   const currentPage = () => { const id = location.hash.slice(1); return Object.hasOwn(PAGES, id) ? id : "overview"; };
   function showPage() {
     const id = currentPage();
     document.querySelectorAll(".admin-page").forEach(p => { p.hidden = p.dataset.page !== id; });
-    $("admin-page-title").textContent = PAGES[id];
-    document.title = `${PAGES[id]} | HYSACAM Kumba Admin`;
-    navLinks.forEach(a => {
-      const on = a.getAttribute("href") === `#${id}`;
-      a.classList.toggle(a.closest(".admin-tabbar") ? "active" : "selected", on);
-      if (on) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
-    });
+    $("admin-page-title").textContent = PAGES[id][0]; $("admin-page-sub").textContent = PAGES[id][1];
+    document.title = `${PAGES[id][0]} | HYSACAM Kumba Admin`;
+    navLinks.forEach(a => { if (a.getAttribute("href") === `#${id}`) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current"); });
     window.scrollTo(0, 0);
   }
   function goTo(id) {
@@ -414,6 +447,7 @@
     event.preventDefault(); goTo(a.getAttribute("href").slice(1));
     $("admin-page-title").focus({ preventScroll:true });
   }));
+  portal.querySelectorAll("[data-link]").forEach(a => a.addEventListener("click", event => { event.preventDefault(); goTo(a.getAttribute("href").slice(1)); }));
   window.addEventListener("popstate", showPage);
   window.addEventListener("hashchange", showPage);
   showPage();
@@ -424,8 +458,8 @@
   const settingFeedback = $("admin-setting-feedback");
   const prefKey = "hysacam_admin_dashboard_preferences_v1";
   const applyPreferences = prefs => {
-    $("admin-main-pro")?.classList.toggle("compact-dashboard", Boolean(prefs.compact));
-    $("admin-main-pro")?.classList.toggle("reduce-motion", Boolean(prefs.reduceMotion));
+    portal.classList.toggle("compact", Boolean(prefs.compact));
+    portal.classList.toggle("still", Boolean(prefs.reduceMotion));
     if (prefCompact) prefCompact.checked = Boolean(prefs.compact);
     if (prefMotion) prefMotion.checked = Boolean(prefs.reduceMotion);
   };
@@ -443,11 +477,5 @@
     applyPreferences(savedPrefs);
     if(settingFeedback)settingFeedback.textContent="Dashboard preferences reset";
   });
-  $("admin-setting-refresh")?.addEventListener("click", async event => {
-    const button=event.currentTarget; button.disabled=true; button.textContent="Refreshing…";
-    try { const ok = await loadAll(); if(settingFeedback)settingFeedback.textContent=ok ? "Dashboard data refreshed" : "Refresh failed, check your session and connection"; }
-    finally { button.disabled=false; button.textContent="Refresh dashboard data"; }
-  });
-
   openDashboard().catch(error=>console.warn("[HYSACAM admin]",error));
 })();
