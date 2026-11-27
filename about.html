@@ -1,32 +1,167 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"><meta name="theme-color" content="#087747"><meta name="description" content="HYSACAM Kumba Tracker helps residents find waste collection points and follow community cleaning activity."><title>About HYSACAM | HYSACAM Kumba Tracker</title><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"><script>(function(){var s="no";try{var c=JSON.parse(localStorage.getItem("hysacam-auth-cache")||"null");if(c&&c.a===1)s="yes"}catch(e){}document.documentElement.className+=" auth-"+s})();</script><link rel="stylesheet" href="css/style.css?v=5b2ca3b6"><link rel="stylesheet" href="css/app.css?v=16"></head><body id="top" class="is-inner no-auth-ui">
-<header class="topbar">
-  <a class="back-btn" href="index.html" aria-label="Back" onclick="if(history.length>1&&document.referrer.indexOf(location.origin)===0){history.back();return false}"><svg viewBox="0 0 24 24" aria-hidden="true" ><path d="m15 6-6 6 6 6"/></svg></a><h1 class="mobile-title">About HYSACAM</h1>
-  <a class="brand" href="index.html" aria-label="HYSACAM Kumba Tracker home">
-    <img class="hysacam-logo" src="images/hysacam-symbol.svg" alt="HYSACAM symbol">
-    <span class="brand-wordmark"><b>HYSACAM</b><small>Kumba Tracker</small></span>
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#087747"><title>Administrator Portal | HYSACAM Kumba</title><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="css/style.css?v=5b2ca3b6"><link rel="stylesheet" href="css/admin-app.css?v=7"></head><body>
+<div class="admin-login-page" id="admin-login-page"><section class="admin-login-brand auth-photo-panel">
+  <a class="auth-brand-lockup" href="index.html" aria-label="HYSACAM Kumba Tracker home">
+    <img src="images/hysacam-symbol.svg" alt="HYSACAM logo">
+    <span><strong>HYSACAM</strong><small>KUMBA TRACKER</small></span>
   </a>
-  <nav id="public-nav" class="public-nav" aria-label="Quick links for visitors">
-    <a href="index.html">Home</a><a href="map.html">Map</a><a href="directory.html">Directory</a><a href="report.html">Reports</a><a href="settings.html">Settings</a>
-  </nav>
-  <div class="header-tools"><button class="notification-toggle" type="button" data-open-notifications aria-label="Notifications"><svg viewBox="0 0 24 24" aria-hidden="true" ><path d="M6 9a6 6 0 0 1 12 0c0 6 2 7 2 7H4s2-1 2-7"/><path d="M10 20a2 2 0 0 0 4 0"/></svg><span class="notification-count" hidden>0</span></button></div>
-  <button id="menu-toggle" class="menu-toggle" type="button" aria-label="Open navigation" aria-controls="main-nav" aria-expanded="false"><span></span><span></span><span></span></button>
-  <nav id="main-nav" aria-label="Main navigation">
-    <div class="mobile-nav-head">
-      <a class="mobile-nav-brand" href="index.html"><img src="images/hysacam-symbol.svg" alt=""><span><b>HYSACAM</b><small>KUMBA TRACKER</small></span></a>
-      <button id="menu-close" type="button" aria-label="Close navigation">×</button>
+  <div class="auth-photo-copy"><span>RESTRICTED ADMINISTRATOR ACCESS</span><h1>Kumba Tracker</h1><p>A Cleaner Kumba<br>A Healthier Community</p></div>
+  <div class="admin-security-points"><span>✓ Two-step verification</span><span>✓ Approved administrator accounts only</span><span>✓ Protected administrator session</span></div>
+  <div class="auth-photo-bottom">Secure HYSACAM administration</div>
+</section><section class="admin-login-panel"><form class="admin-login-card" id="admin-login-form" novalidate><span class="eyebrow">HYSACAM KUMBA TRACKER</span><h2 id="admin-form-title">Administrator sign in</h2><p id="admin-form-copy">Enter your authorised account credentials to continue</p><div id="admin-password-stage"><label for="admin-email">Authorised email</label><input id="admin-email" type="email" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" required placeholder="Enter administrator email"><label for="admin-password">Password</label><div class="auth-password-wrap"><input id="admin-password" type="password" autocomplete="current-password" required placeholder="Enter your password"><button class="password-toggle password-toggle-icon" type="button" data-toggle-password="admin-password" aria-label="Show password" title="Show password"></button></div><button class="button" type="submit" id="admin-submit">Continue securely</button>
+</div><div id="admin-code-stage" hidden><h3 class="admin-code-title">Verify Your Email</h3><p class="admin-code-subtitle">Enter the 6 digit code sent to your email</p><div class="otp-boxes" data-otp-for="admin-code" aria-label="Six-digit administrator verification code"></div><input class="otp-input otp-source" id="admin-code" type="text" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" placeholder="000000"><button class="button" type="button" id="admin-verify">Verify Code</button><button class="admin-text-button" type="button" id="admin-back">Back to sign in</button></div><div class="auth-message" id="auth-message" role="alert" aria-live="polite"></div><div class="security-note">No public administrator registration. Unapproved accounts are denied by the server</div></form></section></div>
+
+<section class="admin-portal" id="admin-portal">
+<div class="hx-shell">
+  <aside class="hx-side" aria-label="Administrator navigation">
+    <div class="hx-brand"><img src="images/hysacam-symbol.svg" alt=""><div><b>HYSACAM</b><small>Kumba Administration</small></div></div>
+    <nav>
+      <p class="hx-navlabel">Operations</p>
+      <a data-nav href="#overview"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11 12 3l9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg><span>Dashboard</span></a>
+      <a data-nav href="#manage-bins"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg><span>Dustbins</span></a>
+      <a data-nav href="#manage-records"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4h6v3H9zM7 5H5v16h14V5h-2"/><path d="m9 14 2 2 4-4"/></svg><span>Cleaning records</span><i class="hx-badge" data-badge="records" hidden></i></a>
+      <a data-nav href="#reports"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M9 12h7M9 16h7M9 8h3"/></svg><span>Resident reports</span><i class="hx-badge" data-badge="reports" hidden></i></a>
+      <p class="hx-navlabel">Administration</p>
+      <a data-nav href="#users"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><span>Users</span></a>
+      <a data-nav href="#settings"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9 7 7M17 17l2.1 2.1M4.9 19.1 7 17M17 7l2.1-2.1"/></svg><span>Settings</span></a>
+    </nav>
+    <button class="hx-signout" id="admin-logout" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></svg><span>Sign out</span></button>
+  </aside>
+
+  <div class="hx-body" id="admin-main-pro">
+    <header class="hx-top">
+      <img class="hx-toplogo" src="images/hysacam-symbol.svg" alt="">
+      <div class="hx-heading"><h1 id="admin-page-title" tabindex="-1">Dashboard</h1><p id="admin-page-sub"></p></div>
+      <span class="hx-updated" id="admin-updated" role="status">Loading</span>
+      <button class="hx-btn hx-icononly" id="admin-quick-refresh" type="button" aria-label="Refresh data" title="Refresh data"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg></button>
+      <div class="hx-profile">
+        <button class="hx-userbtn" id="admin-profile-toggle" type="button" aria-expanded="false" aria-controls="admin-profile-popover" aria-label="Account menu"><span class="hx-avatar" id="admin-avatar">A</span><span class="hx-username"><b id="admin-welcome">Administrator</b><small>Administrator</small></span></button>
+        <div class="hx-menu" id="admin-profile-popover" hidden>
+          <p id="admin-profile-email">Administrator account</p>
+          <button type="button" id="admin-profile-settings">Settings</button>
+          <button type="button" class="hx-dangertext" id="admin-profile-logout">Sign out</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="hx-main">
+      <div class="admin-page" data-page="overview">
+        <div class="hx-kpis">
+          <a class="hx-kpi" href="#manage-bins" data-link><span>Total dustbins</span><strong id="admin-total-bins">—</strong><small>Registered collection points</small></a>
+          <a class="hx-kpi" href="#manage-records" data-link><span>Cleaned today</span><strong id="admin-cleaned-today">—</strong><small>Verified cleaning records</small></a>
+          <a class="hx-kpi hx-warn" href="#manage-bins" data-link><span>Needs attention</span><strong id="admin-pending">—</strong><small>Dustbins not ready for use</small></a>
+          <a class="hx-kpi" href="#reports" data-link><span>New reports</span><strong id="admin-open-reports">—</strong><small>Submitted or under review</small></a>
+        </div>
+        <div class="hx-actions">
+          <button class="hx-btn hx-primary" type="button" id="admin-quick-bin"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg> Add dustbin</button>
+          <button class="hx-btn" type="button" id="admin-quick-record"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4h6v3H9zM7 5H5v16h14V5h-2"/><path d="m9 14 2 2 4-4"/></svg> Add cleaning record</button>
+        </div>
+        <div class="hx-grid">
+          <section class="hx-card"><div class="hx-cardhead"><div><h2>Cleaning activity</h2><p>Verified records, last 5 months</p></div></div><div id="admin-cleaning-chart" class="hx-chart"></div></section>
+          <section class="hx-card"><div class="hx-cardhead"><div><h2>Dustbin status</h2><p><b id="admin-cleaned-percent">—</b> available</p></div></div><ul class="hx-bars" id="admin-status-list"></ul></section>
+          <section class="hx-card"><div class="hx-cardhead"><div><h2>Recent cleaning</h2><p>Latest activity</p></div><a class="hx-more" href="#manage-records" data-link>View all</a></div><ul class="hx-feed" id="admin-recent-records"></ul></section>
+          <section class="hx-card"><div class="hx-cardhead"><div><h2>Reports to review</h2><p>Waiting for action</p></div><a class="hx-more" href="#reports" data-link>View all</a></div><ul class="hx-feed" id="admin-recent-reports"></ul></section>
+        </div>
+      </div>
+
+      <section class="admin-page hx-card hx-tablecard" data-page="manage-bins" hidden>
+        <div class="hx-toolbar">
+          <input id="admin-bin-search" type="search" placeholder="Search ID, name or area" aria-label="Search dustbins">
+          <select id="admin-bin-filter" aria-label="Filter by status"><option value="">All statuses</option><option>Available</option><option>Pending</option><option>Full</option><option>Maintenance</option><option>Inactive</option></select>
+          <button class="hx-btn hx-primary hx-push" id="admin-add-bin" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg> Add dustbin</button>
+        </div>
+        <div class="hx-scroll"><table><thead><tr><th>ID</th><th>Name</th><th>Area</th><th>Status</th><th>Actions</th></tr></thead><tbody id="admin-bins-table"></tbody></table></div>
+        <div class="hx-pager" data-pager="bins"></div>
+      </section>
+
+      <section class="admin-page hx-card hx-tablecard" data-page="manage-records" hidden>
+        <div class="hx-toolbar">
+          <input id="admin-record-search" type="search" placeholder="Search records" aria-label="Search records">
+          <button class="hx-btn hx-push" id="admin-export-records" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg> Export CSV</button>
+          <button class="hx-btn hx-primary" id="admin-add-record" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg> Add record</button>
+        </div>
+        <div class="hx-scroll"><table><thead><tr><th>Dustbin ID</th><th>Location</th><th>Date and time</th><th>Activity</th><th>Status</th><th>Verification</th></tr></thead><tbody id="admin-records-table"></tbody></table></div>
+        <div class="hx-pager" data-pager="records"></div>
+      </section>
+
+      <section class="admin-page hx-card hx-tablecard" data-page="reports" hidden>
+        <div class="hx-toolbar">
+          <input id="admin-report-search" type="search" placeholder="Search reference, issue or area" aria-label="Search reports">
+          <select id="admin-report-filter" aria-label="Filter by status"><option value="">All statuses</option><option value="submitted">Submitted</option><option value="under_review">Under review</option><option value="assigned">Assigned</option><option value="in_progress">In progress</option><option value="resolved">Resolved</option><option value="rejected">Rejected</option></select>
+          <button class="hx-btn hx-push" id="admin-refresh-reports" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg> Refresh reports</button>
+        </div>
+        <div class="hx-scroll"><table><thead><tr><th>Reference</th><th>Issue</th><th>Area</th><th>Submitted by</th><th>Status</th><th>Update</th></tr></thead><tbody id="admin-reports-table"></tbody></table></div>
+        <div class="hx-pager" data-pager="reports"></div>
+      </section>
+
+      <section class="admin-page hx-card hx-tablecard" data-page="users" hidden>
+        <div class="hx-toolbar"><input id="admin-user-search" type="search" placeholder="Search name or email" aria-label="Search users"></div>
+        <div class="hx-scroll"><table><thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Email verified</th><th>Joined</th></tr></thead><tbody id="admin-users-table"></tbody></table></div>
+        <div class="hx-pager" data-pager="users"></div>
+        <p class="hx-note">Administrator access is controlled by the ADMIN_EMAILS list on the server and cannot be granted from this screen</p>
+      </section>
+
+      <div class="admin-page" data-page="settings" hidden>
+        <div class="hx-settings">
+          <section class="hx-card"><div class="hx-cardhead"><div><h2>Display preferences</h2><p>Saved on this device only</p></div></div>
+            <label class="hx-check"><input type="checkbox" id="admin-setting-compact"><span><b>Compact layout</b><small>Show more rows on screen</small></span></label>
+            <label class="hx-check"><input type="checkbox" id="admin-setting-reduced-motion"><span><b>Reduce motion</b><small>Turn off transition effects</small></span></label>
+            <div class="hx-actions"><button class="hx-btn hx-primary" type="button" id="admin-setting-save">Save preferences</button><button class="hx-btn" type="button" id="admin-setting-reset">Reset</button></div>
+            <p class="hx-feedback" id="admin-setting-feedback" role="status"></p>
+          </section>
+          <section class="hx-card"><div class="hx-cardhead"><div><h2>Access control</h2><p>Managed by the project owner</p></div></div>
+            <p class="hx-text">Only email addresses listed in the Vercel <b>ADMIN_EMAILS</b> setting can access this portal. The project owner changes this list in Vercel</p>
+          </section>
+        </div>
+        <section class="hx-card hx-tablecard"><div class="hx-toolbar"><h2>Recent administrator activity</h2></div><div class="hx-scroll"><table><thead><tr><th>Time</th><th>Administrator</th><th>Event</th><th>Outcome</th></tr></thead><tbody id="admin-audit-table"></tbody></table></div><div class="hx-pager" data-pager="audit"></div></section>
+      </div>
+    </main>
+  </div>
+</div>
+
+<nav class="hx-tabbar" aria-label="Administrator sections">
+  <a data-nav href="#overview"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11 12 3l9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg><span>Home</span></a>
+  <a data-nav href="#manage-bins"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg><span>Bins</span></a>
+  <a data-nav href="#manage-records"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4h6v3H9zM7 5H5v16h14V5h-2"/><path d="m9 14 2 2 4-4"/></svg><span>Records</span><i class="hx-badge" data-badge="records" hidden></i></a>
+  <a data-nav href="#users"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><span>Users</span></a>
+  <a data-nav href="#reports"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M9 12h7M9 16h7M9 8h3"/></svg><span>Reports</span><i class="hx-badge" data-badge="reports" hidden></i></a>
+  <a data-nav href="#settings"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9 7 7M17 17l2.1 2.1M4.9 19.1 7 17M17 7l2.1-2.1"/></svg><span>Settings</span></a>
+</nav>
+
+<dialog class="hx-drawer" id="admin-bin-dialog" aria-labelledby="bin-dialog-title">
+  <form id="admin-bin-form">
+    <div class="hx-drawerhead"><h2 id="bin-dialog-title">Add dustbin</h2><button type="button" class="hx-close" data-close aria-label="Close">×</button></div>
+    <div class="hx-fields">
+      <input type="hidden" id="bin-edit-id">
+      <label>Dustbin ID<input id="bin-id" required maxlength="48" placeholder="BIN-001"></label>
+      <label>Display name<input id="bin-name" required maxlength="120" placeholder="Mile 2 Collection Point"></label>
+      <label>Area<input id="bin-area" required maxlength="120" placeholder="Mile 2, Kumba"></label>
+      <div class="hx-two"><label>Latitude<input id="bin-lat" type="number" step="any" min="-90" max="90" placeholder="4.6363"></label><label>Longitude<input id="bin-lng" type="number" step="any" min="-180" max="180" placeholder="9.4469"></label></div>
+      <label>Status<select id="bin-status"><option>Available</option><option>Pending</option><option>Full</option><option>Maintenance</option><option>Inactive</option></select></label>
+      <p class="hx-error" id="bin-form-message" role="alert"></p>
     </div>
-    <div id="menu-account-summary" class="menu-account-summary"><b>Welcome</b><small>Explore HYSACAM Kumba Tracker</small></div>
-    <div id="menu-links" class="menu-links">
-      <a href="index.html">Home</a><a href="map.html">Map</a><a href="settings.html">Settings</a>
-      <button type="button" data-open-notifications>Notifications</button>
+    <div class="hx-drawerfoot"><button class="hx-btn" type="button" id="bin-cancel" data-close>Cancel</button><button class="hx-btn hx-primary" type="submit" id="bin-save">Save dustbin</button></div>
+  </form>
+</dialog>
+
+<dialog class="hx-drawer" id="admin-record-dialog" aria-labelledby="record-dialog-title">
+  <form id="admin-record-form">
+    <div class="hx-drawerhead"><h2 id="record-dialog-title">Add cleaning record</h2><button type="button" class="hx-close" data-close aria-label="Close">×</button></div>
+    <div class="hx-fields">
+      <label>Dustbin<select id="record-bin-id" required><option value="">Select a dustbin</option></select></label>
+      <label>Location<input id="record-area" required maxlength="120" placeholder="Collection point area"></label>
+      <label>Date and time<input id="record-cleaned-at" type="datetime-local" required></label>
+      <label>Activity<input id="record-activity" maxlength="120" value="Routine cleaning" required></label>
+      <label>Status<select id="record-status"><option>Cleaned</option><option>Pending</option><option>In progress</option></select></label>
+      <label>Notes<textarea id="record-notes" maxlength="500" rows="3" placeholder="Optional notes"></textarea></label>
+      <p class="hx-error" id="record-form-message" role="alert"></p>
     </div>
-    <div class="mobile-nav-footer">HYSACAM Kumba Tracker</div>
-  </nav>
-  <button class="nav-backdrop" id="nav-backdrop" type="button" aria-label="Close navigation"></button>
-</header>
-<main class="inner-page"><div class="page-wrap"><section id="about" class="about-page"><div class="about-nav"><a class="brand" href="index.html" aria-label="HYSACAM Kumba Tracker home"><img class="hysacam-logo" src="images/hysacam-symbol.svg" alt="HYSACAM symbol"></a><nav><a href="index.html">Home</a><a href="map.html">Map</a><a href="directory.html">Directory</a><a href="cleaning.html">Cleaning Records</a><a href="about.html">About</a></nav></div><div class="about-body"><div class="about-copy"><span class="eyebrow">WHO WE ARE</span><h2>About HYSACAM</h2><p>HYSACAM (Highlands and Western Sanitation Company) is committed to keeping our communities clean and healthy. This platform helps residents and staff locate waste collection points, track cleaning activities and promote responsible waste management in Kumba</p><div class="values"><span>🌿 <b>Cleaner<br>Environment</b></span><span>♥ <b>Better<br>Health</b></span><span>♻ <b>Sustainable<br>Communities</b></span></div></div><div class="about-image"><img src="images/hysacam-truck.jpg" alt="HYSACAM collection team working beside a waste collection truck"></div></div><footer class="about-footer"><span>© 2026 HYSACAM. All rights reserved</span></footer></section></div></main><footer class="site-footer"><span>© HYSACAM Kumba Tracker</span><a href="index.html">Back to top ↑</a></footer>
-<aside id="notification-panel" class="notification-panel" hidden aria-label="Notifications"><div class="notification-head"><div><span class="eyebrow">LATEST UPDATES</span><h3>Notifications</h3></div><button id="notification-close" type="button" aria-label="Close notifications">×</button></div><div id="notification-list" class="notification-list"><p class="notification-empty">Loading your latest updates…</p></div><p class="notification-foot">Updates are based on records available to your signed-in account</p></aside>
-<nav class="app-tabbar" aria-label="Primary"><a href="index.html"><svg viewBox="0 0 24 24" aria-hidden="true" ><path d="M3 11 12 3l9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg><span>Home</span></a><a href="map.html"><svg viewBox="0 0 24 24" aria-hidden="true" ><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg><span>Map</span></a><a href="report.html"><svg viewBox="0 0 24 24" aria-hidden="true" ><path d="M6 3h9l4 4v14H6z"/><path d="M9 12h7M9 16h7M9 8h3"/></svg><span>Reports</span></a><a href="cleaning.html" aria-label="Cleaning Records"><svg viewBox="0 0 24 24" aria-hidden="true" ><path d="M9 4h6v3H9zM7 5H5v16h14V5h-2"/><path d="m9 14 2 2 4-4"/></svg><span>Cleaning</span></a><a href="settings.html"><svg viewBox="0 0 24 24" aria-hidden="true" ><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span>Settings</span></a></nav>
-<script src="js/shared.js?v=ee0d6659"></script><script src="js/app-shell.js?v=16"></script><script src="js/notifications.js?v=5ca408c2"></script><script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script defer src="js/supabase.js?v=64119a7a"></script><script defer src="js/platform.js?v=b48c6775"></script><script defer src="js/auth-guard.js?v=b4032a17"></script>
-<script>(function(){const w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);const n=[];while(w.nextNode())n.push(w.currentNode);for(const x of n){if(x.parentElement&&/^(SCRIPT|STYLE|TEXTAREA)$/i.test(x.parentElement.tagName))continue;x.nodeValue=x.nodeValue.replace(/\.(?=\s|$)/g,"");}})();</script>
+    <div class="hx-drawerfoot"><button class="hx-btn" type="button" id="record-cancel" data-close>Cancel</button><button class="hx-btn hx-primary" type="submit" id="record-save">Save record</button></div>
+  </form>
+</dialog>
+</section>
+<script src="js/auth-common.js?v=22d621ef"></script><script src="js/auth-ui.js?v=fd0f4ec6"></script><script src="js/admin-dashboard.js?v=7"></script><script>
+// Remove sentence-ending full stops from interface copy as requested
+(function(){const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);const nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);for(const node of nodes){if(node.parentElement&&/^(SCRIPT|STYLE|TEXTAREA)$/i.test(node.parentElement.tagName))continue;node.nodeValue=node.nodeValue.replace(/\.(?=\s|$)/g,"");}})();
+</script>
 </body></html>
