@@ -177,3 +177,11 @@
 @media (prefers-reduced-motion: reduce) {
   .pa-hero, .pa-card, .pa-line { animation: none; }
 }
+
+/* Page background and scroll safety for the Profile page */
+body.is-profile {
+  background:
+    radial-gradient(520px 260px at 90% -40px, rgba(31, 191, 99, 0.16), transparent 70%),
+    radial-gradient(420px 240px at -10% 120px, rgba(8, 119, 71, 0.1), transparent 70%),
+    linear-gradient(180deg, #eaf6ef 0%, #f6fbf8 40%, #ffffff 100%);
+}
