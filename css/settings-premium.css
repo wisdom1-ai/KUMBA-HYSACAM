@@ -504,3 +504,21 @@ html:not(.auth-no) .profile-row:not(.is-ready) .pr-role { min-width: 70px; min-h
   .signout-btn, .brand-card, .inner-page .set-panel { animation: none; }
   .toggle-line input[type="checkbox"], .toggle-line input[type="checkbox"]::after { transition: none; }
 }
+/* Authentication loading state */
+html.auth-pending .auth-only,
+html.auth-pending .profile-row,
+html.auth-pending .set-quick,
+html.auth-pending .signout-btn,
+html.auth-pending .guest-strip {
+  display: none !important;
+}
+
+/* Signed-in state */
+html.auth-yes .guest-strip {
+  display: none !important;
+}
+
+/* Visitor state */
+html.auth-no .guest-strip {
+  display: flex;
+}
