@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#087747"><title>Administrator Portal | HYSACAM Kumba</title><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="css/style.css?v=5b2ca3b6"><link rel="stylesheet" href="css/admin-app.css?v=4"></head><body>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#087747"><title>Administrator Portal | HYSACAM Kumba</title><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="css/style.css?v=5b2ca3b6"><link rel="stylesheet" href="css/admin-app.css?v=5"></head><body>
 <div class="admin-login-page" id="admin-login-page"><section class="admin-login-brand auth-photo-panel">
   <a class="auth-brand-lockup" href="index.html" aria-label="HYSACAM Kumba Tracker home">
     <img src="images/hysacam-symbol.svg" alt="HYSACAM logo">
@@ -19,21 +19,21 @@
       <strong>HYSACAM<br><small>ADMINISTRATION</small></strong>
     </div>
     <span class="admin-nav-label">MAIN MENU</span>
-    <a class="selected" href="#overview"><span class="admin-nav-icon">⌂</span><span>Dashboard</span></a>
-    <a href="#manage-bins"><span class="admin-nav-icon">▤</span><span>Manage Bins</span></a>
-    <a href="#manage-records"><span class="admin-nav-icon">✓</span><span>Cleaning Records</span><i class="admin-badge" data-badge="records" hidden>0</i></a>
-    <a href="#users"><span class="admin-nav-icon">♙</span><span>Users</span></a>
-    <a href="#reports"><span class="admin-nav-icon">▥</span><span>Reports</span><i class="admin-badge" data-badge="reports" hidden>0</i></a>
-    <a href="#settings"><span class="admin-nav-icon">⚙</span><span>Settings</span></a>
+    <a class="selected" href="#overview"><span class="admin-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11 12 3l9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg></span><span>Dashboard</span></a>
+    <a href="#manage-bins"><span class="admin-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg></span><span>Manage Bins</span></a>
+    <a href="#manage-records"><span class="admin-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4h6v3H9zM7 5H5v16h14V5h-2"/><path d="m9 14 2 2 4-4"/></svg></span><span>Cleaning Records</span><i class="admin-badge" data-badge="records" hidden>0</i></a>
+    <a href="#users"><span class="admin-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></span><span>Users</span></a>
+    <a href="#reports"><span class="admin-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M9 12h7M9 16h7M9 8h3"/></svg></span><span>Reports</span><i class="admin-badge" data-badge="reports" hidden>0</i></a>
+    <a href="#settings"><span class="admin-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9 7 7M17 17l2.1 2.1M4.9 19.1 7 17M17 7l2.1-2.1"/></svg></span><span>Settings</span></a>
     <div class="admin-side-bottom">
-      <button class="button" id="admin-logout" type="button"><span class="admin-nav-icon">↪</span><span>Logout</span></button>
+      <button class="button" id="admin-logout" type="button"><span class="admin-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></svg></span><span>Logout</span></button>
     </div>
   </aside>
 
   <main class="admin-main admin-main-pro" id="admin-main-pro">
     <header class="admin-title">
       <img class="admin-top-logo" src="images/hysacam-symbol.svg" alt="">
-      <div><span class="eyebrow">HYSACAM KUMBA TRACKER</span><h2>Admin Dashboard</h2></div>
+      <div><span class="eyebrow">HYSACAM KUMBA TRACKER</span><h2 id="admin-page-title" tabindex="-1">Dashboard</h2></div>
       <div class="admin-profile-menu-wrap">
         <button class="admin-user-chip" id="admin-profile-toggle" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="admin-profile-popover">
           <span class="admin-user-avatar" id="admin-avatar">A</span>
@@ -48,6 +48,7 @@
       <button class="admin-logout-top" id="admin-logout-top" type="button" aria-label="Sign out"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></svg></button>
     </header>
 
+    <div class="admin-page" data-page="overview">
     <div class="admin-dashboard-intro">
       <div><h3>Overview</h3><p>Here is what is happening across your Kumba operations</p></div>
       <span class="admin-live-status"><i></i> <span id="admin-updated">Live overview</span></span>
@@ -61,15 +62,15 @@
 
     <section id="overview" class="admin-stat-grid">
       <article class="admin-stat-card">
-        <span class="admin-stat-icon green">▤</span>
+        <span class="admin-stat-icon green"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg></span>
         <div><small>Total Bins</small><strong id="admin-total-bins">—</strong><em>Registered collection points</em></div>
       </article>
       <article class="admin-stat-card">
-        <span class="admin-stat-icon blue">✓</span>
+        <span class="admin-stat-icon blue"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4h6v3H9zM7 5H5v16h14V5h-2"/><path d="m9 14 2 2 4-4"/></svg></span>
         <div><small>Cleaned Today</small><strong id="admin-cleaned-today">—</strong><em>Verified cleaning activity</em></div>
       </article>
       <article class="admin-stat-card">
-        <span class="admin-stat-icon amber">◷</span>
+        <span class="admin-stat-icon amber"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2 20h20zM12 10v4M12 17h.01"/></svg></span>
         <div><small>Needs Attention</small><strong id="admin-pending">—</strong><em>Pending, full or in maintenance</em></div>
       </article>
     </section>
@@ -85,9 +86,10 @@
         <div class="admin-status-legend"><span><i class="legend-green"></i> Available</span><span><i class="legend-grey"></i> Other status</span></div>
       </article>
     </section>
+    </div>
 
-    <section id="manage-bins" class="admin-management-section">
-      <div class="admin-dashboard-intro"><div><h3>Manage Dustbins</h3><p>Register, update and remove collection points</p></div><button class="button" id="admin-add-bin" type="button">＋ Add dustbin</button></div>
+    <section id="manage-bins" class="admin-management-section admin-page" data-page="manage-bins" hidden>
+      <div class="admin-dashboard-intro"><div><h3>Manage Dustbins</h3><p>Register, update and remove collection points</p></div><button class="button" id="admin-add-bin" type="button">+ Add dustbin</button></div>
       <form id="admin-bin-form" class="panel admin-entry-form" hidden>
         <input type="hidden" id="bin-edit-id">
         <label>Dustbin ID<input id="bin-id" required maxlength="48" placeholder="e.g. BIN-001"></label><label>Display name<input id="bin-name" required maxlength="120" placeholder="e.g. Mile 2 Collection Point"></label><label>Area<input id="bin-area" required maxlength="120" placeholder="e.g. Mile 2, Kumba"></label><label>Latitude<input id="bin-lat" type="number" step="any" min="-90" max="90" placeholder="4.6363"></label><label>Longitude<input id="bin-lng" type="number" step="any" min="-180" max="180" placeholder="9.4469"></label><label>Status<select id="bin-status"><option>Available</option><option>Pending</option><option>Full</option><option>Maintenance</option><option>Inactive</option></select></label>
@@ -96,17 +98,17 @@
       <div class="panel admin-table-panel"><div class="admin-panel-heading"><div><h3>Registered collection points</h3><p id="admin-bin-count">Loading dustbins…</p></div><input id="admin-bin-search" class="admin-table-search" type="search" placeholder="Search ID or area" aria-label="Search dustbins"></div><div class="table-wrap"><table><thead><tr><th>ID</th><th>Name</th><th>Area</th><th>Status</th><th>Actions</th></tr></thead><tbody id="admin-bins-table"><tr><td colspan="5">Loading…</td></tr></tbody></table></div></div>
     </section>
 
-    <section id="manage-records" class="admin-management-section">
-      <div class="admin-dashboard-intro"><div><h3>Cleaning Records</h3><p>Review verified activities and add new cleaning records</p></div><button class="button" id="admin-add-record" type="button">＋ Add record</button></div>
+    <section id="manage-records" class="admin-management-section admin-page" data-page="manage-records" hidden>
+      <div class="admin-dashboard-intro"><div><h3>Cleaning Records</h3><p>Review verified activities and add new cleaning records</p></div><button class="button" id="admin-add-record" type="button">+ Add record</button></div>
       <form id="admin-record-form" class="panel admin-entry-form" hidden><label>Dustbin<select id="record-bin-id" required><option value="">Select a dustbin</option></select></label><label>Location<input id="record-area" required maxlength="120" placeholder="Collection point area"></label><label>Date and time<input id="record-cleaned-at" type="datetime-local" required></label><label>Activity<input id="record-activity" maxlength="120" value="Routine cleaning" required></label><label>Status<select id="record-status"><option>Cleaned</option><option>Pending</option><option>In progress</option></select></label><label>Notes<input id="record-notes" maxlength="500" placeholder="Optional notes"></label><div class="admin-form-actions"><button class="button" type="submit" id="record-save">Save record</button><button class="button outline" type="button" id="record-cancel">Cancel</button></div><p class="auth-message" id="record-form-message" role="status"></p></form>
       <div class="panel admin-table-panel"><div class="admin-panel-heading"><div><h3>Recent cleaning activity</h3><p id="admin-record-count">Loading records…</p></div><div class="admin-heading-tools"><input id="admin-record-search" class="admin-table-search" type="search" placeholder="Search records" aria-label="Search records"><button class="admin-action-link" id="admin-export-records" type="button">Export CSV</button></div></div><div class="table-wrap"><table><thead><tr><th>Dustbin ID</th><th>Location</th><th>Date &amp; time</th><th>Activity</th><th>Status</th><th>Verification</th></tr></thead><tbody id="admin-records-table"><tr><td colspan="6">Loading…</td></tr></tbody></table></div></div>
     </section>
 
-    <section id="users" class="admin-management-section"><div class="admin-dashboard-intro"><div><h3>User Management</h3><p>View registered HYSACAM Tracker accounts and verification status</p></div></div><div class="panel admin-table-panel"><div class="admin-panel-heading"><div><h3>Registered users</h3><p id="admin-user-count">Loading users…</p></div><input id="admin-user-search" class="admin-table-search" type="search" placeholder="Search name or email" aria-label="Search users"></div><div class="table-wrap"><table><thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Email verified</th><th>Joined</th></tr></thead><tbody id="admin-users-table"><tr><td colspan="5">Loading…</td></tr></tbody></table></div><p class="hint admin-permission-note">Administrator privileges are controlled by the server-side ADMIN_EMAILS allowlist and cannot be granted from this screen</p></div></section>
+    <section id="users" class="admin-management-section admin-page" data-page="users" hidden><div class="admin-dashboard-intro"><div><h3>User Management</h3><p>View registered HYSACAM Tracker accounts and verification status</p></div></div><div class="panel admin-table-panel"><div class="admin-panel-heading"><div><h3>Registered users</h3><p id="admin-user-count">Loading users…</p></div><input id="admin-user-search" class="admin-table-search" type="search" placeholder="Search name or email" aria-label="Search users"></div><div class="table-wrap"><table><thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Email verified</th><th>Joined</th></tr></thead><tbody id="admin-users-table"><tr><td colspan="5">Loading…</td></tr></tbody></table></div><p class="hint admin-permission-note">Administrator privileges are controlled by the server-side ADMIN_EMAILS allowlist and cannot be granted from this screen</p></div></section>
 
-    <section id="reports" class="admin-management-section"><div class="admin-dashboard-intro"><div><h3>Resident Reports</h3><p id="admin-report-count">Review and update waste issue submissions</p></div><button class="button outline" id="admin-refresh-reports" type="button">Refresh reports</button></div><div class="panel admin-table-panel"><div class="table-wrap"><table><thead><tr><th>Reference</th><th>Issue</th><th>Area</th><th>Submitted by</th><th>Status</th><th>Update</th></tr></thead><tbody id="admin-reports-table"><tr><td colspan="6">Loading…</td></tr></tbody></table></div></div></section>
+    <section id="reports" class="admin-management-section admin-page" data-page="reports" hidden><div class="admin-dashboard-intro"><div><h3>Resident Reports</h3><p id="admin-report-count">Review and update waste issue submissions</p></div><button class="button outline" id="admin-refresh-reports" type="button">Refresh reports</button></div><div class="panel admin-table-panel"><div class="table-wrap"><table><thead><tr><th>Reference</th><th>Issue</th><th>Area</th><th>Submitted by</th><th>Status</th><th>Update</th></tr></thead><tbody id="admin-reports-table"><tr><td colspan="6">Loading…</td></tr></tbody></table></div></div></section>
 
-    <section id="settings" class="admin-management-section"><div class="admin-dashboard-intro"><div><h3>System Settings &amp; Security</h3><p>Review administrator access and recent security events</p></div></div>
+    <section id="settings" class="admin-management-section admin-page" data-page="settings" hidden><div class="admin-dashboard-intro"><div><h3>System Settings &amp; Security</h3><p>Review administrator access and recent security events</p></div></div>
       <div class="panel admin-table-panel"><h3>Access control</h3><p>Only email addresses configured in the Vercel <b>ADMIN_EMAILS</b> environment variable can access this administration portal. Changes to administrator access must be made by the project owner in Vercel</p><p class="hint">Session checks and all management actions are enforced by server-side APIs</p></div>
       <div class="panel admin-table-panel"><div class="admin-panel-heading"><div><h3>Dashboard preferences</h3><p>Saved on this device only</p></div></div>
         <label class="admin-pref"><input type="checkbox" id="admin-setting-compact"><span><b>Compact layout</b><small>Tighter spacing to see more on screen</small></span></label>
@@ -117,7 +119,7 @@
       <div class="panel admin-table-panel"><div class="admin-panel-heading"><div><h3>Recent administrator activity</h3><p>Security audit events</p></div></div><div class="table-wrap"><table><thead><tr><th>Time</th><th>Administrator</th><th>Event</th><th>Outcome</th></tr></thead><tbody id="admin-audit-table"><tr><td colspan="4">Loading…</td></tr></tbody></table></div></div>
     </section>
     <div class="admin-dashboard-footer">
-      <span class="admin-footer-mark">✓</span>
+      <span class="admin-footer-mark"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 5 5 9-10"/></svg></span>
       <span><b>Secure administrator workspace</b><small>Dashboard information is available only to authorised HYSACAM administrators</small></span>
       <span class="admin-footer-lock">Protected session</span>
     </div>
@@ -133,5 +135,5 @@
   <a href="#settings"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9 7 7M17 17l2.1 2.1M4.9 19.1 7 17M17 7l2.1-2.1"/></svg><span>Settings</span></a>
 </nav>
 </section>
-<script src="js/auth-common.js?v=22d621ef"></script><script src="js/auth-ui.js?v=fd0f4ec6"></script><script src="js/admin-dashboard.js?v=4"></script>
+<script src="js/auth-common.js?v=22d621ef"></script><script src="js/auth-ui.js?v=fd0f4ec6"></script><script src="js/admin-dashboard.js?v=5"></script>
 </body></html>
