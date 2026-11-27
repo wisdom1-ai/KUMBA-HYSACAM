@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"><meta name="theme-color" content="#087747"><meta name="description" content="Manage your HYSACAM Kumba Tracker account, privacy, map and notification settings."><title>Settings | HYSACAM Kumba Tracker</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"><script>(function(){var s="pending";try{var c=JSON.parse(localStorage.getItem("hysacam-auth-cache")||"null");if(c&&c.a===1)s="yes"}catch(e){}document.documentElement.className+=" auth-"+s})();</script><link rel="stylesheet" href="css/style.css?v=5b2ca3b6"><link rel="stylesheet" href="css/app.css?v=6f283627"><link rel="stylesheet" href="css/settings.css?v=3"><script src="js/prefs.js?v=1"></script></head><body id="top" class="is-inner">
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"><meta name="theme-color" content="#087747"><meta name="description" content="Manage your HYSACAM Kumba Tracker account, privacy, map and notification settings."><title>Settings | HYSACAM Kumba Tracker</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"><script>(function(){var s="pending";try{var c=JSON.parse(localStorage.getItem("hysacam-auth-cache")||"null");if(c&&c.a===1)s="yes"}catch(e){}document.documentElement.className+=" auth-"+s})();</script><link rel="stylesheet" href="css/style.css?v=5b2ca3b6"><link rel="stylesheet" href="css/app.css?v=6f283627"><link rel="stylesheet" href="css/settings.css?v=3"><link rel="stylesheet" href="css/settings-premium.css?v=1"><script src="js/prefs.js?v=1"></script></head><body id="top" class="is-inner">
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
 <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></symbol>
@@ -18,6 +18,7 @@
 <symbol id="i-doc" viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z"/><path d="M9 12h7M9 16h7M9 8h3"/></symbol>
 <symbol id="i-book" viewBox="0 0 24 24"><path d="M5 4h12a2 2 0 0 1 2 2v14H7a2 2 0 0 1-2-2z"/><circle cx="12" cy="10" r="2.5"/><path d="M8.5 16.5a3.5 3.5 0 0 1 7 0"/></symbol>
 <symbol id="i-chev" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></symbol>
+<symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></symbol>
 </defs></svg>
 
 <header class="topbar">
@@ -37,28 +38,36 @@
 
 <main class="inner-page"><div class="page-wrap narrow">
 
-<section class="set-hero" id="set-hero"><div class="avatar" id="settings-avatar"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-user"/></svg></div><div class="set-hero-text"><h2 id="settings-user-name">Welcome</h2><p id="settings-user-email">Sign in to manage your account</p><span id="settings-user-role" class="account-role">Visitor</span></div></section>
+<!-- Page title and search -->
+<section class="set-top">
+  <span class="set-eyebrow">SETTINGS</span>
+  <h2>Make it yours</h2>
+  <p>Manage your account, privacy and how the app behaves</p>
+  <label class="set-search"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-search"/></svg><input id="set-search" type="search" placeholder="Search settings" aria-label="Search settings" autocomplete="off"></label>
+</section>
 
-<div class="join-card visitor-only"><div><b>Join HYSACAM Kumba Tracker</b><p>Sign in to manage your profile and track your reports</p></div><div class="join-actions"><a class="button" href="signin.html">Sign In</a><a class="button outline" href="signup.html">Sign Up</a></div></div>
+<!-- Signed-in: short profile summary that opens the Profile page (the full profile now lives there) -->
+<a class="set-row profile-row auth-only" id="set-hero" href="profile.html" aria-label="Open your profile">
+  <span class="pr-avatar" id="settings-avatar"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-user"/></svg></span>
+  <span class="pr-text"><b id="settings-user-name">Welcome</b><small id="settings-user-email">Sign in to manage your account</small><i class="pr-role" id="settings-user-role">Visitor</i></span>
+  <svg viewBox="0 0 24 24" aria-hidden="true" class="chev"><use href="#i-chev"/></svg>
+</a>
+
+<!-- Visitors: small neutral sign-in strip -->
+<div class="guest-strip">
+  <span class="gs-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-user"/></svg></span>
+  <div class="gs-text"><b>You are browsing as a visitor</b><small>Sign in to manage your profile and track your reports</small></div>
+  <a class="gs-btn" href="signin.html">Sign In</a>
+</div>
 
 <nav class="set-quick auth-only" aria-label="Quick links">
-  <a href="report.html"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-doc"/></svg>My Reports</a>
-  <a href="map.html"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-pin"/></svg>Dustbin Map</a>
-  <a href="directory.html"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-book"/></svg>Directory</a>
+  <a href="report.html"><i class="sq-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-doc"/></svg></i>My Reports</a>
+  <a href="map.html"><i class="sq-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-pin"/></svg></i>Dustbin Map</a>
+  <a href="directory.html"><i class="sq-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-book"/></svg></i>Directory</a>
 </nav>
 
-<!-- ACCOUNT -->
+<!-- ACCOUNT (profile details moved to the Profile page) -->
 <h3 class="set-group auth-only">Account</h3>
-<details class="set-row set-details auth-only" id="profile-section"><summary><svg viewBox="0 0 24 24" aria-hidden="true" class="lead"><use href="#i-user"/></svg><span><b>My Profile</b><small>Name, phone and account details</small></span><svg viewBox="0 0 24 24" aria-hidden="true" class="chev"><use href="#i-chev"/></svg></summary><div class="set-panel">
-<form id="profile-form" class="pf-inline" novalidate>
-<label class="pf-field">Full name<input id="pf-name" name="name" maxlength="80" autocomplete="name" enterkeyhint="next" placeholder="Your full name" required></label>
-<label class="pf-field">Email<input id="pf-email" type="email" disabled></label>
-<p class="set-hint">To use a different email, go to Security below</p>
-<label class="pf-field">Phone (optional)<input id="pf-phone" name="phone" type="tel" inputmode="tel" maxlength="25" autocomplete="tel" enterkeyhint="done" placeholder="e.g. +237 6XX XXX XXX"></label>
-<button class="button" id="pf-save" type="submit">Save changes</button><p id="pf-msg" class="auth-message" role="status" aria-live="polite"></p></form>
-<div class="info-card slim"><div class="info-line"><span>Member since</span><b id="pf-since">—</b></div><div class="info-line"><span>Email status</span><b id="pf-verified">—</b></div><div class="info-line"><span>Account type</span><b id="pf-role">Resident</b></div></div>
-</div></details>
-
 <details class="set-row set-details auth-only" id="security-section"><summary><svg viewBox="0 0 24 24" aria-hidden="true" class="lead"><use href="#i-shield"/></svg><span><b>Security</b><small>Password, email and devices</small></span><svg viewBox="0 0 24 24" aria-hidden="true" class="chev"><use href="#i-chev"/></svg></summary><div class="set-panel">
 <form id="pw-form" class="pf-inline" novalidate>
 <p class="set-label first">Change password</p>
@@ -112,13 +121,18 @@
 <a class="set-row" href="about.html"><svg viewBox="0 0 24 24" aria-hidden="true" class="lead"><use href="#i-info"/></svg><span><b>About HYSACAM</b><small>Version 1.0.0</small></span><svg viewBox="0 0 24 24" aria-hidden="true" class="chev"><use href="#i-chev"/></svg></a>
 <p id="support-msg" class="set-flash" role="status" aria-live="polite" style="margin:0 18px"></p>
 
+<p class="sx-empty" id="sx-empty" hidden>No settings match your search</p>
+
 <button id="profile-signout" class="signout-btn auth-only" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-out"/></svg>Sign Out</button>
 <p id="settings-save-message" class="settings-note" role="status" aria-live="polite">Preferences are saved on this device only</p>
 <div class="brand-card"><img src="images/hysacam-symbol.svg" alt=""><div><b>HYSACAM Kumba Tracker</b><span>Cleaner City. Healthier Community.</span><small>© 2026 HYSACAM. All rights reserved</small></div></div>
+
+<!-- Hidden helper fields: settings.js still writes to these, so they must exist (the profile form itself now lives on the Profile page) -->
+<div id="profile-shim" hidden aria-hidden="true"><input id="pf-name" tabindex="-1"><input id="pf-email" tabindex="-1"><input id="pf-phone" tabindex="-1"><span id="pf-since"></span><span id="pf-role"></span><span id="pf-verified"></span></div>
 </div></main>
 
 <footer class="site-footer"><span>© HYSACAM Kumba Tracker</span><a href="index.html">Back to top ↑</a></footer>
 <aside id="notification-panel" class="notification-panel" hidden aria-label="Notifications"><div class="notification-head"><div><span class="eyebrow">LATEST UPDATES</span><h3>Notifications</h3></div><button id="notification-close" type="button" aria-label="Close notifications">×</button></div><div id="notification-list" class="notification-list"><p class="notification-empty">Loading your latest updates…</p></div><p class="notification-foot">Updates are based on records available to your signed-in account</p></aside>
 <nav class="app-tabbar" aria-label="Primary"><a href="index.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11 12 3l9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg><span>Home</span></a><a href="map.html"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-pin"/></svg><span>Map</span></a><a href="report.html"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-doc"/></svg><span>Reports</span></a><a href="directory.html" aria-label="Directory"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-book"/></svg><span>Directory</span></a><a href="settings.html" class="active" aria-current="page"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9 7 7M17 17l2.1 2.1M4.9 19.1 7 17M17 7l2.1-2.1"/></svg><span>Settings</span></a></nav>
-<script src="js/shared.js?v=ee0d6659"></script><script src="js/app-shell.js?v=de0e398e"></script><script src="js/notifications.js?v=5ca408c2"></script><script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script defer src="js/supabase.js?v=64119a7a"></script><script defer src="js/settings.js?v=2"></script><script defer src="js/platform.js?v=b48c6775"></script><script defer src="js/auth-guard.js?v=b4032a17"></script>
+<script src="js/shared.js?v=ee0d6659"></script><script src="js/app-shell.js?v=de0e398e"></script><script src="js/notifications.js?v=5ca408c2"></script><script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script defer src="js/supabase.js?v=64119a7a"></script><script defer src="js/settings.js?v=2"></script><script defer src="js/platform.js?v=b48c6775"></script><script defer src="js/auth-guard.js?v=b4032a17"></script><script defer src="js/settings-extras.js?v=1"></script>
 </body></html>
