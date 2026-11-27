@@ -129,7 +129,14 @@
     say("");
   });
 
+  function renderGreeting() {
+    const now = new Date(), hour = now.getHours();
+    $("admin-greeting").textContent = hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
+    $("admin-today").textContent = now.toLocaleDateString("en-GB", { weekday:"long", day:"numeric", month:"long", year:"numeric" });
+  }
+
   function renderStats() {
+    renderGreeting();
     const today = new Date().toDateString(); // local day, not UTC
     const total = state.bins.length;
     const countStatus = s => state.bins.filter(b => lower(b.status || "available") === lower(s)).length;
@@ -139,10 +146,13 @@
     $("admin-pending").textContent = state.bins.filter(b => /pending|full|maintenance|inactive/i.test(b.status || "")).length.toLocaleString();
     $("admin-cleaned-percent").textContent = total ? `${Math.round(available / total * 100)}%` : "—";
     const colors = { Available:"#087747", Pending:"#d08a0c", Full:"#c93227", Maintenance:"#2e62c9", Inactive:"#8a948e" };
-    $("admin-status-list").innerHTML = Object.entries(colors).map(([name, color]) => {
-      const n = countStatus(name);
-      return `<li><div><span>${name}</span><b>${n}</b></div><span class="hx-track"><i style="--c:${color};width:${total ? n / total * 100 : 0}%"></i></span></li>`;
-    }).join("");
+    const counts = Object.entries(colors).map(([name, color]) => ({ name, color, n:countStatus(name) }));
+    // Ring segments are sized against the bins that have a recognised status
+    const known = counts.reduce((sum, c) => sum + c.n, 0);
+    let from = 0;
+    const slices = counts.filter(c => c.n).map(c => { const to = from + c.n / known * 100; const part = `${c.color} ${from}% ${to}%`; from = to; return part; });
+    $("admin-bin-donut").style.background = slices.length ? `conic-gradient(${slices.join(",")})` : "";
+    $("admin-status-list").innerHTML = counts.map(c => `<li><i style="--c:${c.color}"></i><span>${c.name}</span><b>${c.n}</b></li>`).join("");
     const months = Array.from({length:5}, (_, i) => {
       const d = new Date(); d.setDate(1); d.setMonth(d.getMonth() - 4 + i);
       return { label:d.toLocaleString("en",{month:"short"}), count:state.records.filter(r => {
@@ -218,7 +228,7 @@
     const rows = state.users.filter(u => lower(`${u.name || ""} ${u.email} ${u.role}`).includes(q));
     const shown = paginate("users", rows);
     $("admin-users-table").innerHTML = rows.length ? shown.map(u => row(["Name","Email","Role","Email verified","Joined"], [
-      esc(u.name || "—"), esc(u.email), `<span class="hx-pill" data-tone="info">${esc(label(u.role))}</span>`, u.email_confirmed ? "Verified" : "Not verified", esc(localDate(u.created_at))
+      `<span class="hx-person"><i aria-hidden="true">${esc(String(u.name || u.email || "?").charAt(0).toUpperCase())}</i>${esc(u.name || "—")}</span>`, esc(u.email), `<span class="hx-pill" data-tone="info">${esc(label(u.role))}</span>`, u.email_confirmed ? "Verified" : "Not verified", esc(localDate(u.created_at))
     ])).join("") : emptyRow(5, "No matching users found");
   }
 
