@@ -267,6 +267,28 @@
 }
 @media(prefers-reduced-motion:reduce){#admin-toast{transition:none}}
 
+/* ===================== v5: separate pages ===================== */
+/* the header names the page, so the repeated section heading is hidden visually but kept for screen readers */
+.admin-portal .admin-page>.admin-dashboard-intro h3{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.admin-portal .admin-page>.admin-dashboard-intro p{margin:0;font-size:15px}
+.admin-portal .admin-page{animation:admin-page-in .18s ease-out}
+.admin-portal #admin-page-title:focus{outline:0}
+.admin-portal .admin-main{display:flex;flex-direction:column;min-height:100vh}
+.admin-portal .admin-dashboard-footer{margin-top:auto}
+.admin-portal .admin-page{margin-bottom:16px}
+.admin-portal .admin-side a .admin-nav-icon svg,.admin-portal .admin-side-bottom svg{width:20px;height:20px}
+.admin-portal .admin-stat-icon svg{width:23px;height:23px}
+.admin-portal .admin-footer-mark svg{width:18px;height:18px}
+@keyframes admin-page-in{from{opacity:0}to{opacity:1}}
+@media(prefers-reduced-motion:reduce){.admin-portal .admin-page{animation:none}}
+
+.admin-portal .admin-heading-tools{flex-wrap:nowrap}
+.admin-portal .admin-heading-tools .admin-action-link{flex:0 0 auto;white-space:nowrap}
+.admin-portal .admin-table-panel>p{margin:10px 0 0;font-size:14px;line-height:1.55;color:#45544b}
+.admin-portal .admin-table-panel>h3{margin:0;font-size:18px}
+.admin-portal .admin-table-panel>p.hint{font-size:13px;color:var(--muted)}
+.admin-portal .admin-table-panel>p.hint:empty{display:none}
+
 /* FLOATING BUBBLES ON THE HOME HERO */
 .hero.hero-slider { position: relative; overflow: hidden; }
 
