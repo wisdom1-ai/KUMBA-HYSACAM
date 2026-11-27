@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#087747"><title>Administrator Portal | HYSACAM Kumba</title><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="css/style.css?v=5b2ca3b6"><link rel="stylesheet" href="css/admin-app.css?v=7"></head><body>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#087747"><title>Administrator Portal | HYSACAM Kumba</title><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="css/style.css?v=5b2ca3b6"><link rel="stylesheet" href="css/admin-app.css?v=8"></head><body>
 <div class="admin-login-page" id="admin-login-page"><section class="admin-login-brand auth-photo-panel">
   <a class="auth-brand-lockup" href="index.html" aria-label="HYSACAM Kumba Tracker home">
     <img src="images/hysacam-symbol.svg" alt="HYSACAM logo">
@@ -46,19 +46,21 @@
 
     <main class="hx-main">
       <div class="admin-page" data-page="overview">
-        <div class="hx-kpis">
-          <a class="hx-kpi" href="#manage-bins" data-link><span>Total dustbins</span><strong id="admin-total-bins">—</strong><small>Registered collection points</small></a>
-          <a class="hx-kpi" href="#manage-records" data-link><span>Cleaned today</span><strong id="admin-cleaned-today">—</strong><small>Verified cleaning records</small></a>
-          <a class="hx-kpi hx-warn" href="#manage-bins" data-link><span>Needs attention</span><strong id="admin-pending">—</strong><small>Dustbins not ready for use</small></a>
-          <a class="hx-kpi" href="#reports" data-link><span>New reports</span><strong id="admin-open-reports">—</strong><small>Submitted or under review</small></a>
-        </div>
+        <div class="hx-hero"><div><p id="admin-today"></p><h2 id="admin-greeting">Welcome back</h2><p>Here is the latest on waste collection in Kumba</p></div>
         <div class="hx-actions">
           <button class="hx-btn hx-primary" type="button" id="admin-quick-bin"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg> Add dustbin</button>
           <button class="hx-btn" type="button" id="admin-quick-record"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4h6v3H9zM7 5H5v16h14V5h-2"/><path d="m9 14 2 2 4-4"/></svg> Add cleaning record</button>
         </div>
+        </div>
+        <div class="hx-kpis">
+          <a class="hx-kpi" href="#manage-bins" data-link><i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg></i><span>Total dustbins</span><strong id="admin-total-bins">—</strong><small>Registered collection points</small></a>
+          <a class="hx-kpi blue" href="#manage-records" data-link><i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4h6v3H9zM7 5H5v16h14V5h-2"/><path d="m9 14 2 2 4-4"/></svg></i><span>Cleaned today</span><strong id="admin-cleaned-today">—</strong><small>Verified cleaning records</small></a>
+          <a class="hx-kpi hx-warn" href="#manage-bins" data-link><i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2 20h20zM12 10v4M12 17h.01"/></svg></i><span>Needs attention</span><strong id="admin-pending">—</strong><small>Dustbins not ready for use</small></a>
+          <a class="hx-kpi violet" href="#reports" data-link><i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M9 12h7M9 16h7M9 8h3"/></svg></i><span>New reports</span><strong id="admin-open-reports">—</strong><small>Submitted or under review</small></a>
+        </div>
         <div class="hx-grid">
-          <section class="hx-card"><div class="hx-cardhead"><div><h2>Cleaning activity</h2><p>Verified records, last 5 months</p></div></div><div id="admin-cleaning-chart" class="hx-chart"></div></section>
-          <section class="hx-card"><div class="hx-cardhead"><div><h2>Dustbin status</h2><p><b id="admin-cleaned-percent">—</b> available</p></div></div><ul class="hx-bars" id="admin-status-list"></ul></section>
+          <section class="hx-card"><div class="hx-cardhead"><div><h2>Cleaning activity</h2><p>Verified records, last 5 months</p></div></div><div class="hx-chartwrap"><div id="admin-cleaning-chart" class="hx-chart"></div></div></section>
+          <section class="hx-card"><div class="hx-cardhead"><div><h2>Dustbin status</h2><p>Current condition of all bins</p></div></div><div class="hx-donut" id="admin-bin-donut"><div><b id="admin-cleaned-percent">—</b><small>available</small></div></div><ul class="hx-legend" id="admin-status-list"></ul></section>
           <section class="hx-card"><div class="hx-cardhead"><div><h2>Recent cleaning</h2><p>Latest activity</p></div><a class="hx-more" href="#manage-records" data-link>View all</a></div><ul class="hx-feed" id="admin-recent-records"></ul></section>
           <section class="hx-card"><div class="hx-cardhead"><div><h2>Reports to review</h2><p>Waiting for action</p></div><a class="hx-more" href="#reports" data-link>View all</a></div><ul class="hx-feed" id="admin-recent-reports"></ul></section>
         </div>
@@ -160,7 +162,7 @@
   </form>
 </dialog>
 </section>
-<script src="js/auth-common.js?v=22d621ef"></script><script src="js/auth-ui.js?v=fd0f4ec6"></script><script src="js/admin-dashboard.js?v=7"></script><script>
+<script src="js/auth-common.js?v=22d621ef"></script><script src="js/auth-ui.js?v=fd0f4ec6"></script><script src="js/admin-dashboard.js?v=8"></script><script>
 // Remove sentence-ending full stops from interface copy as requested
 (function(){const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);const nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);for(const node of nodes){if(node.parentElement&&/^(SCRIPT|STYLE|TEXTAREA)$/i.test(node.parentElement.tagName))continue;node.nodeValue=node.nodeValue.replace(/\.(?=\s|$)/g,"");}})();
 </script>
