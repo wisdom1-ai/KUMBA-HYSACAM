@@ -124,3 +124,91 @@ html[data-theme=dark] .brand-card{background:#1b3328}
 .brand-card b,.brand-card span{display:block;color:#fff}.brand-card span{margin-top:2px;font-size:12.5px;opacity:.9}.brand-card small{display:block;margin-top:6px;font-size:11px;opacity:.7}
 
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* =====================================================================
+   MOTION LAYER: animated buttons, rows, switches and controls
+   (works with js/settings-ui.js for the touch ripple and entrance order)
+   ===================================================================== */
+:root{--ease:cubic-bezier(.2,.8,.2,1);--spring:cubic-bezier(.3,1.5,.5,1)}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes panelIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+@keyframes rip{to{transform:scale(1);opacity:0}}
+@keyframes pop{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:none}}
+@keyframes pulse{50%{opacity:.55}}
+@keyframes bounce{40%{transform:scale(1.2)}100%{transform:none}}
+
+/* page entrance: sections rise in one after another (backwards = hover still works afterwards) */
+.set-top{animation:rise .5s var(--ease) backwards}
+.set-content>*{animation:rise .5s var(--ease) backwards;animation-delay:calc(var(--i,0)*40ms + 80ms)}
+
+/* shared press + hover behaviour for every tappable element */
+a.set-row,button.set-row,.set-details>summary,.set-quick a,.gs-btn,.button,.set-btn,.panel-link,.signout-btn,.seg button,.tseg button{position:relative;overflow:hidden;-webkit-tap-highlight-color:transparent;transition:transform .2s var(--ease),box-shadow .25s var(--ease),background-color .2s,border-color .2s,color .2s}
+a.set-row:active,button.set-row:active,.set-details>summary:active,.set-quick a:active,.gs-btn:active,.button:active,.set-btn:active,.panel-link:active,.signout-btn:active,.seg button:active,.tseg button:active{transform:scale(.97)}
+.set-details>summary:active{background:var(--brand-soft)}
+:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+@media(hover:hover){
+ a.set-row:hover,button.set-row:hover,.set-quick a:hover{transform:translateY(-2px);box-shadow:0 14px 28px -16px rgba(8,119,71,.45)}
+ .panel-link:hover{transform:translateX(4px);background:var(--brand-soft)}
+ .panel-link.danger-link:hover{background:var(--danger-soft)}
+ .set-side a{transition:transform .2s var(--ease),background-color .2s,color .2s}.set-side a:hover{transform:translateX(4px)}
+}
+
+/* icon tiles: bounce on hover, fill solid when a section is open */
+.inner-page .set-row .lead,.sq-ico,.gs-ico{transition:transform .35s var(--spring),background-color .25s,stroke .25s}
+@media(hover:hover){.inner-page .set-row:hover .lead{transform:scale(1.1) rotate(-6deg)}.set-quick a:hover .sq-ico{transform:translateY(-3px) scale(1.08)}}
+.set-quick a:active .sq-ico{animation:bounce .4s var(--spring)}
+.inner-page .set-details[open] .lead{background:var(--brand);stroke:#fff}
+.inner-page .set-row .chev{transition:transform .3s var(--spring),stroke .2s}
+@media(hover:hover){a.set-row:hover .chev,button.set-row:hover .chev{transform:translateX(4px)}}
+.profile-row .pr-avatar{transition:box-shadow .3s var(--ease),transform .3s var(--spring)}
+@media(hover:hover){.profile-row:hover .pr-avatar{box-shadow:0 0 0 5px var(--brand-soft);transform:scale(1.05)}}
+
+/* panels open with a soft slide, content follows one by one */
+.set-details[open] .set-panel{animation:panelIn .35s var(--ease)}
+.set-details[open] .set-panel>*{animation:rise .4s var(--ease) backwards}
+.set-details[open] .set-panel>*:nth-child(2){animation-delay:.04s}
+.set-details[open] .set-panel>*:nth-child(3){animation-delay:.08s}
+.set-details[open] .set-panel>*:nth-child(4){animation-delay:.12s}
+.set-details[open] .set-panel>*:nth-child(5){animation-delay:.16s}
+.set-details[open] .set-panel>*:nth-child(n+6){animation-delay:.2s}
+
+/* primary buttons: depth, light sweep on hover, pulsing while saving */
+.button,.set-btn,.gs-btn{box-shadow:0 10px 20px -12px var(--brand)}
+.button::after,.set-btn::after,.gs-btn::after{content:"";position:absolute;inset:0;background:linear-gradient(105deg,transparent 30%,rgba(255,255,255,.28) 50%,transparent 70%);transform:translateX(-120%);transition:transform .7s var(--ease);pointer-events:none}
+@media(hover:hover){.button:hover,.set-btn:hover,.gs-btn:hover{transform:translateY(-2px);box-shadow:0 16px 24px -12px var(--brand)}.button:hover::after,.set-btn:hover::after,.gs-btn:hover::after{transform:translateX(120%)}}
+.button:disabled,.set-btn:disabled{cursor:progress;animation:pulse 1.1s ease-in-out infinite}
+
+/* sign out: fills red, arrow slides */
+.signout-btn svg{transition:transform .25s var(--ease)}
+.signout-btn:active{background:var(--danger);color:#fff}
+@media(hover:hover){.signout-btn:hover{background:var(--danger);color:#fff}.signout-btn:hover svg{transform:translateX(4px)}}
+
+/* status messages pop in */
+.set-flash:not(:empty),.settings-note:not(:empty){animation:pop .35s var(--spring)}
+
+/* switches: springy thumb that stretches while pressed, glow when on */
+.toggle-line input[type=checkbox]{transition:background .25s,box-shadow .25s}
+.toggle-line input[type=checkbox]::after{transition:transform .35s var(--spring),width .2s}
+.toggle-line input[type=checkbox]:active::after{width:28px}
+.toggle-line input[type=checkbox]:checked:active::after{transform:translateX(14px)}
+.toggle-line input[type=checkbox]:checked{box-shadow:0 0 0 4px var(--brand-soft)}
+
+/* segmented controls: a sliding pill follows the selected option */
+@supports selector(:has(*)){
+ .seg,.tseg{position:relative;isolation:isolate}
+ .seg::before,.tseg::before{content:"";position:absolute;z-index:-1;top:4px;bottom:4px;left:4px;width:calc((100% - 8px - 4px*(var(--n) - 1))/var(--n));border-radius:9px;background:var(--surface);box-shadow:0 1px 4px rgba(0,0,0,.18);transition:transform .35s var(--spring)}
+ .seg{--n:2}.tseg{--n:3}
+ .seg button[aria-pressed=true],.tseg button[aria-pressed=true]{background:transparent;box-shadow:none}
+ .seg:has(button:nth-child(2)[aria-pressed=true])::before,.tseg:has(button:nth-child(2)[aria-pressed=true])::before{transform:translateX(calc(100% + 4px))}
+ .tseg:has(button:nth-child(3)[aria-pressed=true])::before{transform:translateX(calc(200% + 8px))}
+}
+
+/* touch ripple (created by settings-ui.js) */
+.ripple{position:absolute;border-radius:50%;background:rgba(255,255,255,.5);transform:scale(0);opacity:.9;pointer-events:none;animation:rip .6s ease-out forwards}
+.ripple.dark{background:rgba(8,119,71,.2)}
+html[data-theme=dark] .ripple.dark{background:rgba(63,191,134,.25)}
+
+/* respect reduced motion (device setting or the in-app switch) */
+@media(prefers-reduced-motion:reduce){.ripple{display:none}}
+html.reduce-motion *,html.reduced-motion *,html[data-reduce-motion="true"] *{animation:none!important;transition:none!important}
+html.reduce-motion .ripple,html.reduced-motion .ripple{display:none}
