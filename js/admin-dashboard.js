@@ -367,8 +367,7 @@
   document.addEventListener("keydown", event => { if (event.key === "Escape") closeProfile(); });
   $("admin-profile-settings")?.addEventListener("click", () => {
     closeProfile();
-    location.hash = "#settings";
-    $("settings")?.scrollIntoView({behavior:"smooth",block:"start"});
+    goTo("settings");
   });
   const signOut = async () => {
     closeProfile();
@@ -381,8 +380,8 @@
   ["admin-logout","admin-logout-top","admin-profile-logout"].forEach(id => $(id)?.addEventListener("click", signOut));
 
   // Quick actions
-  $("admin-quick-bin")?.addEventListener("click", () => $("admin-add-bin").click());
-  $("admin-quick-record")?.addEventListener("click", () => $("admin-add-record").click());
+  $("admin-quick-bin")?.addEventListener("click", () => { goTo("manage-bins"); $("admin-add-bin").click(); });
+  $("admin-quick-record")?.addEventListener("click", () => { goTo("manage-records"); $("admin-add-record").click(); });
   $("admin-quick-refresh")?.addEventListener("click", async event => {
     const button = event.currentTarget; button.disabled = true;
     const ok = await loadAll();
@@ -390,21 +389,34 @@
     button.disabled = false;
   });
 
-  // Sidebar and tab bar highlight the section on screen
+  // One page at a time, driven by the address so Back, Forward, refresh and bookmarks work
+  const PAGES = { "overview":"Dashboard", "manage-bins":"Dustbins", "manage-records":"Cleaning Records", "users":"Users", "reports":"Resident Reports", "settings":"Settings" };
   const navLinks = [...document.querySelectorAll('.admin-side a[href^="#"], .admin-tabbar a')];
-  const sections = ["overview","manage-bins","manage-records","users","reports","settings"].map($).filter(Boolean);
-  const markNav = id => navLinks.forEach(a => {
-    const on = a.getAttribute("href") === `#${id}`;
-    a.classList.toggle(a.closest(".admin-tabbar") ? "active" : "selected", on);
-    if (on) a.setAttribute("aria-current", "true"); else a.removeAttribute("aria-current");
-  });
-  const spy = () => {
-    let current = sections[0];
-    sections.forEach(s => { if (s.getBoundingClientRect().top <= 140) current = s; });
-    if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4) current = sections[sections.length - 1];
-    if (current) markNav(current.id);
-  };
-  window.addEventListener("scroll", spy, { passive: true });
+  const currentPage = () => { const id = location.hash.slice(1); return Object.hasOwn(PAGES, id) ? id : "overview"; };
+  function showPage() {
+    const id = currentPage();
+    document.querySelectorAll(".admin-page").forEach(p => { p.hidden = p.dataset.page !== id; });
+    $("admin-page-title").textContent = PAGES[id];
+    document.title = `${PAGES[id]} | HYSACAM Kumba Admin`;
+    navLinks.forEach(a => {
+      const on = a.getAttribute("href") === `#${id}`;
+      a.classList.toggle(a.closest(".admin-tabbar") ? "active" : "selected", on);
+      if (on) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
+    });
+    window.scrollTo(0, 0);
+  }
+  function goTo(id) {
+    if (location.hash !== `#${id}`) history.pushState(null, "", `#${id}`);
+    showPage();
+  }
+  navLinks.forEach(a => a.addEventListener("click", event => {
+    if (event.ctrlKey || event.metaKey || event.shiftKey) return;
+    event.preventDefault(); goTo(a.getAttribute("href").slice(1));
+    $("admin-page-title").focus({ preventScroll:true });
+  }));
+  window.addEventListener("popstate", showPage);
+  window.addEventListener("hashchange", showPage);
+  showPage();
 
   // Device-local dashboard preferences; these do not change account permissions or server data.
   const prefCompact = $("admin-setting-compact");
