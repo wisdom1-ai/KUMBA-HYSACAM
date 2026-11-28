@@ -374,13 +374,14 @@
     payload.latitude = lat; payload.longitude = lng;
     const button = $("bin-save"); button.disabled = true; $("bin-form-message").textContent = "";
     try {
-      await (editing ? patch("/api/admin/manage", payload) : post("/api/admin/manage", { type: "bin", ...payload }));
+      const body = editing ? payload : (() => { const p = { type: "bin", ...payload, code: payload.bin_code, binCode: payload.bin_code, dustbin_id: payload.bin_code, lat: payload.latitude, lng: payload.longitude, lon: payload.longitude }; delete p.id; return p; })();
+      await (editing ? patch("/api/admin/manage", body) : post("/api/admin/manage", body));
       closeDialog(binDialog);
       toast(editing ? "Dustbin updated" : "Dustbin added");
       await loadAll();
     } catch (error) {
       if (error.status === 401) { closeDialog(binDialog); return expired(); }
-      $("bin-form-message").textContent = error.message + "\n\nSent: " + JSON.stringify(payload);
+      $("bin-form-message").textContent = error.message + "\n\nSent: " + JSON.stringify(payload) + (error.status ? "\nStatus: " + error.status : "");
     } finally { button.disabled = false; }
   });
 
