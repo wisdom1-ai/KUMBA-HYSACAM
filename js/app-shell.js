@@ -157,6 +157,8 @@
     const set = (id, value) => { if ($(id)) $(id).textContent = value; };
     if (authenticated && user) {
       const name = displayName(user), email = user.email || 'Email unavailable', r = role || 'Resident';
+      document.querySelectorAll('.profile-row').forEach(row => row.classList.add('is-ready'));
+      const sAv = $('settings-avatar'); if (sAv) { sAv.dataset.initials = initials(name); sAv.classList.add('has-initials'); }
       [['settings-user-name',name],['profile-user-name',name],['settings-user-email',email],['profile-user-email',email],['settings-user-role',r],['profile-user-role',r]].forEach(([id,v]) => set(id,v));
     } else if (!authenticated) {
       ['settings-user-name','profile-user-name'].forEach(id => set(id,'Welcome to HYSACAM'));
