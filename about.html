@@ -1,13 +1,1308 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"><meta name="theme-color" content="#087747"><meta name="description" content="HYSACAM Kumba Tracker helps residents find waste collection points and follow community cleaning activity."><title>About HYSACAM | HYSACAM Kumba Tracker</title><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"><script>(function(){var s="pending";try{var c=JSON.parse(localStorage.getItem("hysacam-auth-cache")||"null");if(c&&c.a===1)s="yes"}catch(e){}document.documentElement.className+=" auth-"+s})();</script><link rel="stylesheet" href="css/style.css?v=5b2ca3b6"><link rel="stylesheet" href="css/app.css?v=12"></head><body id="top" class="is-inner no-auth-ui">
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"><meta name="theme-color" content="#087747"><meta name="description" content="HYSACAM Kumba Tracker helps residents find waste collection points and follow community cleaning activity."><title>About HYSACAM | HYSACAM Kumba Tracker</title><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"><script>(function(){var s="no";try{var c=JSON.parse(localStorage.getItem("hysacam-auth-cache")||"null");if(c&&c.a===1)s="yes"}catch(e){}document.documentElement.className+=" auth-"+s})();</script><link rel="stylesheet" href="css/style.css?v=5b2ca3b6"><link rel="stylesheet" href="css/app.css?v=16"></head><body id="top" class="is-inner no-auth-ui">
-<header class="topbar">
-  <a class="back-btn" href="index.html" aria-label="Back" onclick="if(history.length>1&&document.referrer.indexOf(location.origin)===0){history.back();return false}"><svg viewBox="0 0 24 24" aria-hidden="true" ><path d="m15 6-6 6 6 6"/></svg></a><h1 class="mobile-title">About HYSACAM</h1>
-  <a class="brand" href="index.html" aria-label="HYSACAM Kumba Tracker home">
-@@ -27,6 +27,6 @@
-<main class="inner-page"><div class="page-wrap"><section id="about" class="about-page"><div class="about-nav"><a class="brand" href="index.html" aria-label="HYSACAM Kumba Tracker home"><img class="hysacam-logo" src="images/hysacam-symbol.svg" alt="HYSACAM symbol"></a><nav><a href="index.html">Home</a><a href="map.html">Map</a><a href="directory.html">Directory</a><a href="cleaning.html">Cleaning Records</a><a href="about.html">About</a></nav></div><div class="about-body"><div class="about-copy"><span class="eyebrow">WHO WE ARE</span><h2>About HYSACAM</h2><p>HYSACAM (Highlands and Western Sanitation Company) is committed to keeping our communities clean and healthy. This platform helps residents and staff locate waste collection points, track cleaning activities and promote responsible waste management in Kumba</p><div class="values"><span>🌿 <b>Cleaner<br>Environment</b></span><span>♥ <b>Better<br>Health</b></span><span>♻ <b>Sustainable<br>Communities</b></span></div></div><div class="about-image"><img src="images/hysacam-truck.jpg" alt="HYSACAM collection team working beside a waste collection truck"></div></div><footer class="about-footer"><span>© 2026 HYSACAM. All rights reserved</span></footer></section></div></main><footer class="site-footer"><span>© HYSACAM Kumba Tracker</span><a href="index.html">Back to top ↑</a></footer>
-<aside id="notification-panel" class="notification-panel" hidden aria-label="Notifications"><div class="notification-head"><div><span class="eyebrow">LATEST UPDATES</span><h3>Notifications</h3></div><button id="notification-close" type="button" aria-label="Close notifications">×</button></div><div id="notification-list" class="notification-list"><p class="notification-empty">Loading your latest updates…</p></div><p class="notification-foot">Updates are based on records available to your signed-in account</p></aside>
-<nav class="app-tabbar" aria-label="Primary"><a href="index.html"><svg viewBox="0 0 24 24" aria-hidden="true" ><path d="M3 11 12 3l9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg><span>Home</span></a><a href="map.html"><svg viewBox="0 0 24 24" aria-hidden="true" ><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg><span>Map</span></a><a href="report.html"><svg viewBox="0 0 24 24" aria-hidden="true" ><path d="M6 3h9l4 4v14H6z"/><path d="M9 12h7M9 16h7M9 8h3"/></svg><span>Reports</span></a><a href="cleaning.html" aria-label="Cleaning Records"><svg viewBox="0 0 24 24" aria-hidden="true" ><path d="M9 4h6v3H9zM7 5H5v16h14V5h-2"/><path d="m9 14 2 2 4-4"/></svg><span>Cleaning</span></a><a href="settings.html"><svg viewBox="0 0 24 24" aria-hidden="true" ><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span>Settings</span></a></nav>
-<script src="js/shared.js?v=ee0d6659"></script><script src="js/app-shell.js?v=12"></script><script src="js/notifications.js?v=5ca408c2"></script><script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script defer src="js/supabase.js?v=64119a7a"></script><script defer src="js/platform.js?v=b48c6775"></script><script defer src="js/auth-guard.js?v=b4032a17"></script>
-<script src="js/shared.js?v=ee0d6659"></script><script src="js/app-shell.js?v=16"></script><script src="js/notifications.js?v=5ca408c2"></script><script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script defer src="js/supabase.js?v=64119a7a"></script><script defer src="js/platform.js?v=b48c6775"></script><script defer src="js/auth-guard.js?v=b4032a17"></script>
-<script>(function(){const w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);const n=[];while(w.nextNode())n.push(w.currentNode);for(const x of n){if(x.parentElement&&/^(SCRIPT|STYLE|TEXTAREA)$/i.test(x.parentElement.tagName))continue;x.nodeValue=x.nodeValue.replace(/\.(?=\s|$)/g,"");}})();</script>
-</body></html>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#087747">
+  <meta name="description" content="Learn about HYSACAM and the HYSACAM Kumba Tracker platform, supporting cleaner streets and healthier communities.">
+
+  <title>About HYSACAM | Kumba Tracker</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --green: #087747;
+      --dark-green: #064d32;
+      --deep-green: #063b29;
+      --light-green: #eaf6ef;
+      --text: #17251e;
+      --muted: #69786f;
+      --white: #ffffff;
+      --background: #f7faf8;
+      --border: #e5eee8;
+      --shadow: 0 15px 45px rgba(14, 65, 39, .09);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: "DM Sans", sans-serif;
+      background: var(--background);
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    /* NAVIGATION */
+
+    .about-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      width: 100%;
+      background: rgba(255,255,255,.94);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-container {
+      max-width: 1200px;
+      min-height: 76px;
+      padding: 0 25px;
+      margin: auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 25px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      font-size: 17px;
+      font-weight: 800;
+      color: var(--dark-green);
+    }
+
+    .brand img {
+      width: 43px;
+      height: 43px;
+      object-fit: contain;
+    }
+
+    .brand small {
+      display: block;
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 27px;
+    }
+
+    .nav-links a {
+      color: #526159;
+      font-size: 13px;
+      font-weight: 700;
+      transition: color .25s ease;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: var(--green);
+    }
+
+    .nav-cta {
+      background: var(--green);
+      color: white !important;
+      padding: 12px 19px;
+      border-radius: 30px;
+      box-shadow: 0 5px 15px rgba(8,119,71,.18);
+    }
+
+    .nav-cta:hover {
+      background: var(--dark-green);
+      transform: translateY(-2px);
+    }
+
+    /* HERO */
+
+    .hero {
+      min-height: 590px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+      background: var(--deep-green);
+      isolation: isolate;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background:
+        linear-gradient(90deg,
+          rgba(3,38,25,.94) 0%,
+          rgba(3,54,34,.83) 48%,
+          rgba(3,54,34,.35) 100%),
+        url("images/hysacam-truck.jpg") center 48% / cover no-repeat;
+      animation: heroZoom 20s ease-in-out infinite alternate;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      z-index: -1;
+      width: 440px;
+      height: 440px;
+      right: -150px;
+      bottom: -230px;
+      border-radius: 50%;
+      background: rgba(75, 200, 125, .18);
+      filter: blur(5px);
+      animation: heroOrb 9s ease-in-out infinite alternate;
+    }
+
+    .hero-container {
+      width: 100%;
+      max-width: 1200px;
+      padding: 90px 25px 105px;
+      margin: auto;
+      color: white;
+    }
+
+    .hero-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      padding: 9px 15px;
+      border: 1px solid rgba(255,255,255,.25);
+      background: rgba(255,255,255,.1);
+      backdrop-filter: blur(10px);
+      border-radius: 30px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 1.7px;
+      text-transform: uppercase;
+      margin-bottom: 25px;
+    }
+
+    .hero-label span {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #69e59d;
+      box-shadow: 0 0 13px #69e59d;
+      animation: livePulse 2s infinite;
+    }
+
+    .hero h1 {
+      max-width: 750px;
+      font-size: clamp(43px, 7vw, 78px);
+      line-height: 1.06;
+      letter-spacing: -3px;
+      font-weight: 800;
+      margin-bottom: 25px;
+    }
+
+    .hero h1 em {
+      color: #7ee5a8;
+      font-style: normal;
+    }
+
+    .hero-description {
+      max-width: 570px;
+      font-size: 16px;
+      line-height: 1.9;
+      color: rgba(255,255,255,.82);
+      margin-bottom: 33px;
+    }
+
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 13px;
+    }
+
+    .btn {
+      min-height: 49px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 22px;
+      border-radius: 30px;
+      font-size: 13px;
+      font-weight: 800;
+      transition: .3s ease;
+    }
+
+    .btn-primary {
+      background: #ffffff;
+      color: var(--dark-green);
+    }
+
+    .btn-outline {
+      border: 1px solid rgba(255,255,255,.45);
+      color: white;
+      background: rgba(255,255,255,.08);
+    }
+
+    .btn:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 25px rgba(0,0,0,.18);
+    }
+
+    /* SHARED SECTION */
+
+    .section {
+      max-width: 1200px;
+      margin: auto;
+      padding: 90px 25px;
+    }
+
+    .section-heading {
+      max-width: 650px;
+      margin: 0 auto 48px;
+      text-align: center;
+    }
+
+    .eyebrow {
+      color: var(--green);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      display: inline-block;
+      margin-bottom: 14px;
+    }
+
+    .section-heading h2 {
+      font-size: clamp(30px, 4vw, 43px);
+      line-height: 1.2;
+      letter-spacing: -1.5px;
+      margin-bottom: 16px;
+    }
+
+    .section-heading p {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.9;
+    }
+
+    /* INTRODUCTION */
+
+    .intro-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      gap: 65px;
+    }
+
+    .intro-image {
+      position: relative;
+      min-height: 390px;
+      border-radius: 25px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      background: #dcece2;
+    }
+
+    .intro-image img {
+      width: 100%;
+      height: 100%;
+      min-height: 390px;
+      position: absolute;
+      inset: 0;
+      object-fit: cover;
+      transition: transform .8s ease;
+    }
+
+    .intro-image:hover img {
+      transform: scale(1.06);
+    }
+
+    .intro-copy h2 {
+      font-size: clamp(30px, 4vw, 43px);
+      line-height: 1.2;
+      letter-spacing: -1.5px;
+      margin-bottom: 22px;
+    }
+
+    .intro-copy p {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 2;
+      margin-bottom: 17px;
+    }
+
+    .intro-highlight {
+      border-left: 4px solid var(--green);
+      padding: 15px 18px;
+      background: var(--light-green);
+      border-radius: 0 12px 12px 0;
+      color: var(--dark-green);
+      font-size: 13px;
+      line-height: 1.8;
+      font-weight: 600;
+      margin-top: 24px;
+    }
+
+    /* MISSION AND VISION */
+
+    .purpose-section {
+      background: #edf6f0;
+    }
+
+    .purpose-grid {
+      max-width: 1150px;
+      margin: auto;
+      padding: 0 25px;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 25px;
+    }
+
+    .purpose-card {
+      padding: 37px;
+      background: white;
+      border: 1px solid rgba(8,119,71,.08);
+      border-radius: 22px;
+      box-shadow: 0 10px 30px rgba(14,65,39,.045);
+      transition: .35s ease;
+    }
+
+    .purpose-card:hover {
+      transform: translateY(-7px);
+      box-shadow: var(--shadow);
+    }
+
+    .purpose-icon {
+      width: 57px;
+      height: 57px;
+      display: grid;
+      place-items: center;
+      background: var(--light-green);
+      border-radius: 17px;
+      font-size: 26px;
+      margin-bottom: 24px;
+    }
+
+    .purpose-card h3 {
+      font-size: 23px;
+      margin-bottom: 13px;
+    }
+
+    .purpose-card p {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.9;
+    }
+
+    /* COMMITMENTS */
+
+    .commitment-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 22px;
+    }
+
+    .commitment-card {
+      padding: 32px 27px;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 21px;
+      box-shadow: 0 7px 25px rgba(14,65,39,.035);
+      transition: .35s ease;
+    }
+
+    .commitment-card:hover {
+      transform: translateY(-8px);
+      border-color: rgba(8,119,71,.3);
+      box-shadow: var(--shadow);
+    }
+
+    .commitment-icon {
+      font-size: 31px;
+      margin-bottom: 22px;
+      display: inline-block;
+      transition: transform .35s ease;
+    }
+
+    .commitment-card:hover .commitment-icon {
+      transform: scale(1.18) rotate(-8deg);
+    }
+
+    .commitment-card h3 {
+      font-size: 18px;
+      margin-bottom: 12px;
+    }
+
+    .commitment-card p {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.9;
+    }
+
+    /* PLATFORM */
+
+    .platform-section {
+      background: var(--deep-green);
+      color: white;
+      overflow: hidden;
+      position: relative;
+      isolation: isolate;
+    }
+
+    .platform-section::before {
+      content: "";
+      position: absolute;
+      z-index: -1;
+      width: 450px;
+      height: 450px;
+      top: -230px;
+      right: -120px;
+      border-radius: 50%;
+      background: rgba(55,180,104,.14);
+    }
+
+    .platform-container {
+      max-width: 1150px;
+      padding: 85px 25px;
+      margin: auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+    }
+
+    .platform-copy .eyebrow {
+      color: #82e8aa;
+    }
+
+    .platform-copy h2 {
+      font-size: clamp(31px, 4vw, 46px);
+      letter-spacing: -1.5px;
+      line-height: 1.2;
+      margin-bottom: 20px;
+    }
+
+    .platform-copy p {
+      font-size: 14px;
+      line-height: 2;
+      color: rgba(255,255,255,.75);
+    }
+
+    .platform-features {
+      display: grid;
+      gap: 15px;
+    }
+
+    .feature {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      padding: 20px;
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.11);
+      border-radius: 17px;
+      transition: .3s ease;
+    }
+
+    .feature:hover {
+      background: rgba(255,255,255,.14);
+      transform: translateX(6px);
+    }
+
+    .feature-icon {
+      width: 43px;
+      height: 43px;
+      flex-shrink: 0;
+      display: grid;
+      place-items: center;
+      border-radius: 13px;
+      background: rgba(126,229,168,.15);
+      font-size: 20px;
+    }
+
+    .feature h3 {
+      font-size: 15px;
+      margin-bottom: 6px;
+    }
+
+    .feature p {
+      font-size: 12px;
+      line-height: 1.7;
+      color: rgba(255,255,255,.7);
+    }
+
+    /* CLOSING CTA */
+
+    .closing {
+      padding: 85px 25px;
+      text-align: center;
+      background: white;
+    }
+
+    .closing-inner {
+      max-width: 720px;
+      margin: auto;
+    }
+
+    .closing h2 {
+      font-size: clamp(30px, 4vw, 43px);
+      letter-spacing: -1.5px;
+      margin-bottom: 17px;
+    }
+
+    .closing p {
+      color: var(--muted);
+      line-height: 1.9;
+      font-size: 14px;
+      margin-bottom: 27px;
+    }
+
+    .closing .btn {
+      background: var(--green);
+      color: white;
+    }
+
+    /* FOOTER */
+
+    .footer {
+      background: #052e20;
+      color: white;
+      padding: 55px 25px 25px;
+    }
+
+    .footer-inner {
+      max-width: 1150px;
+      margin: auto;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 30px;
+      padding-bottom: 35px;
+    }
+
+    .footer-brand {
+      max-width: 330px;
+    }
+
+    .footer-brand .brand {
+      color: white;
+      margin-bottom: 16px;
+    }
+
+    .footer-brand .brand small {
+      color: rgba(255,255,255,.55);
+    }
+
+    .footer-brand p {
+      font-size: 12px;
+      line-height: 1.9;
+      color: rgba(255,255,255,.65);
+    }
+
+    .footer-links h3 {
+      font-size: 13px;
+      margin-bottom: 16px;
+    }
+
+    .footer-links a {
+      display: block;
+      font-size: 12px;
+      color: rgba(255,255,255,.65);
+      margin-bottom: 12px;
+      transition: .2s;
+    }
+
+    .footer-links a:hover {
+      color: #83e6aa;
+    }
+
+    .footer-bottom {
+      max-width: 1150px;
+      margin: auto;
+      padding-top: 23px;
+      border-top: 1px solid rgba(255,255,255,.12);
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+      flex-wrap: wrap;
+      color: rgba(255,255,255,.55);
+      font-size: 11px;
+    }
+
+    /* MOBILE BOTTOM NAVIGATION */
+
+    .app-tabbar {
+      display: none;
+    }
+
+    /* REVEAL ANIMATIONS */
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity .75s ease, transform .75s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @keyframes heroZoom {
+      from { transform: scale(1); }
+      to { transform: scale(1.08); }
+    }
+
+    @keyframes heroOrb {
+      from { transform: translate(0,0); }
+      to { transform: translate(-55px,-35px); }
+    }
+
+    @keyframes livePulse {
+      0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(105,229,157,.5); }
+      50% { opacity: .7; box-shadow: 0 0 0 8px rgba(105,229,157,0); }
+    }
+
+    /* RESPONSIVE */
+
+    @media(max-width: 850px) {
+      .nav-links {
+        gap: 15px;
+      }
+
+      .nav-links a {
+        font-size: 11px;
+      }
+
+      .intro-grid,
+      .platform-container {
+        gap: 35px;
+      }
+
+      .commitment-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media(max-width: 650px) {
+      .nav-container {
+        min-height: 66px;
+        padding: 0 17px;
+      }
+
+      .brand {
+        font-size: 14px;
+      }
+
+      .brand img {
+        width: 38px;
+        height: 38px;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .hero {
+        min-height: 570px;
+      }
+
+      .hero::before {
+        background:
+          linear-gradient(90deg, rgba(3,38,25,.91), rgba(3,54,34,.64)),
+          url("images/hysacam-truck.jpg") center / cover no-repeat;
+      }
+
+      .hero-container {
+        padding: 80px 22px;
+      }
+
+      .hero h1 {
+        font-size: 47px;
+        letter-spacing: -2px;
+      }
+
+      .hero-description {
+        font-size: 14px;
+      }
+
+      .section {
+        padding: 65px 21px;
+      }
+
+      .section-heading {
+        margin-bottom: 35px;
+      }
+
+      .intro-grid,
+      .platform-container {
+        grid-template-columns: 1fr;
+      }
+
+      .intro-image,
+      .intro-image img {
+        min-height: 270px;
+      }
+
+      .intro-copy h2 {
+        font-size: 33px;
+      }
+
+      .purpose-grid {
+        grid-template-columns: 1fr;
+        padding: 0 21px 65px;
+      }
+
+      .purpose-card {
+        padding: 28px;
+      }
+
+      .commitment-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+      }
+
+      .commitment-card {
+        padding: 25px;
+      }
+
+      .platform-container {
+        padding: 65px 21px;
+      }
+
+      .closing {
+        padding: 65px 22px;
+      }
+
+      .footer {
+        padding: 45px 22px 95px;
+      }
+
+      .footer-inner {
+        flex-direction: column;
+      }
+
+      .footer-bottom {
+        flex-direction: column;
+      }
+
+      .app-tabbar {
+        display: flex;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 200;
+        min-height: calc(67px + env(safe-area-inset-bottom));
+        padding: 9px 5px calc(9px + env(safe-area-inset-bottom));
+        background: rgba(255,255,255,.97);
+        backdrop-filter: blur(15px);
+        border-top: 1px solid var(--border);
+        justify-content: space-around;
+      }
+
+      .app-tabbar a {
+        min-width: 55px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+        color: #7a8980;
+        font-size: 10px;
+        font-weight: 700;
+      }
+
+      .app-tabbar a.active {
+        color: var(--green);
+      }
+
+      .app-tabbar svg {
+        width: 22px;
+        height: 22px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.8;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+    }
+
+    @media(prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation: none !important;
+        transition: none !important;
+        scroll-behavior: auto !important;
+      }
+
+      .reveal {
+        opacity: 1;
+        transform: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <header class="about-header">
+    <div class="nav-container">
+      <a class="brand" href="index.html">
+        <img src="images/hysacam-symbol.svg" alt="HYSACAM">
+        <span>
+          HYSACAM
+          <small>Kumba Tracker</small>
+        </span>
+      </a>
+
+      <nav class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="map.html">Map</a>
+        <a href="directory.html">Directory</a>
+        <a href="cleaning.html">Cleaning Records</a>
+        <a href="about.html" class="active">About</a>
+      </nav>
+
+      <a class="nav-cta btn" href="map.html">Explore Map →</a>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-container">
+        <div class="hero-label">
+          <span></span>
+          WHO WE ARE
+        </div>
+
+        <h1>
+          Building a<br>
+          <em>Cleaner</em> Kumba.
+        </h1>
+
+        <p class="hero-description">
+          Discover HYSACAM and the Kumba Tracker platform.
+          Working towards cleaner surroundings, healthier
+          communities and more responsible waste management.
+        </p>
+
+        <div class="hero-actions">
+          <a href="#who-we-are" class="btn btn-primary">
+            Discover Our Story
+          </a>
+
+          <a href="map.html" class="btn btn-outline">
+            Explore the Tracker
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- INTRODUCTION -->
+    <section class="section" id="who-we-are">
+      <div class="intro-grid">
+
+        <div class="intro-image reveal">
+          <img
+            src="images/hysacam-truck.jpg"
+            alt="HYSACAM collection team and waste collection truck"
+            loading="lazy"
+          >
+        </div>
+
+        <div class="intro-copy reveal">
+          <span class="eyebrow">ABOUT HYSACAM</span>
+
+          <h2>Committed to cleaner and healthier communities.</h2>
+
+          <p>
+            HYSACAM (Highlands and Western Sanitation Company)
+            is committed to keeping our communities clean and healthy.
+          </p>
+
+          <p>
+            Responsible waste management plays an important role
+            in maintaining clean surroundings and supporting
+            healthier communities.
+          </p>
+
+          <p>
+            The HYSACAM Kumba Tracker provides a digital platform
+            where residents and staff can access information about
+            waste collection points and community cleaning activities.
+          </p>
+
+          <div class="intro-highlight">
+            Cleaner streets. Healthier communities. A more
+            responsible approach to waste management.
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- MISSION AND VISION -->
+    <section class="purpose-section">
+      <div class="section-heading" style="padding:70px 22px 0">
+        <span class="hero-actions">
+          <a href="#who-we-are" class="btn btn-primary">
+            Discover Our Story
+          </a>
+
+          <a href="map.html" class="btn btn-outline">
+            Explore the Tracker
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- INTRODUCTION -->
+    <section class="section" id="who-we-are">
+      <div class="intro-grid">
+
+        <div class="intro-image reveal">
+          <img
+            src="images/hysacam-truck.jpg"
+            alt="HYSACAM collection team and waste collection truck
+loading="lazy"
+          >
+        </div>
+
+        <div class="intro-copy reveal">
+          <span class="eyebrow">ABOUT HYSACAM</span>
+
+          <h2>Committed to cleaner and healthier communities.</h2>
+
+          <p>
+            HYSACAM (Highlands and Western Sanitation Company)
+            is committed to keeping our communities clean and healthy.
+          </p>
+ <div class="intro-highlight">
+            Cleaner streets. Healthier communities. A more
+            responsible approach to waste management.
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- MISSION AND VISION -->
+    <section class="purpose-section">
+      <div class="section-heading" style="padding:70px 22px 0">
+        <span class="eyebrow">OUR PURPOSE</span>
+        <h2>Our Mission and Vision</h2>
+        <p>
+          Our focus is on supporting cleaner environments and
+          encouraging responsible community participation.
+        </p>
+      </div>
+
+      <div class="purpose-grid">
+
+        <article class="purpose-card reveal">
+          <div class="purpose-icon">🌿</div>
+          <h3>Our Mission</h3>
+          <p>
+            To support cleaner communities through responsible
+            waste management, accessible information and improved
+            awareness of collection and cleaning activities.
+          </p>
+        </article>
+
+        <article class="purpose-card reveal">
+          <div class="purpose-icon">🌍</div>
+          <h3>Our Vision</h3>
+<p>
+            To contribute towards healthier, cleaner and more
+            sustainable communities where residents are informed
+            and encouraged to take part in environmental care.
+          </p>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- COMMITMENTS -->
+    <section class="section">
+      <div class="section-heading reveal">
+        <span class="eyebrow">WHAT MATTERS TO US</span>
+        <h2>Our Environmental Commitments</h2>
+        <p>
+          A cleaner environment benefits everyone. These are
+          the principles behind our work.
+        </p>
+      </div>
+
+      <div class="commitment-grid">
+
+        <article class="commitment-card reveal">
+          <span
+class="commitment-icon">🌱</span>
+          <h3>Cleaner Environment</h3>
+          <p>
+            Promoting responsible waste management and cleaner
+            surroundings for our communities.
+          </p>
+        </article>
+
+        <article class="commitment-card reveal">
+          <span class="commitment-icon">💚</span>
+          <h3>Better Health</h3>
+          <p>
+            Supporting cleaner surroundings that contribute
+            to healthier living conditions.
+          </p>
+        </article>
+
+        <article class="commitment-card reveal">
+          <span class="commitment-icon">♻️</span>
+          <h3>Sustainable Communities</h3>
+          <p>
+            Encouraging awareness, responsibility and community
+            participation in environmental care.
+          </p>
+        </article>
+
+      </div>
+    </section>
+<!-- TRACKER PLATFORM -->
+    <section class="platform-section">
+      <div class="platform-container">
+
+        <div class="platform-copy reveal">
+          <span class="eyebrow">THE DIGITAL PLATFORM</span>
+
+          <h2>Introducing HYSACAM Kumba Tracker.</h2>
+
+          <p>
+            The Kumba Tracker is designed to make waste collection
+            information and community cleaning activities easier
+            to access. It brings useful platform features together
+            in one place.
+          </p>
+        </div>
+
+        <div class="platform-features">
+
+          <article class="feature reveal">
+            <div class="feature-icon">📍</div>
+            <div>
+              <h3>Waste CollectionMap</h3>
+              <p>
+                Explore available waste collection point
+                information through the map.
+              </p>
+            </div>
+          </article>
+
+          <article class="feature reveal">
+            <div class="feature-icon">📋</div>
+            <div>
+              <h3>Community Reports</h3>
+              <p>
+                Access the reporting feature to communicate
+                waste management concerns.
+              </p>
+            </div>
+          </article>
+<article class="feature reveal">
+            <div class="feature-icon">📋</div>
+            <div>
+              <h3>Community Reports</h3>
+              <p>
+                Access the reporting feature to communicate
+                waste management concerns.
+              </p>
+            </div>
+          </article>
+
+          <article class="feature reveal">
+            <div class="feature-icon">🧹</div>
+            <div>
+              <h3>Cleaning Records</h3>
+              <p>
+                View available records of community cleaning
+                activities.
+              </p>
+            </div>
+          </article>
+
+          <article class="feature reveal">
+            <div class="feature-icon">🏘️</div>
+<div>
+              <h3>Community Information</h3>
+              <p>
+                Find useful information through the platform's
+                directory and other resources.
+              </p>
+            </div>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- CLOSING -->
+    <section class="closing">
+      <div class="closing-inner reveal">
+        <span class="eyebrow">BE PART OF THE CHANGE</span>
+
+        <h2>A cleaner Kumba starts with awareness.</h2>
+
+        <p>
+          Explore the HYSACAM Kumba Tracker and discover the
+          available tools for following waste collection
+          information and community cleaning activities.
+        </p>
+
+        <a href="map.html" class="btn">
+          Explore Kumba Tracker →
+        </a>
+      </div>
+    </section>
+
+  </main>
+ <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-inner">
+
+      <div class="footer-brand">
+        <a class="brand" href="index.html">
+          <img src="images/hysacam-symbol.svg" alt="">
+          <span>
+            HYSACAM
+            <small>Kumba Tracker</small>
+          </span>
+        </a>
+
+        <p>
+          Cleaner streets. Healthier communities.
+          Discover information and tools supporting
+          responsible waste management in Kumba.
+        </p>
+      </div>
+
+      <div class="footer-links">
+        <h3>Explore</h3>
+        <a href="index.html">Home</a>
+        <a href="map.html">Waste Collection Map</a>
+        <a href="directory.html">Directory</a>
+        <a href="cleaning.html">Cleaning Records</a>
+      </div>
+<div class="footer-links">
+        <h3>More Information</h3>
+        <a href="about.html">About HYSACAM</a>
+        <a href="report.html">Submit a Report</a>
+        <a href="settings.html">Settings</a>
+      </div>
+
+    </div>
+
+    <div class="footer-bottom">
+      <span>© 2026 HYSACAM Kumba Tracker. All rights reserved.</span>
+      <a href="#top">Back to top ↑</a>
+    </div>
+  </footer>
+
+  <!-- MOBILE NAVIGATION -->
+  <nav class="app-tabbar" aria-label="Primary navigation">
+    <a href="index.html">
+      <svg viewBox="0 0 24 24">
+        <path d="M3 11 12 3l9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>
+      </svg>
+      <span>Home</span>
+    </a>
+
+    <a href="map.html">
+      <svg viewBox="0 0 24 24">
+        <path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/>
+        <circle cx="12" cy="10" r="2.5"/>
+      </svg>
+      <span>Map</span>
+    </a>
+
+    <a href="report.html">
+      <svg viewBox="0 0 24 24">
+        <path d="M6 3h9l4 4v14H6z"/>
+        <path d="M9 12h7M9 16h7M9 8h3"/>
+      </svg>
+      <span>Reports</span>
+    </a>
+
+    <a href="cleaning.html">
+      <svg viewBox="0 0 24 24">
+        <path d="M9 4h6v3H9zM7 5H5v16h14V5h-2"/>
+        <path d="m9 14 2 2 4-4"/>
+      </svg>
+      <span>Cleaning</span>
+    </a>
+
+    <a href="settings.html">
+      <svg viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="3"/>
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82A1.65 1.65 0 0 0 3.5 14H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.5a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.5a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+      </svg>
+      <span>Settings</span>
+    </a>
+ </nav>
+
+  <!-- REVEAL ANIMATION -->
+  <script>
+    (function () {
+      const items = document.querySelectorAll(".reveal");
+
+      if (!("IntersectionObserver" in window)) {
+        items.forEach(item => item.classList.add("visible"));
+        return;
+      }
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("visible");
+            observer.unobserve(entry.target);
+          }
+        });
+      }, {
+        threshold: 0.12
+      });
+
+      items.forEach(item => observer.observe(item));
+    })();
+  </script>
+
+</body>
+</html>
+
+          <p>
+            Responsible waste management plays an important role
+            in maintaining clean surroundings and supporting
+            healthier communities.
+          </p>
+
+          <p>
+            The HYSACAM Kumba Tracker provides a digital platform
+            where residents and staff can access information about
+            waste collection points and community cleaning activities.
+          </p>
