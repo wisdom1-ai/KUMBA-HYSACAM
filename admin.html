@@ -1,5 +1,72 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#087747"><title>Administrator Portal | HYSACAM Kumba</title><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="css/style.css?v=5b2ca3b6"><link rel="stylesheet" href="css/admin-app.css?v=8"></head><body>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#087747"><script>(function(){function show(m){var b=document.getElementById("hx-diag");if(!b){b=document.createElement("div");b.id="hx-diag";b.style.cssText="position:fixed;left:8px;right:8px;bottom:8px;z-index:99999;padding:10px 12px;border-radius:10px;background:#7a1c14;color:#fff;font:12px/1.4 monospace;white-space:pre-wrap;word-break:break-word;max-height:40vh;overflow:auto";b.onclick=function(){b.remove()};(document.body||document.documentElement).appendChild(b)}b.textContent+=m+"\n"}window.addEventListener("error",function(e){var t=e.target;if(t&&t!==window&&(t.src||t.href)){show("FILE NOT LOADED: "+(t.src||t.href))}else{show("ERROR: "+e.message+" ("+String(e.filename||"").split("/").pop()+":"+e.lineno+")")}},true);window.addEventListener("unhandledrejection",function(e){show("PROMISE ERROR: "+((e.reason&&e.reason.message)||e.reason))});window.addEventListener("load",function(){fetch("js/admin-dashboard.js?c="+Date.now(),{cache:"no-store"}).then(function(r){if(!r.ok){show("FILE PROBLEM: js/admin-dashboard.js returned "+r.status);return null}return r.text()}).then(function(t){if(t!==null&&t.indexOf("/api/admin/login")<0)show("WRONG FILE: js/admin-dashboard.js is not the dashboard script (sign-in code is missing)")}).catch(function(){});fetch("/api/admin/me",{credentials:"include",cache:"no-store"}).then(function(r){if(r.status===404||r.status>=500)show("SERVER PROBLEM: /api/admin/me returned "+r.status+" (the admin server routes are not working)")}).catch(function(){show("NETWORK PROBLEM: cannot reach /api/admin/me")})})})();</script><script>if(!Object.hasOwn)Object.hasOwn=function(o,k){return Object.prototype.hasOwnProperty.call(o,k)};if(!String.prototype.replaceAll)String.prototype.replaceAll=function(a,b){return typeof a==="string"?this.split(a).join(b):this.replace(a,b)};if(!window.CSS)window.CSS={};if(!CSS.escape)CSS.escape=function(v){return String(v).replace(/[^a-zA-Z0-9_-]/g,function(c){return "\\"+c})};</script><title>Administrator Portal | HYSACAM Kumba</title><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="css/style.css?v=5b2ca3b6"><link rel="stylesheet" href="css/admin-app.css?v=9"><style id="hx-extras-css">
+/* HYSACAM admin extras: load AFTER admin-app.css */
+
+/* Tables: sticky header, soft zebra, copy cursor */
+#admin-portal .hx-scroll{overflow:auto;max-height:calc(100vh - 300px);scrollbar-width:thin;scrollbar-color:#c5d3ca transparent}
+#admin-portal th{position:sticky;top:0;z-index:2;box-shadow:0 1px 0 var(--line)}
+#admin-portal tbody tr:nth-child(even){background:#fbfcfb}
+#admin-portal tbody tr:hover{background:#f2f9f5}
+#admin-portal #admin-reports-table td:first-child b{cursor:copy}
+#admin-portal td b{font-variant-numeric:tabular-nums}
+
+/* Loading skeleton rows */
+#admin-portal .hx-skrow td{padding:19px 20px}
+#admin-portal .hx-skrow i{display:block;height:14px;border-radius:7px;background:linear-gradient(90deg,#e8eeea 25%,#f5f8f6 45%,#e8eeea 65%);background-size:220% 100%;animation:hx-sk 1.2s linear infinite}
+#admin-portal .hx-skrow:nth-child(2) i{width:82%}
+#admin-portal .hx-skrow:nth-child(3) i{width:64%}
+#admin-portal .hx-skrow:nth-child(4) i{width:76%}
+@keyframes hx-sk{from{background-position:120% 0}to{background-position:-120% 0}}
+
+/* Drawers and dialogs */
+#admin-portal .hx-drawer[open]{animation:hx-slide .3s cubic-bezier(.22,.8,.3,1)}
+@keyframes hx-slide{from{transform:translateX(48px);opacity:0}to{transform:none;opacity:1}}
+#admin-portal dialog::backdrop{background:rgba(10,22,15,.5);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
+#admin-portal .hx-locate{width:100%;margin:0 0 15px;border-style:dashed;color:var(--g2)}
+#admin-portal .hx-locate:disabled{opacity:.6}
+
+/* Header quick-actions button */
+#admin-portal .hx-quick{gap:8px;padding:0 14px;color:#3d4d43}
+@media(max-width:900px){#admin-portal .hx-quicktxt{display:none}#admin-portal .hx-quick{width:40px;padding:0}}
+
+/* Toast */
+#admin-toast{border-left:4px solid #3ddc84;border-radius:12px;transform:translateY(8px)}
+#admin-toast.show{transform:none}
+#admin-toast[data-tone=bad]{border-left-color:#ff8a80}
+
+/* Offline banner */
+.hx-offline{position:fixed;top:0;left:0;right:0;z-index:1500;padding:9px 16px;background:#8f2a1f;color:#fff;font:600 13px/1.35 "DM Sans",system-ui,sans-serif;text-align:center}
+.hx-offline[hidden]{display:none}
+
+/* Sign-in extras */
+.hx-caps{display:block;margin:-6px 0 12px;font-size:12.5px;font-weight:700;color:#a65308}
+.hx-caps[hidden]{display:none}
+#admin-resend:disabled{opacity:.6;cursor:default}
+
+/* Quick actions palette */
+.hx-palette-bg{position:fixed;top:0;right:0;bottom:0;left:0;z-index:1600;display:grid;align-items:start;justify-items:center;padding:12vh 14px 0;background:rgba(10,22,15,.5);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);font-family:"DM Sans",system-ui,sans-serif}
+.hx-palette-bg[hidden]{display:none}
+.hx-palette{width:min(560px,100%);overflow:hidden;border-radius:18px;background:#fff;color:#0e1a13;box-shadow:0 30px 80px rgba(0,0,0,.35);animation:hx-pal .18s ease-out}
+.hx-palette input{display:block;width:100%;height:58px;padding:0 22px;border:0;border-bottom:1px solid #e6ebe8;background:#fff;font:inherit;font-size:16px;color:inherit;outline:0}
+.hx-palette ul{max-height:min(340px,52vh);margin:0;padding:8px;overflow:auto;list-style:none}
+.hx-palette li{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;border-radius:11px;font-size:14.5px;font-weight:600;cursor:pointer}
+.hx-palette li small{font-size:12px;font-weight:600;color:#6f8076}
+.hx-palette li[aria-selected="true"]{background:#e9f6ef;color:#075c37}
+.hx-palette li.hx-pal-empty{justify-content:center;color:#6f8076;cursor:default}
+@keyframes hx-pal{from{opacity:0;transform:translateY(-8px) scale(.985)}to{opacity:1;transform:none}}
+
+/* Print: tables only */
+@media print{
+  #admin-portal .hx-side,#admin-portal .hx-top,#admin-portal .hx-tabbar,#admin-portal .hx-toolbar,#admin-portal .hx-pager,#admin-portal .hx-actions,#admin-portal .hx-hero{display:none!important}
+  #admin-portal .hx-shell{display:block}
+  #admin-portal .hx-main{padding:0}
+  #admin-portal .hx-scroll{max-height:none;overflow:visible}
+  #admin-portal th{position:static}
+}
+@media(max-width:900px){#admin-portal .hx-scroll{max-height:none;overflow:visible}#admin-portal th{position:static}}
+@media(prefers-reduced-motion:reduce){.hx-palette,#admin-portal .hx-drawer[open],#admin-portal .hx-skrow i{animation:none}}
+
+</style></head><body>
 <div class="admin-login-page" id="admin-login-page"><section class="admin-login-brand auth-photo-panel">
   <a class="auth-brand-lockup" href="index.html" aria-label="HYSACAM Kumba Tracker home">
     <img src="images/hysacam-symbol.svg" alt="HYSACAM logo">
@@ -162,7 +229,214 @@
   </form>
 </dialog>
 </section>
-<script src="js/auth-common.js?v=22d621ef"></script><script src="js/auth-ui.js?v=fd0f4ec6"></script><script src="js/admin-dashboard.js?v=8"></script><script>
+<script src="js/auth-common.js?v=22d621ef"></script><script src="js/auth-ui.js?v=fd0f4ec6"></script><script src="js/admin-dashboard.js?v=9"></script><script id="hx-extras-js">
+/* HYSACAM admin portal: professional extras. Load AFTER admin-dashboard.js.
+   Adds: quick-actions palette (Ctrl/Cmd+K) and shortcuts, 30-minute idle sign-out, offline banner,
+   resend-code with cooldown, Caps Lock warning, loading skeletons, animated KPI numbers,
+   unread count in the tab title, click-to-copy report references, "use my location" for dustbins. */
+(() => {
+  "use strict";
+  const $ = id => document.getElementById(id);
+  const portal = $("admin-portal");
+  if (!portal) return;
+  const isAuth = () => portal.classList.contains("authorized");
+  const still = () => portal.classList.contains("still") || (window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches);
+  const say = text => { const m = $("auth-message"); if (m) m.textContent = text || ""; };
+
+  function toast(text, tone) {
+    let box = $("admin-toast");
+    if (!box) { box = document.createElement("div"); box.id = "admin-toast"; box.setAttribute("role", "status"); document.body.appendChild(box); }
+    box.textContent = text; box.dataset.tone = tone || "good"; box.classList.add("show");
+    clearTimeout(toast.t); toast.t = setTimeout(() => box.classList.remove("show"), 3500);
+  }
+
+  /* ---------- offline banner ---------- */
+  const bar = document.createElement("div");
+  bar.className = "hx-offline"; bar.setAttribute("role", "status"); bar.hidden = true;
+  bar.textContent = "You are offline. Changes cannot be saved until the connection returns";
+  document.body.appendChild(bar);
+  const net = () => { bar.hidden = navigator.onLine; };
+  addEventListener("online", net); addEventListener("offline", net); net();
+
+  /* ---------- idle sign-out (30 minutes) ---------- */
+  const IDLE = 30 * 60 * 1000, IDLE_KEY = "hysacam_admin_idle_msg";
+  let idleTimer = null;
+  function idleOut() {
+    if (!isAuth()) return;
+    fetch("/api/admin/logout", { method: "POST", credentials: "include" })
+      .then(r => { if (!r.ok) return bump(); try { sessionStorage.setItem(IDLE_KEY, "You were signed out after 30 minutes of inactivity"); } catch (e) {} location.reload(); })
+      .catch(bump);
+  }
+  function bump() { clearTimeout(idleTimer); if (isAuth()) idleTimer = setTimeout(idleOut, IDLE); }
+  ["pointerdown", "keydown", "scroll", "touchstart"].forEach(e => addEventListener(e, bump, { passive: true }));
+  try { const m = sessionStorage.getItem(IDLE_KEY); if (m) { sessionStorage.removeItem(IDLE_KEY); say(m); } } catch (e) {}
+
+  /* ---------- loading skeletons while the dashboard loads ---------- */
+  function skeleton() {
+    portal.querySelectorAll("tbody").forEach(t => {
+      if (!t.children.length) t.innerHTML = Array(4).fill('<tr class="hx-skrow"><td colspan="9"><i></i></td></tr>').join("");
+    });
+  }
+  new MutationObserver(() => { if (isAuth()) { skeleton(); bump(); } else clearTimeout(idleTimer); })
+    .observe(portal, { attributes: true, attributeFilter: ["class"] });
+  if (isAuth()) { skeleton(); bump(); }
+
+  /* ---------- animated KPI numbers ---------- */
+  ["admin-total-bins", "admin-cleaned-today", "admin-pending", "admin-open-reports"].forEach(id => {
+    const el = $(id); if (!el) return;
+    let busy = false, shown = "";
+    new MutationObserver(() => {
+      if (busy) return;
+      const txt = el.textContent;
+      if (txt === shown) return;
+      const n = Number(txt.replace(/,/g, ""));
+      if (!Number.isFinite(n) || still() || n === 0) { shown = txt; return; }
+      busy = true;
+      const t0 = performance.now(), dur = 650;
+      const frame = now => {
+        const p = Math.min(1, (now - t0) / dur), e = 1 - Math.pow(1 - p, 3);
+        el.textContent = Math.round(n * e).toLocaleString();
+        if (p < 1) requestAnimationFrame(frame); else { shown = el.textContent; busy = false; }
+      };
+      requestAnimationFrame(frame);
+    }).observe(el, { childList: true, characterData: true, subtree: true });
+  });
+
+  /* ---------- unread count in the tab title ---------- */
+  function titleCount() {
+    const badge = [...portal.querySelectorAll('[data-badge="reports"]')].find(b => !b.hidden);
+    const n = badge ? parseInt(badge.textContent, 10) || 0 : 0;
+    const base = document.title.replace(/^\(\d+\+?\)\s/, "");
+    document.title = n ? `(${n}) ${base}` : base;
+  }
+  portal.querySelectorAll("[data-badge]").forEach(b => new MutationObserver(titleCount).observe(b, { attributes: true, childList: true, characterData: true, subtree: true }));
+  addEventListener("hashchange", () => setTimeout(titleCount, 0));
+
+  /* ---------- sign-in extras ---------- */
+  const pw = $("admin-password");
+  if (pw && pw.closest(".auth-password-wrap")) {
+    const note = document.createElement("small");
+    note.className = "hx-caps"; note.hidden = true; note.textContent = "Caps Lock is on";
+    pw.closest(".auth-password-wrap").after(note);
+    const check = e => { note.hidden = !(e.getModifierState && e.getModifierState("CapsLock")); };
+    pw.addEventListener("keydown", check); pw.addEventListener("keyup", check); pw.addEventListener("blur", () => { note.hidden = true; });
+  }
+  const stage = $("admin-code-stage"), back = $("admin-back");
+  if (stage && back) {
+    const btn = document.createElement("button");
+    btn.type = "button"; btn.className = "admin-text-button"; btn.id = "admin-resend";
+    back.before(btn);
+    let left = 0, timer = null;
+    const paint = () => { btn.disabled = left > 0; btn.textContent = left > 0 ? `Resend code in ${left}s` : "Resend code"; };
+    const start = () => { clearInterval(timer); left = 45; paint(); timer = setInterval(() => { left--; paint(); if (left <= 0) clearInterval(timer); }, 1000); };
+    new MutationObserver(() => { if (!stage.hidden) start(); else clearInterval(timer); }).observe(stage, { attributes: true, attributeFilter: ["hidden"] });
+    btn.addEventListener("click", async () => {
+      if (left > 0) return;
+      btn.disabled = true; btn.textContent = "Sending…";
+      try {
+        const r = await fetch("/api/admin/login", { method: "POST", credentials: "include", cache: "no-store", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: $("admin-email").value.trim().toLowerCase(), password: $("admin-password").value }) });
+        const d = await r.json().catch(() => ({}));
+        say(r.ok ? "A new code has been sent to your email" : (d.message || "Could not send a new code"));
+        if (r.ok) start(); else paint();
+      } catch (e) { say("Could not send a new code. Check your connection"); paint(); }
+    });
+  }
+
+  /* ---------- dustbin form: use my location + coordinate check ---------- */
+  const lat = $("bin-lat"), lng = $("bin-lng"), binForm = $("admin-bin-form");
+  if (lat && lng && lat.closest(".hx-two")) {
+    if (navigator.geolocation) {
+      const btn = document.createElement("button");
+      btn.type = "button"; btn.className = "hx-btn hx-locate";
+      btn.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg> Use my current location';
+      lat.closest(".hx-two").after(btn);
+      btn.addEventListener("click", () => {
+        btn.disabled = true; $("bin-form-message").textContent = "Finding your location…";
+        navigator.geolocation.getCurrentPosition(
+          p => { lat.value = p.coords.latitude.toFixed(6); lng.value = p.coords.longitude.toFixed(6); $("bin-form-message").textContent = ""; btn.disabled = false; },
+          () => { $("bin-form-message").textContent = "Could not get your location. Allow location access and try again"; btn.disabled = false; },
+          { enableHighAccuracy: true, timeout: 12000 });
+      });
+    }
+    binForm?.addEventListener("submit", e => {
+      if (Boolean(lat.value.trim()) !== Boolean(lng.value.trim())) {
+        e.preventDefault(); e.stopImmediatePropagation();
+        $("bin-form-message").textContent = "Enter both latitude and longitude, or leave both empty";
+      }
+    }, true);
+  }
+
+  /* ---------- click a report reference to copy it ---------- */
+  $("admin-reports-table")?.addEventListener("click", e => {
+    const ref = e.target.closest("td:first-child b");
+    if (!ref || !navigator.clipboard) return;
+    navigator.clipboard.writeText(ref.textContent.trim()).then(() => toast("Reference copied")).catch(() => {});
+  });
+
+  /* ---------- quick actions palette (Ctrl/Cmd+K) ---------- */
+  const go = id => { location.hash = "#" + id; };
+  const later = fn => setTimeout(fn, 60);
+  const COMMANDS = [
+    ["Go to Dashboard", "G then D", () => go("overview")],
+    ["Go to Dustbins", "G then B", () => go("manage-bins")],
+    ["Go to Cleaning records", "G then C", () => go("manage-records")],
+    ["Go to Resident reports", "G then R", () => go("reports")],
+    ["Go to Users", "G then U", () => go("users")],
+    ["Go to Settings", "G then S", () => go("settings")],
+    ["Add dustbin", "", () => { go("manage-bins"); later(() => $("admin-add-bin")?.click()); }],
+    ["Add cleaning record", "", () => { go("manage-records"); later(() => $("admin-add-record")?.click()); }],
+    ["Refresh data", "", () => $("admin-quick-refresh")?.click()],
+    ["Sign out", "", () => $("admin-logout")?.click()]
+  ];
+  const bg = document.createElement("div");
+  bg.className = "hx-palette-bg"; bg.hidden = true;
+  bg.innerHTML = '<div class="hx-palette" role="dialog" aria-modal="true" aria-label="Quick actions"><input type="text" id="hx-pal-input" placeholder="Type a page or action" autocomplete="off" aria-label="Search actions"><ul id="hx-pal-list" role="listbox"></ul></div>';
+  document.body.appendChild(bg);
+  const input = bg.querySelector("input"), list = bg.querySelector("ul");
+  let shown = [], index = 0;
+  function paintList() {
+    const q = input.value.trim().toLowerCase();
+    shown = COMMANDS.filter(c => c[0].toLowerCase().includes(q));
+    index = Math.min(index, Math.max(0, shown.length - 1));
+    list.innerHTML = shown.length ? shown.map((c, i) => `<li role="option" data-i="${i}" aria-selected="${i === index}"><span>${c[0]}</span><small>${c[1]}</small></li>`).join("") : '<li class="hx-pal-empty">No matching action</li>';
+  }
+  function openPalette() { if (!isAuth()) return; bg.hidden = false; input.value = ""; index = 0; paintList(); input.focus(); }
+  function closePalette() { bg.hidden = true; }
+  function runCommand(i) { const c = shown[i]; if (!c) return; closePalette(); c[2](); }
+  input.addEventListener("input", () => { index = 0; paintList(); });
+  list.addEventListener("click", e => { const li = e.target.closest("[data-i]"); if (li) runCommand(Number(li.dataset.i)); });
+  bg.addEventListener("click", e => { if (e.target === bg) closePalette(); });
+  input.addEventListener("keydown", e => {
+    if (e.key === "ArrowDown") { e.preventDefault(); index = Math.min(shown.length - 1, index + 1); paintList(); }
+    else if (e.key === "ArrowUp") { e.preventDefault(); index = Math.max(0, index - 1); paintList(); }
+    else if (e.key === "Enter") { e.preventDefault(); runCommand(index); }
+    else if (e.key === "Escape") closePalette();
+  });
+
+  const refreshBtn = $("admin-quick-refresh");
+  if (refreshBtn) {
+    const quick = document.createElement("button");
+    quick.type = "button"; quick.className = "hx-btn hx-quick"; quick.setAttribute("aria-label", "Quick actions");
+    quick.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span class="hx-quicktxt">Quick actions</span>';
+    refreshBtn.before(quick);
+    quick.addEventListener("click", openPalette);
+  }
+
+  let gPending = false, gTimer = null;
+  const GO = { d: "overview", b: "manage-bins", c: "manage-records", r: "reports", u: "users", s: "settings" };
+  addEventListener("keydown", e => {
+    if (!isAuth()) return;
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") { e.preventDefault(); bg.hidden ? openPalette() : closePalette(); return; }
+    if (e.ctrlKey || e.metaKey || e.altKey || !bg.hidden) return;
+    if (/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName) || e.target.isContentEditable || portal.querySelector("dialog[open]")) return;
+    if (e.key === "/") { const f = portal.querySelector('.admin-page:not([hidden]) input[type="search"]'); if (f) { e.preventDefault(); f.focus(); } return; }
+    if (gPending) { gPending = false; clearTimeout(gTimer); const id = GO[e.key.toLowerCase()]; if (id) go(id); return; }
+    if (e.key.toLowerCase() === "g") { gPending = true; gTimer = setTimeout(() => { gPending = false; }, 1200); }
+  });
+})();
+
+</script><script>
 // Remove sentence-ending full stops from interface copy as requested
 (function(){const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);const nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);for(const node of nodes){if(node.parentElement&&/^(SCRIPT|STYLE|TEXTAREA)$/i.test(node.parentElement.tagName))continue;node.nodeValue=node.nodeValue.replace(/\.(?=\s|$)/g,"");}})();
 </script>
