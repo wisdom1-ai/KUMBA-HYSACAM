@@ -380,7 +380,7 @@
       await loadAll();
     } catch (error) {
       if (error.status === 401) { closeDialog(binDialog); return expired(); }
-      $("bin-form-message").textContent = error.message;
+      $("bin-form-message").textContent = error.message + "\n\nSent: " + JSON.stringify(payload);
     } finally { button.disabled = false; }
   });
 
