@@ -522,3 +522,170 @@ html.auth-yes .guest-strip {
 html.auth-no .guest-strip {
   display: flex;
 }
+
+/* =====================================
+   HYSACAM — LIVE ANIMATION LAYER
+===================================== */
+
+body.is-inner {
+  position: relative;
+  isolation: isolate;
+}
+
+/* Animated background lighting */
+body.is-inner::before {
+  content: "";
+  position: fixed;
+  inset: -50%;
+  z-index: -2;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 20% 30%, #b8efd0 0, transparent 25%),
+    radial-gradient(circle at 80% 70%, #d4f5e2 0, transparent 27%),
+    radial-gradient(circle at 50% 50%, #f0fff5 0, transparent 35%);
+  animation: liveBackground 16s ease-in-out infinite alternate;
+}
+
+@keyframes liveBackground {
+  0% {
+    transform: translate(-3%, -2%) rotate(0deg) scale(1);
+  }
+  50% {
+    transform: translate(2%, 3%) rotate(5deg) scale(1.08);
+  }
+  100% {
+    transform: translate(-1%, 1%) rotate(-4deg) scale(1.03);
+  }
+}
+
+/* Animated floating decorative lights */
+body.is-inner::after {
+  content: "";
+  position: fixed;
+  width: 240px;
+  height: 240px;
+  top: 15%;
+  right: -100px;
+  border-radius: 50%;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(circle, rgba(8,119,71,.10), transparent 70%);
+  animation: floatingLight 9s ease-in-out infinite alternate;
+}
+
+@keyframes floatingLight {
+  from { transform: translateY(0) translateX(0); }
+  to { transform: translateY(100px) translateX(-45px); }
+}
+
+/* Glowing profile avatar */
+#settings-avatar {
+  animation: avatarGlow 3s ease-in-out infinite;
+}
+
+@keyframes avatarGlow {
+  0%, 100% {
+    box-shadow: 0 0 0 3px rgba(8,119,71,.10),
+                0 0 12px rgba(8,119,71,.12);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(8,119,71,.08),
+                0 0 24px rgba(8,119,71,.24);
+  }
+}
+
+/* Live notification pulse */
+.notification-dot,
+.unread-dot {
+  animation: notificationLive 1.5s infinite;
+}
+
+@keyframes notificationLive {
+  0% { box-shadow: 0 0 0 0 rgba(8,119,71,.45); }
+  70% { box-shadow: 0 0 0 9px rgba(8,119,71,0); }
+  100% { box-shadow: 0 0 0 0 rgba(8,119,71,0); }
+}
+
+/* Floating cards */
+.settings-card,
+.setting-card {
+  animation: cardFloat 5s ease-in-out infinite;
+}
+
+.settings-card:nth-child(even),
+.setting-card:nth-child(even) {
+  animation-delay: -2.5s;
+}
+
+@keyframes cardFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+/* Animated card lighting */
+.set-row,
+.settings-card,
+.setting-card {
+  background-image: linear-gradient(
+    110deg,
+    transparent 35%,
+    rgba(255,255,255,.45) 50%,
+    transparent 65%
+  );
+  background-size: 250% 100%;
+  animation: cardShimmer 9s ease-in-out infinite;
+}
+
+@keyframes cardShimmer {
+  0%, 75%, 100% { background-position: 150% 0; }
+  90% { background-position: -150% 0; }
+}
+
+/* Smooth icon movement */
+.set-row:hover svg,
+.settings-card:hover svg,
+.setting-card:hover svg {
+  animation: iconBounce .55s ease;
+}
+
+@keyframes iconBounce {
+  0%, 100% { transform: translateY(0) scale(1); }
+  40% { transform: translateY(-4px) scale(1.12); }
+  70% { transform: translateY(1px) scale(.98); }
+}
+
+/* Animated progress fill */
+progress,
+.profile-progress-fill {
+  transition: width 1.2s cubic-bezier(.2,.8,.2,1);
+}
+
+/* Smooth entrance for individual sections */
+.settings-section {
+  animation: sectionReveal .7s ease both;
+}
+
+.settings-section:nth-child(2) { animation-delay: .1s; }
+.settings-section:nth-child(3) { animation-delay: .2s; }
+.settings-section:nth-child(4) { animation-delay: .3s; }
+
+@keyframes sectionReveal {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
