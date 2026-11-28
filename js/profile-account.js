@@ -242,10 +242,17 @@
       return r && r.data ? r.data.session : null;
     } catch (e) { dbg.push("getSession failed: " + e.message); return null; }
   }
+  function storageInfo() {
+    const names = (st) => { try { return Object.keys(st).filter((k) => /sb-|supabase|auth|hysacam|token/i.test(k)).map((k) => (k.length > 34 ? k.slice(0, 34) + "…" : k)).join(", "); } catch (e) { return "blocked"; } };
+    let cookies = ""; try { cookies = document.cookie.split(";").map((c) => c.split("=")[0].trim()).filter(Boolean).join(", "); } catch (e) {}
+    let g = "none"; try { g = (typeof supabaseClient !== "undefined" && supabaseClient) ? "global" : (window.supabaseClient ? "window" : "none"); } catch (e) {}
+    return ["client: " + g, "local: " + (names(localStorage) || "none"), "session: " + (names(sessionStorage) || "none"), "cookies: " + (cookies || "none")];
+  }
   async function findSession() {
     let keys = 0;
     try { keys = Object.keys(localStorage).filter((k) => /^sb-.*auth-token/.test(k)).length; } catch (e) {}
     dbg.push("remembered: " + (remembered() ? "yes" : "no"), "stored session keys: " + keys);
+    storageInfo().forEach((l) => dbg.push(l));
     let s = await readSession();
     if (s && s.user) return s;
     try {
@@ -265,7 +272,7 @@
   }
   function sessionEnded() {
     root.innerHTML = '<div class="pa-hero pa-guest"><div class="pa-avatar">' + ICON.user + '</div><div class="pa-hero-text"><b>Your session has ended</b><small>Please sign in again to see your profile</small></div>' +
-      '<div class="pa-actions"><a class="pa-btn light" href="signin.html">Sign In</a><a class="pa-btn ghost" href="index.html">Go home</a></div></div>';
+      '<div class="pa-actions"><a class="pa-btn light" href="signin.html">Sign In</a><a class="pa-btn ghost" href="index.html">Go home</a></div><p class="pa-debug">' + esc(dbg.join(" | ")) + '</p></div>';
   }
   function retryScreen() {
     root.innerHTML = '<div class="pa-hero pa-guest"><div class="pa-avatar">' + ICON.user + '</div><div class="pa-hero-text"><b>We could not confirm your sign-in</b><small>Your connection may be slow or your session may have expired</small></div>' +
