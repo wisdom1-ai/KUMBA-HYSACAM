@@ -369,6 +369,9 @@
     const editing = Boolean($("bin-edit-id").value);
     const payload = { bin_code: $("bin-id").value.trim(), id: $("bin-edit-id").value, name: $("bin-name").value.trim(), area: $("bin-area").value.trim(), latitude: $("bin-lat").value, longitude: $("bin-lng").value, status: $("bin-status").value };
     if (!payload.bin_code || !payload.name || !payload.area) { $("bin-form-message").textContent = "Fill in the dustbin ID, name and area"; return; }
+    const lat = parseFloat(payload.latitude), lng = parseFloat(payload.longitude);
+    if (!Number.isFinite(lat) || !Number.isFinite(lng) || Math.abs(lat) > 90 || Math.abs(lng) > 180) { $("bin-form-message").textContent = "Enter a valid latitude and longitude, or tap Use my current location"; return; }
+    payload.latitude = lat; payload.longitude = lng;
     const button = $("bin-save"); button.disabled = true; $("bin-form-message").textContent = "";
     try {
       await (editing ? patch("/api/admin/manage", payload) : post("/api/admin/manage", { type: "bin", ...payload }));
