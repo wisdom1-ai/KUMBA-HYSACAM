@@ -59,9 +59,12 @@
 
 <!-- Signed-in: profile summary that opens the Profile page -->
 <a class="set-row profile-row auth-only" id="set-hero" href="profile.html" aria-label="Open your profile">
-  <span class="pr-avatar" id="settings-avatar"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-user"/></svg></span>
-  <span class="pr-text"><b id="settings-user-name">Welcome</b><small id="settings-user-email">Sign in to manage your account</small><i class="pr-role" id="settings-user-role">Visitor</i></span>
-  <svg viewBox="0 0 24 24" aria-hidden="true" class="chev"><use href="#i-chev"/></svg>
+  <span class="pc-cover" aria-hidden="true"><em>MY PROFILE</em></span>
+  <span class="pc-body">
+    <span class="pc-plate"><span class="pr-avatar" id="settings-avatar"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-user"/></svg></span><i class="pc-dot" aria-hidden="true"></i></span>
+    <span class="pr-text"><b id="settings-user-name">Welcome</b><small id="settings-user-email">Sign in to manage your account</small><i class="pr-role" id="settings-user-role">Visitor</i></span>
+  </span>
+  <span class="pc-foot"><span>View and edit profile</span><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-chev"/></svg></span>
 </a>
 
 <!-- Visitors: sign-in strip -->
