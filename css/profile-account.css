@@ -41,8 +41,9 @@
 
 .pa-guest .pa-actions{position:relative;z-index:1;display:flex;gap:10px;width:100%}
 .pa-btn{flex:1;text-align:center;padding:13px 10px;border-radius:14px;font-size:15px;font-weight:800;text-decoration:none}
+button.pa-btn{border:0;font:inherit;cursor:pointer}
 .pa-btn.light{background:#fff;color:#065f3c;box-shadow:0 14px 24px -12px rgba(0,0,0,.5)}
-.pa-btn.ghost{border:1.5px solid rgba(255,255,255,.7);color:#fff}
+.pa-btn.ghost{border:1.5px solid rgba(255,255,255,.7);color:#fff;background:transparent}
 
 /* Cards */
 .pa-card{margin:0 14px 14px;padding:18px 16px;background:#fff;border:1px solid #e4eee8;border-radius:24px;box-shadow:0 20px 38px -28px rgba(6,60,40,.6);animation:paIn .55s cubic-bezier(.2,.8,.2,1) .08s both}
