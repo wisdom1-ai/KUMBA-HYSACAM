@@ -101,3 +101,5 @@ button.pa-btn{border:0;font:inherit;cursor:pointer}
 @media (prefers-reduced-motion:reduce){.pa-hero,.pa-card,.pa-line,.pa-spin::after{animation:none}.pa-meter i{transition:none}}
 
 body.is-profile{background:radial-gradient(520px 260px at 90% -40px,rgba(31,191,99,.16),transparent 70%),radial-gradient(420px 240px at -10% 120px,rgba(8,119,71,.1),transparent 70%),linear-gradient(180deg,#eaf6ef 0%,#f6fbf8 40%,#fff 100%)}
+
+.pa-debug{position:relative;z-index:1;width:100%;margin:0;font:11px/1.45 ui-monospace,Menlo,monospace;color:rgba(255,255,255,.85);word-break:break-word}
