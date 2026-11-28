@@ -232,26 +232,40 @@
     } catch (e) { /* leave the dash */ }
   }
 
+  const dbg = [];
   /* ---------- finding the signed-in account (patient: the session can arrive a moment late) ---------- */
   function remembered() { try { const c = JSON.parse(localStorage.getItem(AUTH_CACHE) || "null"); return !!(c && c.a === 1); } catch (e) { return false; } }
   async function readSession() {
-    try { const r = await withTimeout(client.auth.getSession(), 10000); return r && r.data ? r.data.session : null; } catch (e) { return null; }
+    try {
+      const r = await withTimeout(client.auth.getSession(), 10000);
+      if (r && r.error) dbg.push("getSession: " + r.error.message);
+      return r && r.data ? r.data.session : null;
+    } catch (e) { dbg.push("getSession failed: " + e.message); return null; }
   }
   async function findSession() {
+    let keys = 0;
+    try { keys = Object.keys(localStorage).filter((k) => /^sb-.*auth-token/.test(k)).length; } catch (e) {}
+    dbg.push("remembered: " + (remembered() ? "yes" : "no"), "stored session keys: " + keys);
     let s = await readSession();
     if (s && s.user) return s;
     try {
       const r = await withTimeout(client.auth.getUser(), 10000);
+      if (r && r.error) dbg.push("getUser: " + r.error.message);
       if (r && r.data && r.data.user) { const s2 = await readSession(); return s2 && s2.user ? s2 : { user: r.data.user }; }
-    } catch (e) {}
+    } catch (e) { dbg.push("getUser failed: " + e.message); }
+    try {
+      const r = await withTimeout(client.auth.refreshSession(), 10000);
+      if (r && r.data && r.data.session && r.data.session.user) return r.data.session;
+      if (r && r.error) dbg.push("refresh: " + r.error.message);
+    } catch (e) { dbg.push("refresh failed: " + e.message); }
     if (remembered()) {
-      for (let i = 0; i < 8; i++) { await sleep(750); s = await readSession(); if (s && s.user) return s; }
+      for (let i = 0; i < 6; i++) { await sleep(750); s = await readSession(); if (s && s.user) return s; }
     }
     return null;
   }
   function retryScreen() {
     root.innerHTML = '<div class="pa-hero pa-guest"><div class="pa-avatar">' + ICON.user + '</div><div class="pa-hero-text"><b>We could not confirm your sign-in</b><small>Your connection may be slow or your session may have expired</small></div>' +
-      '<div class="pa-actions"><button class="pa-btn light" id="pa-retry" type="button">Try again</button><a class="pa-btn ghost" href="signin.html">Sign in again</a></div></div>';
+      '<div class="pa-actions"><button class="pa-btn light" id="pa-retry" type="button">Try again</button><a class="pa-btn ghost" href="signin.html">Sign in again</a></div><p class="pa-debug">' + esc(dbg.join(" | ")) + '</p></div>';
     const b = document.getElementById("pa-retry"); if (b) b.addEventListener("click", () => location.reload());
   }
 
