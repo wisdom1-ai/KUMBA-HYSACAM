@@ -52,3 +52,75 @@
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
 })();
+
+/* HYSACAM Settings: confirm dialogs, tap feedback and busy state.
+   Device only. It never replaces the original button logic: after you confirm,
+   the original click is replayed so the existing scripts run exactly as before. */
+(function () {
+  var root = document.documentElement, box = null, pending = null, bypass = false;
+  var TEXT = {
+    'profile-signout': ['Sign out?', 'You will need to sign in again to manage your profile and reports.', 'Sign out'],
+    'signout-all': ['Sign out on all devices?', 'This ends your session on every phone and computer, including this one.', 'Sign out everywhere'],
+    'clear-local-data': ['Clear saved data?', 'This removes cached reports and read updates on this device. You stay signed in.', 'Clear data']
+  };
+
+  function build() {
+    box = document.createElement('div');
+    box.className = 'cf'; box.hidden = true;
+    box.innerHTML = '<div class="cf-card" role="alertdialog" aria-modal="true" aria-labelledby="cf-t" aria-describedby="cf-d">' +
+      '<div class="cf-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-out"/></svg></div>' +
+      '<h3 id="cf-t"></h3><p id="cf-d"></p>' +
+      '<div class="cf-actions"><button type="button" class="cf-no">Cancel</button><button type="button" class="cf-ok"></button></div></div>';
+    document.body.appendChild(box);
+    box.addEventListener('click', function (e) { if (e.target === box) cancel(); });
+    box.querySelector('.cf-no').addEventListener('click', cancel);
+    box.querySelector('.cf-ok').addEventListener('click', function () {
+      var el = pending; pending = null; box.hidden = true;
+      if (el) { bypass = true; el.click(); bypass = false; }
+    });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !box.hidden) cancel(); });
+  }
+  function cancel() {
+    box.hidden = true;
+    if (pending) { pending.focus(); pending = null; }
+  }
+
+  // Ask first, then replay the original click
+  window.addEventListener('click', function (e) {
+    if (bypass || !e.target.closest) return;
+    var el = e.target.closest('#profile-signout,#signout-all,#clear-local-data');
+    if (!el) return;
+    e.preventDefault(); e.stopImmediatePropagation();
+    if (!box) build();
+    var t = TEXT[el.id]; pending = el;
+    box.querySelector('#cf-t').textContent = t[0];
+    box.querySelector('#cf-d').textContent = t[1];
+    box.querySelector('.cf-ok').textContent = t[2];
+    box.querySelector('use').setAttribute('href', el.id === 'clear-local-data' ? '#i-trash' : '#i-out');
+    box.hidden = false;
+    box.querySelector('.cf-no').focus();
+  }, true);
+
+  // Light vibration on Android when a control is tapped
+  document.addEventListener('click', function (e) {
+    if (!navigator.vibrate || root.classList.contains('reduce-motion') || !e.target.closest) return;
+    if (e.target.closest('.toggle-line input,.seg button,.tseg button,.button,.set-btn,.gs-btn,.signout-btn,.panel-link')) navigator.vibrate(8);
+  }, true);
+
+  // Spinner only while the form button is genuinely disabled after a submit
+  var armed = new WeakSet();
+  document.addEventListener('submit', function (e) {
+    var b = e.target.querySelector && e.target.querySelector('.button');
+    if (b) armed.add(b);
+  }, true);
+  if (window.MutationObserver) {
+    new MutationObserver(function (list) {
+      list.forEach(function (m) {
+        var b = m.target;
+        if (!b.classList || !b.classList.contains('button')) return;
+        if (b.disabled && armed.has(b)) b.classList.add('is-busy');
+        else if (!b.disabled) { b.classList.remove('is-busy'); armed.delete(b); }
+      });
+    }).observe(document.documentElement, { attributes: true, attributeFilter: ['disabled'], subtree: true });
+  }
+})();
