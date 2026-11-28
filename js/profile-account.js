@@ -263,6 +263,10 @@
     }
     return null;
   }
+  function sessionEnded() {
+    root.innerHTML = '<div class="pa-hero pa-guest"><div class="pa-avatar">' + ICON.user + '</div><div class="pa-hero-text"><b>Your session has ended</b><small>Please sign in again to see your profile</small></div>' +
+      '<div class="pa-actions"><a class="pa-btn light" href="signin.html">Sign In</a><a class="pa-btn ghost" href="index.html">Go home</a></div></div>';
+  }
   function retryScreen() {
     root.innerHTML = '<div class="pa-hero pa-guest"><div class="pa-avatar">' + ICON.user + '</div><div class="pa-hero-text"><b>We could not confirm your sign-in</b><small>Your connection may be slow or your session may have expired</small></div>' +
       '<div class="pa-actions"><button class="pa-btn light" id="pa-retry" type="button">Try again</button><a class="pa-btn ghost" href="signin.html">Sign in again</a></div><p class="pa-debug">' + esc(dbg.join(" | ")) + '</p></div>';
@@ -274,7 +278,14 @@
     client = await waitFor(getClient, 8000);
     if (!client) return guest("Could not reach the server. Check your connection and reload");
     const session = await findSession();
-    if (!session || !session.user) return remembered() ? retryScreen() : guest();
+    if (!session || !session.user) {
+      if (remembered() && dbg.some((m) => /session missing/i.test(m))) {
+        /* The site remembered a sign-in that no longer exists: forget it and ask for a fresh one */
+        try { localStorage.removeItem(AUTH_CACHE); } catch (e) {}
+        return sessionEnded();
+      }
+      return remembered() ? retryScreen() : guest();
+    }
 
     user = session.user;
     try { const r = await withTimeout(client.auth.getUser(), 10000); if (r && r.data && r.data.user) user = r.data.user; } catch (e) {}
