@@ -76,11 +76,13 @@
   const hero = $("set-hero");
   const heroReady = () => { if (hero) hero.classList.add("is-ready"); };
 
+  function localProfile() { try { return JSON.parse(localStorage.getItem("hysacam-profile-v1") || "{}") || {}; } catch (e) { return {}; } }
+  function cachedRole() { try { const c = JSON.parse(localStorage.getItem(AUTH_CACHE) || "null"); return (c && c.role) || ""; } catch (e) { return ""; } }
   function accountValues() {
-    const meta = user.user_metadata || {};
-    const name = pick(row, NAME_KEYS) || pick(meta, NAME_KEYS) || "";
-    const phone = pick(row, PHONE_KEYS) || pick(meta, PHONE_KEYS) || String(user.phone || "");
-    const role = pick(row, ROLE_KEYS) || pick(user.app_metadata, ["role"]) || pick(meta, ROLE_KEYS) || "resident";
+    const meta = user.user_metadata || {}, lp = localProfile();
+    const name = lp.name || pick(user, NAME_KEYS) || pick(meta, NAME_KEYS) || [pick(user, ["first_name"]), pick(user, ["last_name"])].filter(Boolean).join(" ");
+    const phone = lp.phone || pick(user, PHONE_KEYS) || pick(meta, PHONE_KEYS);
+    const role = pick(user, ROLE_KEYS) || cachedRole() || "resident";
     return { name, phone, role };
   }
 
@@ -97,9 +99,9 @@
       $("pf-email").value = email;
       $("pf-phone").value = v.phone;
     }
-    $("pf-since").textContent = fmtDate(user.created_at || (row && row.created_at));
+    $("pf-since").textContent = user.created_at ? fmtDate(user.created_at) : "—";
     $("pf-role").textContent = titleCase(v.role);
-    $("pf-verified").textContent = user.email_confirmed_at || user.confirmed_at ? "Verified" : "Not verified";
+    $("pf-verified").textContent = user.email_confirmed_at || user.confirmed_at || user.email_confirmed || user.email_verified ? "Verified" : "Not verified";
     heroReady();
   }
 
@@ -125,7 +127,7 @@
     ["pf-name", "pf-phone"].forEach((id) => $(id).addEventListener("input", () => { dirty = true; say("pf-msg", ""); }));
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
-      if (!user || !client) return say("pf-msg", "Please sign in again", "err");
+      if (!user) return say("pf-msg", "Please sign in again", "err");
       const name = $("pf-name").value.trim().replace(/\s+/g, " ");
       const phone = $("pf-phone").value.trim();
       if (name.length < 2) { say("pf-msg", "Please enter your full name", "err"); $("pf-name").focus(); return; }
@@ -191,7 +193,7 @@
       });
       pw.addEventListener("submit", async (e) => {
         e.preventDefault();
-        if (!user || !client) return say("pw-msg", "Please sign in again", "err");
+        if (!user) return say("pw-msg", "Please sign in again", "err");
         const cur = $("pw-current").value, next = $("pw-new").value, again = $("pw-confirm").value;
         say("pw-msg", "");
         if (!user.email) return say("pw-msg", "This account has no email to verify with", "err");
@@ -201,10 +203,10 @@
         if (next !== again) return say("pw-msg", "The new passwords do not match", "err");
         await busy($("pw-save"), "Updating…", async () => {
           try {
-            const a = await withTimeout(client.auth.signInWithPassword({ email: user.email, password: cur }), 15000);
-            if (a.error) throw a.error;
-            const u = await withTimeout(client.auth.updateUser({ password: next }), 15000);
-            if (u.error) throw u.error;
+            const r = await withTimeout(fetch("/api/auth/change-password", { method: "POST", credentials: "include", headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify({ current_password: cur, password: next, new_password: next }) }), 15000);
+            if (r.status === 404 || r.status === 405) return say("pw-msg", "Password change is not available here yet. Use the reset link below to set a new password with an email code", "err");
+            let d = {}; try { d = await r.json(); } catch (e) {}
+            if (!r.ok) return say("pw-msg", d.message || "Your current password is not correct", "err");
             pw.reset();
             $("pw-strength").textContent = "Use at least 8 characters"; $("pw-strength").dataset.level = "";
             say("pw-msg", "Password updated", "ok");
@@ -216,15 +218,17 @@
     const em = $("email-form");
     if (em) em.addEventListener("submit", async (e) => {
       e.preventDefault();
-      if (!user || !client) return say("email-msg", "Please sign in again", "err");
+      if (!user) return say("email-msg", "Please sign in again", "err");
       const next = $("email-new").value.trim().toLowerCase();
       say("email-msg", "");
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(next)) return say("email-msg", "Enter a valid email address", "err");
       if (next === String(user.email || "").toLowerCase()) return say("email-msg", "That is already your email", "err");
       await busy($("email-save"), "Sending…", async () => {
         try {
-          const r = await withTimeout(client.auth.updateUser({ email: next }, { emailRedirectTo: location.origin + "/settings.html" }), 15000);
-          if (r.error) throw r.error;
+          const r = await withTimeout(fetch("/api/auth/change-email", { method: "POST", credentials: "include", headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify({ email: next }) }), 15000);
+          if (r.status === 404 || r.status === 405) return say("email-msg", "Changing your email is not available here yet. Please contact support", "err");
+          let d = {}; try { d = await r.json(); } catch (e) {}
+          if (!r.ok) return say("email-msg", d.message || "Something went wrong. Please try again", "err");
           em.reset();
           say("email-msg", "Check your inbox and confirm. Your email changes only after you confirm", "ok");
         } catch (err) { console.error(err); say("email-msg", friendly(err), "err"); }
@@ -233,9 +237,9 @@
 
     const all = $("signout-all");
     if (all) all.addEventListener("click", async () => {
-      if (!client || !confirm("Sign out on all devices, including this one?")) return;
+      if (!confirm("Sign out on all devices, including this one?")) return;
       all.disabled = true;
-      try { await withTimeout(client.auth.signOut({ scope: "global" }), 10000); } catch (err) { console.warn("Global sign out failed:", err); }
+      try { await withTimeout(fetch("/api/auth/logout", { method: "POST", credentials: "include", headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify({ scope: "global", all: true }) }), 10000); } catch (err) { console.warn("Global sign out failed:", err); }
       try { localStorage.removeItem(AUTH_CACHE); } catch (e) {}
       location.href = "index.html";
     });
@@ -384,7 +388,7 @@
     if (!btn) return;
     btn.addEventListener("click", async () => {
       btn.disabled = true;
-      try { if (client) await withTimeout(client.auth.signOut(), 10000); } catch (e) { console.warn("Sign out request failed:", e); }
+      try { await withTimeout(fetch("/api/auth/logout", { method: "POST", credentials: "include", headers: { Accept: "application/json" } }), 10000); } catch (e) { console.warn("Sign out request failed:", e); }
       try { localStorage.removeItem(AUTH_CACHE); } catch (e) {}
       location.href = "index.html";
     });
@@ -404,43 +408,27 @@
     wirePrefs(); wireMapView(); wireLocation(); wireSupport(); wireClear(); wireExport(); wireProfile(); wireSecurity(); wireSignOut();
     openFromHash();
     window.addEventListener("hashchange", openFromHash);
-    setTimeout(heroReady, 6000);
+    setTimeout(heroReady, 3000);
 
-    client = await waitFor(getClient, 8000);
-    if (!client) return renderUnavailable("Could not reach the server. Check your connection and reload");
+    /* The sign-in lives in a server cookie, so ask the server (same call the rest of the site uses) */
+    let res;
+    try { res = await withTimeout(fetch("/api/auth/me", { credentials: "include", cache: "no-store", headers: { Accept: "application/json" } }), 12000); }
+    catch (e) { return renderUnavailable("Could not check your account. Reload to try again"); }
 
-    let session = null;
-    try {
-      const res = await withTimeout(client.auth.getSession(), 10000);
-      session = res && res.data ? res.data.session : null;
-    } catch (e) {
-      console.warn("Could not read the session:", e);
-      return renderUnavailable("Could not check your account. Reload to try again");
-    }
-
-    if (!session || !session.user) {
-      /* The remembered sign-in is gone: make the page match */
-      if (html.classList.contains("auth-yes")) { try { localStorage.removeItem(AUTH_CACHE); } catch (e) {} html.classList.remove("auth-yes"); html.classList.add("auth-no"); }
-      renderGuest();
-      return;
-    }
-
-    user = session.user;
+    if (res.status === 401) return signedOut();
+    if (!res.ok) return renderUnavailable("Could not check your account. Reload to try again");
+    let data = {}; try { data = await res.json(); } catch (e) {}
+    user = data.user || data.profile || null;
+    if (!data.authenticated || !user) return signedOut();
+    if (data.user && data.profile) user = Object.assign({}, data.user, data.profile);
     renderAccount(true);
+    document.addEventListener("hysacam:profile-updated", () => renderAccount(true));
+  }
 
-    /* Fresh account data and the profile row load in the background */
-    try { const r = await withTimeout(client.auth.getUser(), 10000); if (r && r.data && r.data.user) user = r.data.user; } catch (e) {}
-    try {
-      const r = await withTimeout(client.from("profiles").select("*").eq("id", user.id).maybeSingle(), 10000);
-      if (!r.error) row = r.data || null;
-    } catch (e) { row = null; }
-    renderAccount(!dirty);
-
-    /* Email change confirmed: refresh happens on return from the link */
-    client.auth.onAuthStateChange((ev, s) => {
-      if (ev === "USER_UPDATED" && s && s.user) { user = s.user; renderAccount(!dirty); }
-      if (ev === "SIGNED_OUT") { try { localStorage.removeItem(AUTH_CACHE); } catch (e) {} }
-    });
+  function signedOut() {
+    try { localStorage.removeItem(AUTH_CACHE); } catch (e) {}
+    html.classList.remove("auth-yes", "auth-pending"); html.classList.add("auth-no");
+    renderGuest();
   }
 
   main().catch((err) => { console.error("Settings failed to start:", err); heroReady(); });
