@@ -66,6 +66,37 @@
 @media(max-width:900px){#admin-portal .hx-scroll{max-height:none;overflow:visible}#admin-portal th{position:static}}
 @media(prefers-reduced-motion:reduce){.hx-palette,#admin-portal .hx-drawer[open],#admin-portal .hx-skrow i{animation:none}}
 
+</style><style id="hx-refine-css">
+/* ===== Accuracy refinements: phones, notches, touch, contrast ===== */
+@supports(height:100dvh){#admin-portal .hx-shell{min-height:100dvh}#admin-portal .hx-side{height:100dvh}#admin-portal .hx-drawer{height:100dvh;max-height:100dvh}}
+#admin-portal .hx-drawer{top:0;right:0;bottom:0;left:auto}
+html{scroll-padding-top:96px}
+#admin-portal .hx-top{padding-top:calc(14px + env(safe-area-inset-top));padding-left:max(32px,env(safe-area-inset-left));padding-right:max(32px,env(safe-area-inset-right))}
+#admin-portal .hx-heading{min-width:0}
+#admin-portal .hx-heading h1{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#admin-portal button,#admin-portal a,#admin-portal select,#admin-portal label{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+#admin-portal .hx-btn:active,#admin-portal .hx-link:active,#admin-portal .hx-userbtn:active{transform:scale(.97)}
+#admin-portal .hx-kpi:active{transform:scale(.98)}
+#admin-portal .hx-tabbar a:active{opacity:.6}
+#admin-portal .hx-navlabel{color:#5f6b64}
+#admin-portal td,#admin-portal .hx-feed b,#admin-portal .hx-feed small{overflow-wrap:anywhere}
+#admin-portal .hx-feed li>div{min-width:0}
+#admin-portal .hx-fields,#admin-portal .hx-scroll{overscroll-behavior:contain}
+#admin-portal .hx-hero :focus-visible{outline-color:#fff}
+@media(max-width:900px){
+  #admin-portal .hx-top{padding-top:calc(10px + env(safe-area-inset-top));padding-left:max(14px,env(safe-area-inset-left));padding-right:max(14px,env(safe-area-inset-right))}
+  #admin-portal .hx-main{padding-left:max(14px,env(safe-area-inset-left));padding-right:max(14px,env(safe-area-inset-right))}
+  #admin-portal .hx-tabbar{top:auto;right:0;bottom:0;left:0;padding-left:max(2px,env(safe-area-inset-left));padding-right:max(2px,env(safe-area-inset-right))}
+  #admin-portal .hx-link{min-height:40px;padding:0 14px}
+  #admin-portal .hx-close{width:42px;height:42px}
+  #admin-portal .hx-pager .hx-btn{height:42px;padding:0 18px}
+  #admin-portal select[data-report-status]{width:160px;height:40px;font-size:16px}
+  #admin-portal .hx-userbtn{min-height:44px}
+  #admin-portal .hx-icononly{width:44px;height:44px}
+  #admin-portal .hx-menu{width:min(250px,calc(100vw - 28px))}
+  #admin-portal .hx-rowactions{flex-wrap:wrap;justify-content:flex-end}
+}
+@media(forced-colors:active){#admin-portal .hx-pill{border:1px solid currentColor}}
 </style></head><body>
 <div class="admin-login-page" id="admin-login-page"><section class="admin-login-brand auth-photo-panel">
   <a class="auth-brand-lockup" href="index.html" aria-label="HYSACAM Kumba Tracker home">
