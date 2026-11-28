@@ -76,7 +76,14 @@
     box.querySelector('.cf-no').addEventListener('click', cancel);
     box.querySelector('.cf-ok').addEventListener('click', function () {
       var el = pending; pending = null; box.hidden = true;
-      if (el) { bypass = true; el.click(); bypass = false; }
+      if (!el) return;
+      var realConfirm = window.confirm;
+      bypass = true;
+      try {
+        window.confirm = function () { return true; };      // we already asked, so skip the page's own prompt
+        el.click();
+        if (el.id === 'clear-local-data') el.click();       // that button needs a second tap to confirm
+      } finally { window.confirm = realConfirm; bypass = false; }
     });
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !box.hidden) cancel(); });
   }
