@@ -30,7 +30,7 @@
   const pill = (text, tone) => `<span class="hx-pill" data-tone="${tone || toneOf(text)}">${esc(text)}</span>`;
   const td = (label, html) => `<td data-label="${esc(label)}">${html}</td>`;
   const emptyRow = (cols, text) => `<tr><td colspan="${cols}">${esc(text)}</td></tr>`;
-  const binCode = id => { const b = state.bins.find(x => String(x.id) === String(id)); return b ? b.bin_code : id; };
+  const binCode = id => { const b = state.bins.find(x => String(x.id) === String(id)); return b ? b.id : id; };
 
   function toast(text, tone) {
     let box = $("admin-toast");
@@ -140,10 +140,10 @@
 
   function renderBins() {
     const q = ($("admin-bin-search").value || "").toLowerCase(), f = ($("admin-bin-filter").value || "").toLowerCase();
-    const rows = state.bins.filter(b => (!f || String(b.status || "available").toLowerCase() === f) && [b.bin_code, b.name, b.area, b.status].join(" ").toLowerCase().includes(q));
+    const rows = state.bins.filter(b => (!f || String(b.status || "available").toLowerCase() === f) && [b.id, b.name, b.area, b.status].join(" ").toLowerCase().includes(q));
     const shown = paginate("bins", rows);
-    $("admin-bins-table").innerHTML = shown.length ? shown.map(b => `<tr>${td("ID", `<b>${esc(b.bin_code)}</b>`)}${td("Name", esc(b.name))}${td("Area", esc(b.area))}${td("Status", pill(b.status || "Available"))}${td("Actions", `<div class="hx-rowactions"><button type="button" class="hx-link" data-edit-bin="${esc(b.id)}">Edit</button><button type="button" class="hx-link hx-dangertext" data-delete-bin="${esc(b.id)}">Delete</button></div>`)}</tr>`).join("") : emptyRow(5, state.bins.length ? "No matching dustbins found" : "No dustbins registered yet. Use Add dustbin to create the first one");
-    $("record-bin-id").innerHTML = `<option value="">Select a dustbin</option>${state.bins.map(b => `<option value="${esc(b.id)}">${esc(b.bin_code)} — ${esc(b.area)}</option>`).join("")}`;
+    $("admin-bins-table").innerHTML = shown.length ? shown.map(b => `<tr>${td("ID", `<b>${esc(b.id)}</b>`)}${td("Name", esc(b.name))}${td("Area", esc(b.area))}${td("Status", pill(b.status || "Available"))}${td("Actions", `<div class="hx-rowactions"><button type="button" class="hx-link" data-edit-bin="${esc(b.id)}">Edit</button><button type="button" class="hx-link hx-dangertext" data-delete-bin="${esc(b.id)}">Delete</button></div>`)}</tr>`).join("") : emptyRow(5, state.bins.length ? "No matching dustbins found" : "No dustbins registered yet. Use Add dustbin to create the first one");
+    $("record-bin-id").innerHTML = `<option value="">Select a dustbin</option>${state.bins.map(b => `<option value="${esc(b.id)}">${esc(b.id)} — ${esc(b.area)}</option>`).join("")}`;
   }
 
   function renderRecords() {
@@ -353,7 +353,7 @@
     $("bin-dialog-title").textContent = bin ? "Edit dustbin" : "Add dustbin";
     $("bin-save").textContent = bin ? "Update dustbin" : "Save dustbin";
     if (bin) {
-      $("bin-id").value = bin.bin_code || ""; $("bin-name").value = bin.name || ""; $("bin-area").value = bin.area || "";
+      $("bin-id").value = bin.id || ""; $("bin-name").value = bin.name || ""; $("bin-area").value = bin.area || "";
       $("bin-lat").value = bin.latitude ?? ""; $("bin-lng").value = bin.longitude ?? "";
       const opt = [...$("bin-status").options].find(o => o.textContent.toLowerCase() === String(bin.status || "available").toLowerCase());
       $("bin-status").value = opt ? opt.value : "Available";
@@ -367,21 +367,24 @@
   $("admin-bin-form")?.addEventListener("submit", async event => {
     event.preventDefault();
     const editing = Boolean($("bin-edit-id").value);
-    const payload = { bin_code: $("bin-id").value.trim(), id: $("bin-edit-id").value, name: $("bin-name").value.trim(), area: $("bin-area").value.trim(), latitude: $("bin-lat").value, longitude: $("bin-lng").value, status: $("bin-status").value };
-    if (!payload.bin_code || !payload.name || !payload.area) { $("bin-form-message").textContent = "Fill in the dustbin ID, name and area"; return; }
-    const lat = parseFloat(payload.latitude), lng = parseFloat(payload.longitude);
-    if (!Number.isFinite(lat) || !Number.isFinite(lng) || Math.abs(lat) > 90 || Math.abs(lng) > 180) { $("bin-form-message").textContent = "Enter a valid latitude and longitude, or tap Use my current location"; return; }
-    payload.latitude = lat; payload.longitude = lng;
+    const code = $("bin-id").value.trim();
+    const payload = { id: editing ? $("bin-edit-id").value : code, name: $("bin-name").value.trim(), area: $("bin-area").value.trim(), latitude: $("bin-lat").value.trim(), longitude: $("bin-lng").value.trim(), status: $("bin-status").value };
+    if (!payload.id || !payload.name || !payload.area) { $("bin-form-message").textContent = "Fill in the dustbin ID, name and area"; return; }
+    if ((payload.latitude === "") !== (payload.longitude === "")) { $("bin-form-message").textContent = "Enter both latitude and longitude, or leave both empty"; return; }
+    if (payload.latitude !== "") {
+      const lat = Number(payload.latitude), lng = Number(payload.longitude);
+      if (!Number.isFinite(lat) || !Number.isFinite(lng) || Math.abs(lat) > 90 || Math.abs(lng) > 180) { $("bin-form-message").textContent = "Enter a valid latitude and longitude"; return; }
+      payload.latitude = lat; payload.longitude = lng;
+    }
     const button = $("bin-save"); button.disabled = true; $("bin-form-message").textContent = "";
     try {
-      const body = editing ? payload : (() => { const p = { type: "bin", ...payload, code: payload.bin_code, binCode: payload.bin_code, dustbin_id: payload.bin_code, lat: payload.latitude, lng: payload.longitude, lon: payload.longitude }; delete p.id; return p; })();
-      await (editing ? patch("/api/admin/manage", body) : post("/api/admin/manage", body));
+      await (editing ? patch("/api/admin/manage", payload) : post("/api/admin/manage", { type: "bin", ...payload }));
       closeDialog(binDialog);
       toast(editing ? "Dustbin updated" : "Dustbin added");
       await loadAll();
     } catch (error) {
       if (error.status === 401) { closeDialog(binDialog); return expired(); }
-      $("bin-form-message").textContent = error.message + "\n\nSent: " + JSON.stringify(payload) + (error.status ? "\nStatus: " + error.status : "");
+      $("bin-form-message").textContent = error.message + "";
     } finally { button.disabled = false; }
   });
 
@@ -403,7 +406,7 @@
     if (edit) { const bin = state.bins.find(b => String(b.id) === edit.dataset.editBin); if (bin) openBin(bin); return; }
     if (remove) {
       const bin = state.bins.find(b => String(b.id) === remove.dataset.deleteBin);
-      const ok = await confirmBox("Delete dustbin?", `${bin ? bin.bin_code : "This dustbin"} will be removed. This may be blocked if cleaning records refer to it`, "Delete");
+      const ok = await confirmBox("Delete dustbin?", `${bin ? bin.id : "This dustbin"} will be removed. This may be blocked if cleaning records refer to it`, "Delete");
       if (!ok) return;
       try { await del("/api/admin/manage", { id: remove.dataset.deleteBin }); toast("Dustbin deleted"); await loadAll(); }
       catch (error) { if (error.status === 401) return expired(); toast(error.message.split("\n")[0], "bad"); }
