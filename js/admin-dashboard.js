@@ -1,73 +1,56 @@
+/* HYSACAM administrator portal: dashboard logic (matches admin.html with the hx- design)
+   Pages: overview, manage-bins, manage-records, reports, users, settings
+   Server routes used: /api/admin/me, login, verify, logout, manage, reports, audit */
 (() => {
   "use strict";
   const $ = id => document.getElementById(id);
-  const form = $("admin-login-form");
-  const loginPage = $("admin-login-page");
-  const portal = $("admin-portal");
-  const message = $("auth-message");
+  const portal = $("admin-portal"), loginPage = $("admin-login-page"), form = $("admin-login-form"), message = $("auth-message");
+  const PAGE_SIZE = 10;
+  const SEEN_KEY = "hysacam_admin_seen_v1", PREF_KEY = "hysacam_admin_dashboard_preferences_v1";
   let email = "";
-  let state = { bins: [], records: [], users: [] };
-  let reports = [], events = [];
+  let state = { bins: [], records: [], users: [], reports: [], audit: [] };
+  let currentPage = "overview";
+  const pages = { bins: 1, records: 1, reports: 1, users: 1, audit: 1 };
 
-  const esc = v => String(v ?? "").replace(/[&<>"']/g, c => ({
-    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
-  })[c]);
-  const say = value => { if (message) message.textContent = value || ""; };
-  const localDate = value => value ? new Date(value).toLocaleString() : "—";
-  const lower = v => String(v ?? "").toLowerCase();
-  const dayKey = v => { const d = new Date(v); return Number.isNaN(d.getTime()) ? "" : d.toDateString(); };
-  const label = v => { const t = String(v ?? "").replaceAll("_", " "); return t.charAt(0).toUpperCase() + t.slice(1); };
-  const TONES = { available:"good", cleaned:"good", resolved:"good", success:"good", pending:"warn", full:"bad", maintenance:"warn", inactive:"muted", "in progress":"info", in_progress:"info", assigned:"info", under_review:"warn", submitted:"info", rejected:"muted" };
-  const tone = v => TONES[lower(v)] || "muted";
-  const pill = v => `<span class="hx-pill" data-tone="${tone(v)}">${esc(label(v))}</span>`;
-  const row = (labels, cells) => `<tr>${cells.map((c, i) => `<td data-label="${labels[i]}">${c}</td>`).join("")}</tr>`;
-  const emptyRow = (span, text) => `<tr><td colspan="${span}">${esc(text)}</td></tr>`;
-  const setBadge = (name, count) => document.querySelectorAll(`[data-badge="${name}"]`).forEach(b => {
-    b.textContent = count > 99 ? "99+" : count; b.hidden = !count;
-  });
+  /* ---------- helpers ---------- */
+  const esc = v => String(v ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+  const say = text => { if (message) message.textContent = text || ""; };
+  const fmtDate = v => { const d = new Date(v); return v && !isNaN(d) ? d.toLocaleString([], { day: "numeric", month: "short", year: "numeric", hour: "numeric", minute: "2-digit" }) : "—"; };
+  const REPORT_LABELS = { submitted: "Submitted", under_review: "Under review", assigned: "Assigned", in_progress: "In progress", resolved: "Resolved", rejected: "Rejected" };
+  const REPORT_STATES = Object.keys(REPORT_LABELS);
+  const isOpenReport = s => /^(submitted|under_review)$/i.test(String(s || ""));
+  const toneOf = text => {
+    const t = String(text || "").toLowerCase();
+    if (/reject|inactive|closed/.test(t)) return "muted";
+    if (/maint|assigned|review|progress/.test(t)) return "info";
+    if (/full|overflow|damag|fail|denied|unverified|not verified/.test(t)) return "bad";
+    if (/pending|submitted|waiting/.test(t)) return "warn";
+    return "good";
+  };
+  const pill = (text, tone) => `<span class="hx-pill" data-tone="${tone || toneOf(text)}">${esc(text)}</span>`;
+  const td = (label, html) => `<td data-label="${esc(label)}">${html}</td>`;
+  const emptyRow = (cols, text) => `<tr><td colspan="${cols}">${esc(text)}</td></tr>`;
+  const binCode = id => { const b = state.bins.find(x => String(x.id) === String(id)); return b ? b.bin_code : id; };
 
-  function toast(text, kind = "good") {
+  function toast(text, tone) {
     let box = $("admin-toast");
     if (!box) { box = document.createElement("div"); box.id = "admin-toast"; box.setAttribute("role", "status"); document.body.appendChild(box); }
-    box.hidden = false;
-    box.textContent = text; box.dataset.tone = kind; box.classList.add("show");
-    clearTimeout(toast.timer); toast.timer = setTimeout(() => box.classList.remove("show"), 4000);
-  }
-
-  function confirmAction(title, text) {
-    if (typeof HTMLDialogElement !== "function") return Promise.resolve(window.confirm(`${title}\n${text}`));
-    return new Promise(resolve => {
-      const dialog = document.createElement("dialog");
-      dialog.className = "hx-confirm";
-      dialog.innerHTML = `<form method="dialog"><h2>${esc(title)}</h2><p>${esc(text)}</p><div><button class="hx-btn" value="no" autofocus>Cancel</button><button value="yes" class="hx-btn hx-destroy">Delete</button></div></form>`;
-      dialog.addEventListener("close", () => { resolve(dialog.returnValue === "yes"); dialog.remove(); });
-      portal.appendChild(dialog); dialog.showModal();
-    });
-  }
-
-  function showLogin(text) {
-    portal.querySelectorAll("dialog[open]").forEach(d => d.close());
-    portal.classList.remove("authorized"); loginPage.style.display="grid";
-    form.reset(); $("admin-code-stage").hidden=true; $("admin-password-stage").hidden=false;
-    $("admin-form-title").textContent="Administrator sign in"; say(text);
-    state = { bins: [], records: [], users: [] }; reports = []; events = [];
-    portal.querySelectorAll("tbody").forEach(t => { t.innerHTML = ""; });
-    window.scrollTo(0, 0);
+    box.textContent = text; box.dataset.tone = tone || "good"; box.classList.add("show");
+    clearTimeout(toast.t); toast.t = setTimeout(() => box.classList.remove("show"), 3500);
   }
 
   async function request(url, options = {}) {
     const response = await fetch(url, {
-      ...options,
-      credentials: "include",
-      cache: "no-store",
+      ...options, credentials: "include", cache: "no-store",
       headers: { ...(options.body ? { "Content-Type": "application/json" } : {}), ...(options.headers || {}) }
     });
     const data = await response.json().catch(() => ({}));
     if (!response.ok) {
-      if (data.diagnostic) console.warn("[HYSACAM admin]", data.diagnostic);
-      // An expired session sends the administrator back to sign in
-      if (response.status === 401 && portal.classList.contains("authorized")) showLogin("Your session has expired, please sign in again");
-      throw new Error(data.message || "The request could not be completed");
+      const d = data.diagnostic;
+      const extra = d ? `\nDatabase message: ${d.message || "Not provided"}${d.details ? `\nDetails: ${d.details}` : ""}${d.hint ? `\nHint: ${d.hint}` : ""}` : "";
+      const error = new Error((data.message || "The request could not be completed") + extra);
+      error.status = response.status;
+      throw error;
     }
     return data;
   }
@@ -75,35 +58,224 @@
   const patch = (url, body) => request(url, { method: "PATCH", body: JSON.stringify(body) });
   const del = (url, body) => request(url, { method: "DELETE", body: JSON.stringify(body) });
 
+  /* ---------- "seen" tracking so badges clear after you look ---------- */
+  let seen = { reports: [], records: [] };
+  try { seen = { ...seen, ...JSON.parse(localStorage.getItem(SEEN_KEY) || "{}") }; } catch (_) {}
+  const saveSeen = () => { try { localStorage.setItem(SEEN_KEY, JSON.stringify(seen)); } catch (_) {} };
+  function updateBadges() {
+    const nReports = state.reports.filter(r => isOpenReport(r.status) && !seen.reports.includes(String(r.id))).length;
+    const nRecords = state.records.filter(r => !r.verified && !seen.records.includes(String(r.id))).length;
+    [["reports", nReports], ["records", nRecords]].forEach(([k, n]) => {
+      document.querySelectorAll(`[data-badge="${k}"]`).forEach(b => { b.textContent = n > 99 ? "99+" : String(n); b.hidden = !n; });
+    });
+  }
+  function markSeen(kind) {
+    const ids = state[kind].map(x => String(x.id));
+    if (!ids.length) return;
+    seen[kind] = Array.from(new Set([...seen[kind], ...ids])).slice(-2000);
+    saveSeen(); updateBadges();
+  }
+
+  /* ---------- pager ---------- */
+  function paginate(key, list) {
+    const total = list.length, count = Math.max(1, Math.ceil(total / PAGE_SIZE));
+    pages[key] = Math.min(Math.max(1, pages[key]), count);
+    const start = (pages[key] - 1) * PAGE_SIZE;
+    const el = document.querySelector(`[data-pager="${key}"]`);
+    if (el) {
+      el.hidden = total === 0;
+      el.innerHTML = total === 0 ? "" :
+        `<span>Showing ${start + 1}–${Math.min(start + PAGE_SIZE, total)} of ${total}</span>` +
+        (count > 1 ? `<div><button type="button" class="hx-btn" data-pg="${key}" data-dir="-1" ${pages[key] === 1 ? "disabled" : ""}>Previous</button><button type="button" class="hx-btn" data-pg="${key}" data-dir="1" ${pages[key] === count ? "disabled" : ""}>Next</button></div>` : "");
+    }
+    return list.slice(start, start + PAGE_SIZE);
+  }
+
+  /* ---------- renderers ---------- */
+  function renderOverview() {
+    const bins = state.bins, records = state.records, reports = state.reports;
+    const today = new Date().toDateString();
+    const cleanedToday = records.filter(r => r.verified && new Date(r.cleaned_at).toDateString() === today && /clean/i.test(r.status || "")).length;
+    const statusOf = b => String(b.status || "Available");
+    const notReady = bins.filter(b => !/^available$/i.test(statusOf(b))).length;
+    const open = reports.filter(r => isOpenReport(r.status)).length;
+    $("admin-total-bins").textContent = bins.length.toLocaleString();
+    $("admin-cleaned-today").textContent = cleanedToday.toLocaleString();
+    $("admin-pending").textContent = notReady.toLocaleString();
+    $("admin-open-reports").textContent = open.toLocaleString();
+
+    /* chart: verified records in the last 5 months */
+    const months = Array.from({ length: 5 }, (_, i) => {
+      const d = new Date(); d.setDate(1); d.setMonth(d.getMonth() - 4 + i);
+      return { label: d.toLocaleString("en", { month: "short" }), y: d.getFullYear(), m: d.getMonth(), count: 0 };
+    });
+    records.forEach(r => {
+      if (!r.verified) return;
+      const dt = new Date(r.cleaned_at); if (isNaN(dt)) return;
+      const slot = months.find(x => x.y === dt.getFullYear() && x.m === dt.getMonth()); if (slot) slot.count++;
+    });
+    const max = Math.max(1, ...months.map(x => x.count));
+    $("admin-cleaning-chart").innerHTML = months.map(x =>
+      `<div class="hx-col"><div class="hx-plot" title="${x.count} verified records in ${x.label}"><b>${x.count}</b><i style="height:${x.count ? Math.max(4, Math.round(x.count / max * 100)) : 0}%"></i></div><small>${x.label}</small></div>`).join("");
+
+    /* donut: bins by status */
+    const groups = [["Available", "#0a7c4a"], ["Pending", "#e0a030"], ["Full", "#d64545"], ["Maintenance", "#3b7be0"], ["Inactive", "#9aa59f"]];
+    const counts = groups.map(([name]) => bins.filter(b => statusOf(b).toLowerCase() === name.toLowerCase()).length);
+    const total = bins.length;
+    let acc = 0;
+    const stops = groups.map(([, color], i) => { const from = acc; acc += total ? counts[i] / total * 100 : 0; return counts[i] ? `${color} ${from}% ${acc}%` : null; }).filter(Boolean);
+    $("admin-bin-donut").style.background = total && stops.length ? `conic-gradient(${stops.join(",")})` : "#edf0ee";
+    $("admin-cleaned-percent").textContent = total ? Math.round(counts[0] / total * 100) + "%" : "—";
+    $("admin-status-list").innerHTML = groups.map(([name, color], i) => `<li style="--c:${color}"><i></i>${name}<b>${counts[i]}</b></li>`).join("");
+
+    /* recent feeds */
+    const recent = [...records].sort((a, b) => new Date(b.cleaned_at) - new Date(a.cleaned_at)).slice(0, 5);
+    $("admin-recent-records").innerHTML = recent.length ? recent.map(r =>
+      `<li><div><b>${esc(binCode(r.bin_id))}</b><small>${esc(r.area || "")} · ${esc(fmtDate(r.cleaned_at))}</small></div>${pill(r.status || "Recorded")}</li>`).join("") : '<li class="hx-empty">No cleaning records yet</li>';
+    const toReview = reports.filter(r => isOpenReport(r.status)).sort((a, b) => new Date(b.created_at) - new Date(a.created_at)).slice(0, 5);
+    $("admin-recent-reports").innerHTML = toReview.length ? toReview.map(r =>
+      `<li><div><b>${esc(r.reference_code)}</b><small>${esc(r.issue_type)} · ${esc(r.area)}</small></div>${pill(REPORT_LABELS[r.status] || r.status, toneOf(r.status))}</li>`).join("") : '<li class="hx-empty">No reports waiting</li>';
+    $("admin-updated").textContent = "Updated " + new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+  }
+
+  function renderBins() {
+    const q = ($("admin-bin-search").value || "").toLowerCase(), f = ($("admin-bin-filter").value || "").toLowerCase();
+    const rows = state.bins.filter(b => (!f || String(b.status || "available").toLowerCase() === f) && [b.bin_code, b.name, b.area, b.status].join(" ").toLowerCase().includes(q));
+    const shown = paginate("bins", rows);
+    $("admin-bins-table").innerHTML = shown.length ? shown.map(b => `<tr>${td("ID", `<b>${esc(b.bin_code)}</b>`)}${td("Name", esc(b.name))}${td("Area", esc(b.area))}${td("Status", pill(b.status || "Available"))}${td("Actions", `<div class="hx-rowactions"><button type="button" class="hx-link" data-edit-bin="${esc(b.id)}">Edit</button><button type="button" class="hx-link hx-dangertext" data-delete-bin="${esc(b.id)}">Delete</button></div>`)}</tr>`).join("") : emptyRow(5, state.bins.length ? "No matching dustbins found" : "No dustbins registered yet. Use Add dustbin to create the first one");
+    $("record-bin-id").innerHTML = `<option value="">Select a dustbin</option>${state.bins.map(b => `<option value="${esc(b.id)}">${esc(b.bin_code)} — ${esc(b.area)}</option>`).join("")}`;
+  }
+
+  function renderRecords() {
+    const q = ($("admin-record-search").value || "").toLowerCase();
+    const rows = state.records.filter(r => [binCode(r.bin_id), r.area, r.activity, r.status].join(" ").toLowerCase().includes(q));
+    const shown = paginate("records", rows);
+    $("admin-records-table").innerHTML = shown.length ? shown.map(r => `<tr>${td("Dustbin ID", `<b>${esc(binCode(r.bin_id))}</b>`)}${td("Location", esc(r.area))}${td("Date and time", esc(fmtDate(r.cleaned_at)))}${td("Activity", esc(r.activity || "Cleaning"))}${td("Status", pill(r.status || "Recorded"))}${td("Verification", r.verified ? pill("Verified", "good") : pill("Pending verification", "warn"))}</tr>`).join("") : emptyRow(6, state.records.length ? "No matching records found" : "No cleaning records have been registered");
+  }
+
+  function renderReports() {
+    const q = ($("admin-report-search").value || "").toLowerCase(), f = $("admin-report-filter").value || "";
+    const rows = state.reports.filter(r => (!f || r.status === f) && [r.reference_code, r.issue_type, r.area, r.location_description, r.reporter_name, r.reporter_email].join(" ").toLowerCase().includes(q));
+    const shown = paginate("reports", rows);
+    $("admin-reports-table").innerHTML = shown.length ? shown.map(r => `<tr>${td("Reference", `<b title="Click to copy">${esc(r.reference_code)}</b>`)}${td("Issue", `${esc(r.issue_type)}${r.location_description ? `<br><small>${esc(r.location_description)}</small>` : ""}`)}${td("Area", esc(r.area))}${td("Submitted by", esc(r.reporter_name || r.reporter_email || "Resident"))}${td("Status", `<select class="admin-report-status" data-report-status="${esc(r.id)}" data-tone="${toneOf(r.status)}" aria-label="Report status">${REPORT_STATES.map(v => `<option value="${v}" ${r.status === v ? "selected" : ""}>${REPORT_LABELS[v]}</option>`).join("")}</select>`)}${td("Update", `<button class="hx-link" type="button" data-save-report="${esc(r.id)}">Save</button>`)}</tr>`).join("") : emptyRow(6, state.reports.length ? "No matching reports found" : "No resident reports yet");
+  }
+
+  function renderUsers() {
+    const q = ($("admin-user-search").value || "").toLowerCase();
+    const rows = state.users.filter(u => `${u.name} ${u.email} ${u.role}`.toLowerCase().includes(q));
+    const shown = paginate("users", rows);
+    $("admin-users-table").innerHTML = shown.length ? shown.map(u => `<tr>${td("Name", `<span class="hx-person"><i>${esc((u.name || u.email || "?").trim().charAt(0).toUpperCase())}</i>${esc(u.name || "—")}</span>`)}${td("Email", esc(u.email))}${td("Role", pill(u.role || "resident", /admin/i.test(u.role || "") ? "info" : "muted"))}${td("Email verified", u.email_confirmed ? pill("Verified", "good") : pill("Not verified", "warn"))}${td("Joined", esc(fmtDate(u.created_at)))}</tr>`).join("") : emptyRow(5, "No matching users found");
+  }
+
+  function renderAudit() {
+    const shown = paginate("audit", state.audit);
+    $("admin-audit-table").innerHTML = shown.length ? shown.map(x => `<tr>${td("Time", esc(fmtDate(x.created_at)))}${td("Administrator", esc(x.email))}${td("Event", esc(x.event))}${td("Outcome", pill(x.outcome || "—", /fail|denied|error|reject/i.test(x.outcome || "") ? "bad" : "good"))}</tr>`).join("") : emptyRow(4, "No audit events available");
+  }
+
+  const renderers = { bins: renderBins, records: renderRecords, reports: renderReports, users: renderUsers, audit: renderAudit };
+  const renderAll = () => { renderOverview(); renderBins(); renderRecords(); renderReports(); renderUsers(); renderAudit(); updateBadges(); };
+
+  /* ---------- loading ---------- */
+  async function loadReports() {
+    try { const d = await request("/api/admin/reports"); state.reports = (d.reports || []).slice().sort((a, b) => new Date(b.created_at) - new Date(a.created_at)); }
+    catch (e) { if (e.status === 401) return expired(); $("admin-reports-table").innerHTML = emptyRow(6, e.message); return; }
+    renderReports(); renderOverview();
+    if (currentPage === "reports") markSeen("reports"); else updateBadges();
+  }
+  async function loadAudit() {
+    try { const d = await request("/api/admin/audit"); state.audit = d.events || []; }
+    catch (e) { if (e.status !== 401) $("admin-audit-table").innerHTML = emptyRow(4, e.message); return; }
+    renderAudit();
+  }
+  async function loadAll() {
+    try {
+      const d = await request("/api/admin/manage");
+      state.bins = d.bins || []; state.records = d.records || []; state.users = d.users || [];
+      renderAll();
+      await Promise.all([loadReports(), loadAudit()]);
+      if (currentPage === "manage-records") markSeen("records");
+      return true;
+    } catch (e) {
+      if (e.status === 401) { expired(); return false; }
+      $("admin-bins-table").innerHTML = emptyRow(5, e.message);
+      $("admin-records-table").innerHTML = emptyRow(6, e.message);
+      toast("Could not load dashboard data", "bad");
+      return false;
+    }
+  }
+
+  /* ---------- pages ---------- */
+  const META = {
+    "overview": ["Dashboard", "Overview of waste collection in Kumba"],
+    "manage-bins": ["Dustbins", "Register, update and remove collection points"],
+    "manage-records": ["Cleaning records", "Review verified activity and add new records"],
+    "reports": ["Resident reports", "Review and update waste issue submissions"],
+    "users": ["Users", "Registered accounts and verification status"],
+    "settings": ["Settings", "Access, preferences and security activity"]
+  };
+  function showPage() {
+    let id = (location.hash || "#overview").slice(1);
+    if (!META[id]) id = "overview";
+    currentPage = id;
+    document.querySelectorAll(".admin-page").forEach(p => { p.hidden = p.dataset.page !== id; });
+    $("admin-page-title").textContent = META[id][0];
+    $("admin-page-sub").textContent = META[id][1];
+    document.querySelectorAll("[data-nav]").forEach(a => {
+      if (a.getAttribute("href") === "#" + id) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
+    });
+    if (id === "reports") markSeen("reports");
+    if (id === "manage-records") markSeen("records");
+    window.scrollTo(0, 0);
+  }
+  window.addEventListener("hashchange", showPage);
+
+  /* ---------- sign in / out ---------- */
+  function setStage(code) {
+    $("admin-password-stage").hidden = code; $("admin-code-stage").hidden = !code;
+    $("admin-email").required = !code; $("admin-password").required = !code;
+    form.classList.toggle("admin-verifying", code);
+    $("admin-form-title").textContent = code ? "Verify Your Email" : "Administrator sign in";
+    $("admin-form-copy").textContent = code ? "Enter the 6 digit code sent to your email" : "Enter your authorised account credentials to continue";
+  }
+  function showLogin(text) {
+    portal.classList.remove("authorized");
+    loginPage.style.display = "grid";
+    form.reset(); setStage(false); say(text || "");
+    window.scrollTo(0, 0);
+  }
+  const expired = () => showLogin("Your session has expired. Please sign in again");
+
   async function openDashboard() {
     const response = await fetch("/api/admin/me", { credentials: "include", cache: "no-store" });
     if (!response.ok) return false;
     const auth = await response.json();
     if (!auth.authenticated || auth.role !== "administrator") return false;
     email = auth.email || email;
-    $("admin-welcome").textContent = email || "Welcome, Admin";
-    const initial = (email || "A").charAt(0).toUpperCase();
-    $("admin-avatar").textContent = initial;
+    const name = (email.split("@")[0] || "Administrator").replace(/[._-]+/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+    $("admin-welcome").textContent = name;
+    $("admin-avatar").textContent = name.charAt(0).toUpperCase();
+    $("admin-profile-email").textContent = email || "Administrator account";
+    const h = new Date().getHours();
+    $("admin-greeting").textContent = `${h < 12 ? "Good morning" : h < 17 ? "Good afternoon" : "Good evening"}, ${name.split(" ")[0]}`;
+    $("admin-today").textContent = new Date().toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
     loginPage.style.display = "none";
     portal.classList.add("authorized");
+    showPage();
     await loadAll();
     return true;
   }
 
   form?.addEventListener("submit", async event => {
     event.preventDefault();
+    if (!$("admin-code-stage").hidden) { $("admin-verify").click(); return; }
     say("");
     email = $("admin-email").value.trim().toLowerCase();
+    if (!email || !$("admin-password").value) { say("Enter your email and password"); return; }
     const button = $("admin-submit");
     button.disabled = true; button.textContent = "Checking account…";
     try {
       await post("/api/admin/login", { email, password: $("admin-password").value });
-      $("admin-password-stage").hidden = true;
-      $("admin-code-stage").hidden = false;
-      $("admin-code").required = true;
-      $("admin-form-title").textContent = "Verify Your Email";
-      $("admin-form-copy").textContent = "Enter the 6 digit code sent to your email";
-      $("admin-code").focus();
+      setStage(true); $("admin-code").focus();
     } catch (error) { say(error.message); }
     finally { button.disabled = false; button.textContent = "Continue securely"; }
   });
@@ -111,381 +283,211 @@
   $("admin-verify")?.addEventListener("click", async () => {
     say("");
     const code = $("admin-code").value.trim();
-    if (!/^\d{6}$/.test(code)) { say("Enter the complete six-digit code."); return; }
+    if (!/^\d{6}$/.test(code)) { say("Enter the complete six-digit code"); return; }
     const button = $("admin-verify"); button.disabled = true; button.textContent = "Verifying…";
     try {
       await post("/api/admin/verify", { email, code });
-      if (!await openDashboard()) throw new Error("Your administrator session could not be confirmed.");
+      if (!await openDashboard()) throw new Error("Your administrator session could not be confirmed");
     } catch (error) { say(error.message); }
     finally { button.disabled = false; button.textContent = "Verify Code"; }
   });
 
-  $("admin-back")?.addEventListener("click", () => {
-    $("admin-code-stage").hidden = true;
-    $("admin-password-stage").hidden = false;
-    $("admin-code").value = ""; $("admin-code").required = false;
-    $("admin-form-title").textContent = "Administrator sign in";
-    $("admin-form-copy").textContent = "Enter your authorised account credentials to continue.";
-    say("");
+  $("admin-back")?.addEventListener("click", () => { $("admin-code").value = ""; setStage(false); say(""); });
+
+  async function signOut() {
+    closeProfile();
+    try { await fetch("/api/admin/logout", { method: "POST", credentials: "include" }); } catch (_) {}
+    showLogin("You have signed out");
+  }
+  $("admin-logout")?.addEventListener("click", signOut);
+  $("admin-profile-logout")?.addEventListener("click", signOut);
+
+  /* ---------- profile menu ---------- */
+  const profileToggle = $("admin-profile-toggle"), profileMenu = $("admin-profile-popover");
+  function closeProfile() { if (profileMenu) profileMenu.hidden = true; profileToggle?.setAttribute("aria-expanded", "false"); }
+  profileToggle?.addEventListener("click", e => {
+    e.stopPropagation();
+    const open = profileMenu.hidden; profileMenu.hidden = !open;
+    profileToggle.setAttribute("aria-expanded", String(open));
+  });
+  document.addEventListener("click", e => { if (profileMenu && !profileMenu.hidden && !e.target.closest(".hx-profile")) closeProfile(); });
+  document.addEventListener("keydown", e => { if (e.key === "Escape") closeProfile(); });
+  $("admin-profile-settings")?.addEventListener("click", () => { closeProfile(); location.hash = "#settings"; });
+
+  /* ---------- refresh ---------- */
+  async function refresh(button) {
+    if (button) button.disabled = true;
+    const ok = await loadAll();
+    if (button) button.disabled = false;
+    if (ok) toast("Data refreshed");
+  }
+  $("admin-quick-refresh")?.addEventListener("click", e => refresh(e.currentTarget));
+  $("admin-refresh-reports")?.addEventListener("click", async e => { e.currentTarget.disabled = true; await loadReports(); e.currentTarget.disabled = false; toast("Reports refreshed"); });
+
+  /* ---------- pager + filters ---------- */
+  portal.addEventListener("click", e => {
+    const b = e.target.closest("[data-pg]"); if (!b || b.disabled) return;
+    pages[b.dataset.pg] += Number(b.dataset.dir);
+    renderers[b.dataset.pg]?.();
+  });
+  [["admin-bin-search", "bins", renderBins], ["admin-bin-filter", "bins", renderBins], ["admin-record-search", "records", renderRecords],
+   ["admin-report-search", "reports", renderReports], ["admin-report-filter", "reports", renderReports], ["admin-user-search", "users", renderUsers]
+  ].forEach(([id, key, fn]) => $(id)?.addEventListener("input", () => { pages[key] = 1; fn(); }));
+
+  /* ---------- dialogs ---------- */
+  const openDialog = d => { if (typeof d.showModal === "function") { if (!d.open) d.showModal(); } else d.setAttribute("open", ""); };
+  const closeDialog = d => { if (typeof d.close === "function") d.close(); else d.removeAttribute("open"); };
+  portal.addEventListener("click", e => {
+    const c = e.target.closest("[data-close]");
+    if (c) { const d = c.closest("dialog"); if (d) closeDialog(d); return; }
+    if (e.target.matches("dialog.hx-drawer")) closeDialog(e.target);
   });
 
-  function renderGreeting() {
-    const now = new Date(), hour = now.getHours();
-    $("admin-greeting").textContent = hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
-    $("admin-today").textContent = now.toLocaleDateString("en-GB", { weekday:"long", day:"numeric", month:"long", year:"numeric" });
-  }
-
-  function renderStats() {
-    renderGreeting();
-    const today = new Date().toDateString(); // local day, not UTC
-    const total = state.bins.length;
-    const countStatus = s => state.bins.filter(b => lower(b.status || "available") === lower(s)).length;
-    const available = countStatus("Available");
-    $("admin-total-bins").textContent = total.toLocaleString();
-    $("admin-cleaned-today").textContent = state.records.filter(r => r.verified && dayKey(r.cleaned_at) === today && lower(r.status).includes("clean")).length.toLocaleString();
-    $("admin-pending").textContent = state.bins.filter(b => /pending|full|maintenance|inactive/i.test(b.status || "")).length.toLocaleString();
-    $("admin-cleaned-percent").textContent = total ? `${Math.round(available / total * 100)}%` : "—";
-    const colors = { Available:"#087747", Pending:"#d08a0c", Full:"#c93227", Maintenance:"#2e62c9", Inactive:"#8a948e" };
-    const counts = Object.entries(colors).map(([name, color]) => ({ name, color, n:countStatus(name) }));
-    // Ring segments are sized against the bins that have a recognised status
-    const known = counts.reduce((sum, c) => sum + c.n, 0);
-    let from = 0;
-    const slices = counts.filter(c => c.n).map(c => { const to = from + c.n / known * 100; const part = `${c.color} ${from}% ${to}%`; from = to; return part; });
-    $("admin-bin-donut").style.background = slices.length ? `conic-gradient(${slices.join(",")})` : "";
-    $("admin-status-list").innerHTML = counts.map(c => `<li><i style="--c:${c.color}"></i><span>${c.name}</span><b>${c.n}</b></li>`).join("");
-    const months = Array.from({length:5}, (_, i) => {
-      const d = new Date(); d.setDate(1); d.setMonth(d.getMonth() - 4 + i);
-      return { label:d.toLocaleString("en",{month:"short"}), count:state.records.filter(r => {
-        const t = new Date(r.cleaned_at); return r.verified && t.getFullYear() === d.getFullYear() && t.getMonth() === d.getMonth();
-      }).length };
-    });
-    const max = Math.max(1, ...months.map(m => m.count));
-    $("admin-cleaning-chart").innerHTML = months.map(m => `<div class="hx-col" title="${m.count} verified in ${m.label}"><div class="hx-plot"><b>${m.count}</b><i style="height:${m.count / max * 100}%"></i></div><small>${m.label}</small></div>`).join("");
-    const latest = [...state.records].sort((a, b) => new Date(b.cleaned_at) - new Date(a.cleaned_at)).slice(0, 4);
-    $("admin-recent-records").innerHTML = latest.length ? latest.map(r => `<li><div><b>${esc(binCode(r))} · ${esc(r.area)}</b><small>${esc(localDate(r.cleaned_at))}</small></div>${pill(r.status || "Recorded")}</li>`).join("") : `<li class="hx-empty">No cleaning records yet</li>`;
-  }
-
-  // Ten rows per page
-  const PAGE_SIZE = 10;
-  const pageNo = { bins:1, records:1, users:1, reports:1, audit:1 };
-  function paginate(key, rows) {
-    const pages = Math.max(1, Math.ceil(rows.length / PAGE_SIZE));
-    pageNo[key] = Math.min(Math.max(1, pageNo[key]), pages);
-    const start = (pageNo[key] - 1) * PAGE_SIZE;
-    portal.querySelector(`[data-pager="${key}"]`).innerHTML = rows.length ? `<span>Showing ${start + 1} to ${Math.min(start + PAGE_SIZE, rows.length)} of ${rows.length}</span>${pages > 1 ? `<div><button type="button" class="hx-btn" data-step="-1" ${pageNo[key] === 1 ? "disabled" : ""}>Previous</button><button type="button" class="hx-btn" data-step="1" ${pageNo[key] === pages ? "disabled" : ""}>Next</button></div>` : ""}` : "";
-    return rows.slice(start, start + PAGE_SIZE);
-  }
-
-  function renderBinOptions() {
-    const select = $("record-bin-id"), chosen = select.value;
-    select.innerHTML = `<option value="">Select a dustbin</option>${state.bins.map(b=>`<option value="${esc(b.id)}">${esc(b.bin_code)} — ${esc(b.area)}</option>`).join("")}`;
-    select.value = chosen;
-  }
-
-  function renderBins() {
-    const q = lower($("admin-bin-search").value).trim();
-    const wanted = $("admin-bin-filter").value;
-    const rows = state.bins.filter(b => lower([b.bin_code,b.name,b.area,b.status].join(" ")).includes(q) && (!wanted || lower(b.status || "available") === lower(wanted)));
-    const shown = paginate("bins", rows);
-    $("admin-bins-table").innerHTML = rows.length ? shown.map(b => row(["ID","Name","Area","Status","Actions"], [
-      `<b>${esc(b.bin_code)}</b>`, esc(b.name), esc(b.area), pill(b.status || "Available"),
-      `<div class="hx-rowactions"><button type="button" class="hx-link" data-edit-bin="${esc(b.id)}">Edit</button><button type="button" class="hx-link hx-dangertext" data-delete-bin="${esc(b.id)}">Delete</button></div>`
-    ])).join("") : emptyRow(5, q || wanted ? "No matching dustbins found" : "No dustbins registered yet");
-  }
-
-  const binCode = r => state.bins.find(b=>String(b.id)===String(r.bin_id))?.bin_code || r.bin_id;
-  const filteredRecords = () => {
-    const q = lower($("admin-record-search").value).trim();
-    return state.records.filter(r => lower([binCode(r),r.area,r.activity,r.status,localDate(r.cleaned_at)].join(" ")).includes(q));
-  };
-
-  function renderRecords() {
-    const rows = filteredRecords();
-    const shown = paginate("records", rows);
-    $("admin-records-table").innerHTML = rows.length ? shown.map(r => row(["Dustbin ID","Location","Date & time","Activity","Status","Verification"], [
-      `<b>${esc(binCode(r))}</b>`, esc(r.area), esc(localDate(r.cleaned_at)), esc(r.activity || "Cleaning"), pill(r.status || "Recorded"), r.verified ? "Verified" : "Pending verification"
-    ])).join("") : emptyRow(6, state.records.length ? "No matching records found" : "No cleaning records have been registered");
-    setBadge("records", state.records.filter(r => !r.verified).length);
-  }
-
-  function exportRecords() {
-    const rows = filteredRecords();
-    if (!rows.length) { toast("There are no records to export", "bad"); return; }
-    // A leading apostrophe stops spreadsheets running text as a formula
-    const cell = v => { let t = String(v ?? ""); if (/^[=+\-@\t\r]/.test(t)) t = "'" + t; return `"${t.replaceAll('"','""')}"`; };
-    const lines = [["Dustbin ID","Location","Date and time","Activity","Status","Verification","Notes"],
-      ...rows.map(r => [binCode(r),r.area,localDate(r.cleaned_at),r.activity,r.status,r.verified?"Verified":"Pending verification",r.notes])];
-    const url = URL.createObjectURL(new Blob(["\ufeff" + lines.map(l => l.map(cell).join(",")).join("\r\n")], { type:"text/csv;charset=utf-8" }));
-    const link = document.createElement("a");
-    link.href = url; link.download = `hysacam-cleaning-records-${new Date().toLocaleDateString("en-CA")}.csv`;
-    document.body.appendChild(link); link.click(); link.remove();
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
-    toast(`Exported ${rows.length} ${rows.length === 1 ? "record" : "records"}`);
-  }
-
-  function renderUsers() {
-    const q = lower($("admin-user-search").value).trim();
-    const rows = state.users.filter(u => lower(`${u.name || ""} ${u.email} ${u.role}`).includes(q));
-    const shown = paginate("users", rows);
-    $("admin-users-table").innerHTML = rows.length ? shown.map(u => row(["Name","Email","Role","Email verified","Joined"], [
-      `<span class="hx-person"><i aria-hidden="true">${esc(String(u.name || u.email || "?").charAt(0).toUpperCase())}</i>${esc(u.name || "—")}</span>`, esc(u.email), `<span class="hx-pill" data-tone="info">${esc(label(u.role))}</span>`, u.email_confirmed ? "Verified" : "Not verified", esc(localDate(u.created_at))
-    ])).join("") : emptyRow(5, "No matching users found");
-  }
-
-  const OPEN_REPORTS = ["submitted","under_review"];
-  function updateReportSummary() {
-    const open = reports.filter(r => OPEN_REPORTS.includes(r.status));
-    setBadge("reports", open.length);
-    $("admin-open-reports").textContent = open.length.toLocaleString();
-    $("admin-recent-reports").innerHTML = open.length ? open.slice(0, 4).map(r => `<li><div><b>${esc(r.issue_type)}</b><small>${esc(r.reference_code)} · ${esc(r.area)}</small></div>${pill(r.status)}</li>`).join("") : `<li class="hx-empty">No reports waiting for review</li>`;
-  }
-
-  function renderReports() {
-    const q = lower($("admin-report-search").value).trim(), wanted = $("admin-report-filter").value;
-    const rows = reports.filter(r => lower([r.reference_code,r.issue_type,r.area,r.reporter_name,r.reporter_email].join(" ")).includes(q) && (!wanted || r.status === wanted));
-    const shown = paginate("reports", rows);
-    $("admin-reports-table").innerHTML = rows.length ? shown.map(r => row(["Reference","Issue","Area","Submitted by","Status","Update"], [
-      `<b>${esc(r.reference_code)}</b>`, esc(r.issue_type), esc(r.area), esc(r.reporter_name || r.reporter_email || "Resident"),
-      `<select aria-label="Status for report ${esc(r.reference_code)}" data-tone="${tone(r.status)}" data-report-status="${esc(r.id)}">${["submitted","under_review","assigned","in_progress","resolved","rejected"].map(v=>`<option value="${v}" ${r.status===v?"selected":""}>${label(v)}</option>`).join("")}</select>`,
-      `<button class="hx-link" type="button" data-save-report="${esc(r.id)}" disabled>Save</button>`
-    ])).join("") : emptyRow(6, reports.length ? "No matching reports found" : "No resident reports yet");
-  }
-
-  async function loadReports() {
-    try {
-      reports = (await request("/api/admin/reports")).reports || [];
-      renderReports(); updateReportSummary();
-      return true;
-    } catch (error) {
-      if (portal.classList.contains("authorized")) {
-        $("admin-reports-table").innerHTML = emptyRow(6, error.message);
-        $("admin-open-reports").textContent = "—";
-        $("admin-recent-reports").innerHTML = `<li class="hx-empty">Reports could not be loaded</li>`;
-      }
-      return false;
-    }
-  }
-
-  function renderAudit() {
-    const shown = paginate("audit", events);
-    $("admin-audit-table").innerHTML = events.length ? shown.map(x => row(["Time","Administrator","Event","Outcome"], [esc(localDate(x.created_at)), esc(x.email), esc(x.event), esc(x.outcome)])).join("") : emptyRow(4, "No audit events available");
-  }
-
-  async function loadAudit() {
-    try { events = (await request("/api/admin/audit")).events || []; renderAudit(); return true; }
-    catch (error) { if (portal.classList.contains("authorized")) $("admin-audit-table").innerHTML = emptyRow(4, error.message); return false; }
-  }
-
-  // Resolves to true only when every part of the dashboard loaded
-  async function loadAll() {
-    try {
-      const data = await request("/api/admin/manage");
-      state = { bins:data.bins || [], records:data.records || [], users:data.users || [] };
-      renderBinOptions(); renderStats(); renderBins(); renderRecords(); renderUsers();
-      const results = await Promise.all([loadReports(),loadAudit()]);
-      const ok = results.every(Boolean);
-      if (ok) $("admin-updated").textContent = `Updated ${new Date().toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"})}`;
-      return ok;
-    } catch (error) {
-      if (!portal.classList.contains("authorized")) return false;
-      [["admin-bins-table",5],["admin-records-table",6],["admin-users-table",5],["admin-reports-table",6],["admin-audit-table",4]]
-        .forEach(([id,span]) => { $(id).innerHTML = emptyRow(span, error.message); });
-      $("admin-updated").textContent = "Update failed";
-      return false;
-    }
-  }
-
   const binDialog = $("admin-bin-dialog"), recordDialog = $("admin-record-dialog");
-  function resetBinForm() {
-    $("admin-bin-form").reset(); $("bin-edit-id").value = ""; $("bin-id").disabled = false;
-    $("bin-dialog-title").textContent = "Add dustbin";
-    $("bin-save").textContent = "Save dustbin"; $("bin-form-message").textContent = "";
+
+  function openBin(bin) {
+    $("admin-bin-form").reset();
+    $("bin-form-message").textContent = "";
+    $("bin-edit-id").value = bin ? bin.id : "";
+    $("bin-id").disabled = Boolean(bin);
+    $("bin-dialog-title").textContent = bin ? "Edit dustbin" : "Add dustbin";
+    $("bin-save").textContent = bin ? "Update dustbin" : "Save dustbin";
+    if (bin) {
+      $("bin-id").value = bin.bin_code || ""; $("bin-name").value = bin.name || ""; $("bin-area").value = bin.area || "";
+      $("bin-lat").value = bin.latitude ?? ""; $("bin-lng").value = bin.longitude ?? "";
+      const opt = [...$("bin-status").options].find(o => o.textContent.toLowerCase() === String(bin.status || "available").toLowerCase());
+      $("bin-status").value = opt ? opt.value : "Available";
+    }
+    openDialog(binDialog);
+    setTimeout(() => $(bin ? "bin-name" : "bin-id").focus(), 60);
   }
-  $("admin-add-bin")?.addEventListener("click", () => { resetBinForm(); binDialog.showModal(); });
-  portal.querySelectorAll("[data-close]").forEach(b => b.addEventListener("click", () => b.closest("dialog").close()));
+  $("admin-add-bin")?.addEventListener("click", () => openBin(null));
+  $("admin-quick-bin")?.addEventListener("click", () => { location.hash = "#manage-bins"; setTimeout(() => openBin(null), 60); });
+
   $("admin-bin-form")?.addEventListener("submit", async event => {
     event.preventDefault();
     const editing = Boolean($("bin-edit-id").value);
-    const payload = { bin_code:$("bin-id").value.trim(), id:$("bin-edit-id").value, name:$("bin-name").value.trim(), area:$("bin-area").value.trim(), latitude:$("bin-lat").value, longitude:$("bin-lng").value, status:$("bin-status").value };
-    const button = $("bin-save"); button.disabled = true;
+    const payload = { bin_code: $("bin-id").value.trim(), id: $("bin-edit-id").value, name: $("bin-name").value.trim(), area: $("bin-area").value.trim(), latitude: $("bin-lat").value, longitude: $("bin-lng").value, status: $("bin-status").value };
+    if (!payload.bin_code || !payload.name || !payload.area) { $("bin-form-message").textContent = "Fill in the dustbin ID, name and area"; return; }
+    const button = $("bin-save"); button.disabled = true; $("bin-form-message").textContent = "";
     try {
-      await (editing ? patch("/api/admin/manage",payload) : post("/api/admin/manage",{type:"bin",...payload}));
-      binDialog.close(); toast(editing ? "Dustbin updated" : "Dustbin added"); await loadAll();
-    } catch (error) { $("bin-form-message").textContent = error.message; }
-    finally { button.disabled = false; }
+      await (editing ? patch("/api/admin/manage", payload) : post("/api/admin/manage", { type: "bin", ...payload }));
+      closeDialog(binDialog);
+      toast(editing ? "Dustbin updated" : "Dustbin added");
+      await loadAll();
+    } catch (error) {
+      if (error.status === 401) { closeDialog(binDialog); return expired(); }
+      $("bin-form-message").textContent = error.message;
+    } finally { button.disabled = false; }
   });
+
+  /* confirm box for deletes */
+  function confirmBox(title, text, okLabel) {
+    return new Promise(resolve => {
+      const d = document.createElement("dialog");
+      d.className = "hx-confirm";
+      d.innerHTML = `<h2>${esc(title)}</h2><p>${esc(text)}</p><div><button type="button" class="hx-btn" data-x="0">Cancel</button><button type="button" class="hx-btn hx-destroy" data-x="1">${esc(okLabel)}</button></div>`;
+      portal.appendChild(d);
+      d.addEventListener("click", e => { const b = e.target.closest("[data-x]"); if (b) { resolve(b.dataset.x === "1"); closeDialog(d); } });
+      d.addEventListener("close", () => { resolve(false); d.remove(); });
+      openDialog(d);
+    });
+  }
 
   $("admin-bins-table")?.addEventListener("click", async event => {
-    const edit = event.target.closest("[data-edit-bin]");
-    const remove = event.target.closest("[data-delete-bin]");
-    if (edit) {
-      const bin = state.bins.find(b=>String(b.id)===edit.dataset.editBin); if (!bin) return;
-      resetBinForm(); $("bin-dialog-title").textContent = "Edit dustbin"; $("bin-edit-id").value = bin.id;
-      $("bin-id").value = bin.bin_code || ""; $("bin-id").disabled = true;
-      $("bin-name").value = bin.name || ""; $("bin-area").value = bin.area || "";
-      $("bin-lat").value = bin.latitude ?? ""; $("bin-lng").value = bin.longitude ?? "";
-      const option = [...$("bin-status").options].find(o => lower(o.value) === lower(bin.status || "available"));
-      $("bin-status").value = option ? option.value : "Available"; $("bin-save").textContent = "Update dustbin";
-      binDialog.showModal();
-    }
+    const edit = event.target.closest("[data-edit-bin]"), remove = event.target.closest("[data-delete-bin]");
+    if (edit) { const bin = state.bins.find(b => String(b.id) === edit.dataset.editBin); if (bin) openBin(bin); return; }
     if (remove) {
-      const bin = state.bins.find(b=>String(b.id)===remove.dataset.deleteBin);
-      if (!await confirmAction(`Delete dustbin ${bin?.bin_code || ""}?`, "This cannot be undone. Deletion may be blocked if cleaning records use this dustbin")) return;
-      remove.disabled = true;
-      try { await del("/api/admin/manage",{id:remove.dataset.deleteBin}); toast("Dustbin deleted"); await loadAll(); }
-      catch (error) { toast(error.message, "bad"); remove.disabled = false; }
+      const bin = state.bins.find(b => String(b.id) === remove.dataset.deleteBin);
+      const ok = await confirmBox("Delete dustbin?", `${bin ? bin.bin_code : "This dustbin"} will be removed. This may be blocked if cleaning records refer to it`, "Delete");
+      if (!ok) return;
+      try { await del("/api/admin/manage", { id: remove.dataset.deleteBin }); toast("Dustbin deleted"); await loadAll(); }
+      catch (error) { if (error.status === 401) return expired(); toast(error.message.split("\n")[0], "bad"); }
     }
-  });
-  const renderers = { bins:renderBins, records:renderRecords, users:renderUsers, reports:renderReports, audit:renderAudit };
-  [["admin-bin-search","bins"],["admin-bin-filter","bins"],["admin-record-search","records"],["admin-user-search","users"],["admin-report-search","reports"],["admin-report-filter","reports"]]
-    .forEach(([id,key]) => $(id).addEventListener("input", () => { pageNo[key] = 1; renderers[key](); }));
-  portal.addEventListener("click", event => {
-    const step = event.target.closest("[data-step]"); if (!step) return;
-    const key = step.closest("[data-pager]").dataset.pager;
-    pageNo[key] += Number(step.dataset.step); renderers[key]();
   });
 
-  function resetRecordForm() {
+  /* records */
+  function openRecord() {
     $("admin-record-form").reset();
-    $("record-cleaned-at").value = new Date(Date.now()-new Date().getTimezoneOffset()*60000).toISOString().slice(0,16);
     $("record-form-message").textContent = "";
+    $("record-cleaned-at").value = new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+    openDialog(recordDialog);
   }
-  $("admin-add-record")?.addEventListener("click", () => { resetRecordForm(); recordDialog.showModal(); });
-  $("record-bin-id")?.addEventListener("change",() => {
-    const bin = state.bins.find(b=>String(b.id)===$("record-bin-id").value);
+  $("admin-add-record")?.addEventListener("click", openRecord);
+  $("admin-quick-record")?.addEventListener("click", () => { location.hash = "#manage-records"; setTimeout(openRecord, 60); });
+  $("record-bin-id")?.addEventListener("change", () => {
+    const bin = state.bins.find(b => String(b.id) === $("record-bin-id").value);
     if (bin) $("record-area").value = bin.area || "";
   });
-  $("admin-record-form")?.addEventListener("submit",async event=>{
-    event.preventDefault(); const button=$("record-save");button.disabled=true;
+  $("admin-record-form")?.addEventListener("submit", async event => {
+    event.preventDefault();
+    const when = new Date($("record-cleaned-at").value);
+    if (!$("record-bin-id").value) { $("record-form-message").textContent = "Select a dustbin"; return; }
+    if (isNaN(when)) { $("record-form-message").textContent = "Enter a valid date and time"; return; }
+    const button = $("record-save"); button.disabled = true; $("record-form-message").textContent = "";
     try {
-      await post("/api/admin/manage",{type:"record",bin_id:$("record-bin-id").value,area:$("record-area").value.trim(),cleaned_at:new Date($("record-cleaned-at").value).toISOString(),activity:$("record-activity").value.trim(),status:$("record-status").value,notes:$("record-notes").value.trim()});
-      recordDialog.close(); toast("Cleaning record saved"); await loadAll();
-    } catch(error) { $("record-form-message").textContent=error.message; }
-    finally { button.disabled=false; }
+      await post("/api/admin/manage", { type: "record", bin_id: $("record-bin-id").value, area: $("record-area").value.trim(), cleaned_at: when.toISOString(), activity: $("record-activity").value.trim(), status: $("record-status").value, notes: $("record-notes").value.trim() });
+      closeDialog(recordDialog); toast("Cleaning record added"); await loadAll();
+    } catch (error) {
+      if (error.status === 401) { closeDialog(recordDialog); return expired(); }
+      $("record-form-message").textContent = error.message;
+    } finally { button.disabled = false; }
   });
 
-  $("admin-export-records")?.addEventListener("click",exportRecords);
-  $("admin-refresh-reports")?.addEventListener("click",async event=>{
-    const button=event.currentTarget; button.disabled=true;
-    if (await loadReports()) toast("Reports refreshed");
-    button.disabled=false;
+  $("admin-export-records")?.addEventListener("click", () => {
+    const cell = v => { let s = String(v ?? ""); if (/^[=+\-@]/.test(s)) s = "'" + s; return `"${s.replace(/"/g, '""')}"`; };
+    const lines = [["Dustbin ID", "Location", "Date", "Activity", "Status", "Verified", "Notes"].map(cell).join(",")]
+      .concat(state.records.map(r => [binCode(r.bin_id), r.area, r.cleaned_at, r.activity, r.status, r.verified ? "Yes" : "No", r.notes].map(cell).join(",")));
+    const url = URL.createObjectURL(new Blob(["﻿" + lines.join("\r\n")], { type: "text/csv;charset=utf-8" }));
+    const a = document.createElement("a"); a.href = url; a.download = "hysacam-cleaning-records.csv";
+    document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 2000);
+    toast("Records exported");
   });
-  const reportButton = id => $("admin-reports-table").querySelector(`[data-save-report="${CSS.escape(id)}"]`);
-  $("admin-reports-table")?.addEventListener("change",event=>{
-    const select=event.target.closest("[data-report-status]"); if(!select)return;
-    select.dataset.tone=tone(select.value);
-    const button=reportButton(select.dataset.reportStatus); button.disabled=false; button.textContent="Save";
+
+  /* reports: status change + save */
+  $("admin-reports-table")?.addEventListener("change", e => {
+    const s = e.target.closest("select[data-report-status]"); if (!s) return;
+    s.dataset.tone = toneOf(s.value);
+    const btn = s.closest("tr")?.querySelector("[data-save-report]"); if (btn) { btn.textContent = "Save"; btn.disabled = false; }
   });
-  $("admin-reports-table")?.addEventListener("click",async event=>{
-    const button=event.target.closest("[data-save-report]"); if(!button)return;
-    const id=button.dataset.saveReport;
-    const status=$("admin-reports-table").querySelector(`[data-report-status="${CSS.escape(id)}"]`)?.value;
-    button.disabled=true;
+  $("admin-reports-table")?.addEventListener("click", async e => {
+    const button = e.target.closest("[data-save-report]");
+    if (!button) return;
+    const id = button.dataset.saveReport;
+    const status = $("admin-reports-table").querySelector(`[data-report-status="${CSS.escape(id)}"]`)?.value;
+    button.disabled = true;
     try {
-      await patch("/api/admin/reports",{id,status}); button.textContent="Saved";
-      const report=reports.find(r=>String(r.id)===id); if(report)report.status=status;
-      updateReportSummary(); renderReports(); toast("Report status updated");
-    }
-    catch(error) { toast(error.message,"bad"); button.disabled=false; }
+      await patch("/api/admin/reports", { id, status });
+      const r = state.reports.find(x => String(x.id) === String(id)); if (r) r.status = status;
+      button.textContent = "Saved"; toast("Report updated");
+      renderOverview(); updateBadges();
+    } catch (error) { if (error.status === 401) return expired(); toast(error.message.split("\n")[0], "bad"); button.disabled = false; }
+  });
+  $("admin-reports-table")?.addEventListener("click", e => {
+    const ref = e.target.closest("td:first-child b");
+    if (ref && navigator.clipboard) navigator.clipboard.writeText(ref.textContent.trim()).then(() => toast("Reference copied")).catch(() => {});
   });
 
-  // Profile popover and account actions
-  const profileToggle = $("admin-profile-toggle");
-  const profilePopover = $("admin-profile-popover");
-  const closeProfile = () => {
-    if (!profilePopover || !profileToggle) return;
-    profilePopover.hidden = true;
-    profileToggle.setAttribute("aria-expanded", "false");
+  /* ---------- preferences (this device only) ---------- */
+  const prefCompact = $("admin-setting-compact"), prefMotion = $("admin-setting-reduced-motion"), feedback = $("admin-setting-feedback");
+  const applyPrefs = p => {
+    portal.classList.toggle("compact", Boolean(p.compact)); portal.classList.toggle("still", Boolean(p.reduceMotion));
+    if (prefCompact) prefCompact.checked = Boolean(p.compact); if (prefMotion) prefMotion.checked = Boolean(p.reduceMotion);
   };
-  profileToggle?.addEventListener("click", event => {
-    event.stopPropagation();
-    const open = profilePopover.hidden;
-    profilePopover.hidden = !open;
-    profileToggle.setAttribute("aria-expanded", String(open));
-    $("admin-profile-email").textContent = email || "Administrator account";
-      });
-  document.addEventListener("click", event => {
-    if (profilePopover && !profilePopover.hidden && !event.target.closest(".hx-profile")) closeProfile();
-  });
-  document.addEventListener("keydown", event => { if (event.key === "Escape") closeProfile(); });
-  $("admin-profile-settings")?.addEventListener("click", () => {
-    closeProfile();
-    goTo("settings");
-  });
-  const signOut = async () => {
-    closeProfile();
-    let ended = false;
-    try { ended = (await fetch("/api/admin/logout",{method:"POST",credentials:"include"})).ok; } catch (_) {}
-    // Never claim a sign out that the server did not confirm
-    if (ended) showLogin("You have signed out");
-    else toast("Sign out failed, check your connection and try again", "bad");
-  };
-  ["admin-logout","admin-logout-top","admin-profile-logout"].forEach(id => $(id)?.addEventListener("click", signOut));
-
-  // Quick actions
-  $("admin-quick-bin")?.addEventListener("click", () => { goTo("manage-bins"); $("admin-add-bin").click(); });
-  $("admin-quick-record")?.addEventListener("click", () => { goTo("manage-records"); $("admin-add-record").click(); });
-  $("admin-quick-refresh")?.addEventListener("click", async event => {
-    const button = event.currentTarget; button.disabled = true;
-    const ok = await loadAll();
-    toast(ok ? "Dashboard data refreshed" : "Some data could not be refreshed", ok ? "good" : "bad");
-    button.disabled = false;
-  });
-
-  // One page at a time, driven by the address so Back, Forward, refresh and bookmarks work
-  const PAGES = {
-    "overview":["Dashboard","Kumba waste collection at a glance"], "manage-bins":["Dustbins","Manage collection points"],
-    "manage-records":["Cleaning records","Track cleaning activity"], "users":["Users","Registered accounts"],
-    "reports":["Resident reports","Review and update waste issues"], "settings":["Settings","Preferences and security activity"]
-  };
-  const navLinks = [...portal.querySelectorAll("[data-nav]")];
-  const currentPage = () => { const id = location.hash.slice(1); return Object.hasOwn(PAGES, id) ? id : "overview"; };
-  function showPage() {
-    const id = currentPage();
-    document.querySelectorAll(".admin-page").forEach(p => { p.hidden = p.dataset.page !== id; });
-    $("admin-page-title").textContent = PAGES[id][0]; $("admin-page-sub").textContent = PAGES[id][1];
-    document.title = `${PAGES[id][0]} | HYSACAM Kumba Admin`;
-    navLinks.forEach(a => { if (a.getAttribute("href") === `#${id}`) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current"); });
-    window.scrollTo(0, 0);
-  }
-  function goTo(id) {
-    if (location.hash !== `#${id}`) history.pushState(null, "", `#${id}`);
-    showPage();
-  }
-  navLinks.forEach(a => a.addEventListener("click", event => {
-    if (event.ctrlKey || event.metaKey || event.shiftKey) return;
-    event.preventDefault(); goTo(a.getAttribute("href").slice(1));
-    $("admin-page-title").focus({ preventScroll:true });
-  }));
-  portal.querySelectorAll("[data-link]").forEach(a => a.addEventListener("click", event => { event.preventDefault(); goTo(a.getAttribute("href").slice(1)); }));
-  window.addEventListener("popstate", showPage);
-  window.addEventListener("hashchange", showPage);
-  showPage();
-
-  // Device-local dashboard preferences; these do not change account permissions or server data.
-  const prefCompact = $("admin-setting-compact");
-  const prefMotion = $("admin-setting-reduced-motion");
-  const settingFeedback = $("admin-setting-feedback");
-  const prefKey = "hysacam_admin_dashboard_preferences_v1";
-  const applyPreferences = prefs => {
-    portal.classList.toggle("compact", Boolean(prefs.compact));
-    portal.classList.toggle("still", Boolean(prefs.reduceMotion));
-    if (prefCompact) prefCompact.checked = Boolean(prefs.compact);
-    if (prefMotion) prefMotion.checked = Boolean(prefs.reduceMotion);
-  };
-  let savedPrefs = {compact:false,reduceMotion:false};
-  try { savedPrefs = {...savedPrefs,...JSON.parse(localStorage.getItem(prefKey) || "{}")}; } catch (_) {}
-  applyPreferences(savedPrefs);
+  let prefs = { compact: false, reduceMotion: false };
+  try { prefs = { ...prefs, ...JSON.parse(localStorage.getItem(PREF_KEY) || "{}") }; } catch (_) {}
+  applyPrefs(prefs);
   $("admin-setting-save")?.addEventListener("click", () => {
-    savedPrefs = {compact:Boolean(prefCompact?.checked),reduceMotion:Boolean(prefMotion?.checked)};
-    try { localStorage.setItem(prefKey,JSON.stringify(savedPrefs)); applyPreferences(savedPrefs); if(settingFeedback)settingFeedback.textContent="Preferences saved on this device"; }
-    catch (_) { if(settingFeedback)settingFeedback.textContent="Could not save preferences in this browser"; }
+    prefs = { compact: Boolean(prefCompact?.checked), reduceMotion: Boolean(prefMotion?.checked) };
+    try { localStorage.setItem(PREF_KEY, JSON.stringify(prefs)); applyPrefs(prefs); feedback.textContent = "Preferences saved on this device"; }
+    catch (_) { feedback.textContent = "Could not save preferences in this browser"; }
   });
   $("admin-setting-reset")?.addEventListener("click", () => {
-    savedPrefs = {compact:false,reduceMotion:false};
-    try { localStorage.removeItem(prefKey); } catch (_) {}
-    applyPreferences(savedPrefs);
-    if(settingFeedback)settingFeedback.textContent="Dashboard preferences reset";
+    prefs = { compact: false, reduceMotion: false };
+    try { localStorage.removeItem(PREF_KEY); } catch (_) {}
+    applyPrefs(prefs); feedback.textContent = "Preferences reset";
   });
-  openDashboard().catch(error=>console.warn("[HYSACAM admin]",error));
+
+  showPage();
+  openDashboard().catch(error => console.warn("[HYSACAM admin]", error));
 })();
