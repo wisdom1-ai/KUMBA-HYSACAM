@@ -342,3 +342,40 @@
 @media (prefers-reduced-motion: reduce) {
   .bubbles { display: none; }
   }
+
+/* ===== v10 design polish ===== */
+#admin-portal .hx-card{transition:box-shadow .2s,border-color .2s}
+#admin-portal .hx-card:not(.hx-tablecard):hover{box-shadow:0 14px 30px -18px rgba(14,40,26,.28)}
+#admin-portal .hx-kpi{overflow:hidden}
+#admin-portal .hx-kpi::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;background:var(--a);opacity:.85;transform:scaleX(.28);transform-origin:left;transition:transform .35s}
+#admin-portal .hx-kpi:hover::after{transform:scaleX(1)}
+#admin-portal .hx-hero h2{font-size:28px}
+#admin-portal .hx-hero{background:radial-gradient(circle at 92% -20%,rgba(110,231,170,.38),transparent 52%),radial-gradient(circle at 5% 120%,rgba(255,255,255,.08),transparent 45%),linear-gradient(120deg,#083d27,#0a6e43)}
+#admin-portal .hx-top h1,#admin-portal .hx-heading h1{letter-spacing:-.5px}
+#admin-portal .hx-heading p{margin-top:1px}
+#admin-portal .hx-tablecard{overflow:hidden}
+#admin-portal td small{display:block;margin-top:2px;font-size:12px;color:var(--mut)}
+#admin-portal td b{font-weight:700}
+#admin-portal td[colspan]{padding:56px 16px;font-size:14px}
+#admin-portal tbody tr:nth-child(even){background:#fbfcfb}
+#admin-portal .hx-feed li:first-child{border-top:0}
+#admin-portal .hx-feed .hx-empty{color:var(--mut);font-size:13px}
+#admin-portal .hx-legend{margin-top:4px}
+#admin-portal select.admin-report-status{appearance:none;-webkit-appearance:none;width:auto;min-width:150px;height:34px;padding:0 30px 0 14px;border-radius:99px;border:0;font-size:13px;font-weight:700;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 11px center}
+#admin-portal .hx-link{transition:background .15s,border-color .15s}
+#admin-portal .hx-link:hover{border-color:#9cc7ae}
+#admin-portal .hx-link.hx-dangertext:hover{background:#fdf0ee;border-color:#e6b3ae}
+#admin-portal .hx-pager{border-top:1px solid var(--line)}
+#admin-portal .hx-drawerhead h2{font-size:18px}
+#admin-portal .hx-drawerfoot{background:#f7faf8}
+#admin-portal .hx-error:empty{display:none}
+#admin-portal .hx-error{padding:10px 12px;border-radius:10px;background:#fdf0ee;white-space:pre-line;font-size:13px}
+#admin-portal .hx-confirm h2{font-size:18px}
+#admin-portal .hx-confirm::backdrop{background:rgba(10,22,15,.5)}
+#admin-portal .hx-badge[hidden]{display:none!important}
+@media(max-width:900px){
+  #admin-portal tbody tr{padding:6px 14px}
+  #admin-portal td:first-child{padding-top:12px}
+  #admin-portal .hx-top{box-shadow:0 1px 0 var(--line)}
+  #admin-portal select.admin-report-status{min-width:140px}
+}
