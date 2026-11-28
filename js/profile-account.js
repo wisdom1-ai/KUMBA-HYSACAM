@@ -6,7 +6,7 @@
   const root = document.getElementById("profile-account-root");
   if (!root) return;
 
-  const AUTH_CACHE = "hysacam-auth-cache", BUCKET = "avatars", MAX_FILE = 12 * 1024 * 1024;
+  const AUTH_CACHE = "hysacam-auth-cache", LOCAL_KEY = "hysacam-profile-v1", MAX_FILE = 12 * 1024 * 1024;
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
   const withTimeout = (p, ms) => Promise.race([Promise.resolve(p), new Promise((_, rej) => setTimeout(() => rej(new Error("timeout")), ms))]);
   async function waitFor(test, ms) {
@@ -35,7 +35,7 @@
     chev: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>'
   };
 
-  let client = null, user = null, row = null, dirty = false, busyPhoto = false;
+  let user = null, local = {}, dirty = false, busyPhoto = false;
 
   /* ---------- screens ---------- */
   function skeleton() {
@@ -72,22 +72,27 @@
       '<button class="pa-signout" id="pa-signout" type="button">Sign out</button>';
   }
 
-  /* ---------- data ---------- */
+  /* ---------- data (the sign-in lives in a server cookie, so /api/auth/me is the source of truth) ---------- */
+  try { local = JSON.parse(localStorage.getItem(LOCAL_KEY) || "{}") || {}; } catch (e) { local = {}; }
+  const saveLocal = () => { try { localStorage.setItem(LOCAL_KEY, JSON.stringify(local)); } catch (e) {} };
+  const serverName = () => {
+    const n = pick(user, NAME_KEYS) || pick(user && user.user_metadata, NAME_KEYS);
+    return n || [pick(user, ["first_name"]), pick(user, ["last_name"])].filter(Boolean).join(" ");
+  };
   function values() {
-    const meta = user.user_metadata || {};
     return {
-      name: pick(row, NAME_KEYS) || pick(meta, NAME_KEYS) || "",
-      phone: pick(row, PHONE_KEYS) || pick(meta, PHONE_KEYS) || String(user.phone || ""),
-      role: pick(row, ROLE_KEYS) || pick(user.app_metadata, ["role"]) || pick(meta, ROLE_KEYS) || "resident"
+      name: local.name || serverName(),
+      phone: local.phone || pick(user, PHONE_KEYS) || pick(user && user.user_metadata, PHONE_KEYS),
+      role: pick(user, ROLE_KEYS) || window.__hysRole || "resident"
     };
   }
-  const photoUrl = () => pick(user && user.user_metadata, ["avatar_url"]) || pick(row, ["avatar_url"]);
-  const verified = () => !!(user.email_confirmed_at || user.confirmed_at);
+  const photoUrl = () => local.avatar || pick(user, ["avatar_url"]) || pick(user && user.user_metadata, ["avatar_url"]);
+  const verified = () => !!(user.email_confirmed_at || user.confirmed_at || user.email_confirmed || user.email_verified || user.verified);
 
   function paint(fillForm) {
     const v = values(), email = user.email || "", photo = photoUrl();
     $("pa-name").textContent = v.name || (email ? email.split("@")[0] : "Your account");
-    $("pa-email-line").textContent = email || String(user.phone || "");
+    $("pa-email-line").textContent = email;
     $("pa-role").textContent = titleCase(v.role);
     const ver = $("pa-verified"); ver.textContent = verified() ? "Verified" : "Not verified"; ver.className = verified() ? "ok" : "warn";
     $("pa-face").innerHTML = photo ? '<img src="' + esc(photo) + '" alt="Your profile photo">' : esc(initials(v.name, email));
@@ -97,30 +102,32 @@
     $("pa-photo-remove").hidden = !photo;
     if (fillForm) { $("pa-f-name").value = v.name; $("pa-f-phone").value = v.phone; }
     $("pa-f-email").value = email;
-    $("pa-d-since").textContent = fmtDate(user.created_at || (row && row.created_at));
+    $("pa-d-since").textContent = user.created_at ? fmtDate(user.created_at) : "—";
     $("pa-d-role").textContent = titleCase(v.role);
     $("pa-d-verified").textContent = verified() ? "Verified" : "Not verified";
-    $("pa-d-last").textContent = fmtDateTime(user.last_sign_in_at);
-    $("pa-resend").hidden = verified() || !email;
+    $("pa-d-last").textContent = user.last_sign_in_at ? fmtDateTime(user.last_sign_in_at) : "—";
+    $("pa-resend").hidden = true;
     const done = [!!v.name, !!v.phone, !!photo], n = done.filter(Boolean).length, pct = Math.round(n / 3 * 100);
     $("pa-meter-bar").style.width = pct + "%"; $("pa-meter-txt").textContent = pct + "%";
     const missing = [!v.name && "your name", !v.phone && "a phone number", !photo && "a photo"].filter(Boolean);
     $("pa-meter-hint").textContent = missing.length ? "Add " + missing.join(", ") + " to complete your profile" : "Your profile is complete";
   }
 
-  async function persist(meta, rowPatch) {
-    const res = await withTimeout(client.auth.updateUser({ data: meta }), 15000);
-    if (res.error) throw res.error;
-    if (res.data && res.data.user) user = res.data.user;
-    if (row && rowPatch && Object.keys(rowPatch).length) {
-      const r = await withTimeout(client.from("profiles").update(rowPatch).eq("id", user.id), 15000);
-      if (r.error) { if ("avatar_url" in rowPatch && Object.keys(rowPatch).length === 1) console.warn("avatar_url column not saved:", r.error.message); else throw r.error; }
-      else Object.assign(row, rowPatch);
+  /* Try the server first; if it has no profile endpoint yet, keep the change on this device */
+  async function persist(patch) {
+    let sent = false;
+    if ("name" in patch || "phone" in patch) {
+      try {
+        const r = await withTimeout(fetch("/api/auth/profile", { method: "PATCH", credentials: "include", headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify({ full_name: patch.name, name: patch.name, phone: patch.phone }) }), 12000);
+        sent = r.ok;
+      } catch (e) { sent = false; }
     }
+    Object.assign(local, patch); saveLocal();
     document.dispatchEvent(new CustomEvent("hysacam:profile-updated", { detail: { name: values().name, phone: values().phone, avatar_url: photoUrl() } }));
+    return sent;
   }
 
-  /* ---------- photo ---------- */
+  /* ---------- photo (kept on this device) ---------- */
   function squareJpeg(file, size) {
     return new Promise((resolve, reject) => {
       const url = URL.createObjectURL(file), img = new Image();
@@ -130,21 +137,12 @@
           const c = document.createElement("canvas"); c.width = c.height = size;
           const ctx = c.getContext("2d"); ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, size, size);
           ctx.drawImage(img, sx, sy, s, s, 0, 0, size, size);
-          c.toBlob((b) => (b ? resolve(b) : reject(new Error("decode"))), "image/jpeg", 0.88);
+          resolve(c.toDataURL("image/jpeg", 0.85));
         } catch (e) { reject(e); } finally { URL.revokeObjectURL(url); }
       };
       img.onerror = () => { URL.revokeObjectURL(url); reject(new Error("decode")); };
       img.src = url;
     });
-  }
-  function photoError(e) {
-    const m = String((e && e.message) || "");
-    if (m === "decode") return "That image could not be read. Try a JPG or PNG photo";
-    if (m === "timeout") return "Upload took too long. Check your connection and try again";
-    if (/bucket not found/i.test(m)) return "Photo upload is not set up yet. Ask the administrator to finish the photo setup";
-    if (/row-level|not allowed|unauthori|permission|jwt/i.test(m)) return "You are not allowed to upload a photo. Please sign in again";
-    if (/too large|exceed|payload/i.test(m)) return "That photo is too large. Choose a smaller one";
-    return "Could not update your photo. Please try again";
   }
   function setBusy(on) { busyPhoto = on; $("pa-avatar").classList.toggle("busy", on); $("pa-photo-btn").disabled = on; $("pa-photo-remove").disabled = on; $("pa-cam").disabled = on; }
   const photoMsg = (t, kind) => { const el = $("pa-photo-msg"); el.textContent = t || ""; el.className = "pa-photo-msg" + (kind ? " " + kind : ""); };
@@ -153,26 +151,17 @@
     if (busyPhoto) return;
     if (!/^image\//.test(file.type) && !/\.(jpe?g|png|webp)$/i.test(file.name)) return photoMsg("Please choose an image file", "err");
     if (file.size > MAX_FILE) return photoMsg("That photo is too large. Choose one under 12 MB", "err");
-    setBusy(true); photoMsg("Uploading…");
+    setBusy(true); photoMsg("Saving…");
     try {
-      const blob = await squareJpeg(file, 512), path = user.id + "/avatar.jpg";
-      const up = await withTimeout(client.storage.from(BUCKET).upload(path, blob, { upsert: true, contentType: "image/jpeg", cacheControl: "3600" }), 30000);
-      if (up.error) throw up.error;
-      const url = client.storage.from(BUCKET).getPublicUrl(path).data.publicUrl + "?v=" + Date.now();
-      await persist({ avatar_url: url }, { avatar_url: url });
-      paint(false); photoMsg("Photo updated", "ok");
-    } catch (e) { console.error("Photo upload failed:", e); photoMsg(photoError(e), "err"); }
+      const data = await squareJpeg(file, 320);
+      await persist({ avatar: data });
+      paint(false); photoMsg("Photo updated on this device", "ok");
+    } catch (e) { console.error(e); photoMsg(e && e.message === "decode" ? "That image could not be read. Try a JPG or PNG photo" : "Could not save your photo. Please try again", "err"); }
     finally { setBusy(false); }
   }
   async function removePhoto() {
     if (busyPhoto || !confirm("Remove your profile photo?")) return;
-    setBusy(true); photoMsg("Removing…");
-    try {
-      try { await withTimeout(client.storage.from(BUCKET).remove([user.id + "/avatar.jpg"]), 15000); } catch (e) {}
-      await persist({ avatar_url: "" }, { avatar_url: null });
-      paint(false); photoMsg("Photo removed", "ok");
-    } catch (e) { console.error(e); photoMsg(photoError(e), "err"); }
-    finally { setBusy(false); }
+    await persist({ avatar: "" }); paint(false); photoMsg("Photo removed", "ok");
   }
 
   /* ---------- wiring ---------- */
@@ -194,30 +183,16 @@
       if (name === cur.name && phone === cur.phone) { msg("No changes to save", "ok"); return; }
       const btn = $("pa-save"); btn.disabled = true; btn.textContent = "Saving…"; msg("");
       try {
-        const patch = {}, nk = row && NAME_KEYS.find((k) => k in row), pk = row && PHONE_KEYS.find((k) => k in row);
-        if (nk) patch[nk] = name;
-        if (pk) patch[pk] = phone || null;
-        await persist({ full_name: name, name: name, phone: phone }, patch);
-        dirty = false; paint(true); msg("Profile saved", "ok");
-      } catch (err) {
-        console.error("Profile save failed:", err);
-        msg(err && err.message === "timeout" ? "Saving took too long. Check your connection and try again" : "Could not save your profile. Please try again", "err");
-      } finally { btn.disabled = false; btn.textContent = "Save changes"; }
+        const onServer = await persist({ name: name, phone: phone });
+        dirty = false; paint(true); msg(onServer ? "Profile saved" : "Profile saved on this device", "ok");
+      } catch (err) { console.error(err); msg("Could not save your profile. Please try again", "err"); }
+      finally { btn.disabled = false; btn.textContent = "Save changes"; }
     });
     window.addEventListener("beforeunload", (e) => { if (dirty) { e.preventDefault(); e.returnValue = ""; } });
 
-    $("pa-resend").addEventListener("click", async () => {
-      const btn = $("pa-resend"), out = $("pa-verify-msg"); btn.disabled = true;
-      try {
-        const r = await withTimeout(client.auth.resend({ type: "signup", email: user.email }), 15000);
-        if (r.error) throw r.error;
-        out.textContent = "Verification email sent. Check your inbox"; out.className = "pa-msg ok";
-      } catch (e) { out.textContent = "Could not send the email. Try again in a minute"; out.className = "pa-msg err"; }
-      finally { setTimeout(() => { btn.disabled = false; }, 30000); }
-    });
     $("pa-signout").addEventListener("click", async () => {
       $("pa-signout").disabled = true;
-      try { await withTimeout(client.auth.signOut(), 10000); } catch (e) {}
+      try { await withTimeout(fetch("/api/auth/logout", { method: "POST", credentials: "include", headers: { Accept: "application/json" } }), 10000); } catch (e) {}
       try { localStorage.removeItem(AUTH_CACHE); } catch (e) {}
       location.href = "index.html";
     });
@@ -232,71 +207,24 @@
     } catch (e) { /* leave the dash */ }
   }
 
-  const dbg = [];
-  /* ---------- finding the signed-in account (patient: the session can arrive a moment late) ---------- */
   function remembered() { try { const c = JSON.parse(localStorage.getItem(AUTH_CACHE) || "null"); return !!(c && c.a === 1); } catch (e) { return false; } }
-  async function readSession() {
-    try {
-      const r = await withTimeout(client.auth.getSession(), 10000);
-      if (r && r.error) dbg.push("getSession: " + r.error.message);
-      return r && r.data ? r.data.session : null;
-    } catch (e) { dbg.push("getSession failed: " + e.message); return null; }
-  }
-  function storageInfo() {
-    const names = (st) => { try { return Object.keys(st).filter((k) => /sb-|supabase|auth|hysacam|token/i.test(k)).map((k) => (k.length > 34 ? k.slice(0, 34) + "…" : k)).join(", "); } catch (e) { return "blocked"; } };
-    let cookies = ""; try { cookies = document.cookie.split(";").map((c) => c.split("=")[0].trim()).filter(Boolean).join(", "); } catch (e) {}
-    let g = "none"; try { g = (typeof supabaseClient !== "undefined" && supabaseClient) ? "global" : (window.supabaseClient ? "window" : "none"); } catch (e) {}
-    return ["client: " + g, "local: " + (names(localStorage) || "none"), "session: " + (names(sessionStorage) || "none"), "cookies: " + (cookies || "none")];
-  }
-  async function findSession() {
-    let keys = 0;
-    try { keys = Object.keys(localStorage).filter((k) => /^sb-.*auth-token/.test(k)).length; } catch (e) {}
-    dbg.push("remembered: " + (remembered() ? "yes" : "no"), "stored session keys: " + keys);
-    storageInfo().forEach((l) => dbg.push(l));
-    let s = await readSession();
-    if (s && s.user) return s;
-    try {
-      const r = await withTimeout(client.auth.getUser(), 10000);
-      if (r && r.error) dbg.push("getUser: " + r.error.message);
-      if (r && r.data && r.data.user) { const s2 = await readSession(); return s2 && s2.user ? s2 : { user: r.data.user }; }
-    } catch (e) { dbg.push("getUser failed: " + e.message); }
-    try {
-      const r = await withTimeout(client.auth.refreshSession(), 10000);
-      if (r && r.data && r.data.session && r.data.session.user) return r.data.session;
-      if (r && r.error) dbg.push("refresh: " + r.error.message);
-    } catch (e) { dbg.push("refresh failed: " + e.message); }
-    if (remembered()) {
-      for (let i = 0; i < 6; i++) { await sleep(750); s = await readSession(); if (s && s.user) return s; }
-    }
-    return null;
-  }
-  function sessionEnded() {
-    root.innerHTML = '<div class="pa-hero pa-guest"><div class="pa-avatar">' + ICON.user + '</div><div class="pa-hero-text"><b>Your session has ended</b><small>Please sign in again to see your profile</small></div>' +
-      '<div class="pa-actions"><a class="pa-btn light" href="signin.html">Sign In</a><a class="pa-btn ghost" href="index.html">Go home</a></div><p class="pa-debug">' + esc(dbg.join(" | ")) + '</p></div>';
-  }
   function retryScreen() {
-    root.innerHTML = '<div class="pa-hero pa-guest"><div class="pa-avatar">' + ICON.user + '</div><div class="pa-hero-text"><b>We could not confirm your sign-in</b><small>Your connection may be slow or your session may have expired</small></div>' +
-      '<div class="pa-actions"><button class="pa-btn light" id="pa-retry" type="button">Try again</button><a class="pa-btn ghost" href="signin.html">Sign in again</a></div><p class="pa-debug">' + esc(dbg.join(" | ")) + '</p></div>';
+    root.innerHTML = '<div class="pa-hero pa-guest"><div class="pa-avatar">' + ICON.user + '</div><div class="pa-hero-text"><b>We could not confirm your sign-in</b><small>Your connection may be slow. Please try again</small></div>' +
+      '<div class="pa-actions"><button class="pa-btn light" id="pa-retry" type="button">Try again</button><a class="pa-btn ghost" href="signin.html">Sign in again</a></div></div>';
     const b = document.getElementById("pa-retry"); if (b) b.addEventListener("click", () => location.reload());
   }
-
   async function main() {
     skeleton();
-    client = await waitFor(getClient, 8000);
-    if (!client) return guest("Could not reach the server. Check your connection and reload");
-    const session = await findSession();
-    if (!session || !session.user) {
-      if (remembered() && dbg.some((m) => /session missing/i.test(m))) {
-        /* The site remembered a sign-in that no longer exists: forget it and ask for a fresh one */
-        try { localStorage.removeItem(AUTH_CACHE); } catch (e) {}
-        return sessionEnded();
-      }
-      return remembered() ? retryScreen() : guest();
-    }
-
-    user = session.user;
-    try { const r = await withTimeout(client.auth.getUser(), 10000); if (r && r.data && r.data.user) user = r.data.user; } catch (e) {}
-    try { const r = await withTimeout(client.from("profiles").select("*").eq("id", user.id).maybeSingle(), 10000); if (!r.error) row = r.data || null; } catch (e) { row = null; }
+    let res;
+    try { res = await withTimeout(fetch("/api/auth/me", { credentials: "include", cache: "no-store", headers: { Accept: "application/json" } }), 12000); }
+    catch (e) { return retryScreen(); }
+    if (res.status === 401) { try { localStorage.removeItem(AUTH_CACHE); } catch (e) {} return guest(); }
+    if (!res.ok) return retryScreen();
+    let data = {}; try { data = await res.json(); } catch (e) {}
+    user = data.user || data.profile || null;
+    if (!data.authenticated || !user) { try { localStorage.removeItem(AUTH_CACHE); } catch (e) {} return guest(); }
+    if (data.profile && data.user) user = Object.assign({}, data.user, data.profile);
+    try { const c = JSON.parse(localStorage.getItem(AUTH_CACHE) || "null"); if (c && c.role) window.__hysRole = c.role; } catch (e) {}
     shell(); wire(); paint(true); loadReportCount();
   }
   main().catch((e) => { console.error("Profile failed to start:", e); guest("Something went wrong. Reload to try again"); });
