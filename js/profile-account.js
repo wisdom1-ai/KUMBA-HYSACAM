@@ -232,14 +232,35 @@
     } catch (e) { /* leave the dash */ }
   }
 
+  /* ---------- finding the signed-in account (patient: the session can arrive a moment late) ---------- */
+  function remembered() { try { const c = JSON.parse(localStorage.getItem(AUTH_CACHE) || "null"); return !!(c && c.a === 1); } catch (e) { return false; } }
+  async function readSession() {
+    try { const r = await withTimeout(client.auth.getSession(), 10000); return r && r.data ? r.data.session : null; } catch (e) { return null; }
+  }
+  async function findSession() {
+    let s = await readSession();
+    if (s && s.user) return s;
+    try {
+      const r = await withTimeout(client.auth.getUser(), 10000);
+      if (r && r.data && r.data.user) { const s2 = await readSession(); return s2 && s2.user ? s2 : { user: r.data.user }; }
+    } catch (e) {}
+    if (remembered()) {
+      for (let i = 0; i < 8; i++) { await sleep(750); s = await readSession(); if (s && s.user) return s; }
+    }
+    return null;
+  }
+  function retryScreen() {
+    root.innerHTML = '<div class="pa-hero pa-guest"><div class="pa-avatar">' + ICON.user + '</div><div class="pa-hero-text"><b>We could not confirm your sign-in</b><small>Your connection may be slow or your session may have expired</small></div>' +
+      '<div class="pa-actions"><button class="pa-btn light" id="pa-retry" type="button">Try again</button><a class="pa-btn ghost" href="signin.html">Sign in again</a></div></div>';
+    const b = document.getElementById("pa-retry"); if (b) b.addEventListener("click", () => location.reload());
+  }
+
   async function main() {
     skeleton();
     client = await waitFor(getClient, 8000);
     if (!client) return guest("Could not reach the server. Check your connection and reload");
-    let session = null;
-    try { const r = await withTimeout(client.auth.getSession(), 10000); session = r && r.data ? r.data.session : null; }
-    catch (e) { return guest("Could not check your account. Reload to try again"); }
-    if (!session || !session.user) return guest();
+    const session = await findSession();
+    if (!session || !session.user) return remembered() ? retryScreen() : guest();
 
     user = session.user;
     try { const r = await withTimeout(client.auth.getUser(), 10000); if (r && r.data && r.data.user) user = r.data.user; } catch (e) {}
